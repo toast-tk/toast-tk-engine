@@ -1,13 +1,10 @@
-[![Build Status](https://jenkins.synaptix-labs.com/buildStatus/icon?job=Toast-tk)](https://jenkins.synaptix-labs.com/job/Toast-tk/)
+[![Build Status](https://jenkins.synaptix-labs.com/buildStatus/icon?job=toast-tk-engine&build=1)](https://jenkins.synaptix-labs.com/job/toast-tk-engine/1/)
 
-Build not working, requires xvbf plugin on jenkins to support X11.
+# Toast Tk - Engine
 
-# Toast Tk
-
-Toast Toolkit - Test Automation Toolkit.
+Toast Toolkit - Test Automation Toolkit Engine.
 
 # What is Toast TK ?
-***
 
 Toast Toolkit aims to ease collaboration between Business Analysts 
 and Developpers to describe and test an application behavior. 
@@ -33,51 +30,27 @@ Toast consists of an editor (Toast TK WebApp), a recorder and a player (Toast TK
 Toast records the test cases in a natural language (human readable).
 The test cases can be run either through the UI or in batch mode through Eclipse (ref. how to eclipse, eclipse archetype).
 
-# Building Toast TK
-***
+# How to use Toast Engine
 
-## Toast TK Engine
-You need to clone this repository to compile Toast using maven.
+- Example project
 
-``` java
-$ git clone https://gitlab.synaptix-labs.com/synaptix/toast-tk.git
-$ cd toast-tk
-$ mvn clean install
-```
+# How to contribute
 
-The packages are now installed in your local maven repository.
 
-## Toast TK Studio
-${version} = __1.3-rc3__
+# Licence
 
-### JNLP Mode
-1. cd toast-tk/toast-tk-studio/target/toast-studio-${version}
-2. open app.jnlp and Enjoy !
+Toast Toolkit (Toast TK)
 
-### IDE Mode (Eclipse)
-1. Clone the repository.
-2. Install egit/jgit plugins. 
-3. Import the projects as maven projects from the cloned repository. 
-4. Build All
-5. Copy toast-tk/toast-tk-studio/target/toast-studio-${version}/agent-lib to ${user.home}/.toast/plugins
-6. Launch __AgentBoot__ as a Java Application and Enjoy !
+Copyright 2012-2105 - Synaptix-Labs - http://www.synaptix-labs.com 
 
-## Toast TK WebApp
-* 1- Clone the webapp repository and compile it using sbt.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-```
-$ git clone https://gitlab.synaptix-labs.com/sallah-kokaina/toast-tk-play-webapp.git
-$ cd toast-tk-play-webapp
-$ sbt
-$ dist
-$ unzip target/universal/toast-tk-webapp-${version}.zip
-$ cd toast-tk-webapp-${version}/bin
-$ ./toast-tk-webapp
-```
-* 2- Install and Launch a local Mongo Database
-* 3- Open http://localhost:9000 in Google Chrome and Enjoy !
+       http://www.apache.org/licenses/LICENSE-2.0
 
-# More Information 
-***
-
-[wiki](https://gitlab.synaptix-labs.com/synaptix/toast-tk/wikis/home)
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
