@@ -41,7 +41,7 @@ The test cases can be run either through the UI or in batch mode through Eclipse
 
 Toast Toolkit (Toast TK)
 
-Copyright 2012-2105 - Synaptix-Labs - http://www.synaptix-labs.com 
+Copyright 2012-2015 - Synaptix-Labs - http://www.synaptix-labs.com 
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
