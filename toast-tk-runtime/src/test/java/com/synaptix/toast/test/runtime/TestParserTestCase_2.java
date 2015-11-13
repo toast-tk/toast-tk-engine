@@ -1,42 +1,43 @@
 package com.synaptix.toast.test.runtime;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
+import com.synaptix.toast.runtime.block.TestBlockRunner;
+import com.synaptix.toast.runtime.utils.ArgumentHelper;
+import com.synaptix.toast.test.bean.XmlAdapterExample;
 
 public class TestParserTestCase_2 {
 
-	static StringBuilder b = new StringBuilder();
+	static String scenario;
 
 	@BeforeClass
 	public static void init() {
-		b.append("$var:=select 1 from dual").append("\n");
-		b.append("|| scenario || swing ||").append("\n");
-		b.append("| @swing Saisir *valeur* dans *ChooseApplicationRusDialog.applicationBox* |").append("\n");
-		b.append("| @service Cliquer sur *ChooseApplicationRusDialog.OK* |").append("\n");
-		b.append("| @service Cliquer sur *ChooseApplicationRusDialog.FIN* |").append("\n");
-		b.append("| @toto Cliquer sur *ChooseApplicationRusDialog.FIN* |").append("\n");
-		b.append("| Cliquer sur *ChooseApplicationRusDialog.KO* |").append("\n");
-		b.append("| @swing:connector Saisir *valeur* dans *ChooseApplicationRusDialog.applicationBox* |").append("\n");
-	}
-
-	// static check only
-	/*private void testReportImageDisplay() {
-		ITestPage page = new TestPage("test");
-		Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-		BufferedImage capture;
-		try {
-			capture = new java.awt.Robot().createScreenCapture(screenRect);
-			TestResult result = new TestResult("failure", null);
-			result.setContextualTestSentence("test");
-			TestBlock block = new TestBlock();
-			block.addLine("some test", "", "");
-			block.getBlockLines().get(0).setTestResult(result);
-			page.addBlock(block);
-			ThymeLeafHTMLReporter reporter = new ThymeLeafHTMLReporter();
-			String generatePageHtml = reporter.generatePageHtml(page);
-			reporter.writeFile(generatePageHtml, "go", "c:\\temp");
-		}
-		catch(AWTException e) {
+		InputStream stream = TestParserTestCase_2.class.getClassLoader().getResourceAsStream("./flux.scenario.txt");
+		try{
+			scenario = IOUtils.toString(stream);
+		}catch(IOException e){
 			e.printStackTrace();
 		}
-	}*/
+		
+	}
+
+	@Test
+	public void testParserArgument() {
+		String sentenceAsRegex = ArgumentHelper.convertActionSentenceToRegex("{{com.synaptix.toast.test.bean.ProjetFlux:value:xml}}");
+		Assert.assertEquals("\\*([\\$?\\w\\W]+)\\*", sentenceAsRegex);
+	}
+	
+	@Test
+	public void testParserMethodFinder() {
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		ActionCommandDescriptor method = blockRunner.findMethodInClass("Intégrer *$flux*", XmlAdapterExample.class);
+		Assert.assertNotNull(method);
+	}
 }

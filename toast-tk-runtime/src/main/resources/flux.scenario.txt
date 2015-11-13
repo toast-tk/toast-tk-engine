@@ -1,0 +1,10 @@
+$flux:="""
+{
+ "id": "100"
+ "name" : "projet"
+  "status" : "1"
+}
+"""
+
+|| scenario || service ||
+| Intégrer *$flux* |
