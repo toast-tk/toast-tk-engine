@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
+import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
 import com.synaptix.toast.runtime.block.TestBlockRunner;
 import com.synaptix.toast.runtime.utils.ArgumentHelper;
 import com.synaptix.toast.test.runtime.mock.DefaultRepositorySetup;
@@ -91,17 +92,17 @@ public class TestRunnerTestCase {
 	@Test
 	public void testActionItemVariableReplacement()
 		throws IOException {
-		String convertActionSentenceToRegex = ArgumentHelper
+		CommandArgumentDescriptor descriptor = ArgumentHelper
 			.convertActionSentenceToRegex("Faire action sur {{champ:variable:string}}");
-		assertEquals("Faire action sur {{champ:variable:string}}", convertActionSentenceToRegex);
+		assertEquals("Faire action sur {{champ:variable:string}}", descriptor.command);
 	}
 
 	@Test
 	public void testActionItemVariableDefaultReplacement()
 		throws IOException {
-		String convertActionSentenceToRegex = ArgumentHelper
+		CommandArgumentDescriptor descriptor = ArgumentHelper
 			.convertActionSentenceToRegex("Faire action sur {{value}}");
-		assertEquals("Faire action sur \\*([\\$?\\w\\W]+)\\*", convertActionSentenceToRegex);
+		assertEquals("Faire action sur \\*([\\$?\\w\\W]+)\\*", descriptor.command);
 	}
 
 	@AfterClass

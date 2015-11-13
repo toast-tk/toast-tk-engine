@@ -1,5 +1,0 @@
-Bonjour, ceci est un fichier de test
-
-#include test_file_2.txt
-
-Encore des commentaires

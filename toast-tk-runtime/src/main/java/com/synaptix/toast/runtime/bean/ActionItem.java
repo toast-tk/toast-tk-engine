@@ -23,6 +23,6 @@ public class ActionItem {
 	}
 
 	public enum ActionTypeEnum {
-		string, swing, service, web, entity
+		string, swing, service, web, entity, date, xml, json
 	}
 }

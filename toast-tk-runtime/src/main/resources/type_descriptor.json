@@ -8,6 +8,30 @@
 		"replacement" : "@[[1:value:string]]"
 	},
 	{
+		"id": "11",
+		"name" : "Value",
+		"kind": "xml",	
+		"category" : "value",
+		"regex" : "\\*([\\$?\\w\\W]+)\\*",
+		"replacement" : "@[[1:value:string]]"
+	},
+		{
+		"id": "12",
+		"name" : "Value",
+		"kind": "date",	
+		"category" : "value",
+		"regex" : "\\*([\\$?\\w\\W]+)\\*",
+		"replacement" : "@[[1:value:string]]"
+	},
+			{
+		"id": "13",
+		"name" : "Value",
+		"kind": "json",	
+		"category" : "value",
+		"regex" : "\\*([\\$?\\w\\W]+)\\*",
+		"replacement" : "@[[1:value:string]]"
+	},
+	{
 		"id": "3",
 		"name" : "Service",
 		"kind" : "service",

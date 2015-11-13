@@ -1,17 +1,24 @@
 package com.synaptix.toast.runtime.block;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.Gson;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -28,6 +35,8 @@ import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
+import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
+import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
 import com.synaptix.toast.runtime.bean.TestLineDescriptor;
 import com.synaptix.toast.runtime.constant.Property;
 import com.synaptix.toast.runtime.utils.ArgumentHelper;
@@ -55,7 +64,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			line.setTestResult(result);
 		}
 	}
-
 
 	private void finaliseResultKind(TestLine line, TestResult result) {
 		if (isFailureExpected(line, result)) {
@@ -224,9 +232,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	private TestResult doLocalActionCall(String command, Object instance,
 			ActionCommandDescriptor execDescriptor) {
 		TestResult result;
-		Object[] args = buildArgumentList(execDescriptor);
-		final String updatedCommand = updateCommandWithVarValues(command, execDescriptor);
 		try {
+			Object[] args = buildArgumentList(execDescriptor);
 			result = (TestResult) execDescriptor.method.invoke(instance, args);
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
@@ -236,24 +243,47 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 				result = new TestResult(ExceptionUtils.getRootCauseMessage(e), ResultKind.FAILURE);
 			}
 		}
+		final String updatedCommand = updateCommandWithVarValues(command, execDescriptor);
 		result.setContextualTestSentence(updatedCommand);
 		return result;
 	}
 
-	private Object[] buildArgumentList(
-			ActionCommandDescriptor execDescriptor) {
+	protected Object[] buildArgumentList(
+			ActionCommandDescriptor execDescriptor) throws Exception {
 		Matcher matcher = execDescriptor.matcher;
 		matcher.matches();
 		int groupCount = matcher.groupCount();
+		int argPos = 0;
 		Object[] args = new Object[groupCount];
 		for (int i = 0; i < groupCount; i++) {
 			String group = matcher.group(i + 1);
-			args[i] = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
+			Object obj = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
+			if(obj instanceof String){
+				String argValue = (String) obj;
+				ArgumentDescriptor argumentDescriptor = execDescriptor.descriptor.arguments.get(argPos);
+				switch (argumentDescriptor.typeEnum) {
+				case xml:
+					Class<?> xmlClazz = Class.forName(argumentDescriptor.name);
+					JAXBContext jaxbContext = JAXBContext.newInstance(xmlClazz);
+					Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+					InputStream stream = new ByteArrayInputStream(argValue.getBytes(StandardCharsets.UTF_8));
+					args[i] = jaxbUnmarshaller.unmarshal(stream);
+					break;
+				case json:
+					Class<?> jsonClazz = Class.forName(argumentDescriptor.name);
+					args[i] = new Gson().fromJson(argValue, jsonClazz);
+					break;
+				default:
+					break;
+				}
+			}else{
+				args[i] = obj;
+			}
 		}
 		return args;
 	}
 
-	private String updateCommandWithVarValues(String inCommand, ActionCommandDescriptor execDescriptor) {
+	protected String updateCommandWithVarValues(String inCommand, ActionCommandDescriptor execDescriptor) {
 		Matcher matcher = execDescriptor.matcher;
 		matcher.matches();
 		String outCommand = inCommand;
@@ -286,12 +316,19 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			for (Annotation annotation : annotations) {
 				if (annotation.annotationType().equals(Action.class)) {
 					String actionSentence = ((Action) annotation).action();
-					String actionAsRegex = ArgumentHelper.convertActionSentenceToRegex(actionSentence);
-					Pattern regexPattern = Pattern.compile(actionAsRegex);
-					Matcher matcher = regexPattern.matcher(command);
-					boolean matches = matcher.matches();
+					CommandArgumentDescriptor commandDescriptor = ArgumentHelper.convertActionSentenceToRegex(actionSentence);
+					Pattern regexPattern = Pattern.compile(commandDescriptor.command);
+					Matcher methodMatcher = regexPattern.matcher(command);
+					boolean matches = methodMatcher.matches();
 					if (matches) {
-						actionCommandWrapper = new ActionCommandDescriptor(method, matcher);
+						Pattern itemRegexPattern = Pattern.compile("\\*(\\$\\w+)\\*");
+						Matcher itemMatcher = itemRegexPattern.matcher(command);
+						int pos = 0;
+						while(itemMatcher.find()){
+							String varName = itemMatcher.group(1);
+							commandDescriptor.arguments.get(pos).varName = varName;
+						}
+						actionCommandWrapper = new ActionCommandDescriptor(method, methodMatcher, commandDescriptor);
 					}
 				}
 			}
@@ -340,8 +377,11 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	public void setInjector(Injector injector) {
 		this.injector = injector;	
-		this.objectRepository = injector.getInstance(IActionItemRepository.class);
+		setObjectRepository(injector.getInstance(IActionItemRepository.class));
 		this.fixtureApiServices = ActionAdapterCollector.listAvailableServicesByInjection(injector);
 	}
-
+	
+	public void setObjectRepository(IActionItemRepository repository){
+		this.objectRepository = repository;
+	}
 }

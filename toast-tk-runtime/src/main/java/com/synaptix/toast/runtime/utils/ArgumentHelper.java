@@ -1,5 +1,6 @@
 package com.synaptix.toast.runtime.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,16 +8,20 @@ import java.util.regex.Pattern;
 import com.synaptix.toast.runtime.ActionItemDescriptionCollector;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ActionItem;
+import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 import com.synaptix.toast.runtime.bean.ActionItem.ActionCategoryEnum;
 import com.synaptix.toast.runtime.bean.ActionItem.ActionTypeEnum;
+import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
 import com.synaptix.toast.runtime.constant.Property;
 
 public class ArgumentHelper {
 	
 	private static final List<ActionItem> ACTION_ITEMS = ActionItemDescriptionCollector.initActionItems();
 	
-	public static String convertActionSentenceToRegex(
+	public static CommandArgumentDescriptor convertActionSentenceToRegex(
 		String actionSentence) {
+		CommandArgumentDescriptor descriptor = new CommandArgumentDescriptor();
+		List<ArgumentDescriptor> arguments = new ArrayList<>();
 		String convertedSentence = actionSentence;
 		Pattern regexPattern = Pattern.compile(Property.ACTION_ITEM_REGEX);
 		Matcher matcher = regexPattern.matcher(actionSentence);
@@ -27,6 +32,9 @@ public class ArgumentHelper {
 			if(hasOnlyDeclaredActionItemCategory(groupArray)) {
 				String category = groupArray[0];
 				ActionCategoryEnum categoryEnum = ActionItem.ActionCategoryEnum.valueOf(category);
+				ArgumentDescriptor argDescriptor = new ArgumentDescriptor();
+				argDescriptor.categoryEnum = categoryEnum;
+				arguments.add(argDescriptor);
 				regex = getActionItemRegex(categoryEnum, ActionItem.ActionTypeEnum.string);
 			}
 			else if(hasDeclaredCategoryAndType(groupArray)) {
@@ -34,6 +42,10 @@ public class ArgumentHelper {
 				ActionCategoryEnum categoryEnum = ActionItem.ActionCategoryEnum.valueOf(category);
 				String type = groupArray[1];
 				ActionTypeEnum typeEnum = ActionItem.ActionTypeEnum.valueOf(type);
+				ArgumentDescriptor argDescriptor = new ArgumentDescriptor();
+				argDescriptor.categoryEnum = categoryEnum;
+				argDescriptor.typeEnum = typeEnum;
+				arguments.add(argDescriptor);
 				regex = getActionItemRegex(categoryEnum, typeEnum);
 			}
 			else if(hadDeclaredAll(groupArray)) {
@@ -41,6 +53,13 @@ public class ArgumentHelper {
 				ActionCategoryEnum categoryEnum = ActionItem.ActionCategoryEnum.valueOf(category);
 				String type = groupArray[2];
 				ActionTypeEnum typeEnum = ActionItem.ActionTypeEnum.valueOf(type);
+				
+				ArgumentDescriptor argDescriptor = new ArgumentDescriptor();
+				argDescriptor.name = groupArray[0];
+				argDescriptor.categoryEnum = categoryEnum;
+				argDescriptor.typeEnum = typeEnum;	
+				arguments.add(argDescriptor);
+				
 				regex = getActionItemRegex(categoryEnum, typeEnum);
 			}
 			if(regex != null) {
@@ -48,7 +67,9 @@ public class ArgumentHelper {
 				matcher = regexPattern.matcher(convertedSentence);
 			}
 		}
-		return convertedSentence;
+		descriptor.command = convertedSentence;
+		descriptor.arguments = arguments;
+		return descriptor;
 	}
 
 	private static String getActionItemRegex(

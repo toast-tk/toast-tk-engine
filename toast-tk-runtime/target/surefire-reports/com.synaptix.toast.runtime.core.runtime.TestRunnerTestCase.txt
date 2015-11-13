@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.synaptix.toast.runtime.core.runtime.TestRunnerTestCase
--------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.131 sec
