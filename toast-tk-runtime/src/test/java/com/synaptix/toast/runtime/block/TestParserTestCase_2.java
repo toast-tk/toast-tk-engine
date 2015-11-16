@@ -51,6 +51,36 @@ public class TestParserTestCase_2 {
 		Assert.assertNotNull(method);
 	}
 	
+	
+	@Test
+	public void testReverseEngineeringMethodParamType() {
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		IActionItemRepository repo = new ObjectRepositorySetup();
+		
+		Map<String, Object> userVarMap = new HashMap<String, Object>();
+		StringBuilder fluxValue = new StringBuilder();
+		fluxValue.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>").append("\n");
+		fluxValue.append("<projet>").append("\n");
+		fluxValue.append("<status>1</status>").append("\n");
+		fluxValue.append("<name>projet</name>").append("\n");
+		fluxValue.append("</projet>").append("\n");
+		userVarMap.put("$flux", fluxValue.toString());
+		repo.setUserVariables(userVarMap);
+		
+		blockRunner.setObjectRepository(repo);
+		
+		ActionCommandDescriptor method = blockRunner.findMethodInClass("Integrate *$flux*", XmlAdapterExample.class);
+		Object[] args = null;
+		try {
+			args = blockRunner.buildArgumentList(method);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		Assert.assertNotNull(args);
+		Assert.assertEquals(args.length, 1);
+	}
+	
 	@Test
 	public void testRunnerArgumentBuilderXml() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
@@ -137,4 +167,6 @@ public class TestParserTestCase_2 {
 		Assert.assertEquals(args.length, 2);
 		Assert.assertEquals(args[1], repo.getUserVariables().get("$url"));
 	}
+	
+
 }
