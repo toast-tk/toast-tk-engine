@@ -1,10 +1,5 @@
-$fluxXml:="""
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <projet id="100">
-    <status>1</status>
     <name>projet</name>
+    <status>1</status>
 </projet>
-"""
-
-|| scenario || service ||
-| Intégrer $fluxXml |

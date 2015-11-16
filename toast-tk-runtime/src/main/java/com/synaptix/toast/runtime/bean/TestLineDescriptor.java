@@ -13,7 +13,7 @@ public class TestLineDescriptor {
 						 + ActionAdapterKind.web.name() + "|"
 						 + ActionAdapterKind.service.name();
 	
-	private static String REGEX = "@(" + KINDS + "):?([\\w]*) ([\\w\\W]+)";
+	private static String REGEX = "@(" + KINDS + "):?([\\w\\-\\.]*) ([\\w\\W]+)";
 
 	public final TestLine testLine;
 
