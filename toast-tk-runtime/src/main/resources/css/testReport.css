@@ -1,0 +1,29 @@
+	footer {
+	position: fixed;
+    background-color: #D2D2D2;
+    padding: 1em 0;
+    padding-left: 31px;
+    padding-right: 31px;
+    bottom: 0;
+    height: 25px;
+    line-height: 1px;
+    text-align: center;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+	}
+
+.panel-toast{
+	border-color: #B4B4B4;
+}
+.panel-toast>.panel-heading {
+    border-color: #B4B4B4;
+    background-color: #D2D2D2;
+}
+
+.jumbotron{
+	    background-color: #D2D2D2;
+    border: #B4B4B4 solid 1px;
+    padding-top: 23px;
+    padding-bottom: 23px;
+}
