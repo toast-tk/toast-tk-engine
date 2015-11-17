@@ -333,7 +333,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 				if (annotation.annotationType().equals(Action.class)) {
 					String actionSentence = ((Action) annotation).action();
 					CommandArgumentDescriptor commandDescriptor = ArgumentHelper.convertActionSentenceToRegex(actionSentence);
-					Pattern regexPattern = Pattern.compile(commandDescriptor.command);
+ 					Pattern regexPattern = Pattern.compile(commandDescriptor.command);
 					Matcher methodMatcher = regexPattern.matcher(command);
 					boolean matches = methodMatcher.matches();
 					if (matches) {
@@ -343,6 +343,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 						while(itemMatcher.find()){
 							String varName = itemMatcher.group(1);
 							commandDescriptor.arguments.get(pos).varName = varName;
+							if(commandDescriptor.arguments.get(pos).name == null){
+								commandDescriptor.arguments.get(pos).name = method.getParameters()[pos].getType().getName();
+							}
+							pos++;
 						}
 						actionCommandWrapper = new ActionCommandDescriptor(method, methodMatcher, commandDescriptor);
 					}

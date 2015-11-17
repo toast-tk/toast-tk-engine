@@ -13,4 +13,8 @@ public class XmlAdapterExample {
 		return new TestResult();
 	}
 	
+	@Action(action="Integrate {{value:xml}}", description="Intégrer xml avec type non defini")
+	public TestResult integrateNameLessXml(ProjetFlux fluxFromXml){
+		return new TestResult();
+	}
 }
