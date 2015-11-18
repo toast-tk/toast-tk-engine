@@ -34,19 +34,34 @@ public class TestParser {
 	}
 
 	public ITestPage parse(String path) throws IOException, IllegalArgumentException {
+		path = cleanPath(path);
 		Path p = Paths.get(path);
 		Stream<String> lines = Files.lines(p);
 		List<String> list = lines.collect(Collectors.toList());
 		if (list.isEmpty()) {
 			throw new IllegalArgumentException("File empty at path: " + path);
 		}
+		removeBom(list);
 		return buildTestPage(list, p.getFileName().toString(), path);
 	}
 
+	private String cleanPath(String path) {
+		if (path.startsWith("\\") || path.startsWith("/")) {
+			path = path.substring(1);
+		}
+		return path;
+	}
+
+	private void removeBom(List<String> list) {
+		if (list.get(0).startsWith("\uFEFF")) {
+			list.set(0,list.get(0).substring(1));
+		}
+	}
+
 	private ITestPage buildTestPage(List<String> lines, String pageName, String filePath) throws IllegalArgumentException {
-        LOG.info("Starting test page parsing: {}", pageName);
-        ITestPage testPage = DaoBeanFactory.getInstance().getBean(ITestPage.class);
-        testPage.setName(pageName);
+		LOG.info("Starting test page parsing: {}", pageName);
+		ITestPage testPage = DaoBeanFactory.getInstance().getBean(ITestPage.class);
+		testPage.setName(pageName);
 		while (CollectionUtils.isNotEmpty(lines)) {
 			IBlock block = readBlock(lines, filePath);
 			testPage.addBlock(block);

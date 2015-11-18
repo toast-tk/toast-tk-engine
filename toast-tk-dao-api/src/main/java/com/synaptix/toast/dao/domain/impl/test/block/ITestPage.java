@@ -4,50 +4,45 @@ import java.util.List;
 
 public interface ITestPage extends ITaggable, IBlock {
 
-	public List<IBlock> getBlocks();
+    List<IBlock> getBlocks();
 
-	public long getExecutionTime();
+    long getExecutionTime();
 
-	public int getTechnicalErrorNumber();
+    int getTechnicalErrorNumber();
 
-	public int getTestFailureNumber();
+    int getTestFailureNumber();
 
-	public int getTestSuccessNumber();
+    int getTestSuccessNumber();
 
-	public void setTechnicalErrorNumber(
-		int technicalErrorNumber);
+    void setTechnicalErrorNumber(int technicalErrorNumber);
 
-	public void setTestFailureNumber(
-		int testFailureNumber);
+    void setTestFailureNumber(int testFailureNumber);
 
-	public void setTestSuccessNumber(
-		int testSuccessNumber);
+    void setTestSuccessNumber(int testSuccessNumber);
 
-	public String getName();
+    String getName();
 
-	public void setId(
-		String id);
+    void setId(String id);
 
-	public boolean isPreviousIsSuccess();
-	
-	public void setPreviousIsSuccess(boolean isSuccess);
+    boolean isPreviousIsSuccess();
 
-	public long getPreviousExecutionTime();
+    void setPreviousIsSuccess(boolean isSuccess);
 
-	public void startExecution();
+    long getPreviousExecutionTime();
 
-	public void stopExecution();
+    void startExecution();
 
-	public Object getParsingErrorMessage();
+    void stopExecution();
 
-	public String getIdAsString();
+    Object getParsingErrorMessage();
 
-	void setPreviousExecutionTime(
-		long previousExecutionTime);
+    String getIdAsString();
 
-	long getStartDateTime();
+    void setPreviousExecutionTime(long previousExecutionTime);
 
-	public void setName(String name);
+    long getStartDateTime();
 
-	public void addBlock(IBlock block);
+    void setName(String name);
+
+    void addBlock(IBlock block);
 }

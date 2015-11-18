@@ -59,6 +59,7 @@ public class CampaignBlockParser implements IBlockParser {
                 return campaignBlock;
             }
             String[] split = StringUtils.split(string, "|");
+            String name = split[0] != null ? split[0].trim() : null;
             String testPagePath = split[0] != null ? split[0].trim() : null;
             String pathName = StringUtils.trim(testPagePath);
             Path newPath = Paths.get(path).resolveSibling(pathName);
@@ -68,7 +69,7 @@ public class CampaignBlockParser implements IBlockParser {
             } catch (IOException e) {
                 LOG.error(e.getMessage(), e);
             }
-            campaignBlock.addTestCase("test",testPage); // TODO
+            campaignBlock.addTestCase(name,testPage);
         }
 
         return campaignBlock;

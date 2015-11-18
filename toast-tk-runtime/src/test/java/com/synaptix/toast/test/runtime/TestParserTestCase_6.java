@@ -38,6 +38,8 @@ public class TestParserTestCase_6 {
         if (block instanceof CampaignBlock) {
             CampaignBlock campaignBlock = (CampaignBlock) block;
             Assert.assertEquals(2, campaignBlock.getTestCases().size());
+            Assert.assertEquals("Test case 1", campaignBlock.getTestCases().get(0).getName());
+            Assert.assertEquals("Test case 2", campaignBlock.getTestCases().get(1).getName());
         }
 
 

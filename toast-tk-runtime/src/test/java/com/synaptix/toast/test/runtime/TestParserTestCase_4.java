@@ -24,7 +24,7 @@ public class TestParserTestCase_4 {
         ITestPage testPage = null;
         try {
             testPage = new TestParser().parse(path);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("testPage = " + testPage);
