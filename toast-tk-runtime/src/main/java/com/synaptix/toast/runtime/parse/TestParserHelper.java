@@ -1,12 +1,6 @@
 package com.synaptix.toast.runtime.parse;
 
-import com.synaptix.toast.dao.domain.impl.test.block.CommentBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.SetupBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.SwingPageBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.VariableBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.WebPageBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.*;
 
 public class TestParserHelper {
 
@@ -28,6 +22,9 @@ public class TestParserHelper {
 		}
 		if(block instanceof VariableBlock){
 			return ((VariableBlock) block).getTextLines().size();
+		}
+		if(block instanceof CampaignBlock){
+			return ((CampaignBlock) block).getTestCases().size();
 		}
 		return 0;
 	}
