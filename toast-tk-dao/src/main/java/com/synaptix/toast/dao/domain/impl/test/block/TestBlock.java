@@ -14,6 +14,12 @@ public class TestBlock implements IBlock {
 	private List<TestLine> blockLines;
 
 	private String fixtureName;
+	
+    private int technicalErrorNumber;
+
+    private int testSuccessNumber;
+
+    private int testFailureNumber;
 
 	public TestBlock() {
 		blockLines = new ArrayList<TestLine>();
@@ -58,4 +64,31 @@ public class TestBlock implements IBlock {
 	public int getHeaderSize() {
 		return 1;
 	}
+
+	public int getTechnicalErrorNumber() {
+        return technicalErrorNumber;
+    }
+
+    public void setTechnicalErrorNumber(
+            int technicalErrorNumber) {
+        this.technicalErrorNumber = technicalErrorNumber;
+    }
+
+    public int getTestSuccessNumber() {
+        return testSuccessNumber;
+    }
+
+    public void setTestSuccessNumber(
+            int testSuccessNumber) {
+        this.testSuccessNumber = testSuccessNumber;
+    }
+
+    public int getTestFailureNumber() {
+        return testFailureNumber;
+    }
+
+    public void setTestFailureNumber(
+            int testFailureNumber) {
+        this.testFailureNumber = testFailureNumber;
+    }
 }

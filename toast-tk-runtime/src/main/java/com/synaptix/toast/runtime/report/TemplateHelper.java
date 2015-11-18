@@ -140,4 +140,21 @@ public class TemplateHelper {
 		}
 		return count;
 	}
+	
+	public static String getPieChartJson(int success, int error, int failure){
+		StringBuilder builder = new StringBuilder();
+		builder.append("[ {");
+		builder.append("\"value\" : \"" + success + "\",");
+		builder.append("\"color\" : \"#5cb85c\",");
+		builder.append("\"title\" : \"Success\"},");	
+		builder.append("{");
+		builder.append("\"value\" : \"" + error + "\",");
+		builder.append("\"color\" : \"#d9534f\",");
+		builder.append("\"title\" : \"Errors\"},");	
+		builder.append("{");
+		builder.append("\"value\" : \""+ failure + "\",");
+		builder.append("\"color\" : \"#21323D\",");
+		builder.append("\"title\" : \"Failures\"}]");	
+		return builder.toString();
+	}
 }

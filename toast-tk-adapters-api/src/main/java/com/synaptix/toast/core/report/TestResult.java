@@ -116,4 +116,12 @@ public class TestResult implements ITestResult{
 		BufferedImage screenShot) {
 		this.screenShot = screenShot;
 	}
+
+	public boolean isFailure() {
+		return ResultKind.FAILURE.equals(resultKind) ;
+	}
+
+	public boolean isError() {
+		return ResultKind.ERROR.equals(resultKind) ;
+	}
 }

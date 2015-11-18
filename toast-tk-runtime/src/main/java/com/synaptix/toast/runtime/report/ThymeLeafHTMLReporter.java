@@ -47,7 +47,7 @@ public class ThymeLeafHTMLReporter implements IHTMLReportGenerator {
 		Locale locale = LocaleUtils.toLocale("fr");
 		final Context ctx = new Context(locale);
 		ctx.setVariable("test", test);
-		String htmlOutput = templateEngine.process("test_report_template.html", ctx);
+		String htmlOutput = templateEngine.process("new_test_report_template.html", ctx);
 		return htmlOutput;
 	}
 }
