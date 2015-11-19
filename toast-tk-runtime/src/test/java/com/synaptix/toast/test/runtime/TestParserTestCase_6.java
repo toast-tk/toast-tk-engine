@@ -1,14 +1,14 @@
 package com.synaptix.toast.test.runtime;
 
-import com.synaptix.toast.dao.domain.impl.test.block.CampaignBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
+import com.synaptix.toast.dao.domain.impl.test.block.*;
+import com.synaptix.toast.runtime.parse.ScenarioParser;
 import com.synaptix.toast.runtime.parse.TestParser;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Test with a project definition
@@ -22,26 +22,25 @@ public class TestParserTestCase_6 {
         Assert.assertNotNull(testFileUrl);
         String path = testFileUrl.getPath();
         System.out.println("path = " + path);
-        ITestPage testPage = null;
+        IProject project = null;
         try {
-            testPage = new TestParser().parse(path);
+            project = new ScenarioParser().parse(path);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("testPage = " + testPage);
 
-        Assert.assertNotNull(testPage);
-        Assert.assertEquals(testPage.getBlocks().size(), 1);
-
-        IBlock block = testPage.getBlocks().get(0);
-        Assert.assertEquals("campaign", block.getBlockType());
-        if (block instanceof CampaignBlock) {
-            CampaignBlock campaignBlock = (CampaignBlock) block;
-            Assert.assertEquals(2, campaignBlock.getTestCases().size());
-            Assert.assertEquals("Test case 1", campaignBlock.getTestCases().get(0).getName());
-            Assert.assertEquals("Test case 2", campaignBlock.getTestCases().get(1).getName());
+        Assert.assertNotNull(project);
+        Assert.assertEquals(1, project.getCampaigns().size());
+        ICampaign campaign = project.getCampaigns().get(0);
+        Assert.assertEquals("TNR v1.0",campaign.getName());
+        List<ITestPage> testCases = campaign.getTestCases();
+        Assert.assertNotNull(testCases.size());
+        Assert.assertEquals(2, testCases.size());
+        for (ITestPage testPage : testCases) {
+            Assert.assertNotNull(testPage.getBlocks());
         }
-
+        Assert.assertEquals("test_file_2.txt",testCases.get(0).getName());
+        Assert.assertEquals("test_file_3.txt",testCases.get(1).getName());
 
     }
 

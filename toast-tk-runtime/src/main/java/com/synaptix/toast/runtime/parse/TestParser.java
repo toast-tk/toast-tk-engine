@@ -22,15 +22,13 @@ import com.synaptix.toast.dao.domain.impl.test.block.CommentBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 
-public class TestParser {
+public class TestParser extends AbstractParser {
 
 	private static final Logger LOG = LogManager.getLogger(TestParser.class);
 
-	private BlockParserProvider blockParserProvider;
-
 	public TestParser() {
+		super();
 		LOG.info("Parser intializing..");
-		blockParserProvider = new BlockParserProvider();
 	}
 
 	public ITestPage parse(String path) throws IOException, IllegalArgumentException {
@@ -43,19 +41,6 @@ public class TestParser {
 		}
 		removeBom(list);
 		return buildTestPage(list, p.getFileName().toString(), path);
-	}
-
-	private String cleanPath(String path) {
-		if (path.startsWith("\\") || path.startsWith("/")) {
-			path = path.substring(1);
-		}
-		return path;
-	}
-
-	private void removeBom(List<String> list) {
-		if (list.get(0).startsWith("\uFEFF")) {
-			list.set(0,list.get(0).substring(1));
-		}
 	}
 
 	private ITestPage buildTestPage(List<String> lines, String pageName, String filePath) throws IllegalArgumentException {
@@ -73,50 +58,10 @@ public class TestParser {
 		return testPage;
 	}
 
-	private IBlock readBlock(List<String> list, String path) throws IllegalArgumentException {
-		String firstLine = list.get(0);
-		BlockType blockType = getBlockType(firstLine);
-		if (blockType == BlockType.COMMENT) {
-			return digestCommentBlock(list);
-		} else {
-			IBlockParser blockParser = blockParserProvider.getBlockParser(blockType);
-			if (blockParser == null) {
-				throw new IllegalArgumentException("Could not parse line: " + firstLine);
-			}
-			return blockParser.digest(list, path);
-		}
-	}
-
-	private IBlock digestCommentBlock(List<String> lines) {
-		CommentBlock commentBlock = new CommentBlock();
-		for (String line : lines) {
-			if (getBlockType(line) != BlockType.COMMENT) {
-				return commentBlock;
-			}
-			commentBlock.addLine(line);
-		}
-		return commentBlock;
-	}
-
 	public ITestPage readString(String scenarioAsString, String scenarioName) {
 		String[] split = StringUtils.split(scenarioAsString, "\n");
 		ArrayList<String> list = new ArrayList<>(Arrays.asList(split));
 		return buildTestPage(list, scenarioName, null);
 	}
 
-	public BlockType getBlockType(String line) throws IllegalArgumentException {
-		Collection<IBlockParser> allBlockParsers = blockParserProvider.getAllBlockParsers();
-
-		List<BlockType> blockTypes = allBlockParsers.stream()
-				.filter(iBlockParser -> iBlockParser.isFirstLineOfBlock(line))
-				.map(IBlockParser::getBlockType)
-				.collect(Collectors.toList());
-
-		if (blockTypes.size() == 1) {
-			return blockTypes.get(0);
-		} else if (blockTypes.size() > 1) {
-			throw new IllegalArgumentException("Too many parsers for line [" + line + "]: " + StringUtils.join(blockTypes, "; "));
-		}
-		return BlockType.COMMENT;
-	}
 }

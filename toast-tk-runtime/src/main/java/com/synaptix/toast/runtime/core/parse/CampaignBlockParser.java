@@ -60,7 +60,7 @@ public class CampaignBlockParser implements IBlockParser {
             }
             String[] split = StringUtils.split(string, "|");
             String name = split[0] != null ? split[0].trim() : null;
-            String testPagePath = split[0] != null ? split[0].trim() : null;
+            String testPagePath = split[1] != null ? split[1].trim() : null;
             String pathName = StringUtils.trim(testPagePath);
             Path newPath = Paths.get(path).resolveSibling(pathName);
             ITestPage testPage = null;
