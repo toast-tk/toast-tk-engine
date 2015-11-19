@@ -1,13 +1,10 @@
 package com.synaptix.toast.runtime.parse;
 
-import com.synaptix.toast.dao.domain.BlockType;
-import com.synaptix.toast.dao.domain.DaoBeanFactory;
 import com.synaptix.toast.dao.domain.impl.report.Campaign;
 import com.synaptix.toast.dao.domain.impl.report.Project;
 import com.synaptix.toast.dao.domain.impl.test.block.*;
 import com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,18 +13,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ScenarioParser extends AbstractParser {
+public class ProjectParser extends AbstractParser {
 
-    private static final Logger LOG = LogManager.getLogger(ScenarioParser.class);
+    private static final Logger LOG = LogManager.getLogger(ProjectParser.class);
 
-    public ScenarioParser() {
-        LOG.info("Parser intializing..");
+    public ProjectParser() {
+        LOG.info("Parser initializing..");
         blockParserProvider = new BlockParserProvider();
     }
 
@@ -51,16 +46,8 @@ public class ScenarioParser extends AbstractParser {
         while (CollectionUtils.isNotEmpty(lines)) {
             IBlock block = readBlock(lines, filePath);
 
-            if (block instanceof  CampaignBlock) {
-                CampaignBlock campaignBlock = (CampaignBlock) block;
-                Campaign campaign = new Campaign();
-                campaign.setTestCases(new ArrayList<>());
-                campaign.setName(campaignBlock.getCampaignName());
-                List<CampaignLine> testCases = campaignBlock.getTestCases();
-                for (CampaignLine testCase : testCases) {
-                    campaign.getTestCases().add(testCase.getFile());
-                }
-                project.getCampaigns().add(campaign);
+            if (block instanceof CampaignBlock) {
+                project.getCampaigns().add(readCampaignBlock((CampaignBlock) block));
             }
 
             int numberOfLines = TestParserHelper.getNumberOfBlockLines(block);
@@ -69,6 +56,17 @@ public class ScenarioParser extends AbstractParser {
         }
 
         return project;
+    }
+
+    private ICampaign readCampaignBlock(CampaignBlock block) {
+        Campaign campaign = new Campaign();
+        campaign.setTestCases(new ArrayList<>());
+        campaign.setName(block.getCampaignName());
+        List<CampaignLine> testCases = block.getTestCases();
+        for (CampaignLine testCase : testCases) {
+            campaign.getTestCases().add(testCase.getFile());
+        }
+        return campaign;
     }
 
 }

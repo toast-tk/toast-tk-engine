@@ -1,8 +1,7 @@
 package com.synaptix.toast.test.runtime;
 
 import com.synaptix.toast.dao.domain.impl.test.block.*;
-import com.synaptix.toast.runtime.parse.ScenarioParser;
-import com.synaptix.toast.runtime.parse.TestParser;
+import com.synaptix.toast.runtime.parse.ProjectParser;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,7 +23,7 @@ public class TestParserTestCase_6 {
         System.out.println("path = " + path);
         IProject project = null;
         try {
-            project = new ScenarioParser().parse(path);
+            project = new ProjectParser().parse(path);
         } catch (IOException e) {
             e.printStackTrace();
         }
