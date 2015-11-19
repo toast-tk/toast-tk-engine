@@ -16,21 +16,36 @@ import java.nio.file.Paths;
 
 public abstract class AbstractRunner {
 
-	private static final Logger LOG = LogManager.getLogger(AbstractRunner.class);
+    private static final Logger LOG = LogManager.getLogger(AbstractRunner.class);
 
     public AbstractRunner() {
     }
 
     public abstract void tearDownEnvironment();
 
-	public abstract void beginTest();
+    public abstract void beginTest();
 
-	public abstract void endTest();
+    public abstract void endTest();
 
-	public abstract void initEnvironment();
+    public abstract void initEnvironment();
 
-    protected String getCurrentPath() {
-        Path currentRelativePath = Paths.get("");
+    /**
+     * Creates the test reports folder, if it does not exists, and returns its path.
+     * The folder is created in the current execution location, under /target/toast-test-results
+     *
+     * @return Path as a string
+     */
+    protected String getReportsFolderPath() {
+        Path currentRelativePath = Paths.get("target/toast-test-results");
+
+        File file = new File(currentRelativePath.toUri());
+        if (!file.exists()) {
+            boolean mkdirsResult = file.mkdirs();
+            if (!mkdirsResult) {
+                System.out.println("Report folder creation failed");
+                return null;
+            }
+        }
         String path = currentRelativePath.toAbsolutePath().toString();
         System.out.println("Report generated in folder: " + path);
         return path;

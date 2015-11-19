@@ -14,13 +14,6 @@ import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.runtime.dao.DAOManager;
 import com.synaptix.toast.runtime.parse.TestParser;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 public abstract class AbstractProjectRunner extends AbstractRunner {
 
     private static final Logger LOG = LogManager.getLogger(AbstractProjectRunner.class);
@@ -117,7 +110,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
     }
 
     protected void createAndOpenReport(IProject project) {
-        String path = getCurrentPath();
+        String path = getReportsFolderPath();
         final String pageName = "Project_report";
 
         for (ICampaign campaign : project.getCampaigns()) {

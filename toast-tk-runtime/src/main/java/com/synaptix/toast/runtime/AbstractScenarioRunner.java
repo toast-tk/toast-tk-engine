@@ -1,6 +1,5 @@
 package com.synaptix.toast.runtime;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,7 +7,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -126,7 +124,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
     protected void createAndOpenReport(
             ITestPage testPage) {
         String generatePageHtml = htmlReportGenerator.generatePageHtml(testPage);
-        String path = getCurrentPath();
+        String path = getReportsFolderPath();
         final String pageName = testPage.getName();
         this.htmlReportGenerator.writeFile(generatePageHtml, pageName, path);
         openReport(path, pageName);
