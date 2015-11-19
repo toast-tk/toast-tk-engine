@@ -7,7 +7,9 @@ import com.synaptix.toast.core.annotation.EngineEventBus;
 import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.report.IHTMLReportGenerator;
+import com.synaptix.toast.runtime.report.IProjectHtmlReportGenerator;
 import com.synaptix.toast.runtime.report.ThymeLeafHTMLReporter;
+import com.synaptix.toast.runtime.report.ThymeLeafProjectHTMLReporter;
 
 public class EngineModule extends AbstractModule {
 
@@ -16,6 +18,7 @@ public class EngineModule extends AbstractModule {
 		bind(EventBus.class).annotatedWith(EngineEventBus.class).to(EventBus.class).in(Singleton.class);
 		bind(IActionItemRepository.class).to(ActionItemRepository.class).in(Singleton.class);
 		bind(IHTMLReportGenerator.class).to(ThymeLeafHTMLReporter.class);
+		bind(IProjectHtmlReportGenerator.class).to(ThymeLeafProjectHTMLReporter.class);
 		install(new RunnerModule());
 	}
 }

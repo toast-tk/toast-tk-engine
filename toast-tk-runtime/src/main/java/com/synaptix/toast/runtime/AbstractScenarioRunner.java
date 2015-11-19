@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -122,23 +123,13 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
         return result;
     }
 
-    private void createAndOpenReport(
+    protected void createAndOpenReport(
             ITestPage testPage) {
         String generatePageHtml = htmlReportGenerator.generatePageHtml(testPage);
-        URL resource = this.getClass().getClassLoader() != null ? this.getClass().getClassLoader()
-                .getResource("TestResult") : null;
-        if (resource != null) {
-            try {
-                if (!Boolean.getBoolean("java.awt.headless")) {
-                    final String pageName = testPage.getName();
-                    this.htmlReportGenerator.writeFile(generatePageHtml, pageName, resource.getPath());
-                    File htmlFile = new File(resource.getPath() + File.separatorChar + pageName + ".html");
-                    Desktop.getDesktop().browse(htmlFile.toURI());
-                }
-            } catch (IOException e) {
-                LOG.error(e.getMessage(), e);
-            }
-        }
+        String path = getCurrentPath();
+        final String pageName = testPage.getName();
+        this.htmlReportGenerator.writeFile(generatePageHtml, pageName, path);
+        openReport(path, pageName);
     }
 
 }
