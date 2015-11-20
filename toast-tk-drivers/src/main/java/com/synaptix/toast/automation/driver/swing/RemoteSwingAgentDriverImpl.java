@@ -69,7 +69,7 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 				else if(object instanceof ErrorResponse) {
 					handleErrorResponse(object);
 				}
-				if(object instanceof InitResponse) {
+				else if(object instanceof InitResponse) {
 					handleInitResponse(object);
 				}
 				else {
@@ -199,6 +199,7 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 		boolean res = false;
 		int countTimeOut = WAIT_TIMEOUT;
 		int incOffset = 500;
+		client.keepAlive();
 		if(existsResponseMap.containsKey(reqId)) {
 			while(VOID_RESULT.equals(existsResponseMap.get(reqId))) {
 				try {
@@ -243,6 +244,7 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 	private String waitForValue(
 		final IIdRequest request)
 		throws TimeoutException, ErrorResultReceivedException {
+		client.keepAlive();
 		final String idRequest = request.getId();
 		String res = null;
 		int countTimeOut = WAIT_TIMEOUT;

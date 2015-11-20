@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.synaptix.toast.adapter.swing.AbstractSwingActionAdapter;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
 import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
@@ -43,6 +44,24 @@ public class TestParserTestCase_2 {
 		Assert.assertEquals("\\*([\\$?\\w\\W]+)\\*", descriptor.command);
 		Assert.assertEquals(descriptor.arguments.size(), 1);
 	}
+	
+	
+	@Test
+	public void testDialogMethod(){
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		ActionCommandDescriptor method = blockRunner.findMethodInClass("Affichage dialogue *Choix service*", AbstractSwingActionAdapter.class);
+		Assert.assertNotNull(method);
+	}
+	
+	
+	@Test
+	public void testWaitMethod(){
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		ActionCommandDescriptor method = blockRunner.findMethodInClass("wait for *10* sec", AbstractSwingActionAdapter.class);
+		Assert.assertNotNull(method);
+	}
+	
+	
 	
 	@Test
 	public void testParserMethodFinder() {

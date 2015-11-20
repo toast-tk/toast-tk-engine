@@ -1,9 +1,11 @@
 package com.synaptix.toast.adapter.swing.handler.button;
 
 import javax.swing.JButton;
-import javax.swing.SwingUtilities;
+
+import org.fest.swing.fixture.JButtonFixture;
 
 import com.synaptix.toast.adapter.swing.handler.ISwingwidgetActionHandler;
+import com.synaptix.toast.adapter.swing.utils.FestRobotInstance;
 import com.synaptix.toast.core.net.request.CommandRequest;
 
 
@@ -15,10 +17,11 @@ public class JButtonActionHandler implements ISwingwidgetActionHandler<JButton, 
 		CommandRequest command) {
 		switch(command.action) {
 			case CLICK :
-				SwingUtilities.invokeLater(new Runnable() {
+				FestRobotInstance.runOutsideEDT(new Runnable() {
 					@Override
 					public void run() {
-						button.doClick(1);
+						JButtonFixture fixture = new JButtonFixture(FestRobotInstance.getRobot(), button);
+						fixture.click();
 					}
 				});
 				break;

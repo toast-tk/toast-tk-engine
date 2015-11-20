@@ -288,7 +288,7 @@ public abstract class AbstractSwingActionAdapter {
 		return new TestResult();
 	}
 
-	@Action(action = "Affichage dialogue \'([\\w\\W]+)\'", description = "Afichage d'une dialogue")
+	@Action(action = "Affichage dialogue {{value:string}}", description = "Afichage d'une dialogue")
 	public TestResult waitForDialogDisplay(
 		String dialogName)
 		throws Exception {

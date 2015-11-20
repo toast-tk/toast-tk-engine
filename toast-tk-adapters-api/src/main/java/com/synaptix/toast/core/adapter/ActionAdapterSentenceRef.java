@@ -19,7 +19,7 @@ public class ActionAdapterSentenceRef {
 
 	public static final String TypeVarIn = "Type " + VALUE_REGEX + " in " + SWING_COMPONENT_REGEX;
 
-	public static final String Wait = "wait for (\\w+) sec";
+	public static final String Wait = "wait for "+VALUE_REGEX+" sec";
 
 	public static final String SelectSubMenu = "Selection menu " + SWING_COMPONENT_REGEX + " dans "
 		+ SWING_COMPONENT_REGEX;

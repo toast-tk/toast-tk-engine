@@ -294,7 +294,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			}else{
 				args[i] = obj;
 			}
-			argPos++;
+			if(group.startsWith("$")){
+				argPos++;
+			}
 		}
 		return args;
 	}
