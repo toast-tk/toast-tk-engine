@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 		<meta http-equiv="cache-control" content="no-cache"/>
@@ -33,7 +33,7 @@
 				 google.load("visualization", "1", {packages:["corechart"]});
 			  google.setOnLoadCallback(drawChart);
 			  function drawChart() {
-				var historyData = /*[[${@com.synaptix.toast.automation.report.TemplateReportHelper@getResultTrendData(project, projectsHistory)}]]*/
+				var historyData = /*[[${@com.synaptix.toast.runtime.report.TemplateReportHelper@getResultTrendData(project, projectsHistory)}]]*/
 				var dataTable = [['Iteration', 'OK', 'KO', 'Not Completed', 'Not Run']];
 				dataTable.push.apply(dataTable, historyData)
 				var data = google.visualization.arrayToDataTable(dataTable);
@@ -54,7 +54,7 @@
 			    };
 			    
 			  function drawPerfChart() {
-				var historyData = /*[[${@com.synaptix.toast.automation.report.TemplateReportHelper@getExecTrendData(project, projectsHistory)}]]*/
+				var historyData = /*[[${@com.synaptix.toast.runtime.report.TemplateReportHelper@getExecTrendData(project, projectsHistory)}]]*/
 				var dataTable = [['Iteration', 'Total Execution Time (ms)']];
 				dataTable.push.apply(dataTable, historyData)
 				var data = google.visualization.arrayToDataTable(dataTable);
@@ -128,17 +128,17 @@
 							</thead>
 							<tbody>
 								<tr th:each="test : ${campaign.testCases}">
-									<td th:text="${test.pageName}">Test 1</td>
+									<td th:text="${test.name}">Test 1</td>
 									<td class="success" th:if="${test.previousIsSuccess}">
 										OK
 									</td>
 									<td class="danger" th:if="${not test.previousIsSuccess}">
 										KO
 									</td>
-									<td class="success" th:if="${test.isSuccess()}">
+									<td class="success">
 										OK
 									</td>
-									<td class="danger" th:if="${not test.isSuccess()}">
+									<td class="danger">
 										KO
 									</td>	
 									<td th:text="${test.getPreviousExecutionTime() / 1000}">
@@ -148,7 +148,7 @@
 										100
 									</td>
 									<td>
-										<a th:attr="href=@{~/test(project=${project.name}, iteration=${project.iteration}, test=${test.name})}">
+										<a th:attr="href=${test.name + '.html'}">
 											>> link
 										</a>
 									</td>

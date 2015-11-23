@@ -5,9 +5,11 @@ import com.synaptix.toast.dao.domain.impl.test.block.IProject;
 
 public interface IProjectHtmlReportGenerator {
 
-	String generateProjectReportHtml(String name);
+    void writeFile(String report, String pageName, String reportFolderPath);
 
-	String generateProjectReportHtml(IProject project);
+    String generateProjectReportHtml(String name);
 
-	String generateProjectReportHtml(IProject iProject, String reportFolderPath);
+    String generateProjectReportHtml(IProject project);
+
+    String generateProjectReportHtml(IProject iProject, String reportFolderPath);
 }

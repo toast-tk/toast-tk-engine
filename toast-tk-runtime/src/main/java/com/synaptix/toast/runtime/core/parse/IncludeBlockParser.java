@@ -18,7 +18,7 @@ import com.synaptix.toast.runtime.parse.TestParser;
 
 public class IncludeBlockParser implements IBlockParser {
 	
-	private static final Logger LOG = LogManager.getLogger(AbstractScenarioRunner.class);
+	private static final Logger LOG = LogManager.getLogger(IncludeBlockParser.class);
 	
 	@Override
 	public IBlock digest(List<String> strings, String path) {
