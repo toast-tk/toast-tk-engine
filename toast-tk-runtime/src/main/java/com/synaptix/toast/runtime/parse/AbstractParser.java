@@ -1,13 +1,14 @@
 package com.synaptix.toast.runtime.parse;
 
-import com.synaptix.toast.dao.domain.BlockType;
-import com.synaptix.toast.dao.domain.impl.test.block.CommentBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.synaptix.toast.dao.domain.BlockType;
+import com.synaptix.toast.dao.domain.impl.test.block.CommentBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 
 /**
  * Abstract parser: contains methods to help parsing a file, and read blocks.
@@ -21,7 +22,7 @@ public class AbstractParser {
     }
 
     protected String cleanPath(String path) {
-        if (path.startsWith("\\") || path.startsWith("/")) {
+        if (path.contains(":") && (path.startsWith("\\") || path.startsWith("/"))) {
             path = path.substring(1);
         }
         return path;
