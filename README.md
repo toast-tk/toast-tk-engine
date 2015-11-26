@@ -1,4 +1,5 @@
-[![Build Status](https://jenkins.synaptix-labs.com/buildStatus/icon?job=toast-tk-engine&build=1)](https://jenkins.synaptix-labs.com/job/toast-tk-engine/1/)
+[![Build Status](https://travis-ci.org/synaptix-labs/toast-tk-engine.svg?branch=master)](https://travis-ci.org/synaptix-labs/toast-tk-engine.svg?branch=master)
+
 
 # Toast Tk - Engine
 
