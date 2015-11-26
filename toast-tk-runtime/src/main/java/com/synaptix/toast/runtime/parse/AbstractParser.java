@@ -1,9 +1,11 @@
 package com.synaptix.toast.runtime.parse;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synaptix.toast.dao.domain.BlockType;
@@ -22,7 +24,10 @@ public class AbstractParser {
     }
 
     protected String cleanPath(String path) {
-        if (path.contains(":") && (path.startsWith("\\") || path.startsWith("/"))) {
+    	if(SystemUtils.IS_OS_UNIX){
+    		return path;
+    	}
+    	else if (path.startsWith("\\") || path.startsWith("/")) {
             path = path.substring(1);
         }
         return path;
@@ -34,7 +39,7 @@ public class AbstractParser {
         }
     }
 
-    protected IBlock readBlock(List<String> list, String path) throws IllegalArgumentException {
+    protected IBlock readBlock(List<String> list, String path) throws IllegalArgumentException, IOException {
         String firstLine = list.get(0);
         BlockType blockType = getBlockType(firstLine);
         if (blockType == BlockType.COMMENT) {
