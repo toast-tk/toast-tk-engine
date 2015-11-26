@@ -43,7 +43,7 @@ public class TestParser extends AbstractParser {
 		return buildTestPage(list, p.getFileName().toString(), path);
 	}
 
-	private ITestPage buildTestPage(List<String> lines, String pageName, String filePath) throws IllegalArgumentException {
+	private ITestPage buildTestPage(List<String> lines, String pageName, String filePath) throws IllegalArgumentException, IOException {
 		LOG.info("Starting test page parsing: {}", pageName);
 		ITestPage testPage = DaoBeanFactory.getInstance().getBean(ITestPage.class);
 		testPage.setName(pageName);
@@ -58,7 +58,7 @@ public class TestParser extends AbstractParser {
 		return testPage;
 	}
 
-	public ITestPage readString(String scenarioAsString, String scenarioName) {
+	public ITestPage readString(String scenarioAsString, String scenarioName) throws IllegalArgumentException, IOException {
 		String[] split = StringUtils.split(scenarioAsString, "\n");
 		ArrayList<String> list = new ArrayList<>(Arrays.asList(split));
 		return buildTestPage(list, scenarioName, null);

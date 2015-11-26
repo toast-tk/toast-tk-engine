@@ -1,8 +1,10 @@
 package com.synaptix.toast.runtime.core.parse;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,14 +15,17 @@ public class VariableParserTestCase {
 	VariableBlockParser parser = new VariableBlockParser();
 	
 	@Test
-	public void fileReferenceTest(){
-		String varFileDeclaration="$varName:=file('/data/flux.xml')";
+	public void fileReferenceTest() throws IOException{
+		String fluxExpectedValue = IOUtils.toString(VariableParserTestCase.class.getResourceAsStream("/data/flux.xml"));
+		String varFileDeclaration="$varName:=file('data/flux.xml')";
 		VariableBlock block = (VariableBlock) parser.digest(Arrays.asList(varFileDeclaration), null);
 		List<String> cells = block.getBlockLines().get(0).getCells();
 		boolean varNameOk = cells.get(0).equals("$varName");
-		boolean varValueOK = cells.get(1).equals("file('/data/flux.xml')");
+		boolean varValueKo = cells.get(1).equals("file('data/flux.xml')");
+		boolean varValueOk = cells.get(1).equals(fluxExpectedValue);
 		Assert.assertEquals(true, varNameOk);
-		Assert.assertEquals(false, varValueOK);
+		Assert.assertEquals(false, varValueKo);
+		Assert.assertEquals(true, varValueOk);
 	}
 	
 }

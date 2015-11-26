@@ -2,6 +2,7 @@ package com.synaptix.toast.test.runtime;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -31,21 +32,21 @@ public class TestParserTestCase_1 {
 	}
 
 	@Test
-	public void testParserBlocks() {
+	public void testParserBlocks() throws IllegalArgumentException, IOException {
 		TestParser par = new TestParser();
 		ITestPage testPage = par.readString(scenario.toString(), null);
 		assertEquals(1, testPage.getBlocks().size());
 	}
 
 	@Test
-	public void testParserBlockType() {
+	public void testParserBlockType() throws IllegalArgumentException, IOException {
 		TestParser par = new TestParser();
 		ITestPage testPage = par.readString(scenario.toString(), null);
 		assertEquals(true, testPage.getBlocks().get(0) instanceof TestBlock);
 	}
 
 	@Test
-	public void testParserBlockServiceNameParsing() {
+	public void testParserBlockServiceNameParsing() throws IllegalArgumentException, IOException {
 		TestParser par = new TestParser();
 		ITestPage testPage = par.readString(scenario.toString(), null);
 		TestBlock testBlock = (TestBlock) testPage.getBlocks().get(0);
@@ -53,7 +54,7 @@ public class TestParserTestCase_1 {
 	}
 
 	@Test
-	public void testDefaultParserLineFixtureKind() {
+	public void testDefaultParserLineFixtureKind() throws IllegalArgumentException, IOException {
 		TestParser par = new TestParser();
 		ITestPage testPage = par.readString(scenario.toString(), null);
 		TestBlock testBlock = (TestBlock) testPage.getBlocks().get(0);
@@ -65,7 +66,7 @@ public class TestParserTestCase_1 {
 	}
 
 	@Test
-	public void testServiceParserLineFixtureKind() {
+	public void testServiceParserLineFixtureKind() throws IllegalArgumentException, IOException {
 		TestParser par = new TestParser();
 		ITestPage testPage = par.readString(scenario.toString(), null);
 		TestBlock testBlock = (TestBlock) testPage.getBlocks().get(0);
@@ -77,7 +78,7 @@ public class TestParserTestCase_1 {
 	}
 
 	@Test
-	public void testSwingParserLineFixtureKind() {
+	public void testSwingParserLineFixtureKind() throws IllegalArgumentException, IOException {
 		TestParser par = new TestParser();
 		ITestPage testPage = par.readString(scenario.toString(), null);
 		TestBlock testBlock = (TestBlock) testPage.getBlocks().get(0);
@@ -89,7 +90,7 @@ public class TestParserTestCase_1 {
 	}
 
 	@Test
-	public void testSwingParserLineFixtureName() {
+	public void testSwingParserLineFixtureName() throws IllegalArgumentException, IOException {
 		TestParser par = new TestParser();
 		ITestPage testPage = par.readString(scenario.toString(), null);
 		TestBlock testBlock = (TestBlock) testPage.getBlocks().get(0);

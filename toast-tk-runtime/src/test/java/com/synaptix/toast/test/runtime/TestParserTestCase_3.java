@@ -1,5 +1,6 @@
 package com.synaptix.toast.test.runtime;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -17,7 +18,7 @@ import com.synaptix.toast.runtime.parse.TestParser;
 public class TestParserTestCase_3 {
 
     @Test
-    public void testParserBlocks() {
+    public void testParserBlocks() throws IllegalArgumentException, IOException {
         TestParser par = new TestParser();
         String testString = ("$valeur:=variable\n" +
                 "$valeur2:=\"\"\"\n" +
@@ -82,7 +83,7 @@ public class TestParserTestCase_3 {
     }
 
     @Test
-    public void testSetupBlocks() {
+    public void testSetupBlocks() throws IllegalArgumentException, IOException {
         TestParser par = new TestParser();
         String testString = "h1. Description des pages\n" +
                 "\n" +

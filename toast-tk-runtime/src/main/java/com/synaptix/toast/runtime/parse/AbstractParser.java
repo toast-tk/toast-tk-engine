@@ -3,8 +3,10 @@ package com.synaptix.toast.runtime.parse;
 import com.synaptix.toast.dao.domain.BlockType;
 import com.synaptix.toast.dao.domain.impl.test.block.CommentBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
+
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +35,7 @@ public class AbstractParser {
         }
     }
 
-    protected IBlock readBlock(List<String> list, String path) throws IllegalArgumentException {
+    protected IBlock readBlock(List<String> list, String path) throws IllegalArgumentException, IOException {
         String firstLine = list.get(0);
         BlockType blockType = getBlockType(firstLine);
         if (blockType == BlockType.COMMENT) {
