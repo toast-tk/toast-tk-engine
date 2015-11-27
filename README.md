@@ -35,8 +35,10 @@ The toast-tk-example project hosts different examples for:
 
 # How to contribute
 
-Toast TK is a young open source project. We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: From the website through the documentation to the very core of the application. So, if you like open-source projets and would like to give back some help, we'd like to see your contributions! It doesn't matter how familiar you are with test automation applications, or whether you know how to write programs for Java. There are plenty of ways to be helpful!
-One of the first things you should do is actually use Toast TK, and get to know it - read about it, evangelise it, and engage with the wider community. 
+Toast TK is a young open source project. We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: From the website through the documentation to the very core of the application.  
+So, if you like open-source projets and would like to give back some help, we'd like to see your contributions!  
+It doesn't matter how familiar you are with test automation applications, or whether you know how to write programs for Java. There are plenty of ways to be helpful!  
+One of the first things you should do is actually use Toast TK, and get to know it - read about it, evangelise it, and engage with the wider community.  
 If you'd like to help, [get in touch](mailto:sallah.kokaina@synaptix-labs.com) or join us in #toast-tk on freenode and let us know how you'd like to help. We love contributors!! 
 
 # Development workflow
