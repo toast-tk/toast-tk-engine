@@ -2,8 +2,7 @@
 
 # Toast Tk - Engine
 
-Toast TK Engine provides a concise, self-explanatory and type safe way for writing test cases. 
-No more “REGEX HELL” :)
+Toast TK Engine provides a concise, self-explanatory and type safe way for writing test cases. No more “REGEX HELL” :)
 
 ## Example
 A scenario action: “Navigate to url *http://www.google.com*”  
@@ -36,10 +35,10 @@ The [toast-tk-example](https://github.com/synaptix-labs/toast-tk-examples) proje
 # How to contribute
 
 Toast TK is a young open source project.  
-We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: From the website through the documentation to the very core of the application.  
+We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: from the website through the documentation to the very core of the application.  
 So, if you like open-source projects and would like to give back some help, we'd like to see your contributions!  
 It doesn't matter how familiar you are with test automation applications, or whether you know how to write programs for Java. There are plenty of ways to be helpful! One of the first things you should do is actually use Toast TK, and get to know it - read about it, evangelise it, and engage with the wider community.  
-If you'd like to help, [get in touch](mailto:sallah.kokaina@synaptix-labs.com) or join us in #toast-tk on freenode and let us know how you'd like to help. We love contributors!! 
+If you'd like to help, [get in touch](mailto:sallah.kokaina@synaptix-labs.com) and let us know how you'd like to help. We love contributors!! 
 
 # Development workflow
 The main development happens on [Github](https://github.com/synaptix-labs/toast-tk-engine). To contribute, [fork](http://help.github.com/fork-a-repo/) the [main repo](https://github.com/synaptix-labs/toast-tk-engine), branch off a [feature branch](https://www.google.com/search?q=git+feature+branches) from master, make your changes and [commit](http://git-scm.com/docs/git-commit) them, [push](http://git-scm.com/docs/git-push) to your fork and submit a [pull request](http://help.github.com/send-pull-requests/).
