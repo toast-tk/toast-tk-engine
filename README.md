@@ -5,29 +5,29 @@
 Toast TK Engine provides a concise, self-explanatory and type safe way for writing test cases. 
 No more “REGEX HELL” :)
 
-## Example:
+## Example
 A scenario action: “Navigate to url *http://www.google.com*”  
 Would be written, in Toast, as follows: 
 ```
 Navigate to url {{value:string}} 
 ```
-instead of, 
+instead of 
 ```
 Navigate to url *([\w\W]+)*
 ```
 
-## Toast TK Engine:
+## Toast TK Engine
 1. Parses a script written in a [markdown format]() to a TestPage
 2. Executes the TestPage by locating the best matching [@Action]() within a given [@ActionAdapter]() 
 3. Outputs a [Value Based Test Execution Report]()
 
-Toast TK is not another Cucumber or Behave like framework, nor a Gherkin based toolkit. 
-it supports BDD or TDD collaborative testing on top of being pluggable to any test driver such as Selenium or Fest. 
-It makes test script easier to share between technical team members (Developers) and non-technical ones (Business Analysts) as it overcomes the need for learning a specific scripting syntax.
+Toast TK is not another Cucumber or Behave like framework, nor a Gherkin based toolkit.  
+It supports BDD and TDD collaborative testing on top of being pluggable to any test driver of your choice such as Selenium or Fest.  
+It makes test scripts easier to share between technical team members (i.e: Developers) and non-technical ones (i.e: Business Analysts) as it overcomes the need for learning a specific scripting syntax.
 
 # How to use Toast Tk Engine
 
-The toast-tk-example project hosts different examples for:
+The [toast-tk-example](https://github.com/synaptix-labs/toast-tk-examples) project hosts different examples for:
 - Web Browser automation
 - Rest API automation
 - JSON and XML value management as a variable
@@ -35,10 +35,10 @@ The toast-tk-example project hosts different examples for:
 
 # How to contribute
 
-Toast TK is a young open source project. We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: From the website through the documentation to the very core of the application.  
+Toast TK is a young open source project.  
+We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: From the website through the documentation to the very core of the application.  
 So, if you like open-source projets and would like to give back some help, we'd like to see your contributions!  
-It doesn't matter how familiar you are with test automation applications, or whether you know how to write programs for Java. There are plenty of ways to be helpful!  
-One of the first things you should do is actually use Toast TK, and get to know it - read about it, evangelise it, and engage with the wider community.  
+It doesn't matter how familiar you are with test automation applications, or whether you know how to write programs for Java. There are plenty of ways to be helpful! One of the first things you should do is actually use Toast TK, and get to know it - read about it, evangelise it, and engage with the wider community.  
 If you'd like to help, [get in touch](mailto:sallah.kokaina@synaptix-labs.com) or join us in #toast-tk on freenode and let us know how you'd like to help. We love contributors!! 
 
 # Development workflow
