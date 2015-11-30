@@ -20,7 +20,7 @@ Navigate to url *([\w\W]+)*
 2. Executes the TestPage by locating the best matching [@Action]() within a given [@ActionAdapter]() 
 3. Outputs a [Value Based Test Execution Report]()
 
-Toast TK is not another Cucumber or Behave like framework, nor a Gherkin based toolkit.  
+Toast TK is not another Cucumber / JBehave like framework, nor a Gherkin based toolkit.  
 It supports BDD and TDD collaborative testing on top of being pluggable to any test driver of your choice such as Selenium or Fest.  
 It makes test scripts easier to share between technical team members (i.e: Developers) and non-technical ones (i.e: Business Analysts) as it overcomes the need for learning a specific scripting syntax.
 
