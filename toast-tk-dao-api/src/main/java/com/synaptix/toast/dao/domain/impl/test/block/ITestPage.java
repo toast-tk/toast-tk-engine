@@ -2,6 +2,8 @@ package com.synaptix.toast.dao.domain.impl.test.block;
 
 import java.util.List;
 
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
+
 public interface ITestPage extends ITaggable, IBlock {
 
     List<IBlock> getBlocks();
@@ -34,7 +36,7 @@ public interface ITestPage extends ITaggable, IBlock {
 
     void stopExecution();
 
-    Object getParsingErrorMessage();
+    String getParsingErrorMessage();
 
     String getIdAsString();
 
@@ -45,4 +47,6 @@ public interface ITestPage extends ITaggable, IBlock {
     void setName(String name);
 
     void addBlock(IBlock block);
+
+	ITestResult getTestResult();
 }

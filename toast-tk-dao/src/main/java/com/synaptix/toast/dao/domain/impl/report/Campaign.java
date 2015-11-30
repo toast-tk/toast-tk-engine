@@ -17,6 +17,7 @@ import com.synaptix.toast.dao.domain.impl.test.block.ICampaign;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.dao.domain.impl.test.block.TestPage;
 
+
 @Entity(value = "report.campaigns")
 @Indexes({
 		@Index(value = "name, -iteration"), @Index("iteration")

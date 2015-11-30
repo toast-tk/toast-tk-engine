@@ -51,7 +51,7 @@ public class ThymeLeafProjectHTMLReporter implements
         final Context ctx = new Context(locale);
         ctx.setVariable("project", project);
         ctx.setVariable("projectsHistory", projectHistory);
-        return templateEngine.process("project_report_template.html", ctx);
+        return templateEngine.process("new_project_report_template.html", ctx);
     }
 
     @Override
@@ -64,12 +64,13 @@ public class ThymeLeafProjectHTMLReporter implements
     @Override
     public String generateProjectReportHtml(IProject iProject) {
         Project project = (Project) iProject;
-//		List<Project> projectHistory = DAOManager.getInstance().getProjectHistory(project);
-        return generateHtmlReport(project);
-    }
-
-    private String generateHtmlReport(Project project) {
-        return generateHtmlReport(project, Collections.emptyList());
+        List<Project> projectHistory = null;
+        try{
+        	projectHistory = DAOManager.getInstance().getProjectHistory(project);
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
+        return generateHtmlReport(project, projectHistory == null ? Collections.emptyList() : projectHistory);
     }
 
     @Override

@@ -14,7 +14,7 @@ import com.synaptix.toast.dao.domain.impl.repository.ReportHelper;
 
 @Entity(value = "test")
 @Indexes({
-        @Index(value = "pageName, -runDateTime"), 
+        @Index(value = "name, -runDateTime"), 
         @Index("runDateTime"), 
         @Index("isTemplate")
 })

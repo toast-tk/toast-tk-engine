@@ -38,8 +38,9 @@ public class TestPageDaoService extends AbstractMongoDaoService<TestPage> {
 	public ITestPage saveAsNewIteration(
 		ITestPage t) {
 		t.setId(null);
-		save((TestPage) t);
-		return t;
+		TestPage savedInstance = TestPageFromProxy.from(t);
+		save(savedInstance);
+		return savedInstance;
 	}
 
 	public ITestPage saveReference(

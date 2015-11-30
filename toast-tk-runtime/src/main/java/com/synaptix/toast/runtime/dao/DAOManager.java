@@ -18,16 +18,22 @@ public class DAOManager {
 
 	private static DAOManager instance;
 
-	//FIXME add configuration in property file
-	private DAOManager() {
-		mongoServiceInjector = Guice.createInjector(new MongoModule("10.23.252.131", 27017));
+	private DAOManager(String mongoHost, int mongoPort) {
+		mongoServiceInjector = Guice.createInjector(new MongoModule(mongoHost, mongoPort));
 		pfactory = mongoServiceInjector.getInstance(ProjectDaoService.Factory.class);
 		service = pfactory.create("test_project_db");
 	}
-
+	
+	public static synchronized DAOManager getInstance(String mongoHost, int mongoPort) {
+		if(instance == null) {
+			instance = new DAOManager(mongoHost, mongoPort);
+		}
+		return instance;
+	}
+	
 	public static synchronized DAOManager getInstance() {
 		if(instance == null) {
-			instance = new DAOManager();
+			throw new IllegalAccessError("Mongo Host not provided !");
 		}
 		return instance;
 	}

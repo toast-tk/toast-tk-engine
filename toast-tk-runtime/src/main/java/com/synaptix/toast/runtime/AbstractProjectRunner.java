@@ -1,8 +1,5 @@
 package com.synaptix.toast.runtime;
 
-import com.synaptix.toast.dao.domain.impl.test.block.IProject;
-import com.synaptix.toast.runtime.report.IHTMLReportGenerator;
-import com.synaptix.toast.runtime.report.IProjectHtmlReportGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,9 +7,12 @@ import com.google.inject.Injector;
 import com.synaptix.toast.core.rest.RestUtils;
 import com.synaptix.toast.dao.domain.impl.report.Project;
 import com.synaptix.toast.dao.domain.impl.test.block.ICampaign;
+import com.synaptix.toast.dao.domain.impl.test.block.IProject;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.runtime.dao.DAOManager;
 import com.synaptix.toast.runtime.parse.TestParser;
+import com.synaptix.toast.runtime.report.IHTMLReportGenerator;
+import com.synaptix.toast.runtime.report.IProjectHtmlReportGenerator;
 
 public abstract class AbstractProjectRunner extends AbstractRunner {
 
@@ -20,29 +20,71 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
     private final IHTMLReportGenerator htmlReportGenerator;
     private Injector injector;
     private final IProjectHtmlReportGenerator projectHtmlReportGenerator;
+	private String mongoDbHost;
+	private int mongoDbPort;
 
+	  protected AbstractProjectRunner(
+	            Injector injector
+	            )
+	            throws Exception {
+	        super();
+	        this.injector = injector;
+	        this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
+	        this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
+	    }
 
     protected AbstractProjectRunner(
-            Injector injector)
+            Injector injector,
+            String host,
+            int port
+            )
             throws Exception {
-        super();
-        this.injector = injector;
-        this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
-        this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
+    	this(injector);
+    	this.mongoDbHost = host;
+    	this.mongoDbPort = port;
     }
 
     public final void test(
             String projectName,
             boolean overrideRepoFromWebApp)
             throws Exception {
-        Project lastProject = DAOManager.getInstance().getLastProjectByName(projectName);
-        Project referenceProject = DAOManager.getInstance().getReferenceProjectByName(projectName);
+    	DAOManager daoManager = DAOManager.getInstance(this.mongoDbHost, this.mongoDbPort);
+        Project lastProject = daoManager.getLastProjectByName(projectName);
+        Project referenceProject = daoManager.getReferenceProjectByName(projectName);
         if (referenceProject == null) {
             throw new IllegalAccessException("No reference project name found for: " + projectName);
         }
         Project newIterationProject = mergeToNewIteration(lastProject, referenceProject);
         execute(newIterationProject, overrideRepoFromWebApp);
-        DAOManager.getInstance().saveProject(newIterationProject);
+        daoManager.saveProject(newIterationProject);
+    }
+    
+    
+    
+    public final void testAndStore(
+            IProject project)
+            throws Exception {
+    	testAndStore(project, false);
+    }
+    
+    public final void testAndStore(
+            IProject project,
+            boolean overrideRepoFromWebApp)
+            throws Exception {
+    	DAOManager daoManager = DAOManager.getInstance(this.mongoDbHost, this.mongoDbPort);
+        Project lastProject = daoManager.getLastProjectByName(project.getName());
+        Project referenceProject = daoManager.getReferenceProjectByName(project.getName());
+        if (referenceProject == null) {
+        	daoManager.saveProject((Project)project);
+        }
+        Project newIterationProject = null;
+        if(lastProject != null){
+        	newIterationProject = mergeToNewIteration(lastProject, referenceProject);
+        }else{
+        	newIterationProject = daoManager.getReferenceProjectByName(project.getName());
+        }
+        execute(newIterationProject, overrideRepoFromWebApp);
+        daoManager.saveProject(newIterationProject);
     }
 
     private Project mergeToNewIteration(

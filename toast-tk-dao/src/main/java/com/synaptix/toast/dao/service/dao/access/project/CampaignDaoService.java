@@ -1,5 +1,8 @@
 package com.synaptix.toast.dao.service.dao.access.project;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.jmkgreen.morphia.query.Query;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -43,9 +46,11 @@ public class CampaignDaoService extends AbstractMongoDaoService<Campaign> {
 	public ICampaign saveAsNewIteration(
 		Campaign c) {
 		c.setId(null);
+		List<ITestPage> savedTestCases = new ArrayList<ITestPage>(c.getTestCases().size());
 		for(ITestPage t : c.getTestCases()) {
-			tService.saveAsNewIteration(t);
+			savedTestCases.add(tService.saveAsNewIteration(t));
 		}
+		c.setTestCases(savedTestCases);
 		save(c);
 		return c;
 	}

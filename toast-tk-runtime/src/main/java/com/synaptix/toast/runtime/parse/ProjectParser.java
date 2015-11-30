@@ -41,8 +41,8 @@ public class ProjectParser extends AbstractParser {
     private IProject buildProject(List<String> lines, String pageName, String filePath) throws IllegalArgumentException, IOException {
         LOG.info("Starting project parsing: {}", pageName);
         Project project = new Project();
+        project.setName(pageName);
         project.setCampaigns(new ArrayList<>());
-
         while (CollectionUtils.isNotEmpty(lines)) {
             IBlock block = readBlock(lines, filePath);
 
