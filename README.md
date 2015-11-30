@@ -1,42 +1,48 @@
 [![Build Status](https://travis-ci.org/synaptix-labs/toast-tk-engine.svg?branch=master)](https://travis-ci.org/synaptix-labs/toast-tk-engine.svg?branch=master)
 
-
 # Toast Tk - Engine
 
-Toast Toolkit - Test Automation Toolkit Engine.
+Toast TK Engine provides a concise, self-explanatory and type safe way for writing test cases. No more “REGEX HELL” :)
 
-# What is Toast TK ?
+## Example
+A scenario action: “Navigate to url *http://www.google.com*”  
+Would be written, in Toast, as follows: 
+```
+Navigate to url {{value:string}} 
+```
+instead of 
+```
+Navigate to url *([\w\W]+)*
+```
 
-Toast Toolkit aims to ease collaboration between Business Analysts 
-and Developpers to describe and test an application behavior. 
+## Toast TK Engine
+1. Parses a script written in a [markdown format]() to a TestPage
+2. Executes the TestPage by locating the best matching [@Action]() within a given [@ActionAdapter]() 
+3. Outputs a [Value Based Test Execution Report]()
 
-<div style="text-align:center" width="100%">
-<img src="https://gitlab.synaptix-labs.com/synaptix/toast-tk/uploads/76234d43d51527bfe7264f8c0b9d9843/collaborative_cycle.png" alt="collaborative_cycle" 
-width="600px" height="400px" >
-</div>
+Toast TK is not another Cucumber / JBehave like framework, nor a Gherkin based toolkit.  
+It supports BDD and TDD collaborative testing on top of being pluggable to any test driver of your choice such as Selenium or Fest.  
+It makes test scripts easier to share between technical team members (i.e: Developers) and non-technical ones (i.e: Business Analysts) as it overcomes the need for learning a specific scripting syntax.
 
-Toast provides:
-- [Strongly Typed Tests](https://gitlab.synaptix-labs.com/synaptix/toast-tk/wikis/toast-strongly-typed-tests)
-- [Test Refactoring](https://gitlab.synaptix-labs.com/synaptix/toast-tk/wikis/toast-test-refactoring)
-- [Collaborative Apporach](https://gitlab.synaptix-labs.com/synaptix/toast-tk/wikis/toast-collaborative-approach)
-- [Test Campaign Reporting](https://gitlab.synaptix-labs.com/synaptix/toast-tk/wikis/toast-campaign-reporting)
+# How to use Toast Tk Engine
 
-
-Toast is a set of tools for recording, replaying test actions for:
-- Web Applications.
-- Java GUI programs developed using Swing Components. 
-- Backend Applications.
-
-Toast consists of an editor (Toast TK WebApp), a recorder and a player (Toast TK Studio). 
-Toast records the test cases in a natural language (human readable).
-The test cases can be run either through the UI or in batch mode through Eclipse (ref. how to eclipse, eclipse archetype).
-
-# How to use Toast Engine
-
-- Example project
+The [toast-tk-example](https://github.com/synaptix-labs/toast-tk-examples) project hosts different examples for:
+- Web Browser automation
+- Rest API automation
+- JSON and XML value management as a variable
+- Test report generation
 
 # How to contribute
 
+Toast TK is a young open source project.  
+We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: from the website through the documentation to the very core of the application.  
+So, if you like open-source projects and would like to give back some help, we'd like to see your contributions!  
+It doesn't matter how familiar you are with test automation applications, or whether you know how to write programs for Java. There are plenty of ways to be helpful! One of the first things you should do is actually use Toast TK, and get to know it - read about it, evangelise it, and engage with the wider community.  
+If you'd like to help, [get in touch](mailto:sallah.kokaina@synaptix-labs.com) and let us know how you'd like to help. We love contributors!! 
+
+# Development workflow
+The main development happens on [Github](https://github.com/synaptix-labs/toast-tk-engine). To contribute, [fork](http://help.github.com/fork-a-repo/) the [main repo](https://github.com/synaptix-labs/toast-tk-engine), branch off a [feature branch](https://www.google.com/search?q=git+feature+branches) from master, make your changes and [commit](http://git-scm.com/docs/git-commit) them, [push](http://git-scm.com/docs/git-push) to your fork and submit a [pull request](http://help.github.com/send-pull-requests/).
+For the time being and once in a while, we merge pull requests into master, which results in a new snapshot update. 
 
 # Licence
 
