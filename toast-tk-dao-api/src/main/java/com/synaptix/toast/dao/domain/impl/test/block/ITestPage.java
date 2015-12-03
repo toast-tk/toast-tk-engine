@@ -49,4 +49,8 @@ public interface ITestPage extends ITaggable, IBlock {
     void addBlock(IBlock block);
 
 	ITestResult getTestResult();
+	
+	public boolean isSuccess();
+
+	void setIsSuccess(boolean isSuccess);
 }

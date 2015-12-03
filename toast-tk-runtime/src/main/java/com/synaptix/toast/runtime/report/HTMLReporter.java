@@ -6,7 +6,7 @@ import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 public class HTMLReporter {
 
 	public static final String getProjectHTMLReport(
-		String name) {
+		String name) throws IllegalAccessException {
 		IProjectHtmlReportGenerator projectHtmlReportGenerator = new ThymeLeafProjectHTMLReporter();
 		String projectReportHtml = projectHtmlReportGenerator.generateProjectReportHtml(name);
 		return projectReportHtml;

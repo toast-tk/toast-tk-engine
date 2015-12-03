@@ -31,9 +31,9 @@ public class DAOManager {
 		return instance;
 	}
 	
-	public static synchronized DAOManager getInstance() {
+	public static synchronized DAOManager getInstance() throws IllegalAccessException {
 		if(instance == null) {
-			throw new IllegalAccessError("Mongo Host not provided !");
+			throw new IllegalAccessException("Mongo Host not provided !");
 		}
 		return instance;
 	}

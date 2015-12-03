@@ -44,6 +44,8 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
 
     private boolean isTemplate;
 
+	private boolean isSuccess;
+
     public TestPage() {
     	this.blocks = new ArrayList<>();
     }
@@ -113,13 +115,13 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
     @Override
     public void startExecution() {
         this.runDateTime = System.currentTimeMillis();
-        setPreviousIsSuccess(ReportHelper.isSuccess(this));
         previousExecutionTime = executionTime;
     }
 
     @Override
     public void stopExecution() {
         this.executionTime = System.currentTimeMillis() - runDateTime;
+        setIsSuccess(ReportHelper.isSuccess(this));
     }
 
 
@@ -179,4 +181,14 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
 		return 0;
 	}
 
+	@Override
+	public boolean isSuccess() {
+		return this.isSuccess;
+	}
+
+    @Override
+    public void setIsSuccess(
+            boolean isSuccess) {
+        this.isSuccess = isSuccess;
+    }
 }

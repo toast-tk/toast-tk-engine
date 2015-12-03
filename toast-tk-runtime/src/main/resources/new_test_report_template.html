@@ -130,10 +130,10 @@ footer {
 				<div class="row-fluid" style="width: 80%; margin: auto;">
 					<ul class="list-group col-md-4">
 						<li class="list-group-item">Errors: <span class="badge"
-							th:text="${test.getTechnicalErrorNumber()}"
-							style="background-color: #d9534f;">36</span></li>
-						<li class="list-group-item">Failures: <span class="badge"
 							th:text="${test.getTestFailureNumber()}"
+							style="background-color: #d9534f;">36</span></li>
+						<li class="list-group-item">Warnings: <span class="badge"
+							th:text="${test.getTechnicalErrorNumber()}"
 							style="background-color: #21323D;">18</span></li>
 						<li class="list-group-item">Success: <span class="badge"
 							th:text="${test.getTestSuccessNumber()}"

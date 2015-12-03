@@ -55,7 +55,7 @@ public class ThymeLeafProjectHTMLReporter implements
     }
 
     @Override
-    public String generateProjectReportHtml(String name) {
+    public String generateProjectReportHtml(String name) throws IllegalAccessException {
         Project project = DAOManager.getInstance().getLastProjectByName(name);
         List<Project> projectHistory = DAOManager.getInstance().getProjectHistory(project);
         return generateHtmlReport(project, projectHistory);
@@ -74,7 +74,7 @@ public class ThymeLeafProjectHTMLReporter implements
     }
 
     @Override
-    public String generateProjectReportHtml(IProject iProject, String reportFolderPath) {
+    public String generateProjectReportHtml(IProject iProject, String reportFolderPath) throws IllegalAccessException {
         ThymeLeafProjectHTMLReporter reporter = new ThymeLeafProjectHTMLReporter();
         Project project = (Project) iProject;
         List<Project> projectHistory = DAOManager.getInstance().getProjectHistory(project);
