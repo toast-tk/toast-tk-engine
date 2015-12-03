@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
@@ -30,7 +31,7 @@ public class ThymeLeafProjectHTMLReporter implements
     public void writeFile(String report, String pageName,
                           String reportFolderPath) {
         try {
-            FileWriter fstream = new FileWriter(reportFolderPath + "\\"
+            FileWriter fstream = new FileWriter(reportFolderPath + SystemUtils.FILE_SEPARATOR
                     + pageName + ".html");
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(report);
@@ -83,28 +84,6 @@ public class ThymeLeafProjectHTMLReporter implements
         reporter.writeFile(generateHtmlReport, project.getName(),
                 reportFolderPath);
         return generateHtmlReport;
-    }
-
-
-    public static void main(String[] args) {
-        Injector in = Guice.createInjector(new MongoModule("10.23.252.131",
-                27017));
-        ProjectDaoService.Factory repoFactory = in
-                .getInstance(ProjectDaoService.Factory.class);
-        ProjectDaoService service = repoFactory.create("test_project_db");
-
-        String name = "Prevision TNR CI";
-        Project referenceProjectByName = service
-                .getReferenceProjectByName(name);
-
-        Project lastByName = service.getLastByName(name);
-        List<Project> projectHistory = service.getProjectHistory(lastByName);
-
-        ThymeLeafProjectHTMLReporter reporter = new ThymeLeafProjectHTMLReporter();
-        String generateHtmlReport = reporter.generateHtmlReport(lastByName,
-                projectHistory);
-        reporter.writeFile(generateHtmlReport, "report", "C:\\temp");
-
     }
 
 }
