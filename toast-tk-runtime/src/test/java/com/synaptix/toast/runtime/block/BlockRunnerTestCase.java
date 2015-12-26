@@ -12,25 +12,38 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Singleton;
 import com.synaptix.toast.adapter.swing.AbstractSwingActionAdapter;
+import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
+import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
-import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
-import com.synaptix.toast.runtime.block.TestBlockRunner;
-import com.synaptix.toast.runtime.utils.ArgumentHelper;
-import com.synaptix.toast.test.runtime.mock.DefaultRepositorySetup;
 import com.synaptix.toast.test.runtime.resource.HttpAdapterExample;
 import com.synaptix.toast.test.runtime.resource.JsonAdapterExample;
 import com.synaptix.toast.test.runtime.resource.XmlAdapterExample;
 
-public class TestParserTestCase_2 {
+public class BlockRunnerTestCase {
 
-	private static final Logger LOG = LogManager.getLogger(TestParserTestCase_2.class);
+	private static final Logger LOG = LogManager.getLogger(BlockRunnerTestCase.class);
 	static String scenario;
+	static Injector injector;
 
 	@BeforeClass
 	public static void init() {
-		InputStream stream = TestParserTestCase_2.class.getClassLoader().getResourceAsStream("./flux.scenario.txt");
+		InputStream stream = BlockRunnerTestCase.class.getClassLoader().getResourceAsStream("./flux.scenario.txt");
+		Module module = new AbstractModule() {
+			@Override
+			protected void configure() {
+				bind(IActionItemRepository.class).to(ActionItemRepository.class).in(Singleton.class);
+				bind(ActionItemValueProvider.class).in(Singleton.class);
+			}
+		};
+		injector = Guice.createInjector(module);
 		try{
 			scenario = IOUtils.toString(stream);
 		}catch(IOException e){
@@ -39,17 +52,9 @@ public class TestParserTestCase_2 {
 	}
 
 	@Test
-	public void testParserArgument() {
-		CommandArgumentDescriptor descriptor = ArgumentHelper.convertActionSentenceToRegex("{{com.synaptix.toast.test.runtime.resource.ProjetFlux:value:xml}}");
-		Assert.assertEquals("\\*([\\$?\\w\\W]+)\\*", descriptor.command);
-		Assert.assertEquals(descriptor.arguments.size(), 1);
-	}
-	
-	
-	@Test
 	public void testDialogMethod(){
 		TestBlockRunner blockRunner = new TestBlockRunner();
-		ActionCommandDescriptor method = blockRunner.findMethodInClass("Affichage dialogue *Choix service*", AbstractSwingActionAdapter.class);
+		ActionCommandDescriptor method = blockRunner.findMatchingAction("Affichage dialogue *Choix service*", AbstractSwingActionAdapter.class);
 		Assert.assertNotNull(method);
 	}
 	
@@ -57,7 +62,7 @@ public class TestParserTestCase_2 {
 	@Test
 	public void testWaitMethod(){
 		TestBlockRunner blockRunner = new TestBlockRunner();
-		ActionCommandDescriptor method = blockRunner.findMethodInClass("wait for *10* sec", AbstractSwingActionAdapter.class);
+		ActionCommandDescriptor method = blockRunner.findMatchingAction("wait for *10* sec", AbstractSwingActionAdapter.class);
 		Assert.assertNotNull(method);
 	}
 	
@@ -66,19 +71,25 @@ public class TestParserTestCase_2 {
 	@Test
 	public void testParserMethodFinder() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
-		ActionCommandDescriptor method = blockRunner.findMethodInClass("Intégrer *$flux*", XmlAdapterExample.class);
+		ActionCommandDescriptor method = blockRunner.findMatchingAction("Intégrer *$flux*", XmlAdapterExample.class);
 		Assert.assertNotNull(method);
 	}
 	
+	@Test
+	public void testMethodReplacement() {
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		String actionSentence = "Inclure le flux xml dans la variable *$flux*";
+		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		Assert.assertNotNull(actionDescriptor);
+	}
 	
 	@Test
 	public void testReverseEngineeringMethodParamType() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
-		IActionItemRepository repo = new ObjectRepositorySetup();
+		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
 		
 		Map<String, Object> userVarMap = new HashMap<String, Object>();
 		StringBuilder fluxValue = new StringBuilder();
-		fluxValue.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>").append("\n");
 		fluxValue.append("<projet>").append("\n");
 		fluxValue.append("<status>1</status>").append("\n");
 		fluxValue.append("<name>projet</name>").append("\n");
@@ -86,9 +97,10 @@ public class TestParserTestCase_2 {
 		userVarMap.put("$flux", fluxValue.toString());
 		repo.setUserVariables(userVarMap);
 		
+		blockRunner.setInjector(injector);
 		blockRunner.setObjectRepository(repo);
 		
-		ActionCommandDescriptor method = blockRunner.findMethodInClass("Integrate *$flux*", XmlAdapterExample.class);
+		ActionCommandDescriptor method = blockRunner.findMatchingAction("Integrate *$flux*", XmlAdapterExample.class);
 		Object[] args = null;
 		try {
 			args = blockRunner.buildArgumentList(method);
@@ -103,21 +115,21 @@ public class TestParserTestCase_2 {
 	@Test
 	public void testRunnerArgumentBuilderXml() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
-		IActionItemRepository repo = new ObjectRepositorySetup();
+		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
 		
 		Map<String, Object> userVarMap = new HashMap<String, Object>();
 		StringBuilder fluxValue = new StringBuilder();
-		fluxValue.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>").append("\n");
 		fluxValue.append("<projet>").append("\n");
 		fluxValue.append("<status>1</status>").append("\n");
 		fluxValue.append("<name>projet</name>").append("\n");
 		fluxValue.append("</projet>").append("\n");
 		userVarMap.put("$flux", fluxValue.toString());
 		repo.setUserVariables(userVarMap);
-		
+
+		blockRunner.setInjector(injector);
 		blockRunner.setObjectRepository(repo);
 		
-		ActionCommandDescriptor method = blockRunner.findMethodInClass("Intégrer *$flux*", XmlAdapterExample.class);
+		ActionCommandDescriptor method = blockRunner.findMatchingAction("Intégrer *$flux*", XmlAdapterExample.class);
 		Object[] args = null;
 		try {
 			args = blockRunner.buildArgumentList(method);
@@ -133,7 +145,7 @@ public class TestParserTestCase_2 {
 	@Test
 	public void testRunnerArgumentBuilderJson() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
-		IActionItemRepository repo = new ObjectRepositorySetup();
+		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
 		
 		Map<String, Object> userVarMap = new HashMap<String, Object>();
 		StringBuilder fluxValue = new StringBuilder();
@@ -144,9 +156,10 @@ public class TestParserTestCase_2 {
 		userVarMap.put("$flux", fluxValue.toString());
 		repo.setUserVariables(userVarMap);
 		
+		blockRunner.setInjector(injector);
 		blockRunner.setObjectRepository(repo);
 		
-		ActionCommandDescriptor method = blockRunner.findMethodInClass("Intégrer *$flux*", JsonAdapterExample.class);
+		ActionCommandDescriptor method = blockRunner.findMatchingAction("Intégrer *$flux*", JsonAdapterExample.class);
 		Object[] args = null;
 		try {
 			args = blockRunner.buildArgumentList(method);
@@ -161,7 +174,7 @@ public class TestParserTestCase_2 {
 	@Test
 	public void testRunnerArgumentBuilderJsonAndVar() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
-		IActionItemRepository repo = new ObjectRepositorySetup();
+		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
 		
 		Map<String, Object> userVarMap = new HashMap<String, Object>();
 		StringBuilder userValue = new StringBuilder();
@@ -172,9 +185,10 @@ public class TestParserTestCase_2 {
 		userVarMap.put("$url", "https://www.google.com");
 		repo.setUserVariables(userVarMap);
 		
+		blockRunner.setInjector(injector);
 		blockRunner.setObjectRepository(repo);
 		
-		ActionCommandDescriptor method = blockRunner.findMethodInClass("POST *$json* to *$url*", HttpAdapterExample.class);
+		ActionCommandDescriptor method = blockRunner.findMatchingAction("POST *$json* to *$url*", HttpAdapterExample.class);
 		Object[] args = null;
 		try {
 			args = blockRunner.buildArgumentList(method);

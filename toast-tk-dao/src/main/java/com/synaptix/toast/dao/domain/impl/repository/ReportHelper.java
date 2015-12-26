@@ -1,10 +1,8 @@
 package com.synaptix.toast.dao.domain.impl.repository;
 
-import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.ICampaign;
 import com.synaptix.toast.dao.domain.impl.test.block.IProject;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
-import com.synaptix.toast.dao.domain.impl.test.block.VariableBlock;
 
 public class ReportHelper {
 

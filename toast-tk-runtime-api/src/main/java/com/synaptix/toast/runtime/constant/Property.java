@@ -62,7 +62,4 @@ public class Property {
 	
 	public static final String ACTION_ITEM_VAR_REGEX = "(\\$\\w+)";
 	
-	public static final String ACTION_ITEM_REGEX = "\\{\\{([\\.\\w:]+)\\}\\}";
-	
-	public static final String RESULT_FOLDER = "TestResult";
 }

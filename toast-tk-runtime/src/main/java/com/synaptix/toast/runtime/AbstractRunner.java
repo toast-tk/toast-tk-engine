@@ -1,24 +1,38 @@
 package com.synaptix.toast.runtime;
 
-import com.google.inject.Injector;
-import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
-import com.synaptix.toast.runtime.report.IHTMLReportGenerator;
-import com.synaptix.toast.runtime.report.IProjectHtmlReportGenerator;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.synaptix.toast.adapter.ActionAdapterCollector;
+import com.synaptix.toast.adapter.FixtureService;
+import com.synaptix.toast.core.guice.AbstractActionAdapterModule;
+import com.synaptix.toast.runtime.module.EngineModule;
 
 public abstract class AbstractRunner {
 
     private static final Logger LOG = LogManager.getLogger(AbstractRunner.class);
 
+    static final List<FixtureService> listAvailableServicesByReflection = ActionAdapterCollector.listAvailableServicesByReflection();
+
+    protected final Injector injector;
+
     public AbstractRunner() {
+    	injector = Guice.createInjector(new AbstractActionAdapterModule(){
+			@Override
+			protected void configure() {
+				install(new EngineModule());
+				listAvailableServicesByReflection.forEach(f -> bindActionAdapter(f.clazz));
+			}
+    	});
     }
 
     public abstract void tearDownEnvironment();

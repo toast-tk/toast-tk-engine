@@ -81,11 +81,11 @@ public class TestLineDescriptor {
 		return testLineAction.startsWith("* ");
 	}
 
-	public String getCommand() {
-		String command = testLineAction;
+	public String getActionImpl() {
+		String actionImpl = testLineAction;
 		if(isFailFatalCommand()) {
-			command = command.substring(2);
+			actionImpl = actionImpl.substring(2);
 		}
-		return command;
+		return actionImpl;
 	}
 }

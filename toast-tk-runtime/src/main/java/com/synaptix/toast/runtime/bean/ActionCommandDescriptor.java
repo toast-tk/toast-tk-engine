@@ -3,6 +3,8 @@ package com.synaptix.toast.runtime.bean;
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 
+import com.synaptix.toast.core.annotation.Action;
+
 public class ActionCommandDescriptor {
 	public Method method;
 	public CommandArgumentDescriptor descriptor;
@@ -15,5 +17,9 @@ public class ActionCommandDescriptor {
 		this.method = method;
 		this.matcher = matcher;
 		this.descriptor = descriptor;
+	}
+	
+	public String getActionId(){
+		return method.getAnnotation(Action.class).id();
 	}
 }

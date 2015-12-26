@@ -35,7 +35,7 @@ public abstract class AbstractWebActionAdapter {
 		}
 	}
 
-	@Action(action = "Open browser at "+ VALUE_REGEX, description = "")
+	@Action(id="navigate", action = "Open browser at "+ VALUE_REGEX, description = "")
 	public TestResult openBrowserIn(String url) {
 		if(!url.startsWith("http")){
 			url = "http://" + url;
@@ -44,21 +44,21 @@ public abstract class AbstractWebActionAdapter {
 		return new TestResult();
 	}
 
-	@Action(action = "Type " + VALUE_REGEX + " in " + WEB_COMPONENT, description = "")
+	@Action(id="type_in_web_component", action = "Type " + VALUE_REGEX + " in " + WEB_COMPONENT, description = "")
 	public TestResult typeIn(String text, String pageName, String widgetName) throws Exception {
 		WebElement pageField = getPageField(pageName, widgetName);
 		pageField.sendKeys(text);
 		return new TestResult();
 	}
 
-	@Action(action = "Click on " + WEB_COMPONENT, description = "")
+	@Action(id="click_on_web_component", action = "Click on " + WEB_COMPONENT, description = "")
 	public TestResult ClickOn(String pageName, String widgetName) throws Exception {
 		WebElement pageField = getPageField(pageName, widgetName);
 		pageField.click();
 		return new TestResult();
 	}
 
-	@Action(action = "Select " + VALUE_REGEX + " in " + WEB_COMPONENT, description = "")
+	@Action(id="select_in_web_component", action = "Select " + VALUE_REGEX + " in " + WEB_COMPONENT, description = "")
 	public TestResult SelectAtPos(String pos, String pageName, String widgetName) throws Exception {
 		WebAutoElement pageFieldAuto = getPageFieldAuto(pageName, widgetName);
 		WebSelectElement pageField = (WebSelectElement) pageFieldAuto;
@@ -66,7 +66,7 @@ public abstract class AbstractWebActionAdapter {
 		return new TestResult();
 	}
 
-	@Action(action = WEB_COMPONENT + " exists", description = "")
+	@Action(id="web_component_exists", action = WEB_COMPONENT + " exists", description = "")
 	public TestResult checkExist(String pageName, String widgetName) {
 		WebElement element = getPageField(pageName, widgetName);
 		if (element != null) {
@@ -79,7 +79,7 @@ public abstract class AbstractWebActionAdapter {
 		return null;
 	}
 	
-	@Action(action = "Close browser", description = "")
+	@Action(id="close_browser", action = "Close browser", description = "")
 	public TestResult closeBrowser() {
 		driver.getWebDriver().quit();
 		return new TestResult();

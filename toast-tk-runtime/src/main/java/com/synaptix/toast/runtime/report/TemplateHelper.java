@@ -148,13 +148,10 @@ public class TemplateHelper {
 		builder.append("\"color\" : \"#5cb85c\",");
 		builder.append("\"title\" : \"Success\"},");	
 		builder.append("{");
-		builder.append("\"value\" : \"" + error + "\",");
+		builder.append("\"value\" : \"" + failure + "\",");
 		builder.append("\"color\" : \"#d9534f\",");
-		builder.append("\"title\" : \"Errors\"},");	
-		builder.append("{");
-		builder.append("\"value\" : \""+ failure + "\",");
-		builder.append("\"color\" : \"#21323D\",");
-		builder.append("\"title\" : \"Failures\"}]");	
+		builder.append("\"title\" : \"Errors\"}");	
+		builder.append("]");	
 		return builder.toString();
 	}
 }

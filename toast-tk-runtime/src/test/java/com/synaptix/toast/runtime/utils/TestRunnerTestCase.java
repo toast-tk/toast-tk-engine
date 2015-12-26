@@ -1,4 +1,4 @@
-package com.synaptix.toast.runtime.core.runtime;
+package com.synaptix.toast.runtime.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -11,33 +11,20 @@ import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
 import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
 import com.synaptix.toast.runtime.block.TestBlockRunner;
-import com.synaptix.toast.runtime.utils.ArgumentHelper;
 import com.synaptix.toast.test.runtime.mock.DefaultRepositorySetup;
 
 public class TestRunnerTestCase {
 
-	class Tata {
-	}
-
-	class Toto extends Tata {
-	}
-
-	class Titi {
-		@Action(action = "Titi", description = "")
-		public void blabla() {
-		}
-	}
 
 	@Test
 	public void testEmptyResult()
 		throws IOException {
 		TestBlockRunner runner = new TestBlockRunner();
-		ActionCommandDescriptor findMethodInClass = runner.findMethodInClass("Titi", Toto.class);
+		ActionCommandDescriptor findMethodInClass = runner.findMatchingAction("Titi", Toto.class);
 		assertNull(findMethodInClass);
 	}
 
@@ -45,7 +32,7 @@ public class TestRunnerTestCase {
 	public void testNonEmptyResult()
 		throws IOException {
 		TestBlockRunner runner = new TestBlockRunner();
-		ActionCommandDescriptor findMethodInClass = runner.findMethodInClass("Titi", Titi.class);
+		ActionCommandDescriptor findMethodInClass = runner.findMatchingAction("Titi", Titi.class);
 		assertNotNull(findMethodInClass);
 	}
 
@@ -94,7 +81,7 @@ public class TestRunnerTestCase {
 		throws IOException {
 		CommandArgumentDescriptor descriptor = ArgumentHelper
 			.convertActionSentenceToRegex("Faire action sur {{champ:variable:string}}");
-		assertEquals("Faire action sur {{champ:variable:string}}", descriptor.command);
+		assertEquals("Faire action sur {{champ:variable:string}}", descriptor.regex);
 	}
 
 	@Test
@@ -102,7 +89,7 @@ public class TestRunnerTestCase {
 		throws IOException {
 		CommandArgumentDescriptor descriptor = ArgumentHelper
 			.convertActionSentenceToRegex("Faire action sur {{value}}");
-		assertEquals("Faire action sur \\*([\\$?\\w\\W]+)\\*", descriptor.command);
+		assertEquals("Faire action sur \\*([\\$?\\w\\W]+)\\*", descriptor.regex);
 	}
 
 	@AfterClass

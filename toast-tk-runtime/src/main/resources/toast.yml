@@ -1,0 +1,5 @@
+default-web-driver:
+  - navigate: Naviguer vers $1
+xml-service-adapter:
+  - integrate: Integrer $1
+  - integrate2: Inclure le flux xml dans la variable $1

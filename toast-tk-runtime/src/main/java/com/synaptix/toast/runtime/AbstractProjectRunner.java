@@ -24,22 +24,19 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 	private int mongoDbPort;
 
 	  protected AbstractProjectRunner(
-	            Injector injector
 	            )
 	            throws Exception {
 	        super();
-	        this.injector = injector;
 	        this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 	        this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	    }
 
     protected AbstractProjectRunner(
-            Injector injector,
             String host,
             int port
             )
             throws Exception {
-    	this(injector);
+    	this();
     	this.mongoDbHost = host;
     	this.mongoDbPort = port;
     }

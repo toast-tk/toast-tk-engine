@@ -10,7 +10,6 @@ import com.google.common.eventbus.Subscribe;
 import com.synaptix.toast.core.event.TestProgressMessage;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.runtime.IReportUpdateCallBack;
-import com.synaptix.toast.runtime.constant.Property;
 
 public class DefaultTestProgressReporter {
 
@@ -41,7 +40,7 @@ public class DefaultTestProgressReporter {
 			throws IllegalAccessException {
 		final String generatePageHtml = htmlReportGenerator.generatePageHtml(testPage);
 		final URL resource = this.getClass().getClassLoader() != null ? this
-				.getClass().getClassLoader().getResource(Property.RESULT_FOLDER)
+				.getClass().getClassLoader().getResource("TestResults")
 				: null;
 		if (resource != null) {
 			this.htmlReportGenerator.writeFile(generatePageHtml,

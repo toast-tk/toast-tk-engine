@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.eventbus.EventBus;
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.synaptix.toast.core.annotation.EngineEventBus;
 import com.synaptix.toast.core.rest.RestUtils;
@@ -25,8 +24,6 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 
     private static final Logger LOG = LogManager.getLogger(AbstractScenarioRunner.class);
 
-    private Injector injector;
-
     private boolean presetRepoFromWebApp = false;
 
     private ITestPage localRepositoryTestPage;
@@ -35,23 +32,22 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 
     private DefaultTestProgressReporter progressReporter;
 
-    protected AbstractScenarioRunner(
-            Injector injector) {
+    protected AbstractScenarioRunner() {
+    	super();
         this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
-        this.injector = injector;
         EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
         this.progressReporter = new DefaultTestProgressReporter(eventBus, htmlReportGenerator);
     }
 
     public final void run(
             String... scenarios)
-            throws IllegalAccessException, ClassNotFoundException, IOException {
+            throws Exception {
         runScenario(scenarios);
     }
 
     public final void runScenario(
             String... scenarios)
-            throws IllegalAccessException, ClassNotFoundException, IOException {
+            throws Exception {
         List<ITestPage> testPages = new ArrayList<>();
         initEnvironment();
         for (String fileName : scenarios) {
@@ -67,14 +63,14 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 
     public final void runRemote(
             String... scenarios)
-            throws IllegalAccessException, ClassNotFoundException, IOException {
+            throws Exception {
         this.presetRepoFromWebApp = true;
         run(scenarios);
     }
 
     public final void runRemoteScript(
             String script)
-            throws IllegalAccessException, ClassNotFoundException, IOException {
+            throws Exception {
         this.presetRepoFromWebApp = true;
         runScript(null, script);
     }

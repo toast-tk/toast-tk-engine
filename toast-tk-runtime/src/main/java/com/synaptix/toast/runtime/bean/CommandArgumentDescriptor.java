@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CommandArgumentDescriptor {
 
-	public String command;
+	public String regex;
 	public List<ArgumentDescriptor> arguments;
 	
 }
