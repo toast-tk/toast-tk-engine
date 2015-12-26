@@ -28,6 +28,7 @@ It makes test scripts easier to share between technical team members (i.e: Devel
 
 The [toast-tk-example](https://github.com/synaptix-labs/toast-tk-examples) project hosts different examples for:
 - Web Browser automation
+- Custom sentences
 - Rest API automation
 - JSON and XML value management as a variable
 - Test report generation
