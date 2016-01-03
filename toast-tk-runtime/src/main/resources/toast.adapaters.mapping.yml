@@ -1,6 +1,0 @@
-default-web-driver(web):
--navigate:	Naviguer vers {{value:string}}
-
-xml-service-adapter(service):
--integrate: Integrate {{value:xml}}
--integrate2: Include xml from {{value:json}} 

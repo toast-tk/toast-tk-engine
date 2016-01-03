@@ -3,3 +3,4 @@ default-web-driver:
 xml-service-adapter:
   - integrate: Integrer $1
   - integrate2: Inclure le flux xml dans la variable $1
+  - integrate3: Inclure dans la variable $2 le flux $1

@@ -84,6 +84,14 @@ public class BlockRunnerTestCase {
 	}
 	
 	@Test
+	public void testMethodReplacementWithTwoParamaters() {
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		String actionSentence = "Inclure dans la variable *$flux* le flux *$xml*";
+		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		Assert.assertNotNull(actionDescriptor);
+	}
+	
+	@Test
 	public void testReverseEngineeringMethodParamType() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
 		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
