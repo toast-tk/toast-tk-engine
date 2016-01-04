@@ -35,7 +35,11 @@ public abstract class AbstractRunner {
     	});
     }
 
-    public abstract void tearDownEnvironment();
+    public AbstractRunner(Injector i) {
+    	injector = i;
+    }
+
+	public abstract void tearDownEnvironment();
 
     public abstract void beginTest();
 

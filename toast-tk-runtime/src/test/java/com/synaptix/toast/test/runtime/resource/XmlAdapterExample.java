@@ -28,4 +28,12 @@ public class XmlAdapterExample {
 	public TestResult integrateXmlAsVar(ProjetFlux fluxFromXml, String variable){
 		return new TestResult();
 	}
+	
+	@Action(
+			id="compare1",
+			action="{{value}} == {{value}}", 
+			description="comparer une valeur à une autre")
+	public TestResult integrateXmlAsVar(String var1, String var2){
+		return new TestResult();
+	}
 }

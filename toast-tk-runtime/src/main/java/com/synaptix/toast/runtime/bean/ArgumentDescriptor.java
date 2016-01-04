@@ -8,4 +8,5 @@ public class ArgumentDescriptor {
 	public ActionTypeEnum typeEnum;
 	public String name;
 	public String varName;
+	public int index;
 }

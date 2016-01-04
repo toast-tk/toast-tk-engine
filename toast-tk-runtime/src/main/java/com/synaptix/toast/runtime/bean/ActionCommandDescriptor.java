@@ -9,6 +9,8 @@ public class ActionCommandDescriptor {
 	public Method method;
 	public CommandArgumentDescriptor descriptor;
 	public Matcher matcher;
+	private boolean isMapped;
+	private String actionMapping;
 
 	public ActionCommandDescriptor(
 		Method method,
@@ -21,5 +23,21 @@ public class ActionCommandDescriptor {
 	
 	public String getActionId(){
 		return method.getAnnotation(Action.class).id();
+	}
+
+	public void setIsMappedMethod(boolean isMapped) {
+		this.isMapped = isMapped;
+	}
+	
+	public boolean isMappedMethod() {
+		return this.isMapped;
+	}
+
+	public void setActionMapping(String actionMapping) {
+		this.actionMapping = actionMapping;
+	}
+	
+	public String getActionMapping() {
+		return this.actionMapping;
 	}
 }

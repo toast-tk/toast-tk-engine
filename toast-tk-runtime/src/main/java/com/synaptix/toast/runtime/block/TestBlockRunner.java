@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -270,8 +271,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			if (obj instanceof String) {
 				String argValue = (String) obj;
 				ArgumentDescriptor argumentDescriptor = execDescriptor.descriptor.arguments.get(argPos);
+				int argIndex = execDescriptor.isMappedMethod() ? argumentDescriptor.index : i;
 				IValueHandler valueHanlder = actionItemValueProvider.get(argumentDescriptor, injector);
-				args[i] = valueHanlder == null ? group : valueHanlder.handle(group, argValue);
+				args[argIndex] = valueHanlder == null ? group : valueHanlder.handle(group, argValue);
 			} else {
 				args[i] = obj;
 			}
@@ -340,21 +342,53 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		ActionCommandDescriptor foundMethod;
 		String actionMapping = ActionSentenceMappingProvider.getMappingForAction(adapterName, mainAction.id());
 		String alternativeAction = buildSustituteAction(mainAction, actionMapping);
-		foundMethod = matchMethod(actionImpl, alternativeAction, actionMethod);
+		//TODO: change mapping index position
+		foundMethod = matchMethod(actionImpl, alternativeAction, actionMethod); 
+		if(foundMethod != null){
+			foundMethod.setIsMappedMethod(true);
+			foundMethod.setActionMapping(actionMapping);
+			updateArgumentIndex(foundMethod);
+		}
 		return foundMethod;
 	}
 
+	
+	private void updateArgumentIndex(ActionCommandDescriptor foundMethod) {
+		Pattern regexPattern = Pattern.compile("\\$(\\d)");
+		Matcher matcher = regexPattern.matcher(foundMethod.getActionMapping());
+		int pos = 0;
+		List<Integer> indexes = new ArrayList<Integer>();
+		while(matcher.find()){
+			indexes.add(Integer.valueOf(matcher.group(1)));
+		}
+		for(ArgumentDescriptor aDescriptor: foundMethod.descriptor.arguments){
+			aDescriptor.index = indexes.get(pos) - 1;
+			pos++;
+		}
+	}
+
+
+	private class ActionIndex{
+		String item;
+		Integer start;
+		Integer end;
+	}
+	
 	protected String buildSustituteAction(Action mainAction, String mapping) {
 		Pattern regexPattern = ActionItemRegexHolder.getFullMetaPattern();
 		String action = mainAction.action();
 		Matcher matcher = regexPattern.matcher(action);
-		List<String> actionItems = new ArrayList<>();
+		List<ActionIndex> actionItems = new ArrayList<>();
 		while(matcher.find()){
-			actionItems.add(matcher.group(0));
+			ActionIndex index = new ActionIndex();
+			index.item = matcher.group(0);
+			index.start = matcher.start();
+			index.end = matcher.end();
+			actionItems.add(index);
 		}
-		for (String actionItem : actionItems) {
+		for (ActionIndex actionItem : actionItems) {
 			String index = "$"+(actionItems.indexOf(actionItem)+1);
-			mapping = mapping.replace(index, actionItem);
+			mapping = mapping.replace(index, actionItem.item);
 		}
 		return mapping;
 	}
