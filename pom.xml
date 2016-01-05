@@ -213,9 +213,7 @@
 				<executions>
 					<execution> 
 						<id>install-pom</id>
-						<phase>
-							install
-						</phase>
+						<phase>install</phase>
 						<goals>
 							<goal>install-file</goal>
 						</goals>
@@ -247,6 +245,7 @@
 				<version>${maven-deploy-plugin.version}</version>
 				<configuration>
 					<deployAtEnd>true</deployAtEnd>
+					<packaging>jar</packaging>
 				</configuration>
 			</plugin>
 			<plugin>

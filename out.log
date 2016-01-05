@@ -1,0 +1,548 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Toast Toolkit - Engine
+[INFO] Toast Toolkit - DAO Module Api
+[INFO] Toast Toolkit - DAO Module
+[INFO] Toast Toolkit - Action Adapter Api
+[INFO] Toast Toolkit - Action Runtime Api
+[INFO] Toast Toolkit - SUT Drivers
+[INFO] Toast Toolkit - Action Adapter Module
+[INFO] Toast Toolkit - Rest Utils
+[INFO] Toast Toolkit - Runtime Module
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Toast Toolkit - Engine 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-unit-test) @ toast-tk-engine ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default) @ toast-tk-engine ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: D:\workspace_toast\toast-tk-engine\target\toast-tk-engine-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-integration-test) @ toast-tk-engine ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\target\\coverage-reports\\jacoco-it.exec
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ toast-tk-engine ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\target\toast-tk-engine-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-engine\1.0.0-SNAPSHOT\toast-tk-engine-1.0.0-SNAPSHOT.pom
+[INFO] Installing D:\workspace_toast\toast-tk-engine\pom.xml to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-engine\1.0.0-SNAPSHOT\toast-tk-engine-1.0.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install-file (install-pom) @ toast-tk-engine ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\target\toast-tk-engine-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-engine\1.0.0-SNAPSHOT\toast-tk-engine-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ toast-tk-engine ---
+[INFO] Deploying com.synaptix.toast:toast-tk-engine:1.0.0-SNAPSHOT at end
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Toast Toolkit - DAO Module Api 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-unit-test) @ toast-tk-dao-api ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-dao-api\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ toast-tk-dao-api ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-dao-api\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:compile (default-compile) @ toast-tk-dao-api ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ toast-tk-dao-api ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-dao-api\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:testCompile (default-testCompile) @ toast-tk-dao-api ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ toast-tk-dao-api ---
+[INFO] Surefire report directory: D:\workspace_toast\toast-tk-engine\toast-tk-dao-api\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ toast-tk-dao-api ---
+[INFO] Building jar: D:\workspace_toast\toast-tk-engine\toast-tk-dao-api\target\toast-tk-dao-api-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default) @ toast-tk-dao-api ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-integration-test) @ toast-tk-dao-api ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-dao-api\\target\\coverage-reports\\jacoco-it.exec
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ toast-tk-dao-api ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-dao-api\target\toast-tk-dao-api-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-dao-api\1.0.0-SNAPSHOT\toast-tk-dao-api-1.0.0-SNAPSHOT.jar
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-dao-api\pom.xml to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-dao-api\1.0.0-SNAPSHOT\toast-tk-dao-api-1.0.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install-file (install-pom) @ toast-tk-dao-api ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-dao-api\target\toast-tk-dao-api-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-dao-api\1.0.0-SNAPSHOT\toast-tk-dao-api-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ toast-tk-dao-api ---
+[INFO] Deploying com.synaptix.toast:toast-tk-dao-api:1.0.0-SNAPSHOT at end
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Toast Toolkit - DAO Module 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-unit-test) @ toast-tk-dao ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-dao\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ toast-tk-dao ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:compile (default-compile) @ toast-tk-dao ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ toast-tk-dao ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-dao\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:testCompile (default-testCompile) @ toast-tk-dao ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 4 source files to D:\workspace_toast\toast-tk-engine\toast-tk-dao\target\test-classes
+[INFO] /D:/workspace_toast/toast-tk-engine/toast-tk-dao/src/test/java/com/mongo/test/MongoDatastore.java: D:\workspace_toast\toast-tk-engine\toast-tk-dao\src\test\java\com\mongo\test\MongoDatastore.java uses or overrides a deprecated API.
+[INFO] /D:/workspace_toast/toast-tk-engine/toast-tk-dao/src/test/java/com/mongo/test/MongoDatastore.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ toast-tk-dao ---
+[INFO] Surefire report directory: D:\workspace_toast\toast-tk-engine\toast-tk-dao\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ toast-tk-dao ---
+[INFO] Building jar: D:\workspace_toast\toast-tk-engine\toast-tk-dao\target\toast-tk-dao-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default) @ toast-tk-dao ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-integration-test) @ toast-tk-dao ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-dao\\target\\coverage-reports\\jacoco-it.exec
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ toast-tk-dao ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-dao\target\toast-tk-dao-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-dao\1.0.0-SNAPSHOT\toast-tk-dao-1.0.0-SNAPSHOT.jar
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-dao\pom.xml to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-dao\1.0.0-SNAPSHOT\toast-tk-dao-1.0.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install-file (install-pom) @ toast-tk-dao ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-dao\target\toast-tk-dao-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-dao\1.0.0-SNAPSHOT\toast-tk-dao-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ toast-tk-dao ---
+[INFO] Deploying com.synaptix.toast:toast-tk-dao:1.0.0-SNAPSHOT at end
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Toast Toolkit - Action Adapter Api 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-unit-test) @ toast-tk-adapters-api ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-adapters-api\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ toast-tk-adapters-api ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-adapters-api\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:compile (default-compile) @ toast-tk-adapters-api ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ toast-tk-adapters-api ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-adapters-api\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:testCompile (default-testCompile) @ toast-tk-adapters-api ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ toast-tk-adapters-api ---
+[INFO] Surefire report directory: D:\workspace_toast\toast-tk-engine\toast-tk-adapters-api\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ toast-tk-adapters-api ---
+[INFO] Building jar: D:\workspace_toast\toast-tk-engine\toast-tk-adapters-api\target\toast-tk-adapters-api-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default) @ toast-tk-adapters-api ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-integration-test) @ toast-tk-adapters-api ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-adapters-api\\target\\coverage-reports\\jacoco-it.exec
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ toast-tk-adapters-api ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-adapters-api\target\toast-tk-adapters-api-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-adapters-api\1.0.0-SNAPSHOT\toast-tk-adapters-api-1.0.0-SNAPSHOT.jar
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-adapters-api\pom.xml to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-adapters-api\1.0.0-SNAPSHOT\toast-tk-adapters-api-1.0.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install-file (install-pom) @ toast-tk-adapters-api ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-adapters-api\target\toast-tk-adapters-api-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-adapters-api\1.0.0-SNAPSHOT\toast-tk-adapters-api-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ toast-tk-adapters-api ---
+[INFO] Deploying com.synaptix.toast:toast-tk-adapters-api:1.0.0-SNAPSHOT at end
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Toast Toolkit - Action Runtime Api 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-unit-test) @ toast-tk-runtime-api ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-runtime-api\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ toast-tk-runtime-api ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-runtime-api\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:compile (default-compile) @ toast-tk-runtime-api ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ toast-tk-runtime-api ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-runtime-api\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:testCompile (default-testCompile) @ toast-tk-runtime-api ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ toast-tk-runtime-api ---
+[INFO] Surefire report directory: D:\workspace_toast\toast-tk-engine\toast-tk-runtime-api\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ toast-tk-runtime-api ---
+[INFO] Building jar: D:\workspace_toast\toast-tk-engine\toast-tk-runtime-api\target\toast-tk-runtime-api-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default) @ toast-tk-runtime-api ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-integration-test) @ toast-tk-runtime-api ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-runtime-api\\target\\coverage-reports\\jacoco-it.exec
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ toast-tk-runtime-api ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-runtime-api\target\toast-tk-runtime-api-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-runtime-api\1.0.0-SNAPSHOT\toast-tk-runtime-api-1.0.0-SNAPSHOT.jar
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-runtime-api\pom.xml to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-runtime-api\1.0.0-SNAPSHOT\toast-tk-runtime-api-1.0.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install-file (install-pom) @ toast-tk-runtime-api ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-runtime-api\target\toast-tk-runtime-api-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-runtime-api\1.0.0-SNAPSHOT\toast-tk-runtime-api-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ toast-tk-runtime-api ---
+[INFO] Deploying com.synaptix.toast:toast-tk-runtime-api:1.0.0-SNAPSHOT at end
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Toast Toolkit - SUT Drivers 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-unit-test) @ toast-tk-drivers ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-drivers\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ toast-tk-drivers ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-drivers\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:compile (default-compile) @ toast-tk-drivers ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ toast-tk-drivers ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-drivers\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:testCompile (default-testCompile) @ toast-tk-drivers ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ toast-tk-drivers ---
+[INFO] Surefire report directory: D:\workspace_toast\toast-tk-engine\toast-tk-drivers\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ toast-tk-drivers ---
+[INFO] Building jar: D:\workspace_toast\toast-tk-engine\toast-tk-drivers\target\toast-tk-drivers-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default) @ toast-tk-drivers ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-integration-test) @ toast-tk-drivers ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-drivers\\target\\coverage-reports\\jacoco-it.exec
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ toast-tk-drivers ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-drivers\target\toast-tk-drivers-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-drivers\1.0.0-SNAPSHOT\toast-tk-drivers-1.0.0-SNAPSHOT.jar
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-drivers\pom.xml to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-drivers\1.0.0-SNAPSHOT\toast-tk-drivers-1.0.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install-file (install-pom) @ toast-tk-drivers ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-drivers\target\toast-tk-drivers-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-drivers\1.0.0-SNAPSHOT\toast-tk-drivers-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ toast-tk-drivers ---
+[INFO] Deploying com.synaptix.toast:toast-tk-drivers:1.0.0-SNAPSHOT at end
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Toast Toolkit - Action Adapter Module 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-unit-test) @ toast-tk-adapters ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-adapters\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ toast-tk-adapters ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-adapters\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:compile (default-compile) @ toast-tk-adapters ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ toast-tk-adapters ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-adapters\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:testCompile (default-testCompile) @ toast-tk-adapters ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ toast-tk-adapters ---
+[INFO] Surefire report directory: D:\workspace_toast\toast-tk-engine\toast-tk-adapters\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ toast-tk-adapters ---
+[INFO] Building jar: D:\workspace_toast\toast-tk-engine\toast-tk-adapters\target\toast-tk-adapters-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default) @ toast-tk-adapters ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-integration-test) @ toast-tk-adapters ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-adapters\\target\\coverage-reports\\jacoco-it.exec
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ toast-tk-adapters ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-adapters\target\toast-tk-adapters-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-adapters\1.0.0-SNAPSHOT\toast-tk-adapters-1.0.0-SNAPSHOT.jar
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-adapters\pom.xml to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-adapters\1.0.0-SNAPSHOT\toast-tk-adapters-1.0.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install-file (install-pom) @ toast-tk-adapters ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-adapters\target\toast-tk-adapters-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-adapters\1.0.0-SNAPSHOT\toast-tk-adapters-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ toast-tk-adapters ---
+[INFO] Deploying com.synaptix.toast:toast-tk-adapters:1.0.0-SNAPSHOT at end
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Toast Toolkit - Rest Utils 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-unit-test) @ toast-tk-rest-utils ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-rest-utils\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ toast-tk-rest-utils ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-rest-utils\src\main\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:compile (default-compile) @ toast-tk-rest-utils ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ toast-tk-rest-utils ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory D:\workspace_toast\toast-tk-engine\toast-tk-rest-utils\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:testCompile (default-testCompile) @ toast-tk-rest-utils ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ toast-tk-rest-utils ---
+[INFO] Surefire report directory: D:\workspace_toast\toast-tk-engine\toast-tk-rest-utils\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ toast-tk-rest-utils ---
+[INFO] Building jar: D:\workspace_toast\toast-tk-engine\toast-tk-rest-utils\target\toast-tk-rest-utils-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default) @ toast-tk-rest-utils ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-integration-test) @ toast-tk-rest-utils ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-rest-utils\\target\\coverage-reports\\jacoco-it.exec
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ toast-tk-rest-utils ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-rest-utils\target\toast-tk-rest-utils-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-rest-utils\1.0.0-SNAPSHOT\toast-tk-rest-utils-1.0.0-SNAPSHOT.jar
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-rest-utils\pom.xml to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-rest-utils\1.0.0-SNAPSHOT\toast-tk-rest-utils-1.0.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install-file (install-pom) @ toast-tk-rest-utils ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-rest-utils\target\toast-tk-rest-utils-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-rest-utils\1.0.0-SNAPSHOT\toast-tk-rest-utils-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ toast-tk-rest-utils ---
+[INFO] Deploying com.synaptix.toast:toast-tk-rest-utils:1.0.0-SNAPSHOT at end
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Toast Toolkit - Runtime Module 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-unit-test) @ toast-tk-runtime ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-runtime\\target\\coverage-reports\\jacoco-ut.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ toast-tk-runtime ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 12 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:compile (default-compile) @ toast-tk-runtime ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ toast-tk-runtime ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 5 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.2:testCompile (default-testCompile) @ toast-tk-runtime ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ toast-tk-runtime ---
+[INFO] Surefire report directory: D:\workspace_toast\toast-tk-engine\toast-tk-runtime\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.synaptix.toast.runtime.block.BlockRunnerMappingTestCase
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.332 sec
+Running com.synaptix.toast.runtime.block.BlockRunnerTestCase
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 sec
+Running com.synaptix.toast.runtime.core.parse.VariableParserTestCase
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running com.synaptix.toast.runtime.utils.TestParserTestCase_2
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 sec
+Running com.synaptix.toast.runtime.utils.TestRunnerTestCase
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running com.synaptix.toast.test.runtime.TestParserTestCase_1
+2016-01-05 12:01:20,858 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,861 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: null
+2016-01-05 12:01:20,956 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,956 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: null
+2016-01-05 12:01:20,957 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,957 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: null
+2016-01-05 12:01:20,957 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,957 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: null
+2016-01-05 12:01:20,958 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,959 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: null
+2016-01-05 12:01:20,959 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,959 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: null
+2016-01-05 12:01:20,960 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,960 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: null
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.058 sec
+Running com.synaptix.toast.test.runtime.TestParserTestCase_3
+2016-01-05 12:01:20,961 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,961 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: null
+2016-01-05 12:01:20,967 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,968 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: null
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 sec
+Running com.synaptix.toast.test.runtime.TestParserTestCase_4
+path = /D:/workspace_toast/toast-tk-engine/toast-tk-runtime/target/test-classes/test_file_1.txt
+2016-01-05 12:01:20,971 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,985 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: test_file_1.txt
+2016-01-05 12:01:20,986 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,987 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: test_file_2.txt
+testPage = com.synaptix.toast.dao.domain.impl.test.block.TestPage@18907af2
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 sec
+Running com.synaptix.toast.test.runtime.TestParserTestCase_5
+path = /D:/workspace_toast/toast-tk-engine/toast-tk-runtime/target/test-classes/test_file_3.txt
+2016-01-05 12:01:20,989 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,990 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: test_file_3.txt
+testPage = com.synaptix.toast.dao.domain.impl.test.block.TestPage@762bf32d
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Running com.synaptix.toast.test.runtime.TestParserTestCase_6
+path = /D:/workspace_toast/toast-tk-engine/toast-tk-runtime/target/test-classes/test_file_4_project.txt
+2016-01-05 12:01:20,995 INFO co.sy.to.ru.pa.ProjectParser [main] Parser initializing..
+2016-01-05 12:01:20,995 INFO co.sy.to.ru.pa.ProjectParser [main] Starting project parsing: test_file_4_project.txt
+2016-01-05 12:01:20,997 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,998 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: test_file_2.txt
+2016-01-05 12:01:20,999 INFO co.sy.to.ru.pa.TestParser [main] Parser intializing..
+2016-01-05 12:01:20,999 INFO co.sy.to.ru.pa.TestParser [main] Starting test page parsing: test_file_3.txt
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 sec
+
+Results :
+
+Tests run: 33, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default-jar) @ toast-tk-runtime ---
+[INFO] Building jar: D:\workspace_toast\toast-tk-engine\toast-tk-runtime\target\toast-tk-runtime-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.6:jar (default) @ toast-tk-runtime ---
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.4.201502262128:prepare-agent (pre-integration-test) @ toast-tk-runtime ---
+[INFO] argLine set to -javaagent:D:\\Apps\\m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.7.4.201502262128\\org.jacoco.agent-0.7.4.201502262128-runtime.jar=destfile=D:\\workspace_toast\\toast-tk-engine\\toast-tk-runtime\\target\\coverage-reports\\jacoco-it.exec
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ toast-tk-runtime ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-runtime\target\toast-tk-runtime-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-runtime\1.0.0-SNAPSHOT\toast-tk-runtime-1.0.0-SNAPSHOT.jar
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-runtime\pom.xml to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-runtime\1.0.0-SNAPSHOT\toast-tk-runtime-1.0.0-SNAPSHOT.pom
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install-file (install-pom) @ toast-tk-runtime ---
+[INFO] Installing D:\workspace_toast\toast-tk-engine\toast-tk-runtime\target\toast-tk-runtime-1.0.0-SNAPSHOT.jar to D:\Apps\m2\repository\com\synaptix\toast\toast-tk-runtime\1.0.0-SNAPSHOT\toast-tk-runtime-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-deploy-plugin:2.8.2:deploy (default-deploy) @ toast-tk-runtime ---
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] Toast Toolkit - Engine ............................ SUCCESS [1.199s]
+[INFO] Toast Toolkit - DAO Module Api .................... SUCCESS [1.225s]
+[INFO] Toast Toolkit - DAO Module ........................ SUCCESS [1.445s]
+[INFO] Toast Toolkit - Action Adapter Api ................ SUCCESS [0.782s]
+[INFO] Toast Toolkit - Action Runtime Api ................ SUCCESS [0.670s]
+[INFO] Toast Toolkit - SUT Drivers ....................... SUCCESS [0.984s]
+[INFO] Toast Toolkit - Action Adapter Module ............. SUCCESS [0.887s]
+[INFO] Toast Toolkit - Rest Utils ........................ SUCCESS [0.702s]
+[INFO] Toast Toolkit - Runtime Module .................... FAILURE [2.700s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 10.743s
+[INFO] Finished at: Tue Jan 05 12:01:21 CET 2016
+[INFO] Final Memory: 22M/267M
+[INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "DEPLOY_NEXEUS_SNCF" could not be activated because it does not exist.
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-deploy-plugin:2.8.2:deploy (default-deploy) on project toast-tk-runtime: Deployment failed: repository element was not specified in the POM inside distributionManagement element or in -DaltDeploymentRepository=id::layout::url parameter -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <goals> -rf :toast-tk-runtime
