@@ -186,28 +186,6 @@
 			</testResource>
 		</testResources>
 		<plugins>
-			<!-- <plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<id>attach-artifacts-id</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attach-artifact</goal>
-						</goals>
-						<configuration>
-							<artifacts>
-								<artifact>
-									<file>${project.artifactId}-${project.version}</file>
-									<type>jar</type>
-								</artifact>
-							</artifacts>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -218,6 +196,24 @@
 							<goal>jar</goal>
 						</goals>
 						<phase>package</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-install</id>
+						<goals>
+							<goal>install</goal>
+						</goals>
+						<configuration>
+							<file>${basedir}/target/${project.artifactId}-${project.version}.jar</file>
+			                <groupId>${project.groupId}</groupId>
+			                <artifactId>${project.artifactId}</artifactId>
+			                <version>${project.version}</version>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
