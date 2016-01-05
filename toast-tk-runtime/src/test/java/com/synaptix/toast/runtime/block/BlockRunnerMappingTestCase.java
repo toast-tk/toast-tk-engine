@@ -102,8 +102,6 @@ public class BlockRunnerMappingTestCase {
 		Assert.assertEquals("value1", args[1]);
 	}
 	
-	
-	
 	@Test
 	public void testMethodReplacement() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
