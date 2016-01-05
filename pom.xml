@@ -369,6 +369,9 @@
 							<repositoryId>synaptix-snapshots-repository</repositoryId>
 							<url>http://nexus.synaptix-labs.com/content/repositories/snapshots/</url>
 							<file>${basedir}/target/${project.artifactId}-${project.version}.jar</file>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>${project.artifactId}</artifactId>
+							<version>${project.version}</version>
 							<deployAtEnd>true</deployAtEnd>
 							<packaging>jar</packaging>
 						</configuration>
