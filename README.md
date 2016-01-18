@@ -16,7 +16,7 @@ Navigate to url *([\w\W]+)*
 ```
 
 ## Toast TK Engine
-1. Parses a script written in a [markdown format]() to a TestPage
+1. Parses a script written in a [markdown format](https://github.com/synaptix-labs/toast-tk-engine/wiki/how-to-create-a-scenario) to a TestPage
 2. Executes the TestPage by locating the best matching [@Action](https://github.com/synaptix-labs/toast-tk-engine/wiki/how-to-declare-new-actions) within a given [@ActionAdapter](https://github.com/synaptix-labs/toast-tk-engine/wiki/how-to-declare-new-actions) 
 3. Outputs a [Value Based Test Execution Report]()
 
