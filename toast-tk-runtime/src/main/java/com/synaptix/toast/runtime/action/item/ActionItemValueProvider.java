@@ -22,6 +22,7 @@ public class ActionItemValueProvider {
 		map.put(ActionTypeEnum.json, new JSONValueHandler());
 		map.put(ActionTypeEnum.xml, new XMLValueHandler());
 		map.put(ActionTypeEnum.string, new StringValueHandler());
+		map.put(ActionTypeEnum.web, new WebValueHandler());
 	}
 
 	public IValueHandler get(ArgumentDescriptor descriptor, Injector injector) {

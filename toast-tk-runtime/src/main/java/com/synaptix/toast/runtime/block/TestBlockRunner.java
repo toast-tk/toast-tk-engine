@@ -34,6 +34,7 @@ import com.synaptix.toast.runtime.action.item.ActionItemRegexHolder;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
 import com.synaptix.toast.runtime.action.item.IValueHandler;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
+import com.synaptix.toast.runtime.bean.ActionItem.ActionTypeEnum;
 import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
 import com.synaptix.toast.runtime.bean.TestLineDescriptor;
@@ -268,16 +269,16 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		for (int i = 0; i < groupCount; i++) {
 			String group = matcher.group(i + 1);
 			Object obj = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
+			ArgumentDescriptor argumentDescriptor = execDescriptor.descriptor.arguments.get(argPos);
 			if (obj instanceof String) {
 				String argValue = (String) obj;
-				ArgumentDescriptor argumentDescriptor = execDescriptor.descriptor.arguments.get(argPos);
 				int argIndex = execDescriptor.isMappedMethod() ? argumentDescriptor.index : i;
 				IValueHandler valueHanlder = actionItemValueProvider.get(argumentDescriptor, injector);
 				args[argIndex] = valueHanlder == null ? group : valueHanlder.handle(group, argValue);
 			} else {
 				args[i] = obj;
 			}
-			if (isVariable(group)) {
+			if (isVariable(group) || argumentDescriptor.typeEnum.equals(ActionTypeEnum.web)) {
 				argPos++;
 			}
 		}
