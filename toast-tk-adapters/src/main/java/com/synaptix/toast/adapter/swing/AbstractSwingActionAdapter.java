@@ -19,6 +19,7 @@ import static com.synaptix.toast.core.adapter.ActionAdapterSentenceRef.TypeValue
 import static com.synaptix.toast.core.adapter.ActionAdapterSentenceRef.TypeVarIn;
 import static com.synaptix.toast.core.adapter.ActionAdapterSentenceRef.VALUE_REGEX;
 import static com.synaptix.toast.core.adapter.ActionAdapterSentenceRef.Wait;
+import static com.synaptix.toast.core.adapter.ActionAdapterSentenceRef.SWING_COMPONENT_REGEX;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public abstract class AbstractSwingActionAdapter {
 	public AbstractSwingActionAdapter(
 		IActionItemRepository repo,
 		IRemoteSwingAgentDriver driver) {
-		this.repo = repo;
+		this.repo = repo; 
 		this.driver = driver;
 		try {
 			for(IFeedableSwingPage page : repo.getSwingPages()) {
@@ -69,20 +70,6 @@ public abstract class AbstractSwingActionAdapter {
 		}
 	}
 
-	protected SwingAutoElement getPageField(
-		String pageName,
-		String fieldName)
-		throws IllegalAccessException {
-		if(repo.getSwingPage(pageName) == null) {
-			throw new IllegalAccessException(pageName + " swing page not found in repository !");
-		}
-		DefaultSwingPage page = (DefaultSwingPage) repo.getSwingPage(pageName);
-		SwingAutoElement autoElement = page.getAutoElement(fieldName);
-		if(autoElement == null) {
-			throw new IllegalAccessException(pageName + "." + fieldName + " not found in repository !");
-		}
-		return autoElement;
-	}
 
 	@Action(action = TypeValue, description = "Saisir une chaine de caractère au clavier")
 	public TestResult typeValue(
@@ -94,11 +81,8 @@ public abstract class AbstractSwingActionAdapter {
 
 	@Action(action = TypeValueInInput, description = "Saisir une valeur dans un composant graphique")
 	public TestResult typeIn(
-		String text,
-		String pageName,
-		String widgetName)
+		String text,SwingAutoElement pageField)
 		throws Exception {
-		SwingAutoElement pageField = getPageField(pageName, widgetName);
 		if(pageField instanceof SwingInputElement) {
 			SwingInputElement input = (SwingInputElement) pageField;
 			input.setInput(text);
@@ -109,42 +93,33 @@ public abstract class AbstractSwingActionAdapter {
 		}
 		else {
 			throw new IllegalAccessException(String.format(
-				"%s.%s is not handled to type values in !",
-				pageName,
+				"%s is not handled to type values in !",
 				pageField));
 		}
 		return new TestResult();
 	}
 
 	@Action(action = ClickOnIn, description = "Cliquer sur un composant présent dans un contenant de composant")
-	public TestResult clickOnIn(
-		String pageName,
-		String widgetName,
-		String parentPage,
-		String parentWidgetName)
+	public TestResult clickOnIn(SwingAutoElement elementField,SwingAutoElement containerField)
 		throws Exception {
-		HasSubItems input = (HasSubItems) getPageField(parentPage, parentWidgetName);
-		SwingAutoElement subElement = (SwingAutoElement) getPageField(pageName, widgetName);
+		HasSubItems input = (HasSubItems) containerField;
+		SwingAutoElement subElement = (SwingAutoElement) elementField;
 		input.clickOn(subElement.getWrappedElement().getLocator());
 		return new TestResult();
 	}
 
 	@Action(action = ClickOn, description = "Cliquer sur un composant graphique")
-	public TestResult clickOn(
-		String pageName,
-		String widgetName)
+	public TestResult clickOn(SwingAutoElement pageField)
 		throws Exception {
-		HasClickAction input = (HasClickAction) getPageField(pageName, widgetName);
+		HasClickAction input = (HasClickAction) pageField;
 		boolean click = input.click();
 		return new TestResult(String.valueOf(click), click ? ResultKind.SUCCESS : ResultKind.ERROR);
 	}
 
-	@Action(action = "(\\w+).(\\w+) exists", description = "Verifier qu'un composant graphique existe")
-	public TestResult exists(
-		String pageName,
-		String widgetName)
+	@Action(action = SWING_COMPONENT_REGEX + " exists", description = "Verifier qu'un composant graphique existe")
+	public TestResult exists(SwingAutoElement pageField)
 		throws Exception {
-		SwingAutoElement input = getPageField(pageName, widgetName);
+		SwingAutoElement input = pageField;
 		if(input.exists()) {
 			return new TestResult("true", ResultKind.SUCCESS);
 		}
@@ -153,50 +128,39 @@ public abstract class AbstractSwingActionAdapter {
 		}
 	}
 
-	@Action(action = "Count (\\w+).(\\w+) results", description = "Compter le nombre de ligne dans un tableau")
-	public TestResult count(
-		String pageName,
-		String widgetName)
+	@Action(action = "Count " + SWING_COMPONENT_REGEX + " results", description = "Compter le nombre de ligne dans un tableau")
+	public TestResult count(SwingAutoElement pageField)
 		throws Exception {
-		SwingTableElement table = (SwingTableElement) getPageField(pageName, widgetName);
+		SwingTableElement table = (SwingTableElement)pageField;
 		return new TestResult(table.count());
 	}
 
 	@Action(action = TypeVarIn, description = "Saisir la valeur d'une variable dans un champs graphique de type input")
 	public TestResult typeVarIn(
-		String variable,
-		String pageName,
-		String widgetName)
+		String variable, SwingAutoElement pageField
+		)
 		throws Exception {
-		typeIn(variable, pageName, widgetName);
+		typeIn(variable, pageField);
 		return new TestResult();
 	}
 
 	@Action(action = GetComponentValue, description = "Lire la valeur d'un composant graphique")
-	public TestResult getComponentValue(
-		String pageName,
-		String widgetName)
+	public TestResult getComponentValue(SwingAutoElement pageField)
 		throws Exception {
-		SwingAutoElement pageField = getPageField(pageName, widgetName);
 		if(!(pageField instanceof HasStringValue)) {
-			throw new IllegalAccessException(pageName + "." + widgetName + " isn't supporting value fetching !");
+			throw new IllegalAccessException("Field isn't supporting value fetching !");
 		}
 		HasStringValue stringValueProvider = (HasStringValue) pageField;
 		String value = stringValueProvider.getValue();
 		return new TestResult(value, ResultKind.SUCCESS);
 	}
 
-	@Action(
-		action = StoreComponentValueInVar,
+	@Action(action = StoreComponentValueInVar,
 		description = "Lire la valeur d'un composant graphique et la stocker dans une variable")
-	public TestResult selectComponentValue(
-		String pageName,
-		String widgetName,
-		String variable)
+	public TestResult selectComponentValue(SwingAutoElement pageField,String variable)
 		throws Exception {
-		SwingAutoElement pageField = getPageField(pageName, widgetName);
 		if(!(pageField instanceof HasStringValue)) {
-			throw new IllegalAccessException(pageName + "." + widgetName + " isn't supporting value fetching !");
+			throw new IllegalAccessException("Field isn't supporting value fetching !");
 		}
 		HasStringValue stringValueProvider = (HasStringValue) pageField;
 		String value = stringValueProvider.getValue();
@@ -228,33 +192,27 @@ public abstract class AbstractSwingActionAdapter {
 	}
 
 	@Action(action = SelectSubMenu, description = "Selectionner un sous menu")
-	public TestResult select(
-		String pageName,
-		String widgetName,
-		String parentPage,
-		String parentWidgetName)
+	public TestResult select(SwingAutoElement elementField, SwingAutoElement containerField)
 		throws Exception {
-		return clickOnIn(pageName, widgetName, parentPage, parentWidgetName);
+		return clickOnIn(elementField, containerField);
 	}
 
 	@Action(action = SelectValueInList, description = "Selectionner une valeur dans une liste")
 	public TestResult selectIn(
 		String value,
-		String pageName,
-		String widgetName)
+		SwingAutoElement pageField)
 		throws Exception {
-		SwingListElement list = (SwingListElement) getPageField(pageName, widgetName);
+		SwingListElement list = (SwingListElement) pageField;
 		list.select(value);
 		return new TestResult();
 	}
 
 	@Action(action = SelectTableRow, description = "Selectionner une ligne de tableau avec critères")
 	public ITestResult selectMission(
-		String pageName,
-		String widgetName,
+		SwingAutoElement pageField,
 		String tableColumnFinder)
 		throws Exception {
-		SwingTableElement table = (SwingTableElement) getPageField(pageName, widgetName);
+		SwingTableElement table = (SwingTableElement) pageField;
 		List<TableCommandRequestQueryCriteria> tableCriteria = new ArrayList<TableCommandRequestQueryCriteria>();
 		String[] criteria = tableColumnFinder.split(Property.TABLE_CRITERIA_SEPARATOR);
 		if(criteria.length > 0) {
@@ -403,12 +361,9 @@ public abstract class AbstractSwingActionAdapter {
 	@Action(
 		action = "Ajuster date (\\w+).(\\w+) à plus (\\w+) jours",
 		description = "Rajouter n Jours à au composant graphique de date")
-	public TestResult setDate(
-		String pageName,
-		String widgetName,
-		String days)
+	public TestResult setDate(SwingAutoElement pageField,String days)
 		throws Exception {
-		SwingDateElement input = (SwingDateElement) getPageField(pageName, widgetName);
+		SwingDateElement input = (SwingDateElement) pageField;
 		input.setInput(days);
 		return new TestResult();
 	}
@@ -453,11 +408,9 @@ public abstract class AbstractSwingActionAdapter {
 	}
 
 	@Action(action = "Clear {{input:component:swing}}", description = "Effacer le contenu d'un composant input graphique")
-	public TestResult clear(
-		String pageName,
-		String widgetName)
+	public TestResult clear(SwingAutoElement pageField)
 		throws Exception {
-		SwingInputElement input = (SwingInputElement) getPageField(pageName, widgetName);
+		SwingInputElement input = (SwingInputElement) pageField;
 		input.clear();
 		return new TestResult();
 	}

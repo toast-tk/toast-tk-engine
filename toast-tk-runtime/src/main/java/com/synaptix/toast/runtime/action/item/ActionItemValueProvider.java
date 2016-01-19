@@ -23,6 +23,7 @@ public class ActionItemValueProvider {
 		map.put(ActionTypeEnum.xml, new XMLValueHandler());
 		map.put(ActionTypeEnum.string, new StringValueHandler());
 		map.put(ActionTypeEnum.web, new WebValueHandler());
+		map.put(ActionTypeEnum.swing, new SwingValueHandler());
 	}
 
 	public IValueHandler get(ArgumentDescriptor descriptor, Injector injector) {
