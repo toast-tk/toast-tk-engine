@@ -45,32 +45,28 @@ public abstract class AbstractWebActionAdapter {
 	}
 
 	@Action(id="type_in_web_component", action = "Type " + VALUE_REGEX + " in " + WEB_COMPONENT, description = "")
-	public TestResult typeIn(String text, String pageName, String widgetName) throws Exception {
-		WebElement pageField = getPageField(pageName, widgetName);
-		pageField.sendKeys(text);
+	public TestResult typeIn(String text, WebAutoElement pageField) throws Exception {
+		pageField.getWebElement().sendKeys(text);
 		return new TestResult();
 	}
 
 	@Action(id="click_on_web_component", action = "Click on " + WEB_COMPONENT, description = "")
-	public TestResult ClickOn(String pageName, String widgetName) throws Exception {
-		WebElement pageField = getPageField(pageName, widgetName);
-		pageField.click();
+	public TestResult ClickOn(WebAutoElement pageField) throws Exception {
+		pageField.getWebElement().click();
 		return new TestResult();
 	}
 
 	@Action(id="select_in_web_component", action = "Select " + VALUE_REGEX + " in " + WEB_COMPONENT, description = "")
-	public TestResult SelectAtPos(String pos, String pageName, String widgetName) throws Exception {
-		WebAutoElement pageFieldAuto = getPageFieldAuto(pageName, widgetName);
+	public TestResult SelectAtPos(String pos, WebAutoElement pageFieldAuto) throws Exception {
 		WebSelectElement pageField = (WebSelectElement) pageFieldAuto;
 		pageField.selectByIndex(Integer.valueOf(pos));
 		return new TestResult();
 	}
 
 	@Action(id="web_component_exists", action = WEB_COMPONENT + " exists", description = "")
-	public TestResult checkExist(String pageName, String widgetName) {
-		WebElement element = getPageField(pageName, widgetName);
+	public TestResult checkExist(WebAutoElement element) {
 		if (element != null) {
-			if (element.isDisplayed()) {
+			if (element.getWebElement().isDisplayed()) {
 				return new TestResult("Element is available !", ResultKind.SUCCESS);
 			} else {
 				return new TestResult("Element is not available !", ResultKind.FAILURE);
@@ -85,15 +81,5 @@ public abstract class AbstractWebActionAdapter {
 		return new TestResult();
 	}
 
-	private WebAutoElement getPageFieldAuto(String pageName, String widgetName) {
-		DefaultWebPage page = (DefaultWebPage) repo.getPage(pageName);
-		WebAutoElement autoElement = page.getAutoElement(widgetName);
-		return autoElement;
-	}
 
-	private WebElement getPageField(String pageName, String fieldName) {
-		DefaultWebPage page = (DefaultWebPage) repo.getPage(pageName);
-		WebAutoElement autoElement = page.getAutoElement(fieldName);
-		return autoElement.getWebElement();
-	}
 }

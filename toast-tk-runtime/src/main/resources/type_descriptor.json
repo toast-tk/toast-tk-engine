@@ -44,7 +44,7 @@
 		"name" : "WebPageItem",
 		"kind" : "web",
 		"category": "component",
-		"regex": "\\*(\\w+).(\\w+)\\*",
+		"regex": "\\*([\\w\\W]+\\.[\\w\\W]+)\\*",
 		"replacement" : "@[[4:component:web]]"
 	},
 	{
@@ -60,7 +60,7 @@
 		"name" : "SwingComponent",
 		"kind" : "swing",
 		"category": "component",
-		"regex": "\\*(\\w+).(\\w+)\\*",
+		"regex": "\\*([\\w\\W]+\\.[\\w\\W]+)\\*",
 		"replacement" : "@[[6:component:swing]]"
 	}
 ]
