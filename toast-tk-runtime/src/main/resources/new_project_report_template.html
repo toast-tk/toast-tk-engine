@@ -227,8 +227,8 @@ footer {
 													100
 												</td>
 												<td>
-													<a th:attr="href=${test.name + '.html'}"> 
-														>>link 
+													<a th:attr="href=@{~/test(project=${project.name}, iteration=${project.iteration}, test=${test.name})}">
+														>> link
 													</a>
 												</td>
 											</tr>

@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.synaptix.toast.adapter.ActionAdapterCollector;
 import com.synaptix.toast.adapter.FixtureService;
 import com.synaptix.toast.core.guice.AbstractActionAdapterModule;
@@ -21,11 +22,13 @@ public abstract class AbstractRunner {
 
     private static final Logger LOG = LogManager.getLogger(AbstractRunner.class);
 
-    static final List<FixtureService> listAvailableServicesByReflection = ActionAdapterCollector.listAvailableServicesByReflection();
+    protected List<FixtureService> listAvailableServicesByReflection;
 
     protected final Injector injector;
 
     public AbstractRunner() {
+    	listAvailableServicesByReflection = ActionAdapterCollector.listAvailableServicesByReflection();
+		System.out.println("Found adapters: " + listAvailableServicesByReflection.size());
     	injector = Guice.createInjector(new AbstractActionAdapterModule(){
 			@Override
 			protected void configure() {
@@ -38,6 +41,19 @@ public abstract class AbstractRunner {
     public AbstractRunner(Injector i) {
     	injector = i;
     }
+
+	public AbstractRunner(Module extraModule) {
+		listAvailableServicesByReflection = ActionAdapterCollector.listAvailableServicesByReflection();
+		System.out.println("Found adapters: " + listAvailableServicesByReflection.size());
+		injector = Guice.createInjector(new AbstractActionAdapterModule(){
+			@Override
+			protected void configure() {
+				install(new EngineModule());
+				install(extraModule);
+				listAvailableServicesByReflection.forEach(f -> bindActionAdapter(f.clazz));
+			}
+    	});
+	}
 
 	public abstract void tearDownEnvironment();
 

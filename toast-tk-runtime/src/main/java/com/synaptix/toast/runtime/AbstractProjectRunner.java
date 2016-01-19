@@ -3,7 +3,7 @@ package com.synaptix.toast.runtime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.synaptix.toast.core.rest.RestUtils;
 import com.synaptix.toast.dao.domain.impl.report.Project;
 import com.synaptix.toast.dao.domain.impl.test.block.ICampaign;
@@ -18,30 +18,46 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 
     private static final Logger LOG = LogManager.getLogger(AbstractProjectRunner.class);
     private final IHTMLReportGenerator htmlReportGenerator;
-    private Injector injector;
     private final IProjectHtmlReportGenerator projectHtmlReportGenerator;
 	private String mongoDbHost;
 	private int mongoDbPort;
 
 	  protected AbstractProjectRunner(
 	            )
-	            throws Exception {
+	           {
 	        super();
 	        this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 	        this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	    }
 
     protected AbstractProjectRunner(
+            Module extraModule, 
             String host,
             int port
             )
-            throws Exception {
+           {
+    	this(extraModule);
+    	this.mongoDbHost = host;
+    	this.mongoDbPort = port;
+    }
+    
+    protected AbstractProjectRunner(
+            String host,
+            int port
+            )
+            {
     	this();
     	this.mongoDbHost = host;
     	this.mongoDbPort = port;
     }
 
-    public final void test(
+    public AbstractProjectRunner(Module extraModule) {
+    	super(extraModule);
+    	this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
+        this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
+    }
+
+	public final void test(
             String projectName,
             boolean overrideRepoFromWebApp)
             throws Exception {
