@@ -64,6 +64,7 @@ public class ProjectParser extends AbstractParser {
         campaign.setName(block.getCampaignName());
         List<CampaignLine> testCases = block.getTestCases();
         for (CampaignLine testCase : testCases) {
+        	testCase.getFile().setName(testCase.getName());
             campaign.getTestCases().add(testCase.getFile());
         }
         return campaign;

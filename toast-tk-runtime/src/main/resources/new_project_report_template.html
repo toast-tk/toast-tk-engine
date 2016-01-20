@@ -198,8 +198,8 @@ footer {
 												<th>Use Case</th>
 												<th th:if="${not #lists.isEmpty(projectsHistory)}">Prev. Status</th>
 												<th>Status</th>
-												<th th:if="${not #lists.isEmpty(projectsHistory)}">Prev. Duration (s)</th>
-												<th>Duration (s)</th>
+												<th th:if="${not #lists.isEmpty(projectsHistory)}">Prev. Duration (ms)</th>
+												<th>Duration (ms)</th>
 												<th>Details</th>
 											</tr>
 										</thead>
@@ -220,10 +220,10 @@ footer {
 												<td class="danger" th:if="${not test.isSuccess()}">
 													KO
 												</td>
-												<td th:if="${not #lists.isEmpty(projectsHistory)}" th:text="${test.getPreviousExecutionTime() / 1000}">
+												<td th:if="${not #lists.isEmpty(projectsHistory)}" th:text="${test.getPreviousExecutionTime()}">
 													50
 												</td>
-												<td th:text="${test.getExecutionTime() / 1000}">
+												<td th:text="${test.getExecutionTime()}">
 													100
 												</td>
 												<td>

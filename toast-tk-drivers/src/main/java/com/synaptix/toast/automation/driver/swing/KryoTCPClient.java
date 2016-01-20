@@ -8,6 +8,7 @@ import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import com.synaptix.toast.core.agent.inspection.CommonIOUtils;
 import com.synaptix.toast.core.net.request.IIdRequest;
+import com.synaptix.toast.core.net.request.PoisonPill;
 import com.synaptix.toast.core.runtime.ITCPClient;
 import com.synaptix.toast.core.runtime.ITCPResponseReceivedHandler;
 

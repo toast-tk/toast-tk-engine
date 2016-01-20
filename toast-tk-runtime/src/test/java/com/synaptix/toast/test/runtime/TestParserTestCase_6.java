@@ -38,8 +38,8 @@ public class TestParserTestCase_6 {
         for (ITestPage testPage : testCases) {
             Assert.assertNotNull(testPage.getBlocks());
         }
-        Assert.assertEquals("test_file_2.txt",testCases.get(0).getName());
-        Assert.assertEquals("test_file_3.txt",testCases.get(1).getName());
+        Assert.assertEquals("Test case 1", testCases.get(0).getName());
+        Assert.assertEquals("Test case 2", testCases.get(1).getName());
 
     }
 

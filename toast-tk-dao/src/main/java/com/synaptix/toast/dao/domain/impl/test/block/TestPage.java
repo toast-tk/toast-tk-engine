@@ -115,7 +115,6 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
     @Override
     public void startExecution() {
         this.runDateTime = System.currentTimeMillis();
-        previousExecutionTime = executionTime;
     }
 
     @Override

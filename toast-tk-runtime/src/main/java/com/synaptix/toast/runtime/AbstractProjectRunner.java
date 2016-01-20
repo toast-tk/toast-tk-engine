@@ -96,8 +96,37 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
         }else{
         	newIterationProject = daoManager.getReferenceProjectByName(project.getName());
         }
-        execute(newIterationProject, overrideRepoFromWebApp);
-        daoManager.saveProject(newIterationProject);
+        Project projectToRun = mergeToRunIteration(newIterationProject,(Project)project);
+        execute(projectToRun, overrideRepoFromWebApp); //TODO: merge newIterationProject with
+        daoManager.saveProject(projectToRun);
+    }
+    
+    
+    private Project mergeToRunIteration(
+            Project lastIterationProject,
+            Project newIterationProject) {
+        if (lastIterationProject.getIteration() == newIterationProject.getIteration()) {
+            return newIterationProject;
+        }
+
+        //creating a new iteration from history
+        newIterationProject.setId(null);
+        newIterationProject.setIteration(lastIterationProject.getIteration());
+        for (ICampaign newCampaign : newIterationProject.getCampaigns()) {
+            for (ICampaign lastCampaign : lastIterationProject.getCampaigns()) {
+                if (newCampaign.getName().equals(lastCampaign.getName())) {
+                    for (ITestPage newPage : newCampaign.getTestCases()) {
+                        for (ITestPage lastPage : lastCampaign.getTestCases()) {
+                            if (newPage.getName().equals(lastPage.getName())) {
+                                newPage.setPreviousIsSuccess(lastPage.isPreviousIsSuccess());
+                                newPage.setPreviousExecutionTime(lastPage.getPreviousExecutionTime());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return newIterationProject;
     }
 
     private Project mergeToNewIteration(
@@ -112,12 +141,12 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
         newIterationProject.setIteration(lastIterationProject.getIteration());
         for (ICampaign newCampaign : newIterationProject.getCampaigns()) {
             for (ICampaign lastCampaign : lastIterationProject.getCampaigns()) {
-                if (newCampaign.getIdAsString().equals(lastCampaign.getIdAsString())) {
+                if (newCampaign.getName().equals(lastCampaign.getName())) {
                     for (ITestPage newPage : newCampaign.getTestCases()) {
                         for (ITestPage lastPage : lastCampaign.getTestCases()) {
-                            if (newPage.getIdAsString().equals(lastPage.getIdAsString())) {
-                                newPage.setPreviousIsSuccess(lastPage.isPreviousIsSuccess());
-                                newPage.setPreviousExecutionTime(lastPage.getPreviousExecutionTime());
+                            if (newPage.getName().equals(lastPage.getName())) {
+                                newPage.setPreviousIsSuccess(lastPage.isSuccess());
+                                newPage.setPreviousExecutionTime(lastPage.getExecutionTime());
                             }
                         }
                     }

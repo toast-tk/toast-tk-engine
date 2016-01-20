@@ -61,6 +61,7 @@ class TestRunner {
 				testPage.setTechnicalErrorNumber(testPage.getTechnicalErrorNumber() + subPage.getTechnicalErrorNumber());
 				testPage.setTestFailureNumber(testPage.getTestFailureNumber() + subPage.getTestFailureNumber());
 				testPage.setTestSuccessNumber(testPage.getTestSuccessNumber() + subPage.getTestSuccessNumber());
+				testPage.setIsSuccess(testPage.getTestFailureNumber() + testPage.getTechnicalErrorNumber() == 0);
 			}else if (block instanceof TestBlock){
 				TestBlock testBlock = (TestBlock) block;
 				int nbBlockSuccess = 0;
@@ -83,6 +84,7 @@ class TestRunner {
 		testPage.setTechnicalErrorNumber(nbErrors);
 		testPage.setTestSuccessNumber(nbSuccess);
 		testPage.setTestFailureNumber(nbFailures);
+		testPage.setIsSuccess(nbFailures + nbErrors == 0);
 		return testPage;
 	}
 
