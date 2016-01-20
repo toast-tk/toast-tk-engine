@@ -361,13 +361,12 @@
 							</execution>
 						</executions>
 					</plugin>
-					<!-- <plugin>
+					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-deploy-plugin</artifactId>
 						<version>${maven-deploy-plugin.version}</version>
 						<configuration>
 							<repositoryId>synaptix-snapshots-repository</repositoryId>
-							<url>http://x64ertbidv3.si.fret.sncf.fr:8091/nexus/content/repositories/snapshots/</url>
 							<url>http://nexus.synaptix-labs.com/content/repositories/snapshots/</url>
 							<file>${basedir}/target/${project.artifactId}-${project.version}.jar</file>
 							<groupId>${project.groupId}</groupId>
@@ -384,7 +383,7 @@
 								</goals>
 							</execution>
 						</executions>
-					</plugin> -->
+					</plugin> 
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-install-plugin</artifactId>
@@ -410,24 +409,14 @@
 				</plugins>
 			</build>
 			<distributionManagement>
-				<!-- <repository>
+				<repository>
 					<id>synaptix-releases-repository</id>
 					<url>http://nexus.synaptix-labs.com/content/repositories/releases/</url>
 				</repository>
 				<snapshotRepository>
 					<id>synaptix-snapshots-repository</id>
 					<url>http://nexus.synaptix-labs.com/content/repositories/snapshots/</url>
-				</snapshotRepository> -->
-				<repository>
-					<id>sncf-releases</id>
-					<name>Inhouse Releases Repository</name>
-					<url>http://x64ertbidv3.si.fret.sncf.fr:8091/nexus/content/repositories/releases/</url>
-				</repository>
-				<snapshotRepository>
-					<id>sncf-snapshots</id>
-					<name>Inhouse Snapshots Repository</name>
-					<url>http://x64ertbidv3.si.fret.sncf.fr:8091/nexus/content/repositories/snapshots/</url>
-				</snapshotRepository>
+				</snapshotRepository> 
 			</distributionManagement>
 		</profile>
 	</profiles>
