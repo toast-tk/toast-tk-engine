@@ -8,6 +8,8 @@ public class RecordRequest implements IIdRequest {
 
 	private int mode;
 
+	public String b64ScreenShot;
+	
 	/**
 	 * for serialization purpose only
 	 */
@@ -51,5 +53,10 @@ public class RecordRequest implements IIdRequest {
 
 	public int getMode() {
 		return mode;
+	}
+
+	@Override
+	public String getBase64ScreenShot() {
+		return b64ScreenShot;
 	}
 }

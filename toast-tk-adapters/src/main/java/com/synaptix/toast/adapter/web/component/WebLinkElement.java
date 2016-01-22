@@ -6,6 +6,7 @@ import org.openqa.selenium.interactions.Actions;
 import com.synaptix.toast.adapter.web.HasClickAction;
 import com.synaptix.toast.adapter.web.ISyncCall;
 import com.synaptix.toast.automation.driver.web.SynchronizedDriver;
+import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.core.runtime.IWebElement;
 
 public class WebLinkElement extends WebAutoElement implements HasClickAction {
@@ -22,7 +23,7 @@ public class WebLinkElement extends WebAutoElement implements HasClickAction {
 	}
 
 	@Override
-	public boolean click() {
+	public TestResult click() {
 		safeAction(new ISyncCall() {
 
 			@Override
@@ -31,7 +32,7 @@ public class WebLinkElement extends WebAutoElement implements HasClickAction {
 				e.click();
 			}
 		});
-		return true;
+		return new TestResult();
 	}
 
 	@Override

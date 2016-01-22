@@ -9,6 +9,8 @@ import com.synaptix.toast.core.driver.IRemoteSwingAgentDriver;
 import com.synaptix.toast.core.net.request.CommandRequest;
 import com.synaptix.toast.core.net.request.TableCommandRequest;
 import com.synaptix.toast.core.net.request.TableCommandRequestQueryCriteria;
+import com.synaptix.toast.core.report.TestResult;
+import com.synaptix.toast.core.report.TestResult.ResultKind;
 import com.synaptix.toast.core.runtime.ISwingElement;
 
 
@@ -25,7 +27,7 @@ public class SwingTableElement extends SwingAutoElement implements HasClickActio
 		super(element);
 	}
 
-	public String find(
+	public TestResult find(
 		List<TableCommandRequestQueryCriteria> criteria)
 		throws Exception {
 		exists();
@@ -37,7 +39,7 @@ public class SwingTableElement extends SwingAutoElement implements HasClickActio
 		return frontEndDriver.processAndWaitForValue(request);
 	}
 
-	public String find(
+	public TestResult find(
 		String lookUpColumn,
 		String lookUpValue,
 		String outputColumn)
@@ -53,7 +55,7 @@ public class SwingTableElement extends SwingAutoElement implements HasClickActio
 		return frontEndDriver.processAndWaitForValue(request);
 	}
 
-	public String count()
+	public TestResult count()
 		throws Exception {
 		exists();
 		final String requestId = UUID.randomUUID().toString();
@@ -65,14 +67,16 @@ public class SwingTableElement extends SwingAutoElement implements HasClickActio
 	}
 
 	@Override
-	public boolean click()
+	public TestResult click()
 		throws Exception {
 		boolean res = exists();
-		frontEndDriver.process(new TableCommandRequest.TableCommandRequestBuilder(null)
+		final String requestId = UUID.randomUUID().toString();
+		TestResult result = frontEndDriver.processAndWaitForValue(new TableCommandRequest.TableCommandRequestBuilder(requestId)
 			.with(wrappedElement.getLocator())
 			.ofType(wrappedElement.getType().name())
 			.click().build());
-		return res;
+		result.setResultKind(res && result.getMessage().equals(ResultKind.SUCCESS.name()) ? ResultKind.SUCCESS : ResultKind.ERROR);
+		return result;
 	}
 
 	@Override
@@ -92,7 +96,7 @@ public class SwingTableElement extends SwingAutoElement implements HasClickActio
 		return null;
 	}
 
-	public String selectMenu(
+	public TestResult selectMenu(
 		String menu,
 		String column,
 		String value)

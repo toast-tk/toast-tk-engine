@@ -7,6 +7,7 @@ import org.fest.swing.fixture.JCheckBoxFixture;
 import com.synaptix.toast.adapter.swing.handler.ISwingwidgetActionHandler;
 import com.synaptix.toast.adapter.swing.utils.FestRobotInstance;
 import com.synaptix.toast.core.net.request.CommandRequest;
+import com.synaptix.toast.core.report.TestResult.ResultKind;
 
 
 public class JCheckBoxActionHandler implements ISwingwidgetActionHandler<JCheckBox, String, CommandRequest>{
@@ -17,14 +18,18 @@ public class JCheckBoxActionHandler implements ISwingwidgetActionHandler<JCheckB
 		CommandRequest command) {
 		switch(command.action) {
 			case CLICK :
-				JCheckBoxFixture bFixture = new JCheckBoxFixture(FestRobotInstance.getRobot(), checkbox);
-				bFixture.click();
-				break;
+				try{
+					JCheckBoxFixture bFixture = new JCheckBoxFixture(FestRobotInstance.getRobot(), checkbox);
+					bFixture.click();
+					return ResultKind.SUCCESS.name();
+				}catch(Exception e){
+					e.printStackTrace();
+					return ResultKind.ERROR.name();
+				}
 			case GET :
 				return String.valueOf(checkbox.isSelected());
 			default :
 				throw new IllegalArgumentException("Unsupported command for JCheckBox: " + command.action.name());
 		}
-		return null;
 	}
 }

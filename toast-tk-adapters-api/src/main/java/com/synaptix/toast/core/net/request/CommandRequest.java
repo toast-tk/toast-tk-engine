@@ -7,6 +7,8 @@ public class CommandRequest implements IIdRequest {
 
 	public boolean isCustom;
 
+	public String b64ScreenShot;
+
 	public String customCommand;
 
 	public String itemType;
@@ -161,5 +163,10 @@ public class CommandRequest implements IIdRequest {
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
+
+	@Override
+	public String getBase64ScreenShot() {
+		return b64ScreenShot;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.synaptix.toast.core.net.request.CommandRequest;
 import com.synaptix.toast.core.net.request.IIdRequest;
+import com.synaptix.toast.core.report.TestResult;
 
 /**
  * Interface to implement within toast plugins in order to handle custom swing ui components

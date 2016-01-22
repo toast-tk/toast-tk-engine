@@ -17,7 +17,7 @@ public class KryoTCPClient implements ITCPClient {
 	private final Client client;
 
 	public KryoTCPClient() {
-		client = new Client();
+		client = new Client(8012*8012, 8012*8012);
 		CommonIOUtils.initSerialization(client.getKryo());
 		client.start();
 	}

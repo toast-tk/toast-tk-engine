@@ -8,7 +8,7 @@ public class ErrorResponse implements IIdRequest {
 
 	private String message;
 
-	private String screenshot;
+	public String screenshot;
 
 	/**
 	 * serialization only
@@ -34,7 +34,9 @@ public class ErrorResponse implements IIdRequest {
 		return message;
 	}
 
-	public String getScreenshot() {
+	@Override
+	public String getBase64ScreenShot() {
 		return screenshot;
 	}
+
 }

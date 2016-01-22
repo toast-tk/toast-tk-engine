@@ -9,23 +9,22 @@
 <script type="text/javascript"
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script language="javascript"> 
-		function displayImage(base64Image){
-			var src = "data:image/png;base64," + base64Image;
-			//display the dialog
-			$("#img1").attr("src", src);
-			$('#myModal').modal('show');
+	function displayImage(base64Image){
+		var src = "data:image/png;base64," + base64Image;
+		//display the dialog
+		$("#img1").attr("src", src);
+		$('#myModal').modal('show');
+	}
+	
+	function toggle(text) { 
+		var ele = document.getElementById(text);
+		if(ele.style.display == "block") { 
+			ele.style.display = "none";
+		}else {
+			ele.style.display = "block";
 		}
-		
-		function toggle(text) { 
-			var ele = document.getElementById(text);
-			if(ele.style.display == "block") { 
-				ele.style.display = "none";
-			}else {
-				ele.style.display = "block";
-			}
-		}
-		
-	</script>
+	}
+</script>
 <style>
 body {
 	line-height: 1.6em;

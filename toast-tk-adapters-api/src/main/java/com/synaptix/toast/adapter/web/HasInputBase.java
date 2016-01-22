@@ -1,8 +1,10 @@
 package com.synaptix.toast.adapter.web;
 
-public interface HasInputBase<T> extends HasValueBase<T> {
+import com.synaptix.toast.core.report.TestResult;
 
-	public void setInput(
+public interface HasInputBase<T> {
+
+	public TestResult setInput(
 		T e)
 		throws Exception;
 }

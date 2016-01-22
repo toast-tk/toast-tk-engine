@@ -1,20 +1,13 @@
 package com.synaptix.toast.runtime.report;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
-import org.apache.commons.codec.binary.Base64;
 import org.joda.time.LocalDateTime;
 
 import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.core.report.TestResult.ResultKind;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
-import com.synaptix.toast.dao.domain.impl.test.block.TestPage;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 
 public class TemplateHelper {
@@ -62,7 +55,6 @@ public class TemplateHelper {
 		return 0;
 	}
 	
-	
 	public static String getResultKindAsString(
 		TestResult testResult) {
 		if(testResult != null) {
@@ -92,15 +84,8 @@ public class TemplateHelper {
 
 	public static String getResultScreenshotAsBase64(
 		TestResult testResult) {
-		BufferedImage screenshot = testResult.getScreenShot();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		try {
-			ImageIO.write(screenshot, "png", baos);
-		}
-		catch(IOException e) {
-			e.printStackTrace();
-		}
-		return Base64.encodeBase64String(baos.toByteArray());
+		String screenShot = testResult.getScreenShot();
+		return screenShot;
 	}
 
 	public static String formatStringToHtml(
@@ -122,7 +107,6 @@ public class TemplateHelper {
 		TestResult testResult) {
 		return testResult != null && testResult.getScreenShot() != null;
 	}
-	
 	
 	//FIXME add in template
 	private void setExecStatistics(ITestPage testPage, List<TestResult> results) {

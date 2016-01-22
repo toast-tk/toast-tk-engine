@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Module;
 import com.synaptix.toast.core.annotation.EngineEventBus;
 import com.synaptix.toast.core.rest.RestUtils;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
@@ -33,9 +34,16 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 
     private DefaultTestProgressReporter progressReporter;
 
-    
     protected AbstractScenarioRunner(Injector i) {
     	super(i);
+        this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
+        EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
+        this.progressReporter = new DefaultTestProgressReporter(eventBus, htmlReportGenerator);
+    }
+    
+    
+    protected AbstractScenarioRunner(Module m) {
+    	super(m);
         this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
         EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
         this.progressReporter = new DefaultTestProgressReporter(eventBus, htmlReportGenerator);

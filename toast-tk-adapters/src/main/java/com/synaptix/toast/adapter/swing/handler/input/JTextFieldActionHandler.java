@@ -1,5 +1,7 @@
 package com.synaptix.toast.adapter.swing.handler.input;
 
+import java.util.concurrent.CountDownLatch;
+
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -20,8 +22,7 @@ public class JTextFieldActionHandler implements ISwingwidgetActionHandler<JTextF
 		final CommandRequest command) {
 		switch(command.action) {
 			case SET :
-				handleSetText(textField, command);
-				break;
+				return handleSetText(textField, command);
 			case CLICK :
 				FestRobotInstance.getRobot().click(textField);
 				break;
@@ -33,12 +34,12 @@ public class JTextFieldActionHandler implements ISwingwidgetActionHandler<JTextF
 		return null;
 	}
 
-	private void handleSetText(
+	private String handleSetText(
 		final JTextField textField,
 		final CommandRequest command) {
 		if("date".equals(command.itemType)) {
+			final CountDownLatch latch = new CountDownLatch(1);
 			SwingUtilities.invokeLater(new Runnable() {
-
 				@Override
 				public void run() {
 					int value = Integer.parseInt(command.value);
@@ -46,20 +47,34 @@ public class JTextFieldActionHandler implements ISwingwidgetActionHandler<JTextF
 					DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yy");
 					String formattedDate = formatter.print(date);
 					textField.setText(formattedDate);
+					latch.countDown();
 				}
 			});
+			try {
+				latch.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		else if("date_text".equals(command.itemType)) {
+			final CountDownLatch latch = new CountDownLatch(1);
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
 				public void run() {
 					textField.setText(command.value);
+					latch.countDown();
 				}
 			});
+			try {
+				latch.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		else {
 			textField.setText(command.value);
 		}
+		return command.value;
 	}
 }

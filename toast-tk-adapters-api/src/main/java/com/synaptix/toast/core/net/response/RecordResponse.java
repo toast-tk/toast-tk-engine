@@ -11,6 +11,8 @@ public class RecordResponse implements IIdRequest {
 
 	private String sentence;
 
+	public String b64ScreenShot;
+
 	/**
 	 * serialization only
 	 */
@@ -38,5 +40,10 @@ public class RecordResponse implements IIdRequest {
 
 	public String getSentence() {
 		return sentence;
+	}
+
+	@Override
+	public String getBase64ScreenShot() {
+		return b64ScreenShot;
 	}
 }

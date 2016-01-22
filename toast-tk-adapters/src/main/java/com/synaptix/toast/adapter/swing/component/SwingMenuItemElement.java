@@ -1,9 +1,13 @@
 package com.synaptix.toast.adapter.swing.component;
 
+import java.util.UUID;
+
 import com.synaptix.toast.adapter.swing.SwingAutoElement;
 import com.synaptix.toast.adapter.web.HasClickAction;
 import com.synaptix.toast.core.driver.IRemoteSwingAgentDriver;
 import com.synaptix.toast.core.net.request.CommandRequest;
+import com.synaptix.toast.core.report.TestResult;
+import com.synaptix.toast.core.report.TestResult.ResultKind;
 import com.synaptix.toast.core.runtime.ISwingElement;
 
 /**
@@ -25,12 +29,14 @@ public class SwingMenuItemElement extends SwingAutoElement implements HasClickAc
 	}
 
 	@Override
-	public boolean click()
+	public TestResult click()
 		throws Exception {
 		boolean res = exists();
-		frontEndDriver.process(new CommandRequest.CommandRequestBuilder(null).with(wrappedElement.getLocator())
+		final String requestId = UUID.randomUUID().toString();
+		TestResult result = frontEndDriver.processAndWaitForValue(new CommandRequest.CommandRequestBuilder(requestId).with(wrappedElement.getLocator())
 			.ofType(wrappedElement.getType().name()).click().build());
-		return res;
+		result.setResultKind(res && result.getMessage().equals(ResultKind.SUCCESS.name()) ? ResultKind.SUCCESS : ResultKind.ERROR);
+		return result;
 	}
 
 	@Override

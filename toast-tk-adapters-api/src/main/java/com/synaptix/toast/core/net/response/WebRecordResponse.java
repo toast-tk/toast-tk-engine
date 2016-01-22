@@ -11,6 +11,8 @@ public class WebRecordResponse implements IIdRequest {
 
 	private String sentence;
 
+	public String b64ScreenShot;
+	
 	/**
 	 * serialization only
 	 */
@@ -30,6 +32,11 @@ public class WebRecordResponse implements IIdRequest {
 
 	public WebEventRecord getEvent() {
 		return value;
+	}
+
+	@Override
+	public String getBase64ScreenShot() {
+		return b64ScreenShot;
 	}
 
 }

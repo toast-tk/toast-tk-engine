@@ -122,7 +122,7 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 	private void handleValueResponse(
 		Object object) {
 		ValueResponse response = (ValueResponse) object;
-		valueResponseMap.put(response.getId(), response.value);
+		valueResponseMap.put(response.getId(), response);
 	}
 
 	private void handleInitResponse(
@@ -226,10 +226,10 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 	}
 
 	@Override
-	public String processAndWaitForValue(
+	public TestResult processAndWaitForValue(
 		IIdRequest request)
 		throws IllegalAccessException, TimeoutException, ErrorResultReceivedException {
-		String res = null;
+		TestResult res = new TestResult();
 		final String idRequest = request.getId();
 		if(idRequest == null) {
 			throw new IllegalAccessException("Request requires an Id to wait for a value.");
@@ -237,16 +237,18 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 		init();
 		valueResponseMap.put(idRequest, VOID_RESULT);
 		client.sendRequest(request);
-		res = waitForValue(request);
+		ValueResponse valueResponse = waitForValue(request);
+		res.setScreenShot(valueResponse.getBase64ScreenShot());
+		res.setMessage(valueResponse.value);
 		return res;
 	}
 
-	private String waitForValue(
+	private ValueResponse waitForValue(
 		final IIdRequest request)
 		throws TimeoutException, ErrorResultReceivedException {
 		client.keepAlive();
 		final String idRequest = request.getId();
-		String res = null;
+		ValueResponse res = null;
 		int countTimeOut = WAIT_TIMEOUT;
 		int incOffset = 500;
 		if(valueResponseMap.containsKey(idRequest)) {
@@ -268,7 +270,7 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 			if(valueResponseMap.get(idRequest) instanceof TestResult) {
 				throw new ErrorResultReceivedException((TestResult) valueResponseMap.get(idRequest));
 			}
-			res = (String) valueResponseMap.get(idRequest);
+			res = (ValueResponse) valueResponseMap.get(idRequest);
 			valueResponseMap.remove(idRequest);
 		}
 		return res;

@@ -6,6 +6,8 @@ public class ScanRequest implements IIdRequest {
 
 	private String id;
 
+	public String b64ScreenShot;
+	
 	/**
 	 * for serialization purpose only
 	 */
@@ -31,5 +33,10 @@ public class ScanRequest implements IIdRequest {
 	private void setDebug(
 		boolean debug) {
 		this.debug = debug;
+	}
+
+	@Override
+	public String getBase64ScreenShot() {
+		return b64ScreenShot;
 	}
 }

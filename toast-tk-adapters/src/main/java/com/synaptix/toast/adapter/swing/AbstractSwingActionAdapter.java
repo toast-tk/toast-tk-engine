@@ -34,6 +34,7 @@ import com.synaptix.toast.adapter.swing.utils.SwingAutoUtils;
 import com.synaptix.toast.adapter.web.HasClickAction;
 import com.synaptix.toast.adapter.web.HasStringValue;
 import com.synaptix.toast.adapter.web.HasSubItems;
+import com.synaptix.toast.adapter.web.HasValueBase;
 import com.synaptix.toast.adapter.constant.Property;
 import com.synaptix.toast.core.adapter.ActionAdapterKind;
 import com.synaptix.toast.core.adapter.AutoSwingType;
@@ -85,18 +86,17 @@ public abstract class AbstractSwingActionAdapter {
 		throws Exception {
 		if(pageField instanceof SwingInputElement) {
 			SwingInputElement input = (SwingInputElement) pageField;
-			input.setInput(text);
+			return input.setInput(text);
 		}
 		else if(pageField instanceof SwingDateElement) {
 			SwingDateElement input = (SwingDateElement) pageField;
-			input.setDateText(text);
+			return input.setDateText(text);
 		}
 		else {
 			throw new IllegalAccessException(String.format(
 				"%s is not handled to type values in !",
 				pageField));
 		}
-		return new TestResult();
 	}
 
 	@Action(action = ClickOnIn, description = "Cliquer sur un composant présent dans un contenant de composant")
@@ -112,8 +112,8 @@ public abstract class AbstractSwingActionAdapter {
 	public TestResult clickOn(SwingAutoElement pageField)
 		throws Exception {
 		HasClickAction input = (HasClickAction) pageField;
-		boolean click = input.click();
-		return new TestResult(String.valueOf(click), click ? ResultKind.SUCCESS : ResultKind.ERROR);
+		TestResult clickResult = input.click();
+		return clickResult;
 	}
 
 	@Action(action = SWING_COMPONENT_REGEX + " exists", description = "Verifier qu'un composant graphique existe")
@@ -132,7 +132,8 @@ public abstract class AbstractSwingActionAdapter {
 	public TestResult count(SwingAutoElement pageField)
 		throws Exception {
 		SwingTableElement table = (SwingTableElement)pageField;
-		return new TestResult(table.count());
+		TestResult countResult = table.count();
+		return new TestResult(countResult.getMessage(),countResult.getResultKind(),countResult.getScreenShot());
 	}
 
 	@Action(action = TypeVarIn, description = "Saisir la valeur d'une variable dans un champs graphique de type input")
@@ -147,12 +148,17 @@ public abstract class AbstractSwingActionAdapter {
 	@Action(action = GetComponentValue, description = "Lire la valeur d'un composant graphique")
 	public TestResult getComponentValue(SwingAutoElement pageField)
 		throws Exception {
-		if(!(pageField instanceof HasStringValue)) {
+		if(!(pageField instanceof HasValueBase<?>)) {
 			throw new IllegalAccessException("Field isn't supporting value fetching !");
 		}
-		HasStringValue stringValueProvider = (HasStringValue) pageField;
-		String value = stringValueProvider.getValue();
-		return new TestResult(value, ResultKind.SUCCESS);
+		HasValueBase<?> result = (HasValueBase<?>) pageField;
+		if(result.getValue() instanceof TestResult){
+			TestResult value = (TestResult)result.getValue();
+			return new TestResult(value.getMessage(), ResultKind.SUCCESS, value.getScreenShot());
+		}else{
+			String value = result.getValue().toString();
+			return new TestResult(value, ResultKind.SUCCESS);
+		}
 	}
 
 	@Action(action = StoreComponentValueInVar,
@@ -185,8 +191,8 @@ public abstract class AbstractSwingActionAdapter {
 		CommandRequest request = new CommandRequest.CommandRequestBuilder(UUID.randomUUID().toString())
 			.with(locator[0])
 			.ofType(AutoSwingType.menu.name()).select(locator[1]).build();
-		String waitForValue = driver.processAndWaitForValue(request);
-		return ResultKind.FAILURE.name().equals(waitForValue) ? new TestResult("Menu {" + menu + "} not found !",
+		TestResult waitForValue = driver.processAndWaitForValue(request);
+		return ResultKind.FAILURE.name().equals(waitForValue.getMessage()) ? new TestResult("Menu {" + menu + "} not found !",
 			ResultKind.FAILURE)
 			: new TestResult("", ResultKind.SUCCESS);
 	}
@@ -225,8 +231,8 @@ public abstract class AbstractSwingActionAdapter {
 			TableCommandRequestQueryCriteria tableCriterion = buildTableCriterion(tableColumnFinder);
 			tableCriteria.add(tableCriterion);
 		}
-		String outputVal = table.find(tableCriteria);
-		return new TestResult(outputVal, ResultKind.SUCCESS);
+		TestResult searchResult = table.find(tableCriteria);
+		return new TestResult(searchResult.getMessage(),ResultKind.SUCCESS,searchResult.getScreenShot());
 	}
 
 	private TableCommandRequestQueryCriteria buildTableCriterion(
@@ -364,8 +370,7 @@ public abstract class AbstractSwingActionAdapter {
 	public TestResult setDate(SwingAutoElement pageField,String days)
 		throws Exception {
 		SwingDateElement input = (SwingDateElement) pageField;
-		input.setInput(days);
-		return new TestResult();
+		return input.setInput(days);
 	}
 
 	@Action(action = VALUE_REGEX + " == " + VALUE_REGEX, description = "Comparer deux variables")

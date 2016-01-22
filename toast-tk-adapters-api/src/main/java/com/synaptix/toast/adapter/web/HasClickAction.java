@@ -2,6 +2,8 @@ package com.synaptix.toast.adapter.web;
 
 import java.util.concurrent.TimeoutException;
 
+import com.synaptix.toast.core.report.TestResult;
+
 /**
  * 
  * @author skokaina
@@ -14,7 +16,7 @@ public interface HasClickAction {
 	 * @throws TimeoutException 
 	 * @throws ErrorResultReceivedException 
 	 */
-	public boolean click()
+	public TestResult click()
 		throws Exception;
 
 	/**

@@ -10,6 +10,9 @@ public class ScanResponse implements IIdRequest {
 
 	public Set<String> value;
 
+	public String b64ScreenShot;
+
+
 	/**
 	 * serialization only
 	 */
@@ -30,5 +33,10 @@ public class ScanResponse implements IIdRequest {
 
 	public Set<String> getComponents() {
 		return value;
+	}
+
+	@Override
+	public String getBase64ScreenShot() {
+		return b64ScreenShot;
 	}
 }

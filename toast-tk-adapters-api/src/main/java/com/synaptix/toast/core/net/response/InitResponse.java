@@ -11,10 +11,21 @@ public class InitResponse implements IIdRequest {
 
 	public String text;
 
+	public String b64ScreenShot;
+
 	public List<String> items = new ArrayList<String>();
+	
+	public InitResponse(){
+		
+	}
 
 	@Override
 	public String getId() {
 		return id;
+	}
+
+	@Override
+	public String getBase64ScreenShot() {
+		return b64ScreenShot;
 	}
 }

@@ -12,7 +12,7 @@ public class TestResult implements ITestResult{
 
 	private String contextualTestSentence;
 
-	private BufferedImage screenShot;
+	private String screenShot;
 
 	// expected to add
 	private ResultKind resultKind;
@@ -41,7 +41,7 @@ public class TestResult implements ITestResult{
 	public TestResult(
 		String message,
 		ResultKind resultKind,
-		BufferedImage img) {
+		String img) {
 		this.message = message;
 		this.isSuccess = resultKind.equals(ResultKind.SUCCESS) || resultKind.equals(ResultKind.INFO);
 		this.setScreenShot(img);
@@ -108,12 +108,12 @@ public class TestResult implements ITestResult{
 		return contextualTestSentence;
 	}
 
-	public BufferedImage getScreenShot() {
+	public String getScreenShot() {
 		return screenShot;
 	}
 
 	public void setScreenShot(
-		BufferedImage screenShot) {
+		String screenShot) {
 		this.screenShot = screenShot;
 	}
 
