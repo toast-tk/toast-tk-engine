@@ -20,6 +20,7 @@ import com.synaptix.toast.core.net.response.ExistsResponse;
 import com.synaptix.toast.core.net.response.InitResponse;
 import com.synaptix.toast.core.net.response.ValueResponse;
 import com.synaptix.toast.core.report.TestResult;
+import com.synaptix.toast.core.report.TestResult.ResultKind;
 import com.synaptix.toast.core.runtime.ErrorResultReceivedException;
 import com.synaptix.toast.core.runtime.ITCPClient;
 import com.synaptix.toast.core.runtime.ITCPResponseReceivedHandler;
@@ -136,8 +137,8 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 	private void handleErrorResponse(
 		Object object) {
 		ErrorResponse response = (ErrorResponse) object;
-		TestResult testResult = new TestResult(response.getMessage(), null);
-		// TODO: manage screenshots
+		TestResult testResult = new TestResult(response.getMessage(),ResultKind.ERROR);
+		// TODO: manage screenshots - Request a screenshot
 		if(valueResponseMap.keySet().contains(response.getId())) {
 			valueResponseMap.put(response.getId(), testResult);
 		}

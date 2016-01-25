@@ -165,13 +165,13 @@ public abstract class AbstractSwingActionAdapter {
 		description = "Lire la valeur d'un composant graphique et la stocker dans une variable")
 	public TestResult selectComponentValue(SwingAutoElement pageField,String variable)
 		throws Exception {
-		if(!(pageField instanceof HasStringValue)) {
+		if(!(pageField instanceof HasValueBase)) {
 			throw new IllegalAccessException("Field isn't supporting value fetching !");
 		}
-		HasStringValue stringValueProvider = (HasStringValue) pageField;
-		String value = stringValueProvider.getValue();
-		repo.getUserVariables().put(variable, value);
-		return new TestResult(value, ResultKind.SUCCESS);
+		HasValueBase<TestResult> stringValueProvider = (HasValueBase<TestResult>) pageField;
+		TestResult result = stringValueProvider.getValue();
+		repo.getUserVariables().put(variable, result.getMessage());
+		return result;
 	}
 
 	@Action(action = Wait, description = "Attendre n secondes avant la prochaine action")
@@ -247,9 +247,11 @@ public abstract class AbstractSwingActionAdapter {
 	public TestResult selectCtxMenu(
 		String menu)
 		throws Exception {
-		driver.process(new CommandRequest.CommandRequestBuilder(null).with(menu).ofType(AutoSwingType.menu.name())
-			.select(menu).build());
-		return new TestResult();
+		String uid = UUID.randomUUID().toString();
+		CommandRequest commandRequest = new CommandRequest.CommandRequestBuilder(uid).with(menu).ofType(AutoSwingType.menu.name())
+			.select(menu).build();
+		TestResult result = driver.processAndWaitForValue(commandRequest);
+		return result;
 	}
 
 	@Action(action = "Affichage dialogue {{value:string}}", description = "Afichage d'une dialogue")

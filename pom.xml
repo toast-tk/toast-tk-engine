@@ -342,6 +342,24 @@
 	</repositories>
 	<profiles>
 		<profile>
+			<id>DEPLOY_NEXUS_SNCF</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<distributionManagement>
+				<repository>
+					<id>sncf-releases</id>
+					<name>Inhouse Releases Repository</name>
+					<url>http://x64ertbidv3.si.fret.sncf.fr:8091/nexus/content/repositories/releases/</url>
+				</repository>
+				<snapshotRepository>
+					<id>sncf-snapshots</id>
+					<name>Inhouse Snapshots Repository</name>
+					<url>http://x64ertbidv3.si.fret.sncf.fr:8091/nexus/content/repositories/snapshots/</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+		<profile>
 			<id>DEPLOY_NEXUS_SYNAPTIX</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>

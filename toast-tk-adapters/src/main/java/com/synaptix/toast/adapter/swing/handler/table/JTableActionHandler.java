@@ -107,8 +107,7 @@ public class JTableActionHandler implements
 			boolean found = findRowByCriteria(tFixture, tcommand, i, totalFound);
 			if (found) {
 				if (tcommand.query.resultCol != null) {
-					JTableCellFixture cell = tFixture.cell(TableCellByColumnId
-							.row(i).columnId(tcommand.query.resultCol));
+					JTableCellFixture cell = tFixture.cell(TableCellByColumnId.row(i).columnId(tcommand.query.resultCol));
 					cell.select();
 					return cell.value();
 				} else {
