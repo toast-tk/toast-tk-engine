@@ -231,6 +231,14 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy-plugin.version}</version>
+				<configuration>
+					<deployAtEnd>true</deployAtEnd>
+				</configuration>
+			</plugin>
 		</plugins>
 
 		<pluginManagement>
@@ -364,68 +372,6 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jar-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>default</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-								<phase>package</phase>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-deploy-plugin</artifactId>
-						<version>${maven-deploy-plugin.version}</version>
-						<configuration>
-							<repositoryId>synaptix-snapshots-repository</repositoryId>
-							<url>http://nexus.synaptix-labs.com/content/repositories/snapshots/</url>
-							<file>${basedir}/target/${project.artifactId}-${project.version}.jar</file>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>${project.artifactId}</artifactId>
-							<version>${project.version}</version>
-							<packaging>jar</packaging>
-						</configuration>
-						<executions>
-							<execution>
-								<id>custom_deploy</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>deploy-file</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin> 
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-install-plugin</artifactId>
-						<version>2.4</version>
-						<configuration>
-							<file>${basedir}/target/${project.artifactId}-${project.version}.jar</file>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>${project.artifactId}</artifactId>
-							<version>${project.version}</version>
-							<createChecksum>true</createChecksum>
-							<packaging>jar</packaging>
-						</configuration>
-						<executions>
-							<execution>
-								<id>install-pom</id>
-								<phase>install</phase>
-								<goals>
-									<goal>install-file</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 			<distributionManagement>
 				<repository>
 					<id>synaptix-releases-repository</id>
@@ -434,7 +380,7 @@
 				<snapshotRepository>
 					<id>synaptix-snapshots-repository</id>
 					<url>http://nexus.synaptix-labs.com/content/repositories/snapshots/</url>
-				</snapshotRepository> 
+				</snapshotRepository>
 			</distributionManagement>
 		</profile>
 	</profiles>
