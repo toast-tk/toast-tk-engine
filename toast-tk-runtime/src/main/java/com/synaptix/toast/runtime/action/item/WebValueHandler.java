@@ -35,6 +35,9 @@ public class WebValueHandler implements IValueHandler{
 
 	private WebAutoElement getPageField(String pageName, String fieldName) {
 		DefaultWebPage page = (DefaultWebPage) objectRepository.getPage(pageName);
+		if (page == null) {
+			return null;
+		}
 		WebAutoElement autoElement = page.getAutoElement(fieldName);
 		return autoElement;
 	}

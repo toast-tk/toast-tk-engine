@@ -32,7 +32,7 @@ public class XMLValueHandler implements IValueHandler{
 		InputStream stream = new ByteArrayInputStream(argValue.getBytes(StandardCharsets.UTF_8));
 		Object value = jaxbUnmarshaller.unmarshal(stream);
 		objectRepository.getUserVariables().put(group, value);
-		return null;
+		return value;
 	}
 
 	@Override

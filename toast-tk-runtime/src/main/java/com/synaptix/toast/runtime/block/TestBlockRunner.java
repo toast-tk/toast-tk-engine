@@ -9,9 +9,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.script.ScriptException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -86,9 +87,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	/**
 	 * invoke the method matching the test line descriptor
-	 * 
-	 * @param descriptor:
-	 *            descriptor of current test line
+	 *
+	 * @param descriptor: descriptor of current test line
 	 * @return
 	 * @throws IllegalAccessException
 	 * @throws ClassNotFoundException
@@ -128,7 +128,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	/**
 	 * If no class is implementing the command then process it as a custom
 	 * command action request sent through network
-	 * 
+	 *
 	 * @param descriptor
 	 * @return
 	 */
@@ -141,7 +141,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	}
 
 	private TestResult runThroughLocalActionAdapter(
-			TestLineDescriptor descriptor, 
+			TestLineDescriptor descriptor,
 			Class<?> actionAdapter) {
 		final TestResult result;
 		final String command = descriptor.getActionImpl();
@@ -154,9 +154,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	/**
 	 * Locate among registered ActionAdapters the best match to execute the
 	 * action command
-	 * 
-	 * @param action
-	 *            adapter kind (swing, web, service)
+	 *
+	 * @param action adapter kind (swing, web, service)
 	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws IllegalAccessException
@@ -262,7 +261,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	protected Object[] buildArgumentList(ActionCommandDescriptor execDescriptor) throws Exception {
 		Matcher matcher = execDescriptor.matcher;
-		matcher.matches();
+		boolean matches = matcher.matches();
 		int groupCount = matcher.groupCount();
 		int argPos = 0;
 		Object[] args = new Object[groupCount];
@@ -274,11 +273,15 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 				String argValue = (String) obj;
 				int argIndex = execDescriptor.isMappedMethod() ? argumentDescriptor.index : i;
 				IValueHandler valueHanlder = actionItemValueProvider.get(argumentDescriptor, injector);
-				args[argIndex] = valueHanlder == null ? group : valueHanlder.handle(group, argValue);
+				Object argument = valueHanlder == null ? group : valueHanlder.handle(group, argValue);
+				if (argument == null) {
+					throw new ScriptException("Element " + argValue + " was not defined");
+				}
+				args[argIndex] = argument;
 			} else {
 				args[i] = obj;
 			}
-			if (isVariable(group) 
+			if (isVariable(group)
 					|| argumentDescriptor.typeEnum.equals(ActionTypeEnum.web)
 					|| argumentDescriptor.typeEnum.equals(ActionTypeEnum.swing)) {
 				argPos++;
@@ -305,10 +308,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	/**
 	 * find the method in the action adapter class matching the command
-	 * 
+	 *
 	 * @param actionImpl
-	 * @param Action
-	 *            Adapter Class
+	 * @param Action     Adapter Class
 	 * @return
 	 */
 	public ActionCommandDescriptor findMatchingAction(final String actionImpl, final Class<?> actionAdapterClass) {
@@ -318,11 +320,11 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		for (Method actionMethod : actionMethods) {
 			final Action mainAction = actionMethod.getAnnotation(Action.class);
 			foundMethod = matchMethod(actionImpl, mainAction.action(), actionMethod);
-			if(foundMethod != null){
+			if (foundMethod != null) {
 				return foundMethod;
-			}else if(adapter != null && hasMapping(mainAction, adapter)){
+			} else if (adapter != null && hasMapping(mainAction, adapter)) {
 				foundMethod = matchAgainstActionIdMapping(actionImpl, adapter.name(), actionMethod, mainAction);
-				if(foundMethod != null){
+				if (foundMethod != null) {
 					return foundMethod;
 				}
 			}
@@ -335,7 +337,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private boolean hasMapping(Action mainAction, ActionAdapter adapter) {
 		final String actionId = mainAction.id();
-		return adapter != null 
+		return adapter != null
 				&& hasId(mainAction)
 				&& ActionSentenceMappingProvider.hasMappingForAction(adapter.name(), actionId);
 	}
@@ -346,8 +348,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		String actionMapping = ActionSentenceMappingProvider.getMappingForAction(adapterName, mainAction.id());
 		String alternativeAction = buildSustituteAction(mainAction, actionMapping);
 		//TODO: change mapping index position
-		foundMethod = matchMethod(actionImpl, alternativeAction, actionMethod); 
-		if(foundMethod != null){
+		foundMethod = matchMethod(actionImpl, alternativeAction, actionMethod);
+		if (foundMethod != null) {
 			foundMethod.setIsMappedMethod(true);
 			foundMethod.setActionMapping(actionMapping);
 			updateArgumentIndex(foundMethod);
@@ -355,34 +357,32 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		return foundMethod;
 	}
 
-	
 	private void updateArgumentIndex(ActionCommandDescriptor foundMethod) {
 		Pattern regexPattern = Pattern.compile("\\$(\\d)");
 		Matcher matcher = regexPattern.matcher(foundMethod.getActionMapping());
 		int pos = 0;
 		List<Integer> indexes = new ArrayList<Integer>();
-		while(matcher.find()){
+		while (matcher.find()) {
 			indexes.add(Integer.valueOf(matcher.group(1)));
 		}
-		for(ArgumentDescriptor aDescriptor: foundMethod.descriptor.arguments){
+		for (ArgumentDescriptor aDescriptor : foundMethod.descriptor.arguments) {
 			aDescriptor.index = indexes.get(pos) - 1;
 			pos++;
 		}
 	}
 
-
-	private class ActionIndex{
+	private class ActionIndex {
 		String item;
 		Integer start;
 		Integer end;
 	}
-	
+
 	protected String buildSustituteAction(Action mainAction, String mapping) {
 		Pattern regexPattern = ActionItemRegexHolder.getFullMetaPattern();
 		String action = mainAction.action();
 		Matcher matcher = regexPattern.matcher(action);
 		List<ActionIndex> actionItems = new ArrayList<>();
-		while(matcher.find()){
+		while (matcher.find()) {
 			ActionIndex index = new ActionIndex();
 			index.item = matcher.group(0);
 			index.start = matcher.start();
@@ -390,7 +390,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			actionItems.add(index);
 		}
 		for (ActionIndex actionItem : actionItems) {
-			String index = "$"+(actionItems.indexOf(actionItem)+1);
+			String index = "$" + (actionItems.indexOf(actionItem) + 1);
 			mapping = mapping.replace(index, actionItem.item);
 		}
 		return mapping;
@@ -482,7 +482,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	public void setObjectRepository(IActionItemRepository repository) {
 		this.objectRepository = repository;
 	}
-	
+
 	public void setActionItemValueProvider(ActionItemValueProvider repository) {
 		this.actionItemValueProvider = repository;
 	}
