@@ -261,14 +261,12 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	protected Object[] buildArgumentList(ActionCommandDescriptor execDescriptor) throws Exception {
 		Matcher matcher = execDescriptor.matcher;
-		boolean matches = matcher.matches();
 		int groupCount = matcher.groupCount();
-		int argPos = 0;
 		Object[] args = new Object[groupCount];
 		for (int i = 0; i < groupCount; i++) {
 			String group = matcher.group(i + 1);
 			Object obj = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
-			ArgumentDescriptor argumentDescriptor = execDescriptor.descriptor.arguments.get(argPos);
+			ArgumentDescriptor argumentDescriptor = execDescriptor.descriptor.arguments.get(i);
 			if (obj instanceof String) {
 				String argValue = (String) obj;
 				int argIndex = execDescriptor.isMappedMethod() ? argumentDescriptor.index : i;
@@ -281,7 +279,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			} else {
 				args[i] = obj;
 			}
-			argPos++;
 		}
 		return args;
 	}
