@@ -7,6 +7,9 @@ public interface IFeedableWebPage {
 	 * 
 	 * @param locator
 	 */
-	public void initElement(
-		IWebElement locator);
+	public void initElement(IWebElement locator);
+
+	public IWebAutoElement<?> getAutoElement(String fieldName);
+
+	public void addElement(String elementName, String type, String method, String locator, Integer position);
 }

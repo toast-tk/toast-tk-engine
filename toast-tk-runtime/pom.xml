@@ -19,6 +19,7 @@
 	<properties>
 		<xml.api.version>1.4.01</xml.api.version>
 		<thymeleaf.version>2.1.4.RELEASE</thymeleaf.version>
+		<yaml.version>1.16</yaml.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -27,10 +28,27 @@
 			<version>${thymeleaf.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.16</version>
+		</dependency>
+		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
 			<version>${xml.api.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.1</version>
+			<scope>test</scope>
+		</dependency>
+			
 		<!-- Toast Dependencies -->
 		<dependency>
 			<groupId>com.synaptix.toast</groupId>
@@ -56,7 +74,7 @@
 			<groupId>com.synaptix.toast</groupId>
 			<artifactId>toast-tk-rest-utils</artifactId>
 			<version>${project.version}</version>
-		</dependency>		
+		</dependency>
 	</dependencies>
 </project>
 

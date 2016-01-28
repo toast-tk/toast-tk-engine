@@ -72,4 +72,10 @@ public class ObjectRepositorySetup implements IActionItemRepository {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void addPage(String fixtureName, IFeedableWebPage webPage) {
+		// TODO Auto-generated method stub
+		
+	}
 }

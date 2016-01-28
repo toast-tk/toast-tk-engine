@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import com.google.inject.Inject;
 import com.synaptix.toast.adapter.swing.component.DefaultSwingPage;
 import com.synaptix.toast.adapter.utils.ActionAdapterHelper;
-import com.synaptix.toast.adapter.web.component.DefaultWebPage;
 import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.core.report.TestResult.ResultKind;
 import com.synaptix.toast.core.runtime.IFeedableSwingPage;
@@ -168,11 +167,6 @@ public class ActionItemRepository implements IActionItemRepository {
 		return null;
 	}
 
-	public void addPage(
-		String entityName) {
-		pages.put(entityName, new DefaultWebPage());
-	}
-
 	public void addSwingPage(
 		String fixtureName) {
 		swingpages.put(fixtureName, new DefaultSwingPage());
@@ -232,5 +226,15 @@ public class ActionItemRepository implements IActionItemRepository {
 		services.clear();
 		pages.clear();
 		swingpages.clear();
+	}
+
+	@Override
+	public void addPage(String fixtureName) {
+		
+	}
+
+	@Override
+	public void addPage(String fixtureName, IFeedableWebPage webPage) {
+		pages.put(fixtureName, webPage);		
 	}
 }

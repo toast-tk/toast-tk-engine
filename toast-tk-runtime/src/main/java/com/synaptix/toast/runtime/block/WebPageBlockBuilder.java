@@ -3,6 +3,7 @@ package com.synaptix.toast.runtime.block;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.synaptix.toast.adapter.web.component.DefaultWebPage;
+import com.synaptix.toast.core.runtime.IFeedableWebPage;
 import com.synaptix.toast.dao.domain.impl.test.block.WebPageBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine;
 import com.synaptix.toast.runtime.IActionItemRepository;
@@ -14,8 +15,7 @@ public  class WebPageBlockBuilder implements IBlockRunner<WebPageBlock>{
 	
 	@Override
 	public void run(WebPageBlock block) {
-		objectRepository.addPage(block.getFixtureName());
-		DefaultWebPage webPage = (DefaultWebPage) objectRepository.getPage(block.getFixtureName());
+		DefaultWebPage webPage = new DefaultWebPage();
 		for(WebPageConfigLine line : block.getBlockLines()) {
 			webPage.addElement(
 				line.getElementName(),
@@ -23,7 +23,8 @@ public  class WebPageBlockBuilder implements IBlockRunner<WebPageBlock>{
 				line.getMethod(),
 				line.getLocator(),
 				line.getPosition());
-		}		
+		}	
+		objectRepository.addPage(block.getFixtureName(), webPage);
 	}
 
 	@Override

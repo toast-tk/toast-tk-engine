@@ -5,22 +5,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.synaptix.toast.adapter.web.component.DefaultWebElement;
-import com.synaptix.toast.adapter.web.component.WebAutoElement;
 import com.synaptix.toast.automation.driver.web.SynchronizedDriver;
 import com.synaptix.toast.core.adapter.AutoWebType;
 import com.synaptix.toast.core.runtime.IFeedableWebPage;
+import com.synaptix.toast.core.runtime.IWebAutoElement;
 import com.synaptix.toast.core.runtime.IWebElement;
 import com.synaptix.toast.core.runtime.IWebElement.LocationMethod;
 
 /**
  * 
  * Page fixture abstraction, initializes fixture elements's locators based on wiki definitions
- * 
- * @author skokaina
  * 
  */
 public abstract class AbstractWebPage implements IFeedableWebPage {
@@ -29,9 +28,12 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 
 	Map<String, IWebElement> elements = new HashMap<String, IWebElement>();
 
-	protected Map<String, WebAutoElement> autoElements = new HashMap<String, WebAutoElement>();
+	protected Map<String, IWebAutoElement<?>> autoElements = new HashMap<String, IWebAutoElement<?>>();
 
 	private String pageName;
+	
+	private static ServiceLoader<IWebElementFactory> factoryLoader = ServiceLoader.load(IWebElementFactory.class);
+	
 
 	/**
 	 * 
@@ -62,8 +64,12 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 		elements.put(name, defaultWebElement);
 		try {
 			IWebElement iWebElement = elements.get(name);
+			IWebElementFactory factory = factoryLoader.iterator().next();
+			if(factory == null){
+				throw new IllegalAccessError("No Web Element Factory declared !");
+			}
 			if(iWebElement != null) {
-				WebAutoElement execAutoClass = WebElementFactory.getElement(iWebElement);
+				IWebAutoElement<?> execAutoClass = factory.getElement(iWebElement);
 				initBeanFields(name, execAutoClass);
 				autoElements.put(name, execAutoClass);
 			}
@@ -78,10 +84,10 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 
 	private void initBeanFields(
 		String name,
-		WebAutoElement execAutoClass) {
+		IWebAutoElement<?> execAutoClass) {
 		for(Field f : this.getClass().getFields()) {
 			Class<?> automationClass = f.getType();
-			if(WebAutoElement.class.isAssignableFrom(automationClass)) {
+			if(IWebAutoElement.class.isAssignableFrom(automationClass)) {
 				if(f.getName().equals(name)) {
 					try {
 						BeanUtils.setProperty(this, name, execAutoClass);
@@ -105,7 +111,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 	/**
 	 * Convenient method to call an element based on the page enclosed fields' enum
 	 */
-	public WebAutoElement getAutoElement(
+	public IWebAutoElement<?> getAutoElement(
 		String token) {
 		return autoElements.get(token);
 	}
@@ -135,9 +141,8 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 	/**
 	 * set the driver that will be used by the automation elements
 	 */
-	public void setDriver(
-		SynchronizedDriver sDvr) {
-		for(WebAutoElement el : autoElements.values()) {
+	public void setDriver(SynchronizedDriver<?, ?> sDvr) {
+		for(IWebAutoElement<?> el : autoElements.values()) {
 			el.setFrontEndDriver(sDvr);
 		}
 	}
