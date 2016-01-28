@@ -1,12 +1,11 @@
 package com.synaptix.toast.runtime.action.item;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.WebElement;
 
 import com.google.gson.Gson;
 import com.google.inject.Injector;
-import com.synaptix.toast.adapter.web.component.DefaultWebPage;
-import com.synaptix.toast.adapter.web.component.WebAutoElement;
+import com.synaptix.toast.core.runtime.IFeedableWebPage;
+import com.synaptix.toast.core.runtime.IWebAutoElement;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 
@@ -33,13 +32,12 @@ public class WebValueHandler implements IValueHandler{
 		this.descriptor = descriptor;
 	}
 
-	private WebAutoElement getPageField(String pageName, String fieldName) {
-		DefaultWebPage page = (DefaultWebPage) objectRepository.getPage(pageName);
+	private IWebAutoElement<?> getPageField(String pageName, String fieldName) {
+		IFeedableWebPage page = (IFeedableWebPage) objectRepository.getPage(pageName);
 		if (page == null) {
 			return null;
 		}
-		WebAutoElement autoElement = page.getAutoElement(fieldName);
-		return autoElement;
+		return page.getAutoElement(fieldName);
 	}
 
 }

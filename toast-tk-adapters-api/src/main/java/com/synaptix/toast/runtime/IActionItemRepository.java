@@ -38,4 +38,6 @@ public interface IActionItemRepository {
 		Map<String, Object> userVariables);
 
 	public Map<String, Object> getUserVariables();
+
+	public void addPage(String fixtureName, IFeedableWebPage webPage);
 }

@@ -1,11 +1,8 @@
 package com.synaptix.toast.automation.driver.web;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
 import com.synaptix.toast.core.runtime.IWebElement;
 
-public interface SynchronizedDriver {
+public interface SynchronizedDriver<E,D> {
 
 	/**
 	 * 
@@ -13,7 +10,7 @@ public interface SynchronizedDriver {
 	 *            locator description
 	 * @return
 	 */
-	public WebElement find(
+	public E find(
 		IWebElement element);
 
 	/**
@@ -21,5 +18,5 @@ public interface SynchronizedDriver {
 	 * 
 	 * @return
 	 */
-	public WebDriver getWebDriver();
+	public D getWebDriver();
 }

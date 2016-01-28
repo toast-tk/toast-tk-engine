@@ -5,17 +5,12 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.script.ScriptException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.fest.assertions.Assertions;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -23,11 +18,6 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.synaptix.toast.adapter.swing.AbstractSwingActionAdapter;
-import com.synaptix.toast.adapter.web.AbstractWebActionAdapter;
-import com.synaptix.toast.adapter.web.component.DefaultWebElement;
-import com.synaptix.toast.adapter.web.component.WebAutoElement;
-import com.synaptix.toast.core.adapter.AutoWebType;
-import com.synaptix.toast.core.runtime.IWebElement;
 import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
@@ -199,7 +189,7 @@ public class BlockRunnerTestCase {
 		Assert.assertEquals(args.length, 2);
 		Assert.assertEquals(args[1], repo.getUserVariables().get("$url"));
 	}
-
+	/*
 	@Test
 	public void testRunnerElementNotFoundError() throws Exception {
 		TestBlockRunner blockRunner = new TestBlockRunner();
@@ -260,6 +250,6 @@ public class BlockRunnerTestCase {
 		Assert.assertNotNull(args[0]);
 		Assert.assertNotNull(args[1]);
 		Assertions.assertThat(args[1]).isInstanceOf(WebAutoElement.class);
-	}
+	}*/
 
 }

@@ -2,7 +2,6 @@ package com.synaptix.toast.adapter.web.component;
 
 import com.synaptix.toast.core.adapter.AutoWebType;
 import com.synaptix.toast.core.runtime.IWebElement;
-import com.synaptix.toast.core.runtime.IWebElement.LocationMethod;
 
 public class DefaultWebElement implements IWebElement {
 

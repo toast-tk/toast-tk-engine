@@ -41,13 +41,7 @@
 		<build-helper-maven-plugin>1.7</build-helper-maven-plugin>
 		<maven-processor-plugin.version>2.2.1</maven-processor-plugin.version>
 		<lifecycle-mapping-plugin.version>1.0.0</lifecycle-mapping-plugin.version>
-		<gwt.bootstrap.version>2.1.1.1</gwt.bootstrap.version>
-		<gwt-maven-plugin.version>2.4.0</gwt-maven-plugin.version>
 		<org.reflection.version>0.9.9-RC1</org.reflection.version>
-		<gwt.version>2.4.0</gwt.version>
-		<gwt.maven>2.4.0</gwt.maven>
-		<gwtp.version>1.0.1</gwtp.version>
-		<gin.version>1.5.0</gin.version>
 		<guice.version>3.0</guice.version>
 		<joda-time.version>2.1</joda-time.version>
 		<log4j.version>2.2</log4j.version>

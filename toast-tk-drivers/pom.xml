@@ -10,7 +10,7 @@
 	<artifactId>toast-tk-drivers</artifactId>
 	<name>Toast Toolkit - SUT Drivers</name>
 	<properties>
-		<selenium.version>2.47.1</selenium.version>
+		
 		<fest.version>1.2.1</fest.version>
 	</properties>
 	<description>
@@ -24,13 +24,6 @@
 			<groupId>org.easytesting</groupId>
 			<artifactId>fest-swing</artifactId>
 			<version>${fest.version}</version>
-		</dependency>
-		
-	    <!-- Selenium driver -->
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-server</artifactId>
-			<version>${selenium.version}</version>
 		</dependency>
 		
 		<!-- Toast -->
