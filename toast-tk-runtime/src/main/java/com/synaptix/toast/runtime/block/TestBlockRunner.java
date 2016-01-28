@@ -281,11 +281,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			} else {
 				args[i] = obj;
 			}
-			if (isVariable(group)
-					|| argumentDescriptor.typeEnum.equals(ActionTypeEnum.web)
-					|| argumentDescriptor.typeEnum.equals(ActionTypeEnum.swing)) {
-				argPos++;
-			}
+			argPos++;
 		}
 		return args;
 	}
