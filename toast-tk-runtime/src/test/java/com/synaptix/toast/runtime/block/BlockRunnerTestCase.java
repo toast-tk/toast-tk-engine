@@ -24,6 +24,10 @@ import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.synaptix.toast.adapter.swing.AbstractSwingActionAdapter;
 import com.synaptix.toast.adapter.web.AbstractWebActionAdapter;
+import com.synaptix.toast.adapter.web.component.DefaultWebElement;
+import com.synaptix.toast.adapter.web.component.WebAutoElement;
+import com.synaptix.toast.core.adapter.AutoWebType;
+import com.synaptix.toast.core.runtime.IWebElement;
 import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
@@ -229,6 +233,33 @@ public class BlockRunnerTestCase {
 		expectedEx.expect(ScriptException.class);
 		expectedEx.expectMessage("Element MyNotDefinedPage.widget was not defined");
 		blockRunner.buildArgumentList(method);
+	}
+
+	@Test
+	public void testWebSelectInAdapter() {
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
+		repo.addPage("MyPage");
+		DefaultWebElement locator = new DefaultWebElement("comboBox", AutoWebType.select, "idComboBox", IWebElement.LocationMethod.ID, 0);
+		repo.getPage("MyPage").initElement(locator);
+
+		blockRunner.setInjector(injector);
+		blockRunner.setObjectRepository(repo);
+
+		ActionCommandDescriptor method = blockRunner.findMatchingAction("Select *2* in *MyPage.comboBox*", AbstractWebActionAdapter.class);
+
+		Object[] args = null;
+		try {
+			args = blockRunner.buildArgumentList(method);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		Assert.assertNotNull(args);
+		Assert.assertEquals(args.length, 2);
+		Assert.assertNotNull(args[0]);
+		Assert.assertNotNull(args[1]);
+		Assertions.assertThat(args[1]).isInstanceOf(WebAutoElement.class);
 	}
 
 }
