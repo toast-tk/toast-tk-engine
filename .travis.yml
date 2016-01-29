@@ -4,5 +4,5 @@ jdk:
 deploy:
  provider: script
  script: mvn deploy --settings ./settings.xml -PDEPLOY_NEXUS_SYNAPTIX
-# on:
-#  branch: all
+ on:
+  branch: build
