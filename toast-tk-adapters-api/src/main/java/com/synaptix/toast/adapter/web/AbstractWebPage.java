@@ -32,9 +32,10 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 
 	private String pageName;
 	
+	public IWebElement containerLocator;
+	
 	private static ServiceLoader<IWebElementFactory> factoryLoader = ServiceLoader.load(IWebElementFactory.class);
 	
-
 	/**
 	 * 
 	 * @param elementDefinition
@@ -70,6 +71,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 			}
 			if(iWebElement != null) {
 				IWebAutoElement<?> execAutoClass = factory.getElement(iWebElement);
+				execAutoClass.setContainer(this);
 				initBeanFields(name, execAutoClass);
 				autoElements.put(name, execAutoClass);
 			}
@@ -145,5 +147,15 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 		for(IWebAutoElement<?> el : autoElements.values()) {
 			el.setFrontEndDriver(sDvr);
 		}
+	}
+	
+	@Override
+	public void setLocator(IWebElement locator) {
+		this.containerLocator = locator;
+	}
+
+	@Override
+	public IWebElement getLocator() {
+		return this.containerLocator;
 	}
 }

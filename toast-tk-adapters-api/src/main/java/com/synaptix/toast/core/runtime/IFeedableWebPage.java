@@ -12,4 +12,8 @@ public interface IFeedableWebPage {
 	public IWebAutoElement<?> getAutoElement(String fieldName);
 
 	public void addElement(String elementName, String type, String method, String locator, Integer position);
+	
+	public void setLocator(IWebElement locator);
+	
+	public IWebElement getLocator();
 }

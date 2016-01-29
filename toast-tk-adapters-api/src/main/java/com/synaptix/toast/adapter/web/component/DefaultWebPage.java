@@ -12,4 +12,5 @@ public class DefaultWebPage extends AbstractWebPage {
 		Integer position) {
 		super.initElement(name, type, method, locator, position);
 	}
+
 }

@@ -9,5 +9,6 @@ public enum AutoWebType {
 	table,
 	list,
 	checkbox,
+	component,
 	other
 }
