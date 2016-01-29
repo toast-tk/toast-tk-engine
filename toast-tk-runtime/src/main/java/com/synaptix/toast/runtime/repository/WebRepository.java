@@ -13,22 +13,22 @@ public class WebRepository implements IRepository<IFeedableWebPage> {
 	
 	@Override
 	public IFeedableWebPage get(String entityName) {
-		return null;
+		return pages.get(entityName);
 	}
 
 	@Override
 	public Collection<IFeedableWebPage> getAll() {
-		return null;
+		return pages.values();
 	}
 
 	@Override
 	public void add(String entityName, IFeedableWebPage entity) {
-		
+		pages.put(entityName, entity);
 	}
 
 	@Override
 	public Map<String, IFeedableWebPage> getMap() {
-		return null;
+		return pages;
 	}
 
 	@Override
