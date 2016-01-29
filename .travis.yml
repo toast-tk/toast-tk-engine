@@ -3,6 +3,6 @@ jdk:
   - oraclejdk8
 deploy:
  provider: script
- script: deploy.sh
+ script: mvn deploy --settings ~/settings.xml br -PDEPLOY_NEXUS_SYNAPTIX
  on:
   branch: master
