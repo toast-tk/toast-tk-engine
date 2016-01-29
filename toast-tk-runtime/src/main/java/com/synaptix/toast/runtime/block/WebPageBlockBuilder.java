@@ -24,7 +24,7 @@ public  class WebPageBlockBuilder implements IBlockRunner<WebPageBlock>{
 				line.getLocator(),
 				line.getPosition());
 		}	
-		objectRepository.addPage(block.getFixtureName(), webPage);
+		objectRepository.addWebPage(block.getFixtureName(), webPage);
 	}
 
 	@Override

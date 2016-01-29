@@ -29,34 +29,6 @@ public class DefaultRepositorySetup implements IActionItemRepository {
 	}
 
 	@Override
-	public void addPage(
-		String fixtureName) {
-	}
-
-	@Override
-	public TestResult addClass(
-		String className,
-		String testName,
-		String searchBy) {
-		return null;
-	}
-
-
-	@Override
-	public Class<?> getService(
-		String fixtureName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IFeedableWebPage getPage(
-		String fixtureName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void setUserVariables(
 		Map<String, Object> userVariables) {
 		this.userVariables = userVariables;
@@ -74,8 +46,21 @@ public class DefaultRepositorySetup implements IActionItemRepository {
 	}
 
 	@Override
-	public void addPage(String fixtureName, IFeedableWebPage webPage) {
+	public IFeedableWebPage getWebPage(String entityName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void clear() {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void addWebPage(String fixtureName, IFeedableWebPage webPage) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
