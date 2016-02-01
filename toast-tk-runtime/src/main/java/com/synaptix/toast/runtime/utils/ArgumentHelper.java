@@ -136,11 +136,9 @@ public class ArgumentHelper {
 				return object;
 			}
 			if(isInputVariable(group)) {
-				if(object != null && object instanceof String) {
-					String value = (String) object;
-					value = handleValueWithNestedVars(repoSetup, value);
-					object = value;
-				}
+				String value = (String) object;
+				value = handleValueWithNestedVars(repoSetup, value);
+				object = value;
 				return object;
 			}
 		}

@@ -9,7 +9,7 @@ import com.synaptix.toast.runtime.IRepository;
 
 public class SwingRepository implements IRepository<IFeedableSwingPage> {
 
-	Map<String, IFeedableSwingPage> swingpages = new HashMap<String, IFeedableSwingPage>();
+	Map<String, IFeedableSwingPage> swingpages = new HashMap<>();
 	
 	@Override
 	public IFeedableSwingPage get(String entityName) {

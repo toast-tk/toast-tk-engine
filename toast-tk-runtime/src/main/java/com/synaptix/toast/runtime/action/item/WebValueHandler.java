@@ -36,7 +36,7 @@ public class WebValueHandler implements IValueHandler{
 		else if (components.length == 2){
 			return getPageField(components[0], components[1]);
 		}else{
-			ArrayIterator<String> componentIterator = new ArrayIterator<String>(components, 1, components.length - 1);
+			ArrayIterator<String> componentIterator = new ArrayIterator<>(components, 1, components.length - 1);
 			String containerName = components[0];
 			String pageName = null;
 			while(componentIterator.hasNext()){
@@ -44,7 +44,7 @@ public class WebValueHandler implements IValueHandler{
 				if(pageName.contains(":")){
 					IWebAutoElement<?> autoElement = getPageField(containerName, pageName);
 					pageName = StringUtils.split(pageName, ":")[0];
-					IFeedableWebPage webPage = (IFeedableWebPage) objectRepository.getWebPage(pageName);
+					IFeedableWebPage webPage = objectRepository.getWebPage(pageName);
 					webPage.setLocator(autoElement.getWrappedElement());
 					containerName = pageName;
 				}
@@ -59,7 +59,7 @@ public class WebValueHandler implements IValueHandler{
 	}
 
 	private IWebAutoElement<?> getPageField(String pageName, String fieldName) {
-		IFeedableWebPage page = (IFeedableWebPage) objectRepository.getWebPage(pageName);
+		IFeedableWebPage page = objectRepository.getWebPage(pageName);
 		if (page == null) {
 			return null;
 		}
