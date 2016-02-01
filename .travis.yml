@@ -7,4 +7,4 @@ deploy:
  on:
   branch: master
 after_success:
-  - mvn --batch-mode verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.0.1:sonar -Dsonar.host.url=${SONAR_URL}:9000 -Dsonar.login=${SONAR_LOGIN}
+  - mvn --batch-mode verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.0.1:sonar -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN}
