@@ -1,9 +1,9 @@
 package com.synaptix.toast.adapter.web.component;
 
 import com.synaptix.toast.core.adapter.AutoWebType;
-import com.synaptix.toast.core.runtime.IWebElement;
+import com.synaptix.toast.core.runtime.IWebElementDescriptor;
 
-public class DefaultWebElement implements IWebElement {
+public class DefaultWebElement implements IWebElementDescriptor {
 
 	public String locator;
 

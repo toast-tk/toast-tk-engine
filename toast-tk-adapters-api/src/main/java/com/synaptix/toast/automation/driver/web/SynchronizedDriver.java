@@ -2,7 +2,7 @@ package com.synaptix.toast.automation.driver.web;
 
 import java.util.List;
 
-import com.synaptix.toast.core.runtime.IWebElement;
+import com.synaptix.toast.core.runtime.IWebElementDescriptor;
 
 public interface SynchronizedDriver<E,D> {
 
@@ -13,7 +13,7 @@ public interface SynchronizedDriver<E,D> {
 	 * @return
 	 */
 	public E find(
-		IWebElement element);
+		IWebElementDescriptor element);
 
 	/**
 	 * selenium driver
@@ -22,5 +22,5 @@ public interface SynchronizedDriver<E,D> {
 	 */
 	public D getWebDriver();
 
-	List<E> findAll(IWebElement element);
+	List<E> findAll(IWebElementDescriptor element);
 }

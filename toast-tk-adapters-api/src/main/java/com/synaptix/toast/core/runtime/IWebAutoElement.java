@@ -12,9 +12,9 @@ public interface IWebAutoElement<E> {
 
 	IFeedableWebPage getContainer();
 
-	void setFrontEndDriver(SynchronizedDriver<?, ?> sDvr);
+	void setDriver(SynchronizedDriver<?, ?> sDvr);
 
-	IWebElement getWrappedElement();
+	IWebElementDescriptor getDescriptor();
 
 	List<E> getAllWebElements();
 

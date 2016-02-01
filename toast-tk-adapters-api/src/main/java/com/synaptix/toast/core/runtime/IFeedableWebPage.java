@@ -1,19 +1,14 @@
 package com.synaptix.toast.core.runtime;
 
-public interface IFeedableWebPage {
+public interface IFeedableWebPage extends IWebAutoElement {
 
-	/**
-	 * provide a locator object to init the web element
-	 * 
-	 * @param locator
-	 */
-	public void initElement(IWebElement locator);
+	public void initElement(IWebElementDescriptor locator);
 
 	public IWebAutoElement<?> getAutoElement(String fieldName);
 
 	public void addElement(String elementName, String type, String method, String locator, Integer position);
 	
-	public void setLocator(IWebElement locator);
+	public void setDescriptor(IWebElementDescriptor descriptor);
 	
-	public IWebElement getLocator();
+	public IWebElementDescriptor getDescriptor();
 }

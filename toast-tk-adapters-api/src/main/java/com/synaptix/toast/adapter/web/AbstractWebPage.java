@@ -14,25 +14,26 @@ import com.synaptix.toast.automation.driver.web.SynchronizedDriver;
 import com.synaptix.toast.core.adapter.AutoWebType;
 import com.synaptix.toast.core.runtime.IFeedableWebPage;
 import com.synaptix.toast.core.runtime.IWebAutoElement;
-import com.synaptix.toast.core.runtime.IWebElement;
-import com.synaptix.toast.core.runtime.IWebElement.LocationMethod;
+import com.synaptix.toast.core.runtime.IWebElementDescriptor;
+import com.synaptix.toast.core.runtime.IWebElementDescriptor.LocationMethod;
 
 /**
- * 
- * Page fixture abstraction, initializes fixture elements's locators based on wiki definitions
- * 
+ * Page fixture abstraction
+ * Initializes adapter elements's locators based on provided markdown definitions
  */
 public abstract class AbstractWebPage implements IFeedableWebPage {
 
 	public String beanClassName; // the bean class name
 
-	Map<String, IWebElement> elements = new HashMap<String, IWebElement>();
+	Map<String, IWebElementDescriptor> elements = new HashMap<String, IWebElementDescriptor>();
 
 	protected Map<String, IWebAutoElement<?>> autoElements = new HashMap<String, IWebAutoElement<?>>();
 
 	private String pageName;
 	
-	public IWebElement containerLocator;
+	public IWebElementDescriptor descriptor;
+
+	private SynchronizedDriver driver;
 	
 	private static ServiceLoader<IWebElementFactory> factoryLoader = ServiceLoader.load(IWebElementFactory.class);
 	
@@ -42,7 +43,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 	 */
 	@Override
 	public void initElement(
-		IWebElement e) {
+		IWebElementDescriptor e) {
 		initElement(e.getName(), e.getType().name(), e.getMethod().name(), e.getLocator(), e.getPosition());
 	}
 
@@ -64,7 +65,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 			method == null ? LocationMethod.CSS : LocationMethod.valueOf(method), position);
 		elements.put(name, defaultWebElement);
 		try {
-			IWebElement iWebElement = elements.get(name);
+			IWebElementDescriptor iWebElement = elements.get(name);
 			IWebElementFactory factory = factoryLoader.iterator().next();
 			if(factory == null){
 				throw new IllegalAccessError("No Web Element Factory declared !");
@@ -105,8 +106,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 	/**
 	 * Convenient method to call an element based on the page enclosed fields' enum
 	 */
-	public IWebElement getElement(
-		String token) {
+	public IWebElementDescriptor getElement(String token) {
 		return elements.get(token);
 	}
 
@@ -131,31 +131,49 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 		return pageName;
 	}
 
-	public void setPageName(
-		String pageName) {
+	public void setPageName(String pageName) {
 		this.pageName = pageName;
 	}
 
-	public List<IWebElement> getLocationElements() {
-		return new ArrayList<IWebElement>(elements.values());
+	public List<IWebElementDescriptor> getLocationElements() {
+		return new ArrayList<IWebElementDescriptor>(elements.values());
 	}
 
-	/**
-	 * set the driver that will be used by the automation elements
-	 */
-	public void setDriver(SynchronizedDriver<?, ?> sDvr) {
-		for(IWebAutoElement<?> el : autoElements.values()) {
-			el.setFrontEndDriver(sDvr);
-		}
+	@Override
+	public void setDescriptor(IWebElementDescriptor descriptor) {
+		this.descriptor = descriptor;
+	}
+
+	@Override
+	public IWebElementDescriptor getDescriptor() {
+		return this.descriptor;
 	}
 	
 	@Override
-	public void setLocator(IWebElement locator) {
-		this.containerLocator = locator;
+	public void setContainer(IFeedableWebPage webPage){
+		//NO OP
 	}
 
 	@Override
-	public IWebElement getLocator() {
-		return this.containerLocator;
+	public IFeedableWebPage getContainer(){
+		return this;
+	}
+
+	@Override
+	public void setDriver(SynchronizedDriver sDvr) {
+		this.driver = sDvr;
+		for(IWebAutoElement<?> el : autoElements.values()) {
+			el.setDriver(sDvr);
+		}		
+	}
+	
+	@Override
+	public Object getWebElement() {
+		return driver.find(descriptor);
+	}
+	
+	@Override
+	public List getAllWebElements() {
+		return driver.findAll(descriptor);
 	}
 }

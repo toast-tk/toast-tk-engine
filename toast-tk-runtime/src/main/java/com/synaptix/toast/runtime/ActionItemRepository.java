@@ -1,7 +1,6 @@
 package com.synaptix.toast.runtime;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -9,13 +8,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.inject.Inject;
 import com.synaptix.toast.adapter.swing.component.DefaultSwingPage;
-import com.synaptix.toast.adapter.utils.ActionAdapterHelper;
-import com.synaptix.toast.core.report.TestResult;
-import com.synaptix.toast.core.report.TestResult.ResultKind;
 import com.synaptix.toast.core.runtime.IFeedableSwingPage;
 import com.synaptix.toast.core.runtime.IFeedableWebPage;
-import com.synaptix.toast.runtime.bean.TestComponentConfig;
-import com.synaptix.toast.runtime.bean.TestEntityProperty;
 import com.synaptix.toast.runtime.repository.SwingRepository;
 import com.synaptix.toast.runtime.repository.VariableRepository;
 import com.synaptix.toast.runtime.repository.WebRepository;

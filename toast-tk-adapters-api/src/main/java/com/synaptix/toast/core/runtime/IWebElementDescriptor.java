@@ -2,7 +2,7 @@ package com.synaptix.toast.core.runtime;
 
 import com.synaptix.toast.core.adapter.AutoWebType;
 
-public interface IWebElement {
+public interface IWebElementDescriptor {
 
 	/**
 	 * locator methods to use in repo
