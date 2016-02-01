@@ -6,3 +6,5 @@ deploy:
  script: mvn deploy --settings ./settings.xml -PDEPLOY_NEXUS_SYNAPTIX
  on:
   branch: master
+after_success:
+  - ./sonar.sh

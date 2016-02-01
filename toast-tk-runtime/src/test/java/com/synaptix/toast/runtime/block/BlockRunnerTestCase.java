@@ -5,12 +5,17 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.script.ScriptException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.fest.assertions.Assertions;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -18,6 +23,9 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.synaptix.toast.adapter.swing.AbstractSwingActionAdapter;
+import com.synaptix.toast.adapter.web.component.DefaultWebElement;
+import com.synaptix.toast.core.adapter.AutoWebType;
+import com.synaptix.toast.core.runtime.IWebElement;
 import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
@@ -189,67 +197,5 @@ public class BlockRunnerTestCase {
 		Assert.assertEquals(args.length, 2);
 		Assert.assertEquals(args[1], repo.getUserVariables().get("$url"));
 	}
-	/*
-	@Test
-	public void testRunnerElementNotFoundError() throws Exception {
-		TestBlockRunner blockRunner = new TestBlockRunner();
-		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
-		repo.addPage("MyPage");
-
-		blockRunner.setInjector(injector);
-		blockRunner.setObjectRepository(repo);
-
-		ActionCommandDescriptor method = blockRunner.findMatchingAction("Click on *MyPage.test*", AbstractWebActionAdapter.class);
-
-		expectedEx.expect(ScriptException.class);
-		expectedEx.expectMessage("Element MyPage.test was not defined");
-
-		blockRunner.buildArgumentList(method);
-	}
-
-	@Rule
-	public ExpectedException expectedEx = ExpectedException.none();
-
-	@Test
-	public void testRunnerPageNotFoundError() throws Exception {
-		TestBlockRunner blockRunner = new TestBlockRunner();
-		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
-
-		blockRunner.setInjector(injector);
-		blockRunner.setObjectRepository(repo);
-
-		ActionCommandDescriptor method = blockRunner.findMatchingAction("Click on *MyNotDefinedPage.widget*", AbstractWebActionAdapter.class);
-
-		expectedEx.expect(ScriptException.class);
-		expectedEx.expectMessage("Element MyNotDefinedPage.widget was not defined");
-		blockRunner.buildArgumentList(method);
-	}
-
-	@Test
-	public void testWebSelectInAdapter() {
-		TestBlockRunner blockRunner = new TestBlockRunner();
-		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
-		repo.addPage("MyPage");
-		DefaultWebElement locator = new DefaultWebElement("comboBox", AutoWebType.select, "idComboBox", IWebElement.LocationMethod.ID, 0);
-		repo.getPage("MyPage").initElement(locator);
-
-		blockRunner.setInjector(injector);
-		blockRunner.setObjectRepository(repo);
-
-		ActionCommandDescriptor method = blockRunner.findMatchingAction("Select *2* in *MyPage.comboBox*", AbstractWebActionAdapter.class);
-
-		Object[] args = null;
-		try {
-			args = blockRunner.buildArgumentList(method);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		Assert.assertNotNull(args);
-		Assert.assertEquals(args.length, 2);
-		Assert.assertNotNull(args[0]);
-		Assert.assertNotNull(args[1]);
-		Assertions.assertThat(args[1]).isInstanceOf(WebAutoElement.class);
-	}*/
 
 }
