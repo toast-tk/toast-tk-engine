@@ -300,14 +300,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	}
 
 	/**
-	 * find the method in the action adapter class matching the command
-	 *
-	 * @param actionImpl
-	 * @param Action     Adapter Class
-	 * @return
+	 * Find the method in the action adapter class matching the command
 	 */
 	public ActionCommandDescriptor findMatchingAction(final String actionImpl, final Class<?> actionAdapterClass) {
-		ActionCommandDescriptor foundMethod = null;
+		ActionCommandDescriptor foundMethod;
 		final List<Method> actionMethods = getActionMethods(actionAdapterClass);
 		final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
 		for (Method actionMethod : actionMethods) {
@@ -322,10 +318,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 				}
 			}
 		}
-		if (foundMethod == null && actionAdapterClass.getSuperclass() != null) {
+		if (actionAdapterClass.getSuperclass() != null) {
 			return findMatchingAction(actionImpl, actionAdapterClass.getSuperclass());
 		}
-		return foundMethod;
+		return null;
 	}
 
 	private boolean hasMapping(Action mainAction, ActionAdapter adapter) {
