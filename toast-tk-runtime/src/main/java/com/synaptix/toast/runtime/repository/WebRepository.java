@@ -9,7 +9,7 @@ import com.synaptix.toast.runtime.IRepository;
 
 public class WebRepository implements IRepository<IFeedableWebPage> {
 
-	Map<String, IFeedableWebPage> pages = new HashMap<String, IFeedableWebPage>();
+	Map<String, IFeedableWebPage> pages = new HashMap<>();
 	
 	@Override
 	public IFeedableWebPage get(String entityName) {

@@ -32,7 +32,8 @@ public class ActionItemRepository implements IActionItemRepository {
 	}
 
 	@Override
-	public Map<String, Object> getUserVariables() {
+	public Map<String, Object> getUserVariables()
+	{
 		return this.varRepo.getMap();
 	}
 

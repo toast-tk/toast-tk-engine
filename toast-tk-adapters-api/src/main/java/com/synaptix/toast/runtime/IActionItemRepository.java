@@ -8,22 +8,22 @@ import com.synaptix.toast.core.runtime.IFeedableWebPage;
 
 public interface IActionItemRepository {
 
-	public IFeedableSwingPage getSwingPage(String entityName);
+	IFeedableSwingPage getSwingPage(String entityName);
 
-	public Collection<IFeedableSwingPage> getSwingPages();
+	Collection<IFeedableSwingPage> getSwingPages();
 
-	public Collection<IFeedableWebPage> getWebPages();
+	Collection<IFeedableWebPage> getWebPages();
 
-	public IFeedableWebPage getWebPage(String entityName);
+	IFeedableWebPage getWebPage(String entityName);
 
-	public Map<String, Object> getUserVariables();
+	Map<String, Object> getUserVariables();
 
-	public void setUserVariables(Map<String, Object> userVariables);
+	void setUserVariables(Map<String, Object> userVariables);
 
-	public void addSwingPage(String fixtureName);
+	void addSwingPage(String fixtureName);
 	
-	public void clear();
+	void clear();
 
-	public 	void addWebPage(String fixtureName, IFeedableWebPage webPage);
+	void addWebPage(String fixtureName, IFeedableWebPage webPage);
 
 }

@@ -31,8 +31,10 @@ public class TestParser extends AbstractParser {
 	public ITestPage parse(String path) throws IOException, IllegalArgumentException {
 		path = cleanPath(path);
 		Path p = Paths.get(path);
-		Stream<String> lines = Files.lines(p);
-		List<String> list = lines.collect(Collectors.toList());
+		List<String> list;
+		try (Stream<String> lines = Files.lines(p)) {
+			list = lines.collect(Collectors.toList());
+		}
 		if (list.isEmpty()) {
 			throw new IllegalArgumentException("File empty at path: " + path);
 		}

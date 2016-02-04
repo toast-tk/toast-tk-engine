@@ -8,9 +8,15 @@ import com.synaptix.toast.runtime.IRepository;
 
 public class VariableRepository implements IRepository<Object> {
 
+<<<<<<< HEAD
 	private Map<String, Object> userVariables = new HashMap<String, Object>();
 	
+=======
+	private Map<String, Object> userVariables = new HashMap<>();
+
+>>>>>>> 1bb7f471bd7e2f3f7626d6e14092cc64f214cc10
 	@Override
+
 	public Object get(String varName) {
 		return userVariables.get(varName);
 	}
