@@ -88,13 +88,14 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 			this.started = true;
 		}
 		catch(IOException e) {
-			startConnectionLoop();
+			LOG.error(e.getMessage(), e);
+			//startConnectionLoop();
 		}
 	}
 
 	protected void startConnectionLoop() {
 		while(!client.isConnected()) {
-			connect();
+			reconnect();
 			try {
 				Thread.sleep(RECONNECTION_RATE);
 			}
@@ -138,7 +139,7 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 		Object object) {
 		ErrorResponse response = (ErrorResponse) object;
 		TestResult testResult = new TestResult(response.getMessage(),ResultKind.ERROR);
-		// TODO: manage screenshots - Request a screenshot
+		testResult.setScreenShot(response.screenshot);
 		if(valueResponseMap.keySet().contains(response.getId())) {
 			valueResponseMap.put(response.getId(), testResult);
 		}
@@ -151,7 +152,7 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 		}
 	}
 
-	public void connect() {
+	protected void reconnect() {
 		try {
 			client.reconnect();
 			this.started = true;
@@ -178,7 +179,7 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 			start(host);
 		}
 		if(!client.isConnected()) {
-			connect();
+			reconnect();
 		}
 	}
 
@@ -269,7 +270,9 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 				}
 			}
 			if(valueResponseMap.get(idRequest) instanceof TestResult) {
-				throw new ErrorResultReceivedException((TestResult) valueResponseMap.get(idRequest));
+				valueResponseMap.remove(idRequest);
+				TestResult result = (TestResult) valueResponseMap.get(idRequest);
+				return new ValueResponse(idRequest, result.getMessage(), result.getScreenShot());
 			}
 			res = (ValueResponse) valueResponseMap.get(idRequest);
 			valueResponseMap.remove(idRequest);

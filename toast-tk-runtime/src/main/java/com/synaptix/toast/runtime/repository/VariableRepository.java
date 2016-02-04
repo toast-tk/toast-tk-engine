@@ -1,13 +1,14 @@
 package com.synaptix.toast.runtime.repository;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.synaptix.toast.runtime.IRepository;
 
 public class VariableRepository implements IRepository<Object> {
 
-	private Map<String, Object> userVariables;
+	private Map<String, Object> userVariables = new HashMap<String, Object>();
 	
 	@Override
 	public Object get(String varName) {

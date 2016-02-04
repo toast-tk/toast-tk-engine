@@ -1,6 +1,6 @@
 package com.synaptix.toast.dao.config;
 
-public class Config {
+public class DaoConfig {
 
 	private String mongoServer;
 

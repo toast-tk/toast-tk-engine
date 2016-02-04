@@ -16,7 +16,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
-import com.synaptix.toast.dao.config.Config;
+import com.synaptix.toast.dao.config.DaoConfig;
 import com.synaptix.toast.dao.domain.Domain;
 import com.synaptix.toast.dao.service.dao.common.EntityCollectionManager;
 
@@ -38,7 +38,7 @@ public class MongoDefaultStarterImpl implements DbStarter {
 
 	@Inject
 	public MongoDefaultStarterImpl(
-		Config config,
+		DaoConfig config,
 		EntityCollectionManager enitityManager,
 		@Named("MongoHost") String mongoHost,
 		@Named("MongoPort") int mongoPort)
