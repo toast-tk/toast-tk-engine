@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 
 import javax.script.ScriptException;
 
+import junit.framework.TestResult;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -25,9 +27,10 @@ import com.synaptix.toast.core.agent.inspection.ISwingAutomationClient;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
 import com.synaptix.toast.core.net.request.CommandRequest;
-import com.synaptix.toast.core.report.TestResult;
-import com.synaptix.toast.core.report.TestResult.ResultKind;
+import com.synaptix.toast.core.report.ErrorResult;
 import com.synaptix.toast.core.runtime.ErrorResultReceivedException;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult.ResultKind;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 import com.synaptix.toast.runtime.IActionItemRepository;
@@ -35,7 +38,6 @@ import com.synaptix.toast.runtime.action.item.ActionItemRegexHolder;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
 import com.synaptix.toast.runtime.action.item.IValueHandler;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
-import com.synaptix.toast.runtime.bean.ActionItem.ActionTypeEnum;
 import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
 import com.synaptix.toast.runtime.bean.TestLineDescriptor;
@@ -57,9 +59,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		for (TestLine line : block.getBlockLines()) {
 			long startTime = System.currentTimeMillis();
 			TestLineDescriptor descriptor = new TestLineDescriptor(block, line);
-			TestResult result = invokeActionAdapterAction(descriptor);
+			ITestResult result = invokeActionAdapterAction(descriptor);
 			line.setExcutionTime(System.currentTimeMillis() - startTime);
-			if (ResultKind.FATAL.equals(result.getResultKind())) {
+			if (result.isFatal()) {
 				throw new IllegalAccessException(
 						"Test execution stopped, due to fail fatal error: " + line + " - Failed !");
 			}
@@ -68,7 +70,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 	}
 
-	private void finaliseResultKind(TestLine line, TestResult result) {
+	private void finaliseResultKind(TestLine line, ITestResult result) {
 		if (isFailureExpected(line, result)) {
 			result.setResultKind(ResultKind.SUCCESS);
 		} else if (isExpectedResult(line, result)) {
@@ -76,11 +78,11 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 	}
 
-	private boolean isFailureExpected(TestLine line, TestResult result) {
+	private boolean isFailureExpected(TestLine line, ITestResult result) {
 		return "KO".equals(line.getExpected()) && ResultKind.FAILURE.equals(result.getResultKind());
 	}
 
-	private boolean isExpectedResult(TestLine line, TestResult result) {
+	private boolean isExpectedResult(TestLine line, ITestResult result) {
 		return result.getMessage() != null && line.getExpected() != null
 				&& result.getMessage().equals(line.getExpected());
 	}
@@ -93,9 +95,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	 * @throws IllegalAccessException
 	 * @throws ClassNotFoundException
 	 */
-	private TestResult invokeActionAdapterAction(TestLineDescriptor descriptor)
+	private ITestResult invokeActionAdapterAction(TestLineDescriptor descriptor)
 			throws IllegalAccessException, ClassNotFoundException {
-		TestResult result = null;
+		ITestResult result = null;
 		Class<?> actionAdapter = locateActionAdapter(descriptor);
 		if (hasFoundActionAdapter(actionAdapter)) {
 			result = runThroughLocalActionAdapter(descriptor, actionAdapter);
@@ -104,7 +106,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			result = runThroughRemoteAgent(descriptor);
 			updateFatal(result, descriptor);
 		} else {
-			return new TestResult(String.format("Action Implementation - Not Found"), ResultKind.ERROR);
+			return new ErrorResult(String.format("Action Implementation - Not Found"));
 		}
 		return result;
 	}
@@ -117,7 +119,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		return getClassInstance(ISwingAutomationClient.class) != null;
 	}
 
-	private void updateFatal(TestResult result, TestLineDescriptor descriptor) {
+	private void updateFatal(ITestResult result, TestLineDescriptor descriptor) {
 		if (descriptor.isFailFatalCommand()) {
 			if (!result.isSuccess()) {
 				result.setResultKind(ResultKind.FATAL);
@@ -132,18 +134,18 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	 * @param descriptor
 	 * @return
 	 */
-	private TestResult runThroughRemoteAgent(TestLineDescriptor descriptor) {
-		TestResult result;
+	private ITestResult runThroughRemoteAgent(TestLineDescriptor descriptor) {
+		ITestResult result;
 		final String command = descriptor.getActionImpl();
 		result = doRemoteActionCall(command, descriptor);
 		result.setContextualTestSentence(command);
 		return result;
 	}
 
-	private TestResult runThroughLocalActionAdapter(
+	private ITestResult runThroughLocalActionAdapter(
 			TestLineDescriptor descriptor,
 			Class<?> actionAdapter) {
-		final TestResult result;
+		final ITestResult result;
 		final String command = descriptor.getActionImpl();
 		Object actionAdapterInstance = getClassInstance(actionAdapter);
 		ActionCommandDescriptor actionDescriptor = findMatchingAction(command, actionAdapter);
@@ -230,28 +232,28 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		return serviceClasses;
 	}
 
-	private TestResult doRemoteActionCall(String command, TestLineDescriptor descriptor) {
-		TestResult result;
+	private ITestResult doRemoteActionCall(String command, TestLineDescriptor descriptor) {
+		ITestResult result;
 		ISwingAutomationClient swingClient = (ISwingAutomationClient) getClassInstance(ISwingAutomationClient.class);
 		swingClient.processCustomCommand(buildCommandRequest(command, descriptor));
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Client Plugin Mode: Delegating command interpretation to server plugins !");
 		}
-		result = new TestResult("Unknown command !", ResultKind.INFO);
+		result = new ErrorResult("Unknown command !");
 		return result;
 	}
 
-	private TestResult doLocalActionCall(String command, Object instance, ActionCommandDescriptor execDescriptor) {
-		TestResult result;
+	private ITestResult doLocalActionCall(String command, Object instance, ActionCommandDescriptor execDescriptor) {
+		ITestResult result;
 		try {
 			Object[] args = buildArgumentList(execDescriptor);
-			result = (TestResult) execDescriptor.method.invoke(instance, args);
+			result = (ITestResult) execDescriptor.method.invoke(instance, args);
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 			if (e instanceof ErrorResultReceivedException) {
 				result = ((ErrorResultReceivedException) e).getResult();
 			} else {
-				result = new TestResult(ExceptionUtils.getRootCauseMessage(e), ResultKind.FAILURE);
+				result = new ErrorResult(ExceptionUtils.getRootCauseMessage(e));
 			}
 		}
 		final String updatedCommand = updateCommandWithVarValues(command, execDescriptor);

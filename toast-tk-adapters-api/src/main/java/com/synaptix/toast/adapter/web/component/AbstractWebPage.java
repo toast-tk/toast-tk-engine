@@ -1,4 +1,4 @@
-package com.synaptix.toast.adapter.web;
+package com.synaptix.toast.adapter.web.component;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -8,8 +8,9 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import com.synaptix.toast.adapter.web.component.DefaultWebElement;
+import com.synaptix.toast.adapter.web.IWebElementFactory;
 import com.synaptix.toast.automation.driver.web.SynchronizedDriver;
 import com.synaptix.toast.core.adapter.AutoWebType;
 import com.synaptix.toast.core.runtime.IFeedableWebPage;
@@ -18,8 +19,10 @@ import com.synaptix.toast.core.runtime.IWebElementDescriptor;
 import com.synaptix.toast.core.runtime.IWebElementDescriptor.LocationMethod;
 
 /**
+ * 
  * Page fixture abstraction
- * Initializes adapter elements's locators based on provided markdown definitions
+ * Initializes adapter elements's locators 
+ * based on provided markdown definitions
  */
 public abstract class AbstractWebPage implements IFeedableWebPage {
 
@@ -61,9 +64,10 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 		String method,
 		String locator,
 		Integer position) {
-		DefaultWebElement defaultWebElement = new DefaultWebElement(name, AutoWebType.valueOf(type), locator,
-			method == null ? LocationMethod.CSS : LocationMethod.valueOf(method), position);
+		
+		DefaultWebElement defaultWebElement = buildWebElementDescriptor(name,type, method, locator, position);
 		elements.put(name, defaultWebElement);
+		
 		try {
 			IWebElementDescriptor iWebElement = elements.get(name);
 			IWebElementFactory factory = factoryLoader.iterator().next();
@@ -83,6 +87,29 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	protected DefaultWebElement buildWebElementDescriptor(String name,
+			String type, String method, String locator, Integer position) {
+		String kind;
+		String referenceName = null;
+		
+		if(isReferenceComponent(type)){
+			kind = StringUtils.split(type, ":")[0];
+			referenceName = StringUtils.split(type, ":")[1];
+		}else{
+			kind = type;
+		}
+		
+		LocationMethod method2 = method == null ? LocationMethod.CSS : LocationMethod.valueOf(method);
+		AutoWebType webType = AutoWebType.valueOf(kind);
+		DefaultWebElement defaultWebElement = new DefaultWebElement(name, webType, locator,
+			method2, position, referenceName);
+		return defaultWebElement;
+	}
+
+	private boolean isReferenceComponent(String type) {
+		return type.contains(":");
 	}
 
 	private void initBeanFields(
@@ -135,7 +162,8 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 		this.pageName = pageName;
 	}
 
-	public List<IWebElementDescriptor> getLocationElements() {
+	@Override
+	public List<IWebElementDescriptor> getChildren() {
 		return new ArrayList<IWebElementDescriptor>(elements.values());
 	}
 

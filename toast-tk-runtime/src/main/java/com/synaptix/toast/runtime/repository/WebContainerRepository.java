@@ -7,7 +7,7 @@ import java.util.Map;
 import com.synaptix.toast.core.runtime.IFeedableWebPage;
 import com.synaptix.toast.runtime.IRepository;
 
-public class WebRepository implements IRepository<IFeedableWebPage> {
+public class WebContainerRepository implements IRepository<IFeedableWebPage> {
 
 	Map<String, IFeedableWebPage> pages = new HashMap<>();
 	

@@ -7,7 +7,7 @@ import org.fest.swing.fixture.JCheckBoxFixture;
 import com.synaptix.toast.adapter.swing.handler.ISwingwidgetActionHandler;
 import com.synaptix.toast.adapter.swing.utils.FestRobotInstance;
 import com.synaptix.toast.core.net.request.CommandRequest;
-import com.synaptix.toast.core.report.TestResult.ResultKind;
+import com.synaptix.toast.dao.domain.api.test.ITestResult.ResultKind;
 
 
 public class JCheckBoxActionHandler implements ISwingwidgetActionHandler<JCheckBox, String, CommandRequest>{

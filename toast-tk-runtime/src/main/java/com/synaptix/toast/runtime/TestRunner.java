@@ -8,7 +8,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.synaptix.toast.core.annotation.EngineEventBus;
 import com.synaptix.toast.core.event.TestProgressMessage;
-import com.synaptix.toast.core.report.TestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
@@ -68,7 +68,7 @@ class TestRunner {
 				int nbBlockFailures = 0;
 				int nbBlockErrors = 0;
 				for (TestLine line : testBlock.getBlockLines()) {
-					TestResult result = (TestResult)line.getTestResult();
+					ITestResult result = (ITestResult)line.getTestResult();
 					nbSuccess += result.isSuccess() ? 1 : 0;
 					nbBlockSuccess += result.isSuccess() ? 1 : 0;
 					nbFailures += result.isFailure() ? 1 : 0;

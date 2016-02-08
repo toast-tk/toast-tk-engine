@@ -43,10 +43,11 @@ import com.synaptix.toast.core.annotation.ActionAdapter;
 import com.synaptix.toast.core.driver.IRemoteSwingAgentDriver;
 import com.synaptix.toast.core.net.request.CommandRequest;
 import com.synaptix.toast.core.net.request.TableCommandRequestQueryCriteria;
-import com.synaptix.toast.core.report.TestResult;
-import com.synaptix.toast.core.report.TestResult.ResultKind;
+import com.synaptix.toast.core.report.ErrorResult;
+import com.synaptix.toast.core.report.SuccessResult;
 import com.synaptix.toast.core.runtime.IFeedableSwingPage;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult.ResultKind;
 import com.synaptix.toast.runtime.IActionItemRepository;
 
 @ActionAdapter(value = ActionAdapterKind.swing, name = "")
@@ -73,15 +74,15 @@ public abstract class AbstractSwingActionAdapter {
 
 
 	@Action(action = TypeValue, description = "Saisir une chaine de caractère au clavier")
-	public TestResult typeValue(
+	public ITestResult typeValue(
 		String text)
 		throws Exception {
 		driver.process(new CommandRequest.CommandRequestBuilder(null).with(null).ofType(null).sendKeys(text).build());
-		return new TestResult();
+		return new SuccessResult();
 	}
 
 	@Action(action = TypeValueInInput, description = "Saisir une valeur dans un composant graphique")
-	public TestResult typeIn(
+	public ITestResult typeIn(
 		String text,SwingAutoElement pageField)
 		throws Exception {
 		if(pageField instanceof SwingInputElement) {
@@ -100,90 +101,90 @@ public abstract class AbstractSwingActionAdapter {
 	}
 
 	@Action(action = ClickOnIn, description = "Cliquer sur un composant présent dans un contenant de composant")
-	public TestResult clickOnIn(SwingAutoElement elementField,SwingAutoElement containerField)
+	public ITestResult clickOnIn(SwingAutoElement elementField,SwingAutoElement containerField)
 		throws Exception {
 		HasSubItems input = (HasSubItems) containerField;
 		SwingAutoElement subElement = (SwingAutoElement) elementField;
 		input.clickOn(subElement.getWrappedElement().getLocator());
-		return new TestResult();
+		return new SuccessResult();
 	}
 
 	@Action(action = ClickOn, description = "Cliquer sur un composant graphique")
-	public TestResult clickOn(SwingAutoElement pageField)
+	public ITestResult clickOn(SwingAutoElement pageField)
 		throws Exception {
 		HasClickAction input = (HasClickAction) pageField;
-		TestResult clickResult = input.click();
+		ITestResult clickResult = input.click();
 		return clickResult;
 	}
 
 	@Action(action = SWING_COMPONENT_REGEX + " exists", description = "Verifier qu'un composant graphique existe")
-	public TestResult exists(SwingAutoElement pageField)
+	public ITestResult exists(SwingAutoElement pageField)
 		throws Exception {
 		SwingAutoElement input = pageField;
 		if(input.exists()) {
-			return new TestResult("true", ResultKind.SUCCESS);
+			return new SuccessResult("true");
 		}
 		else {
-			return new TestResult("false", ResultKind.ERROR);
+			return new ErrorResult("false");
 		}
 	}
 
 	@Action(action = "Count " + SWING_COMPONENT_REGEX + " results", description = "Compter le nombre de ligne dans un tableau")
-	public TestResult count(SwingAutoElement pageField)
+	public ITestResult count(SwingAutoElement pageField)
 		throws Exception {
 		SwingTableElement table = (SwingTableElement)pageField;
-		TestResult countResult = table.count();
-		return new TestResult(countResult.getMessage(),countResult.getResultKind(),countResult.getScreenShot());
+		ITestResult countResult = table.count();
+		return new SuccessResult(countResult.getMessage(),countResult.getScreenShot());
 	}
 
 	@Action(action = TypeVarIn, description = "Saisir la valeur d'une variable dans un champs graphique de type input")
-	public TestResult typeVarIn(
+	public ITestResult typeVarIn(
 		String variable, SwingAutoElement pageField
 		)
 		throws Exception {
 		typeIn(variable, pageField);
-		return new TestResult();
+		return new SuccessResult();
 	}
 
 	@Action(action = GetComponentValue, description = "Lire la valeur d'un composant graphique")
-	public TestResult getComponentValue(SwingAutoElement pageField)
+	public ITestResult getComponentValue(SwingAutoElement pageField)
 		throws Exception {
 		if(!(pageField instanceof HasValueBase<?>)) {
 			throw new IllegalAccessException("Field isn't supporting value fetching !");
 		}
 		HasValueBase<?> result = (HasValueBase<?>) pageField;
-		if(result.getValue() instanceof TestResult){
-			TestResult value = (TestResult)result.getValue();
-			return new TestResult(value.getMessage(), ResultKind.SUCCESS, value.getScreenShot());
+		if(result.getValue() instanceof ITestResult){
+			ITestResult value = (ITestResult)result.getValue();
+			return value;
 		}else{
 			String value = result.getValue().toString();
-			return new TestResult(value, ResultKind.SUCCESS);
+			return new SuccessResult(value);
 		}
 	}
 
 	@Action(action = StoreComponentValueInVar,
 		description = "Lire la valeur d'un composant graphique et la stocker dans une variable")
-	public TestResult selectComponentValue(SwingAutoElement pageField,String variable)
+	public ITestResult selectComponentValue(SwingAutoElement pageField,String variable)
 		throws Exception {
 		if(!(pageField instanceof HasValueBase)) {
 			throw new IllegalAccessException("Field isn't supporting value fetching !");
 		}
-		HasValueBase<TestResult> stringValueProvider = (HasValueBase<TestResult>) pageField;
-		TestResult result = stringValueProvider.getValue();
+		HasValueBase<ITestResult> stringValueProvider = (HasValueBase<ITestResult>) pageField;
+		ITestResult result = stringValueProvider.getValue();
 		repo.getUserVariables().put(variable, result.getMessage());
 		return result;
 	}
 
 	@Action(action = Wait, description = "Attendre n secondes avant la prochaine action")
-	public TestResult wait(
+	public ITestResult wait(
 		String time)
 		throws Exception {
 		Thread.sleep(Integer.valueOf(time) * 1000);
-		return new TestResult();
+		return new SuccessResult();
 	}
 
 	@Action(action = SelectMenuPath, description = "Selectionner un menu, avec / comme séparateur")
-	public TestResult selectPath(
+	public ITestResult selectPath(
 		String menu)
 		throws Exception {
 		String[] locator = menu.split(" / ");
@@ -191,26 +192,24 @@ public abstract class AbstractSwingActionAdapter {
 		CommandRequest request = new CommandRequest.CommandRequestBuilder(UUID.randomUUID().toString())
 			.with(locator[0])
 			.ofType(AutoSwingType.menu.name()).select(locator[1]).build();
-		TestResult waitForValue = driver.processAndWaitForValue(request);
-		return ResultKind.FAILURE.name().equals(waitForValue.getMessage()) ? new TestResult("Menu {" + menu + "} not found !",
-			ResultKind.FAILURE)
-			: new TestResult("", ResultKind.SUCCESS);
+		ITestResult waitForValue = driver.processAndWaitForValue(request);
+		return waitForValue.isError() ? new ErrorResult("Menu {" + menu + "} not found !"): new SuccessResult();
 	}
 
 	@Action(action = SelectSubMenu, description = "Selectionner un sous menu")
-	public TestResult select(SwingAutoElement elementField, SwingAutoElement containerField)
+	public ITestResult select(SwingAutoElement elementField, SwingAutoElement containerField)
 		throws Exception {
 		return clickOnIn(elementField, containerField);
 	}
 
 	@Action(action = SelectValueInList, description = "Selectionner une valeur dans une liste")
-	public TestResult selectIn(
+	public ITestResult selectIn(
 		String value,
 		SwingAutoElement pageField)
 		throws Exception {
 		SwingListElement list = (SwingListElement) pageField;
 		list.select(value);
-		return new TestResult();
+		return new SuccessResult();
 	}
 
 	@Action(action = SelectTableRow, description = "Selectionner une ligne de tableau avec critères")
@@ -231,8 +230,8 @@ public abstract class AbstractSwingActionAdapter {
 			TableCommandRequestQueryCriteria tableCriterion = buildTableCriterion(tableColumnFinder);
 			tableCriteria.add(tableCriterion);
 		}
-		TestResult searchResult = table.find(tableCriteria);
-		return new TestResult(searchResult.getMessage(),ResultKind.SUCCESS,searchResult.getScreenShot());
+		ITestResult searchResult = table.find(tableCriteria);
+		return searchResult;
 	}
 
 	private TableCommandRequestQueryCriteria buildTableCriterion(
@@ -244,18 +243,18 @@ public abstract class AbstractSwingActionAdapter {
 	}
 
 	@Action(action = SelectContectualMenu, description = "selectionner un menu dans une popup contextuelle")
-	public TestResult selectCtxMenu(
+	public ITestResult selectCtxMenu(
 		String menu)
 		throws Exception {
 		String uid = UUID.randomUUID().toString();
 		CommandRequest commandRequest = new CommandRequest.CommandRequestBuilder(uid).with(menu).ofType(AutoSwingType.menu.name())
 			.select(menu).build();
-		TestResult result = driver.processAndWaitForValue(commandRequest);
+		ITestResult result = driver.processAndWaitForValue(commandRequest);
 		return result;
 	}
 
 	@Action(action = "Affichage dialogue {{value:string}}", description = "Afichage d'une dialogue")
-	public TestResult waitForDialogDisplay(
+	public ITestResult waitForDialogDisplay(
 		String dialogName)
 		throws Exception {
 		CommandRequest request = new CommandRequest.CommandRequestBuilder(UUID.randomUUID().toString())
@@ -263,16 +262,14 @@ public abstract class AbstractSwingActionAdapter {
 			.with(dialogName).exists().build();
 		driver.process(request);
 		boolean waitForExist = driver.waitForExist(request.getId());
-		return waitForExist ? new TestResult("", ResultKind.SUCCESS) : new TestResult("Dialogue " + dialogName
-			+ " pas disponible !",
-			ResultKind.ERROR);
+		return waitForExist ? new SuccessResult() : new ErrorResult("Dialogue " + dialogName+ " pas disponible !");
 	}
 
 	// ///////////////////////////////////////
 	// TO MOVE IN A DRIVER AGNOSTIC FIXUTRE
 	// ////////////////////////////////////////
 	@Action(action = AddValueInVar, description = "Additionner deux valeurs numériques")
-	public TestResult addValueToVar(
+	public ITestResult addValueToVar(
 		String value,
 		String var)
 		throws Exception {
@@ -286,7 +283,7 @@ public abstract class AbstractSwingActionAdapter {
 			Double d = Double.valueOf((String) object);
 			d = d + v;
 			repo.getUserVariables().put(var, d.toString());
-			return new TestResult(d.toString(), ResultKind.SUCCESS);
+			return new SuccessResult(d.toString());
 		}
 		else {
 			throw new IllegalAccessException("Variable not in a proper format: current -> "
@@ -295,7 +292,7 @@ public abstract class AbstractSwingActionAdapter {
 	}
 
 	@Action(action = SubstractValueFromVar, description = "Soustraire deux valeurs numériques")
-	public TestResult substractValueToVar(
+	public ITestResult substractValueToVar(
 		String value,
 		String var)
 		throws Exception {
@@ -309,7 +306,7 @@ public abstract class AbstractSwingActionAdapter {
 			Double d = Double.valueOf((String) object);
 			d = d - v;
 			repo.getUserVariables().put(var, d.toString());
-			return new TestResult(d.toString(), ResultKind.SUCCESS);
+			return new SuccessResult(d.toString());
 		}
 		else {
 			throw new IllegalAccessException("Variable not in a proper format: current -> "
@@ -318,7 +315,7 @@ public abstract class AbstractSwingActionAdapter {
 	}
 
 	@Action(action = MultiplyVarByValue, description = "Multiplier deux valeurs")
-	public TestResult multiplyVarByBal(
+	public ITestResult multiplyVarByBal(
 		String var,
 		String value)
 		throws Exception {
@@ -330,7 +327,7 @@ public abstract class AbstractSwingActionAdapter {
 			Double v = Double.valueOf(value);
 			Double d = Double.valueOf((String) var);
 			d = d * v;
-			return new TestResult(d.toString(), ResultKind.SUCCESS);
+			return new SuccessResult(d.toString());
 		}
 		else {
 			throw new IllegalAccessException("Variable not in a proper format: current -> " + var);
@@ -338,7 +335,7 @@ public abstract class AbstractSwingActionAdapter {
 	}
 
 	@Action(action = DiviserVarByValue, description = "Diviseur le premier argument par le deuxième")
-	public TestResult divideVarByValue(
+	public ITestResult divideVarByValue(
 		String var,
 		String value)
 		throws Exception {
@@ -350,7 +347,7 @@ public abstract class AbstractSwingActionAdapter {
 			Double v = Double.valueOf(value);
 			Double d = Double.valueOf(var);
 			d = d / v;
-			return new TestResult(d.toString(), ResultKind.SUCCESS);
+			return new SuccessResult(d.toString());
 		}
 		else {
 			throw new IllegalAccessException("Variable not in a proper format: current -> " + var);
@@ -358,67 +355,65 @@ public abstract class AbstractSwingActionAdapter {
 	}
 
 	@Action(action = RemplacerVarParValue, description = "Assigner une valeur à une variable")
-	public TestResult replaceVarByVal(
+	public ITestResult replaceVarByVal(
 		String var,
 		String value)
 		throws Exception {
 		repo.getUserVariables().put(var, value);
-		return new TestResult();
+		return new SuccessResult();
 	}
 
 	@Action(
 		action = "Ajuster date (\\w+).(\\w+) à plus (\\w+) jours",
 		description = "Rajouter n Jours à au composant graphique de date")
-	public TestResult setDate(SwingAutoElement pageField,String days)
+	public ITestResult setDate(SwingAutoElement pageField,String days)
 		throws Exception {
 		SwingDateElement input = (SwingDateElement) pageField;
 		return input.setInput(days);
 	}
 
 	@Action(action = VALUE_REGEX + " == " + VALUE_REGEX, description = "Comparer deux variables")
-	public TestResult VarEqVar(
+	public ITestResult VarEqVar(
 		String var1,
 		String var2)
 		throws Exception {
 		if(var1.equals(var2)) {
-			return new TestResult(Boolean.TRUE.toString(), ResultKind.SUCCESS);
+			return new SuccessResult(Boolean.TRUE.toString());
 		}
 		else {
-			return new TestResult(String.format("%s == %s => %s", var1, var2, Boolean.FALSE.toString()),
-				ResultKind.FAILURE);
+			return new ErrorResult(String.format("%s == %s => %s", var1, var2, Boolean.FALSE.toString()));
 		}
 	}
 
 	@Action(
 		action = VALUE_REGEX + " égale à " + VALUE_REGEX,
 		description = "Comparer une valeur à une variable")
-	public TestResult ValueEqVar(
+	public ITestResult ValueEqVar(
 		String value,
 		String var)
 		throws Exception {
 		if(value.equals(var)) {
-			return new TestResult(Boolean.TRUE.toString(), ResultKind.SUCCESS);
+			return new SuccessResult(Boolean.TRUE.toString());
 		}
 		else {
-			return new TestResult(String.format("%s == %s => %s", value, var, Boolean.FALSE.toString()),
-				ResultKind.FAILURE);
+			return new ErrorResult(String.format("%s == %s => %s", value, var, Boolean.FALSE.toString()));
 		}
 	}
 
 	@Action(action = "Assigner " + VALUE_REGEX + " à " + VALUE_REGEX, description = "Assigner valeur à variable")
-	public TestResult setValToVar(
+	public com.synaptix.toast.dao.domain.api.test.ITestResult setValToVar(
 		String value,
 		String var)
 		throws Exception {
 		repo.getUserVariables().put(var, value);
-		return new TestResult();
+		return new SuccessResult();
 	}
 
 	@Action(action = "Clear {{input:component:swing}}", description = "Effacer le contenu d'un composant input graphique")
-	public TestResult clear(SwingAutoElement pageField)
+	public ITestResult clear(SwingAutoElement pageField)
 		throws Exception {
 		SwingInputElement input = (SwingInputElement) pageField;
 		input.clear();
-		return new TestResult();
+		return new SuccessResult();
 	}
 }

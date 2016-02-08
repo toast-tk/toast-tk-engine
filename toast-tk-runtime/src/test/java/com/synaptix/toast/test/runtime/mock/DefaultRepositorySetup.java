@@ -3,9 +3,9 @@ package com.synaptix.toast.test.runtime.mock;
 import java.util.Collection;
 import java.util.Map;
 
-import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.core.runtime.IFeedableSwingPage;
 import com.synaptix.toast.core.runtime.IFeedableWebPage;
+import com.synaptix.toast.core.runtime.IWebAutoElement;
 import com.synaptix.toast.runtime.IActionItemRepository;
 
 public class DefaultRepositorySetup implements IActionItemRepository {
@@ -59,6 +59,18 @@ public class DefaultRepositorySetup implements IActionItemRepository {
 
 	@Override
 	public void addWebPage(String fixtureName, IFeedableWebPage webPage) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Map<String, IWebAutoElement<?>> getWebComponents() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setWebComponents(Map<String, IWebAutoElement<?>> webComponents) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.joda.time.LocalDateTime;
 
-import com.synaptix.toast.core.report.TestResult;
-import com.synaptix.toast.core.report.TestResult.ResultKind;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult.ResultKind;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
@@ -56,7 +56,7 @@ public class TemplateHelper {
 	}
 	
 	public static String getResultKindAsString(
-		TestResult testResult) {
+		ITestResult testResult) {
 		if(testResult != null) {
 			return getResultKindAsString(testResult.getResultKind());
 		}
@@ -83,7 +83,7 @@ public class TemplateHelper {
 	}
 
 	public static String getResultScreenshotAsBase64(
-		TestResult testResult) {
+		ITestResult testResult) {
 		String screenShot = testResult.getScreenShot();
 		return screenShot;
 	}
@@ -104,20 +104,20 @@ public class TemplateHelper {
 	}
 
 	public static boolean hasScreenShot(
-		TestResult testResult) {
+			ITestResult testResult) {
 		return testResult != null && testResult.getScreenShot() != null;
 	}
 	
 	//FIXME add in template
-	private void setExecStatistics(ITestPage testPage, List<TestResult> results) {
+	private void setExecStatistics(ITestPage testPage, List<ITestResult> results) {
 		testPage.setTechnicalErrorNumber(getTotal(results, ResultKind.ERROR));
 		testPage.setTestSuccessNumber(getTotal(results, ResultKind.SUCCESS));
 		testPage.setTestFailureNumber(getTotal(results, ResultKind.FAILURE));
 	}
 	
-	private int getTotal(List<TestResult> results, ResultKind resultKindFilter) {
+	private int getTotal(List<ITestResult> results, ResultKind resultKindFilter) {
 		int count = 0;
-		for (TestResult testResult : results) {
+		for (ITestResult testResult : results) {
 			if (resultKindFilter.equals(testResult.getResultKind())) {
 				count++;
 			}

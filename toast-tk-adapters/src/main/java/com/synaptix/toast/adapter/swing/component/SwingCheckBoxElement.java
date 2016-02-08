@@ -7,9 +7,9 @@ import com.synaptix.toast.adapter.web.HasClickAction;
 import com.synaptix.toast.adapter.web.HasStringValue;
 import com.synaptix.toast.core.driver.IRemoteSwingAgentDriver;
 import com.synaptix.toast.core.net.request.CommandRequest;
-import com.synaptix.toast.core.report.TestResult;
-import com.synaptix.toast.core.report.TestResult.ResultKind;
 import com.synaptix.toast.core.runtime.ISwingElement;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult.ResultKind;
 
 public class SwingCheckBoxElement extends SwingAutoElement implements HasClickAction, HasStringValue {
 
@@ -39,11 +39,11 @@ public class SwingCheckBoxElement extends SwingAutoElement implements HasClickAc
 	}
 
 	@Override
-	public TestResult click()
+	public ITestResult click()
 		throws Exception{
 		boolean res = exists();
 		final String requestId = UUID.randomUUID().toString();
-		TestResult result = frontEndDriver.processAndWaitForValue(new CommandRequest.CommandRequestBuilder(requestId).with(wrappedElement.getLocator())
+		ITestResult result = frontEndDriver.processAndWaitForValue(new CommandRequest.CommandRequestBuilder(requestId).with(wrappedElement.getLocator())
 				.ofType(wrappedElement.getType().name()).click().build());
 		result.setResultKind(res && result.getMessage().equals(ResultKind.SUCCESS.name()) ? ResultKind.SUCCESS : ResultKind.ERROR);
 		return result;

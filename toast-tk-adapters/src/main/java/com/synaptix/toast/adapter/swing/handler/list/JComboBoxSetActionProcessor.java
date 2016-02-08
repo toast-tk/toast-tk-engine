@@ -7,7 +7,7 @@ import org.fest.swing.fixture.JComboBoxFixture;
 import com.synaptix.toast.adapter.swing.handler.ActionProcessor;
 import com.synaptix.toast.adapter.swing.utils.FestRobotInstance;
 import com.synaptix.toast.core.net.request.CommandRequest;
-import com.synaptix.toast.core.report.TestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 class JComboBoxSetActionProcessor implements ActionProcessor<JComboBox> {
 
@@ -19,10 +19,10 @@ class JComboBoxSetActionProcessor implements ActionProcessor<JComboBox> {
 		fixture.focus().enterText(command.value);
 		int selectedIndex = fixture.component().getSelectedIndex();
 		if(command.value.equalsIgnoreCase(fixture.valueAt(selectedIndex))) {
-			return TestResult.ResultKind.SUCCESS.name();
+			return ITestResult.ResultKind.SUCCESS.name();
 		}
 		else {
-			return TestResult.ResultKind.ERROR.name();
+			return ITestResult.ResultKind.ERROR.name();
 		}
 	}
 }

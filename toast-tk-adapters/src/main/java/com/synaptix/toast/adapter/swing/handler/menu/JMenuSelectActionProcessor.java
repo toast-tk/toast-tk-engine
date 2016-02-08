@@ -10,7 +10,7 @@ import org.fest.swing.fixture.JPopupMenuFixture;
 import com.synaptix.toast.adapter.swing.handler.ActionProcessor;
 import com.synaptix.toast.adapter.swing.utils.FestRobotInstance;
 import com.synaptix.toast.core.net.request.CommandRequest;
-import com.synaptix.toast.core.report.TestResult.ResultKind;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 class JMenuSelectActionProcessor implements ActionProcessor<JMenu> {
 
@@ -29,10 +29,10 @@ class JMenuSelectActionProcessor implements ActionProcessor<JMenu> {
 		JMenuItemFixture menuItemWithPath = popupFixture.menuItemWithPath(command.value);
 		if(menuItemWithPath != null && menuItemWithPath.component().isEnabled()) {
 			menuItemWithPath.click();
-			return ResultKind.SUCCESS.name();
+			return ITestResult.ResultKind.SUCCESS.name();
 		}
 		else {
-			return ResultKind.FAILURE.name();
+			return ITestResult.ResultKind.FAILURE.name();
 		}
 	}
 }
