@@ -15,17 +15,21 @@ public class DefaultWebElement implements IWebElementDescriptor {
 
 	private String name;
 
+	private String referenceName;
+	
+	
 	public DefaultWebElement(
 		String name,
 		AutoWebType type,
 		String locator,
 		LocationMethod method,
-		int position) {
+		int position, String referenceName) {
 		this.locator = locator;
 		this.method = method;
 		this.position = position;
 		this.type = type;
 		this.name = name;
+		this.setReferenceName(referenceName);
 	}
 
 	@Override
@@ -81,5 +85,15 @@ public class DefaultWebElement implements IWebElementDescriptor {
 	public void setType(
 		AutoWebType type) {
 		this.type = type;
+	}
+
+	@Override
+	public String getReferenceName() {
+		return referenceName;
+	}
+
+	@Override
+	public void setReferenceName(String referenceName) {
+		this.referenceName = referenceName;
 	}
 }

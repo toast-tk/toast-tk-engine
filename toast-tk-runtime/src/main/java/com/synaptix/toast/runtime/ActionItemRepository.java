@@ -10,9 +10,11 @@ import com.google.inject.Inject;
 import com.synaptix.toast.adapter.swing.component.DefaultSwingPage;
 import com.synaptix.toast.core.runtime.IFeedableSwingPage;
 import com.synaptix.toast.core.runtime.IFeedableWebPage;
+import com.synaptix.toast.core.runtime.IWebAutoElement;
 import com.synaptix.toast.runtime.repository.SwingRepository;
 import com.synaptix.toast.runtime.repository.VariableRepository;
-import com.synaptix.toast.runtime.repository.WebRepository;
+import com.synaptix.toast.runtime.repository.WebComponentRepository;
+import com.synaptix.toast.runtime.repository.WebContainerRepository;
 
 public class ActionItemRepository implements IActionItemRepository {
 
@@ -20,14 +22,19 @@ public class ActionItemRepository implements IActionItemRepository {
 
 	private final SwingRepository swingRepo;
 
-	private final WebRepository webRepo;
+	private final WebContainerRepository webRepo;
+	
+	
+	private final WebComponentRepository webComponentRepo;
+	
 
 	private VariableRepository varRepo;
 	
 	@Inject
-	public ActionItemRepository(SwingRepository swingRepo, WebRepository webRepo, VariableRepository varRepo){
+	public ActionItemRepository(SwingRepository swingRepo, WebContainerRepository webRepo, VariableRepository varRepo, WebComponentRepository webComponentRepo){
 		this.swingRepo = swingRepo;
 		this.webRepo = webRepo;
+		this.webComponentRepo = webComponentRepo;
 		this.varRepo = varRepo;
 	}
 
@@ -78,6 +85,17 @@ public class ActionItemRepository implements IActionItemRepository {
 		this.swingRepo.clear();
 		this.webRepo.clear();
 		this.varRepo.clear();
+		this.webComponentRepo.clear();
+	}
+
+	@Override
+	public Map<String, IWebAutoElement<?>> getWebComponents() {
+		return this.webComponentRepo.getMap();
+	}
+
+	@Override
+	public void setWebComponents(Map<String, IWebAutoElement<?>> webComponents) {
+		this.webComponentRepo.setMap(webComponents);
 	}
 
 }

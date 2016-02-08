@@ -1,5 +1,6 @@
 package com.synaptix.toast.core.runtime;
 
+
 public interface IFeedableWebPage extends IWebAutoElement {
 
 	public void initElement(IWebElementDescriptor locator);

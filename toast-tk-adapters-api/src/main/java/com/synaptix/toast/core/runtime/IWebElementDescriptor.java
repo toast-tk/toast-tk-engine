@@ -21,21 +21,21 @@ public interface IWebElementDescriptor {
 
 	public String getLocator();
 
-	public void setLocator(
-		String locator);
+	public void setLocator(String locator);
 
 	public LocationMethod getMethod();
 
-	public void setMethod(
-		LocationMethod method);
+	public void setMethod(LocationMethod method);
 
 	public int getPosition();
 
-	public void setPosition(
-		int position);
+	public void setPosition(int position);
 
 	public AutoWebType getType();
 
-	public void setType(
-		AutoWebType type);
+	public void setType(AutoWebType type);
+
+	public String getReferenceName();
+
+	public void setReferenceName(String referenceName);
 }

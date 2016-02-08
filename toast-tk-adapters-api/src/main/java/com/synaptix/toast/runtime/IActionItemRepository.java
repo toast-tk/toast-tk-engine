@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.synaptix.toast.core.runtime.IFeedableSwingPage;
 import com.synaptix.toast.core.runtime.IFeedableWebPage;
+import com.synaptix.toast.core.runtime.IWebAutoElement;
 
 public interface IActionItemRepository {
 
@@ -19,6 +20,10 @@ public interface IActionItemRepository {
 	Map<String, Object> getUserVariables();
 
 	void setUserVariables(Map<String, Object> userVariables);
+	
+	Map<String, IWebAutoElement<?>> getWebComponents();
+
+	void setWebComponents(Map<String, IWebAutoElement<?>> webComponents);
 
 	void addSwingPage(String fixtureName);
 	

@@ -18,4 +18,6 @@ public interface IWebAutoElement<E> {
 
 	List<E> getAllWebElements();
 
+	List<IWebElementDescriptor> getChildren();
+
 }

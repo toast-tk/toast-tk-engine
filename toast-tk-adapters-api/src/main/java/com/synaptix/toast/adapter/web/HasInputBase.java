@@ -1,10 +1,10 @@
 package com.synaptix.toast.adapter.web;
 
-import com.synaptix.toast.core.report.TestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 public interface HasInputBase<T> {
 
-	public TestResult setInput(
+	public ITestResult setInput(
 		T e)
 		throws Exception;
 }

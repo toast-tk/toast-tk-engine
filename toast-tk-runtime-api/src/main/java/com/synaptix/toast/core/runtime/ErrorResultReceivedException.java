@@ -1,20 +1,20 @@
 package com.synaptix.toast.core.runtime;
 
-import com.synaptix.toast.core.report.TestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 public class ErrorResultReceivedException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	private TestResult result;
+	private ITestResult result;
 
 	public ErrorResultReceivedException(
-			TestResult result) {
+			ITestResult result) {
 		super();
 		this.result = result;
 	}
 
-	public TestResult getResult() {
+	public ITestResult getResult() {
 		return result;
 	}
 }

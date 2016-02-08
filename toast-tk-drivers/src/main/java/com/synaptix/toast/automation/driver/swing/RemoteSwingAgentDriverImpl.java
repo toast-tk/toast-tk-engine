@@ -19,11 +19,12 @@ import com.synaptix.toast.core.net.response.ErrorResponse;
 import com.synaptix.toast.core.net.response.ExistsResponse;
 import com.synaptix.toast.core.net.response.InitResponse;
 import com.synaptix.toast.core.net.response.ValueResponse;
-import com.synaptix.toast.core.report.TestResult;
-import com.synaptix.toast.core.report.TestResult.ResultKind;
+import com.synaptix.toast.core.report.ErrorResult;
+import com.synaptix.toast.core.report.SuccessResult;
 import com.synaptix.toast.core.runtime.ErrorResultReceivedException;
 import com.synaptix.toast.core.runtime.ITCPClient;
 import com.synaptix.toast.core.runtime.ITCPResponseReceivedHandler;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 
@@ -138,7 +139,7 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 	private void handleErrorResponse(
 		Object object) {
 		ErrorResponse response = (ErrorResponse) object;
-		TestResult testResult = new TestResult(response.getMessage(),ResultKind.ERROR);
+		ITestResult testResult = new ErrorResult(response.getMessage());
 		testResult.setScreenShot(response.screenshot);
 		if(valueResponseMap.keySet().contains(response.getId())) {
 			valueResponseMap.put(response.getId(), testResult);
@@ -218,8 +219,8 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 					e.printStackTrace();
 				}
 			}
-			if(existsResponseMap.get(reqId) instanceof TestResult) {
-				throw new ErrorResultReceivedException((TestResult) existsResponseMap.get(reqId));
+			if(existsResponseMap.get(reqId) instanceof ITestResult) {
+				throw new ErrorResultReceivedException((ITestResult) existsResponseMap.get(reqId));
 			}
 			res = (Boolean) existsResponseMap.get(reqId);
 			existsResponseMap.remove(reqId);
@@ -228,10 +229,10 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 	}
 
 	@Override
-	public TestResult processAndWaitForValue(
+	public ITestResult processAndWaitForValue(
 		IIdRequest request)
 		throws IllegalAccessException, TimeoutException, ErrorResultReceivedException {
-		TestResult res = new TestResult();
+		
 		final String idRequest = request.getId();
 		if(idRequest == null) {
 			throw new IllegalAccessException("Request requires an Id to wait for a value.");
@@ -240,8 +241,8 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 		valueResponseMap.put(idRequest, VOID_RESULT);
 		client.sendRequest(request);
 		ValueResponse valueResponse = waitForValue(request);
+		ITestResult res = new SuccessResult(valueResponse.value);
 		res.setScreenShot(valueResponse.getBase64ScreenShot());
-		res.setMessage(valueResponse.value);
 		return res;
 	}
 
@@ -269,9 +270,9 @@ public class RemoteSwingAgentDriverImpl implements IRemoteSwingAgentDriver {
 					e.printStackTrace();
 				}
 			}
-			if(valueResponseMap.get(idRequest) instanceof TestResult) {
+			if(valueResponseMap.get(idRequest) instanceof ITestResult) {
 				valueResponseMap.remove(idRequest);
-				TestResult result = (TestResult) valueResponseMap.get(idRequest);
+				ITestResult result = (ITestResult) valueResponseMap.get(idRequest);
 				return new ValueResponse(idRequest, result.getMessage(), result.getScreenShot());
 			}
 			res = (ValueResponse) valueResponseMap.get(idRequest);

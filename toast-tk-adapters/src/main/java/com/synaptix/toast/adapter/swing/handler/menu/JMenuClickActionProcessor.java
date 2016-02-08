@@ -7,7 +7,7 @@ import org.fest.swing.core.Robot;
 import com.synaptix.toast.adapter.swing.handler.ActionProcessor;
 import com.synaptix.toast.adapter.swing.utils.FestRobotInstance;
 import com.synaptix.toast.core.net.request.CommandRequest;
-import com.synaptix.toast.core.report.TestResult.ResultKind;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 /**
  * Click on a JMenu 
@@ -22,6 +22,6 @@ class JMenuClickActionProcessor implements ActionProcessor<JMenu> {
 		JMenu target) {
 		Robot robot = FestRobotInstance.getRobot();
 		robot.click(target);
-		return ResultKind.SUCCESS.name();
+		return ITestResult.ResultKind.SUCCESS.name();
 	}
 }

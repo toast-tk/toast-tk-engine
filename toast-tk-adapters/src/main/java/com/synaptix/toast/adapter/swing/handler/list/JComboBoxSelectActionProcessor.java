@@ -2,13 +2,15 @@ package com.synaptix.toast.adapter.swing.handler.list;
 
 import javax.swing.JComboBox;
 
+import junit.framework.TestResult;
+
 import org.apache.commons.lang3.StringUtils;
 import org.fest.swing.fixture.JComboBoxFixture;
 
 import com.synaptix.toast.adapter.swing.handler.ActionProcessor;
 import com.synaptix.toast.adapter.swing.utils.FestRobotInstance;
 import com.synaptix.toast.core.net.request.CommandRequest;
-import com.synaptix.toast.core.report.TestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 class JComboBoxSelectActionProcessor implements ActionProcessor<JComboBox> {
 
@@ -31,10 +33,10 @@ class JComboBoxSelectActionProcessor implements ActionProcessor<JComboBox> {
 		fixture.selectItem(command.value);
 		int selectedIndex = fixture.component().getSelectedIndex();
 		if(command.value.equalsIgnoreCase(fixture.valueAt(selectedIndex))) {
-			return TestResult.ResultKind.SUCCESS.name();
+			return ITestResult.ResultKind.SUCCESS.name();
 		}
 		else {
-			return TestResult.ResultKind.ERROR.name();
+			return ITestResult.ResultKind.ERROR.name();
 		}
 	}
 
@@ -45,10 +47,10 @@ class JComboBoxSelectActionProcessor implements ActionProcessor<JComboBox> {
 		boolean isInBoundIndex = indexToSelect >= 0 && indexToSelect < fixture.component().getItemCount();
 		if(isInBoundIndex) {
 			fixture.selectItem(indexToSelect);
-			return TestResult.ResultKind.SUCCESS.name();
+			return ITestResult.ResultKind.SUCCESS.name();
 		}
 		else {
-			return TestResult.ResultKind.ERROR.name();
+			return ITestResult.ResultKind.ERROR.name();
 		}
 	}
 }

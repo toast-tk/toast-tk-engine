@@ -1,8 +1,7 @@
 package com.synaptix.toast.core.driver;
 
 import com.synaptix.toast.core.net.request.IIdRequest;
-import com.synaptix.toast.core.net.response.ValueResponse;
-import com.synaptix.toast.core.report.TestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 public interface IRemoteSwingAgentDriver {
 
@@ -16,7 +15,7 @@ public interface IRemoteSwingAgentDriver {
 	public void process(
 		IIdRequest request);
 
-	public TestResult processAndWaitForValue(
+	public ITestResult processAndWaitForValue(
 		IIdRequest requestId)
 		throws Exception;
 

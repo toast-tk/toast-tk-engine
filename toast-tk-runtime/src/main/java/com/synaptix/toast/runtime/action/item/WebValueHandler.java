@@ -41,20 +41,15 @@ public class WebValueHandler implements IValueHandler{
 			String pageName = null;
 			while(componentIterator.hasNext()){
 				pageName = componentIterator.next();
-				if(pageName.contains(":")){
-					IWebAutoElement<?> autoElement = getPageField(containerName, pageName);
-					pageName = StringUtils.split(pageName, ":")[0];
-<<<<<<< HEAD
-					IFeedableWebPage webPage = (IFeedableWebPage) objectRepository.getWebPage(pageName);
-					webPage.setDescriptor(autoElement.getDescriptor());
-=======
-					IFeedableWebPage webPage = objectRepository.getWebPage(pageName);
-					webPage.setLocator(autoElement.getWrappedElement());
->>>>>>> 1bb7f471bd7e2f3f7626d6e14092cc64f214cc10
-					containerName = pageName;
+				IWebAutoElement<?> autoElement = getPageField(containerName, pageName);
+				String referenceName = autoElement.getDescriptor().getReferenceName();
+				if(referenceName != null){
+					IFeedableWebPage refContainer = (IFeedableWebPage) objectRepository.getWebPage(referenceName);
+					refContainer.setDescriptor(autoElement.getDescriptor());
+					containerName = referenceName;
 				}
 			}
-			return getPageField(pageName, components[components.length - 1]);
+			return getPageField(containerName, components[components.length - 1]);
 		}
 	}
 
@@ -63,10 +58,17 @@ public class WebValueHandler implements IValueHandler{
 		this.descriptor = descriptor;
 	}
 
-	private IWebAutoElement<?> getPageField(String pageName, String fieldName) {
-		IFeedableWebPage page = objectRepository.getWebPage(pageName);
+	private IWebAutoElement<?> getPageField(String containerName, String fieldName) {
+		IFeedableWebPage page = objectRepository.getWebPage(containerName);
 		if (page == null) {
-			return null;
+			IWebAutoElement<?> iWebAutoElement = this.objectRepository.getWebComponents().get(containerName);
+			if(iWebAutoElement == null){
+				return null;
+			}
+			String referenceName = iWebAutoElement.getDescriptor().getReferenceName();
+			IFeedableWebPage webPage = objectRepository.getWebPage(referenceName);
+			webPage.setDescriptor(iWebAutoElement.getDescriptor());
+			return webPage.getAutoElement(fieldName);
 		}
 		return page.getAutoElement(fieldName);
 	}
