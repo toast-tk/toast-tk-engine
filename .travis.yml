@@ -4,7 +4,7 @@ cache:
 language: java
 jdk:
   - oraclejdk8
-script: build.sh
+script: ./build.sh
 #deploy:
 # provider: script
 # script: mvn deploy --settings ./settings.xml -PDEPLOY_NEXUS_SYNAPTIX
