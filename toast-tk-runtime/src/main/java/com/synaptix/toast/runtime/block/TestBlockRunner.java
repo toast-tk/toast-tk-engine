@@ -23,7 +23,7 @@ import com.synaptix.toast.adapter.FixtureService;
 import com.synaptix.toast.core.adapter.ActionAdapterKind;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
-import com.synaptix.toast.core.report.ErrorResult;
+import com.synaptix.toast.core.report.FailureResult;
 import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.core.runtime.ErrorResultReceivedException;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
@@ -100,7 +100,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			result = runThroughLocalActionAdapter(descriptor, actionAdapter);
 			updateFatal(result, descriptor);
 		} else {
-			return new ErrorResult(String.format("Action Implementation - Not Found"));
+			return new FailureResult(String.format("Action Implementation - Not Found"));
 		}
 		return result;
 	}
@@ -218,7 +218,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			if (e instanceof ErrorResultReceivedException) {
 				result = ((ErrorResultReceivedException) e).getResult();
 			} else {
-				result = new ErrorResult(ExceptionUtils.getRootCauseMessage(e));
+				result = new FailureResult(ExceptionUtils.getRootCauseMessage(e));
 			}
 		}
 		final String updatedCommand = updateCommandWithVarValues(command, execDescriptor);
