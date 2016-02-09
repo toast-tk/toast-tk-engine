@@ -10,7 +10,7 @@ import java.util.ServiceLoader;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.synaptix.toast.adapter.web.IWebElementFactory;
+import com.synaptix.toast.adapter.web.IWebComponentFactory;
 import com.synaptix.toast.automation.driver.web.SynchronizedDriver;
 import com.synaptix.toast.core.adapter.AutoWebType;
 import com.synaptix.toast.core.runtime.IFeedableWebPage;
@@ -38,7 +38,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 
 	private SynchronizedDriver driver;
 	
-	private static ServiceLoader<IWebElementFactory> factoryLoader = ServiceLoader.load(IWebElementFactory.class);
+	private static ServiceLoader<IWebComponentFactory> factoryLoader = ServiceLoader.load(IWebComponentFactory.class);
 	
 	/**
 	 * 
@@ -70,7 +70,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 		
 		try {
 			IWebElementDescriptor iWebElement = elements.get(name);
-			IWebElementFactory factory = factoryLoader.iterator().next();
+			IWebComponentFactory factory = factoryLoader.iterator().next();
 			if(factory == null){
 				throw new IllegalAccessError("No Web Element Factory declared !");
 			}

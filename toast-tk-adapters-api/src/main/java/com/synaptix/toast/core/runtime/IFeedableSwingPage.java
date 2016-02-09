@@ -1,5 +1,7 @@
 package com.synaptix.toast.core.runtime;
 
+import com.synaptix.toast.core.driver.IRemoteSwingAgentDriver;
+
 public interface IFeedableSwingPage {
 
 	/**
@@ -8,10 +10,12 @@ public interface IFeedableSwingPage {
 	 * @param locator
 	 */
 	public void initElement(
-		ISwingElement locator);
+		ISwingElementDescriptor locator);
 
 	public void addElement(
 		String elementName,
 		String type,
 		String locator);
+
+	void setDriver(IRemoteSwingAgentDriver sDvr);
 }

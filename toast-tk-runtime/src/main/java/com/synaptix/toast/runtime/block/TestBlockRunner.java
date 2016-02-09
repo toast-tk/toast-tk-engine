@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
 
 import javax.script.ScriptException;
 
-import junit.framework.TestResult;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -23,10 +21,8 @@ import com.google.inject.Injector;
 import com.synaptix.toast.adapter.ActionAdapterCollector;
 import com.synaptix.toast.adapter.FixtureService;
 import com.synaptix.toast.core.adapter.ActionAdapterKind;
-import com.synaptix.toast.core.agent.inspection.ISwingAutomationClient;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
-import com.synaptix.toast.core.net.request.CommandRequest;
 import com.synaptix.toast.core.report.ErrorResult;
 import com.synaptix.toast.core.runtime.ErrorResultReceivedException;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
@@ -102,9 +98,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		if (hasFoundActionAdapter(actionAdapter)) {
 			result = runThroughLocalActionAdapter(descriptor, actionAdapter);
 			updateFatal(result, descriptor);
-		} else if (isRequestFromToastStudio()) {
-			result = runThroughRemoteAgent(descriptor);
-			updateFatal(result, descriptor);
 		} else {
 			return new ErrorResult(String.format("Action Implementation - Not Found"));
 		}
@@ -115,9 +108,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		return actionAdapter != null;
 	}
 
-	private boolean isRequestFromToastStudio() {
-		return getClassInstance(ISwingAutomationClient.class) != null;
-	}
 
 	private void updateFatal(ITestResult result, TestLineDescriptor descriptor) {
 		if (descriptor.isFailFatalCommand()) {
@@ -125,21 +115,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 				result.setResultKind(ResultKind.FATAL);
 			}
 		}
-	}
-
-	/**
-	 * If no class is implementing the command then process it as a custom
-	 * command action request sent through network
-	 *
-	 * @param descriptor
-	 * @return
-	 */
-	private ITestResult runThroughRemoteAgent(TestLineDescriptor descriptor) {
-		ITestResult result;
-		final String command = descriptor.getActionImpl();
-		result = doRemoteActionCall(command, descriptor);
-		result.setContextualTestSentence(command);
-		return result;
 	}
 
 	private ITestResult runThroughLocalActionAdapter(
@@ -231,18 +206,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 		return serviceClasses;
 	}
-
-	private ITestResult doRemoteActionCall(String command, TestLineDescriptor descriptor) {
-		ITestResult result;
-		ISwingAutomationClient swingClient = (ISwingAutomationClient) getClassInstance(ISwingAutomationClient.class);
-		swingClient.processCustomCommand(buildCommandRequest(command, descriptor));
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Client Plugin Mode: Delegating command interpretation to server plugins !");
-		}
-		result = new ErrorResult("Unknown command !");
-		return result;
-	}
-
+	
 	private ITestResult doLocalActionCall(String command, Object instance, ActionCommandDescriptor execDescriptor) {
 		ITestResult result;
 		try {
@@ -436,20 +400,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private boolean isVariable(Object[] args, int i, String group) {
 		return isVariable(group) && args[i] != null && !group.contains(Property.DEFAULT_PARAM_SEPARATOR);
-	}
-
-	private CommandRequest buildCommandRequest(String command, TestLineDescriptor descriptor) {
-		final CommandRequest commandRequest;
-		switch (descriptor.getTestLineFixtureKind()) {
-		case service:
-			commandRequest = new CommandRequest.CommandRequestBuilder(null).ofType(ActionAdapterKind.service.name())
-					.asCustomCommand(command).build();
-			break;
-		default:
-			commandRequest = new CommandRequest.CommandRequestBuilder(null).asCustomCommand(command).build();
-			break;
-		}
-		return commandRequest;
 	}
 
 	private Object getClassInstance(Class<?> clz) {

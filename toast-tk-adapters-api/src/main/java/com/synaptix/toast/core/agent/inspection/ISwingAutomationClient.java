@@ -1,6 +1,6 @@
 package com.synaptix.toast.core.agent.inspection;
 
-import com.synaptix.toast.core.net.request.CommandRequest;
+import com.synaptix.toast.core.net.request.IIdRequest;
 
 public interface ISwingAutomationClient {
 
@@ -21,7 +21,7 @@ public interface ISwingAutomationClient {
 		String command);
 
 	void processCustomCommand(
-		final CommandRequest commandRequest);
+		final IIdRequest commandRequest);
 
 	void killServer();
 

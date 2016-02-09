@@ -2,10 +2,9 @@ package com.synaptix.toast.runtime.action.item;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.Gson;
 import com.google.inject.Injector;
-import com.synaptix.toast.adapter.swing.SwingAutoElement;
 import com.synaptix.toast.adapter.swing.component.DefaultSwingPage;
+import com.synaptix.toast.core.runtime.ISwingAutoElement;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 
@@ -32,9 +31,9 @@ public class SwingValueHandler implements IValueHandler{
 		this.descriptor = descriptor;
 	}
 
-	private SwingAutoElement getPageField(String pageName, String fieldName) {
+	private ISwingAutoElement getPageField(String pageName, String fieldName) {
 		DefaultSwingPage page = (DefaultSwingPage) objectRepository.getSwingPage(pageName);
-		SwingAutoElement autoElement = page.getAutoElement(fieldName);
+		ISwingAutoElement autoElement = page.getAutoElement(fieldName);
 		return autoElement;
 	}
 

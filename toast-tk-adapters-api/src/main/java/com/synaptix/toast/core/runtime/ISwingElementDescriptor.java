@@ -2,7 +2,7 @@ package com.synaptix.toast.core.runtime;
 
 import com.synaptix.toast.core.adapter.AutoSwingType;
 
-public interface ISwingElement {
+public interface ISwingElementDescriptor {
 
 	public void setName(
 		String name);

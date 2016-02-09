@@ -5,29 +5,30 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.synaptix.toast.adapter.swing.component.DefaultSwingElement;
+import com.synaptix.toast.adapter.web.IWebComponentFactory;
 import com.synaptix.toast.core.adapter.AutoSwingType;
 import com.synaptix.toast.core.driver.IRemoteSwingAgentDriver;
 import com.synaptix.toast.core.runtime.IFeedableSwingPage;
-import com.synaptix.toast.core.runtime.ISwingElement;
+import com.synaptix.toast.core.runtime.ISwingAutoElement;
+import com.synaptix.toast.core.runtime.ISwingElementDescriptor;
 
 /**
- * 
  * Page fixture abstraction, initializes fixture elements's locators based on wiki definitions
- * 
- * @author skokaina
- * 
  */
 public abstract class AbstractSwingPage implements IFeedableSwingPage {
 
 	public String beanClassName; // the bean class name
 
-	Map<String, ISwingElement> elements = new HashMap<String, ISwingElement>();
+	Map<String, ISwingElementDescriptor> elements = new HashMap<String, ISwingElementDescriptor>();
 
-	protected Map<String, SwingAutoElement> autoElements = new HashMap<String, SwingAutoElement>();
+	protected Map<String, ISwingAutoElement> autoElements = new HashMap<String, ISwingAutoElement>();
+	
+	private static ServiceLoader<ISwingComponentFactory> factoryLoader = ServiceLoader.load(ISwingComponentFactory.class);
 
 	private String pageName;
 
@@ -37,7 +38,7 @@ public abstract class AbstractSwingPage implements IFeedableSwingPage {
 	 */
 	@Override
 	public void initElement(
-		ISwingElement e) {
+		ISwingElementDescriptor e) {
 		initElement(e.getName(), e.getType().name(), e.getLocator());
 	}
 
@@ -58,13 +59,14 @@ public abstract class AbstractSwingPage implements IFeedableSwingPage {
 		 */
 		DefaultSwingElement defaultWebElement = new DefaultSwingElement(name, AutoSwingType.valueOf(type), locator);
 		elements.put(name, defaultWebElement);
-		/**
-		 * selenium wrapper field initalizarion when it comes to greenpepper
-		 */
 		try {
-			ISwingElement iWebElement = elements.get(name);
-			if(iWebElement != null) {
-				SwingAutoElement execAutoClass = SwingComponentFactory.getElement(iWebElement);
+			ISwingComponentFactory factory = factoryLoader.iterator().next();
+			if(factory == null){
+				throw new IllegalAccessError("No Swing Component Factory declared !");
+			}
+			ISwingElementDescriptor iSwingComponent = elements.get(name);
+			if(iSwingComponent != null) {
+				ISwingAutoElement execAutoClass = factory.getElement(iSwingComponent);
 				// for this abstract page, init fields (for java classes only
 				initBeanFields(name, execAutoClass);
 				autoElements.put(name, execAutoClass);
@@ -80,10 +82,10 @@ public abstract class AbstractSwingPage implements IFeedableSwingPage {
 
 	private void initBeanFields(
 		String name,
-		SwingAutoElement execAutoClass) {
+		ISwingAutoElement execAutoClass) {
 		for(Field f : this.getClass().getFields()) {
 			Class<?> automationClass = f.getType();
-			if(SwingAutoElement.class.isAssignableFrom(automationClass)) {
+			if(ISwingAutoElement.class.isAssignableFrom(automationClass)) {
 				if(f.getName().equals(name)) {
 					try {
 						BeanUtils.setProperty(this, name, execAutoClass);
@@ -99,7 +101,7 @@ public abstract class AbstractSwingPage implements IFeedableSwingPage {
 	/**
 	 * Convenient method to call an element based on the page enclosed fields' enum
 	 */
-	public ISwingElement getElement(
+	public ISwingElementDescriptor getElement(
 		String token) {
 		return elements.get(token);
 	}
@@ -107,7 +109,7 @@ public abstract class AbstractSwingPage implements IFeedableSwingPage {
 	/**
 	 * Convenient method to call an element based on the page enclosed fields' enum
 	 */
-	public SwingAutoElement getAutoElement(
+	public ISwingAutoElement getAutoElement(
 		String token) {
 		return autoElements.get(token);
 	}
@@ -130,16 +132,17 @@ public abstract class AbstractSwingPage implements IFeedableSwingPage {
 		this.pageName = pageName;
 	}
 
-	public List<ISwingElement> getLocationElements() {
-		return new ArrayList<ISwingElement>(elements.values());
+	public List<ISwingElementDescriptor> getLocationElements() {
+		return new ArrayList<ISwingElementDescriptor>(elements.values());
 	}
 
 	/**
 	 * set the driver that will be used by the automation elements
 	 */
+	@Override
 	public void setDriver(
 		IRemoteSwingAgentDriver sDvr) {
-		for(SwingAutoElement el : autoElements.values()) {
+		for(ISwingAutoElement el : autoElements.values()) {
 			el.setFrontEndDriver(sDvr);
 		}
 	}
