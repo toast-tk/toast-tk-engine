@@ -2,7 +2,7 @@ package com.synaptix.toast.dao.domain.impl.test.block.line;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.github.jmkgreen.morphia.annotations.Entity;
-import com.synaptix.toast.dao.domain.api.test.ITestResult;
+import com.synaptix.toast.core.report.TestResult;
 
 @Entity(value = "test", noClassnameStored = true)
 @Embedded
@@ -14,9 +14,9 @@ public class SwingPageConfigLine {
 
 	private String locator;
 
-	private ITestResult result;
+	private TestResult result;
 
-	public ITestResult getTestResult() {
+	public TestResult getTestResult() {
 		return result;
 	}
 
@@ -36,7 +36,7 @@ public class SwingPageConfigLine {
 	 * @param result
 	 */
 	public void setResult(
-			ITestResult result) {
+			TestResult result) {
 		this.result = result;
 	}
 
@@ -52,7 +52,7 @@ public class SwingPageConfigLine {
 		return locator;
 	}
 
-	public ITestResult getResult() {
+	public TestResult getResult() {
 		return result;
 	}
 

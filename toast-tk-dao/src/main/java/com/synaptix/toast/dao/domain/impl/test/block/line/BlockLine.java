@@ -3,6 +3,7 @@ package com.synaptix.toast.dao.domain.impl.test.block.line;
 import java.util.List;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
+import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 @Embedded
@@ -10,7 +11,7 @@ public class BlockLine {
 
 	private List<String> cells;
 
-	private ITestResult testResult;
+	private TestResult testResult;
 
 	public BlockLine() {
 	}
@@ -29,12 +30,12 @@ public class BlockLine {
 		this.cells = cells;
 	}
 
-	public ITestResult getTestResult() {
+	public TestResult getTestResult() {
 		return testResult;
 	}
 
 	public void setTestResult(
-			ITestResult testResult) {
+			TestResult testResult) {
 		this.testResult = testResult;
 	}
 }

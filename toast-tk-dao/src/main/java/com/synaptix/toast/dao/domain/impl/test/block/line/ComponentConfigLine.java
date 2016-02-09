@@ -2,7 +2,7 @@ package com.synaptix.toast.dao.domain.impl.test.block.line;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.github.jmkgreen.morphia.annotations.Entity;
-import com.synaptix.toast.dao.domain.api.test.ITestResult;
+import com.synaptix.toast.core.report.TestResult;
 
 @Entity(value = "test", noClassnameStored = true)
 @Embedded
@@ -14,9 +14,9 @@ public class ComponentConfigLine {
 
 	private String componentAssociation;
 
-	private ITestResult result;
+	private TestResult result;
 
-	public ITestResult getTestResult() {
+	public TestResult getTestResult() {
 		return result;
 	}
 
@@ -60,7 +60,7 @@ public class ComponentConfigLine {
 	}
 
 	public void setResult(
-			ITestResult result) {
+			TestResult result) {
 		this.result = result;
 	}
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
-import com.synaptix.toast.dao.domain.api.test.ITestResult;
+import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.dao.domain.impl.test.block.line.BlockLine;
 import com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine;
 
@@ -17,7 +17,7 @@ public class WebPageBlock implements IBlock {
 
     private String fixtureName;
 
-    private ITestResult testResult;
+    private TestResult testResult;
 
     /**
      *
@@ -58,12 +58,12 @@ public class WebPageBlock implements IBlock {
         blockLines.add(line);
     }
 
-    public ITestResult getTestResult() {
+    public TestResult getTestResult() {
         return testResult;
     }
 
     public void setTestResult(
-    		ITestResult testResult) {
+    		TestResult testResult) {
         this.testResult = testResult;
     }
 

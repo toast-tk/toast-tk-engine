@@ -1,11 +1,12 @@
 package com.synaptix.toast.dao.domain.api.test;
 
+import com.synaptix.toast.core.report.TestResult;
+
 public interface IRunnableTest {
 
-	public ITestResult getTestResult();
+	public TestResult getTestResult();
 
-	public void setTestResult(
-			ITestResult testResult);
+	public void setTestResult(TestResult testResult);
 
 	public long getExecutionTime();
 

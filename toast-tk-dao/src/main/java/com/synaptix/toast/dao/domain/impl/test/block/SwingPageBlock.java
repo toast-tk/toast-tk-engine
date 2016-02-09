@@ -3,8 +3,9 @@ package com.synaptix.toast.dao.domain.impl.test.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestResult;
+
 import com.github.jmkgreen.morphia.annotations.Embedded;
-import com.synaptix.toast.dao.domain.api.test.ITestResult;
 import com.synaptix.toast.dao.domain.impl.test.block.line.BlockLine;
 import com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine;
 
@@ -17,7 +18,7 @@ public class SwingPageBlock implements IBlock {
 
 	private String fixtureName;
 
-	private ITestResult testResult;
+	private TestResult testResult;
 
 	public SwingPageBlock() {
 		blockLines = new ArrayList<SwingPageConfigLine>();
@@ -55,12 +56,12 @@ public class SwingPageBlock implements IBlock {
 		blockLines.add(line);
 	}
 
-	public ITestResult getTestResult() {
+	public TestResult getTestResult() {
 		return testResult;
 	}
 
 	public void setTestResult(
-			ITestResult testResult) {
+			TestResult testResult) {
 		this.testResult = testResult;
 	}
 

@@ -24,6 +24,7 @@ import com.synaptix.toast.core.adapter.ActionAdapterKind;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
 import com.synaptix.toast.core.report.ErrorResult;
+import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.core.runtime.ErrorResultReceivedException;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
 import com.synaptix.toast.dao.domain.api.test.ITestResult.ResultKind;
@@ -55,7 +56,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		for (TestLine line : block.getBlockLines()) {
 			long startTime = System.currentTimeMillis();
 			TestLineDescriptor descriptor = new TestLineDescriptor(block, line);
-			ITestResult result = invokeActionAdapterAction(descriptor);
+			TestResult result = invokeActionAdapterAction(descriptor);
 			line.setExcutionTime(System.currentTimeMillis() - startTime);
 			if (result.isFatal()) {
 				throw new IllegalAccessException(
@@ -91,9 +92,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	 * @throws IllegalAccessException
 	 * @throws ClassNotFoundException
 	 */
-	private ITestResult invokeActionAdapterAction(TestLineDescriptor descriptor)
+	private TestResult invokeActionAdapterAction(TestLineDescriptor descriptor)
 			throws IllegalAccessException, ClassNotFoundException {
-		ITestResult result = null;
+		TestResult result = null;
 		Class<?> actionAdapter = locateActionAdapter(descriptor);
 		if (hasFoundActionAdapter(actionAdapter)) {
 			result = runThroughLocalActionAdapter(descriptor, actionAdapter);
@@ -117,10 +118,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 	}
 
-	private ITestResult runThroughLocalActionAdapter(
+	private TestResult runThroughLocalActionAdapter(
 			TestLineDescriptor descriptor,
 			Class<?> actionAdapter) {
-		final ITestResult result;
+		final TestResult result;
 		final String command = descriptor.getActionImpl();
 		Object actionAdapterInstance = getClassInstance(actionAdapter);
 		ActionCommandDescriptor actionDescriptor = findMatchingAction(command, actionAdapter);
@@ -207,11 +208,11 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		return serviceClasses;
 	}
 	
-	private ITestResult doLocalActionCall(String command, Object instance, ActionCommandDescriptor execDescriptor) {
-		ITestResult result;
+	private TestResult doLocalActionCall(String command, Object instance, ActionCommandDescriptor execDescriptor) {
+		TestResult result;
 		try {
 			Object[] args = buildArgumentList(execDescriptor);
-			result = (ITestResult) execDescriptor.method.invoke(instance, args);
+			result = (TestResult) execDescriptor.method.invoke(instance, args);
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 			if (e instanceof ErrorResultReceivedException) {

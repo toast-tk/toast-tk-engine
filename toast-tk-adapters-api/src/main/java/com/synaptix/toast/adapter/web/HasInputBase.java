@@ -4,7 +4,5 @@ import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 public interface HasInputBase<T> {
 
-	public ITestResult setInput(
-		T e)
-		throws Exception;
+	public ITestResult setInput(T e) throws Exception;
 }

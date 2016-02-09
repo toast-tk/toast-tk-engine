@@ -33,10 +33,16 @@ public interface ITestResult {
 	
 	boolean isSuccess();
 	
-	public boolean isFailure();
+	boolean isFailure();
 
-	public boolean isError();
+	boolean isError();
 
+	void setIsSuccess(boolean isSuccess);
+	
+	void setIsFailure(boolean isFailure);
+
+	void setIsError(boolean isError);
+	
 	void setResultKind(ResultKind kind);
 
 	String getScreenShot();
@@ -45,11 +51,10 @@ public interface ITestResult {
 
 	void setContextualTestSentence(String updatedCommand);
 
-	public boolean isFatal();
+	boolean isFatal();
 
 	ResultKind getResultKind();
 
 	void setMessage(String parameters);
-
 
 }

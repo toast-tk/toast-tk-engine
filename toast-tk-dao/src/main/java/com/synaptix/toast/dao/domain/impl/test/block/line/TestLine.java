@@ -2,8 +2,8 @@ package com.synaptix.toast.dao.domain.impl.test.block.line;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.github.jmkgreen.morphia.annotations.Entity;
+import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.dao.domain.api.test.IRunnableTest;
-import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 @Entity(value = "test", noClassnameStored = true)
 @Embedded
@@ -14,7 +14,7 @@ public class TestLine implements IRunnableTest {
 	private String expected;
 
 	@Embedded
-	private ITestResult testResult;
+	private TestResult testResult;
 
 	/**
 	 * Test comment
@@ -37,13 +37,13 @@ public class TestLine implements IRunnableTest {
 	}
 
 	@Override
-	public ITestResult getTestResult() {
+	public TestResult getTestResult() {
 		return testResult;
 	}
 
 	@Override
 	public void setTestResult(
-			ITestResult testResult) {
+			TestResult testResult) {
 		this.testResult = testResult;
 	}
 

@@ -2,7 +2,7 @@ package com.synaptix.toast.dao.domain.impl.test.block;
 
 import java.util.List;
 
-import com.synaptix.toast.dao.domain.api.test.ITestResult;
+import com.synaptix.toast.core.report.TestResult;
 
 public interface ITestPage extends ITaggable, IBlock {
 
@@ -48,7 +48,7 @@ public interface ITestPage extends ITaggable, IBlock {
 
     void addBlock(IBlock block);
 
-	ITestResult getTestResult();
+    TestResult getTestResult();
 	
 	public boolean isSuccess();
 

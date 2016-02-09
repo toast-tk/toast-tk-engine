@@ -1,18 +1,28 @@
 package com.synaptix.toast.core.report;
 
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult.ResultKind;
 
-public class SuccessResult implements ITestResult{
 
-	private String message;
+public class TestResult implements ITestResult{
 
-	private String contextualTestSentence;
+	protected String message;
 
-	private String screenShot;
+	protected String contextualTestSentence;
 
-	private ResultKind resultKind = ResultKind.SUCCESS;
+	protected String screenShot;
 
-	public SuccessResult() {
+	protected ResultKind resultKind;
+
+	protected boolean isSuccess;
+
+	protected boolean isFailure;
+
+	protected boolean isError;
+
+	protected boolean isFatal;
+
+	public TestResult() {
 		this("OK");
 	}
 
@@ -21,17 +31,15 @@ public class SuccessResult implements ITestResult{
 	 * 
 	 * @param failureMessage
 	 */
-	public SuccessResult(
-		String message) {
+	public TestResult(String message) {
 		this.message = message;
 	}
 
-	public SuccessResult(
+	public TestResult(
 		String message,
 		String img) {
 		this.message = message;
 		this.setScreenShot(img);
-		this.setResultKind(ResultKind.ERROR);
 	}
 
 	public String getMessage() {
@@ -68,26 +76,41 @@ public class SuccessResult implements ITestResult{
 
 	@Override
 	public boolean isSuccess() {
-		return true;
+		return isSuccess;
 	}
 
 	@Override
 	public boolean isFailure() {
-		return false;
+		return isFailure;
 	}
 
 	@Override
 	public boolean isError() {
-		return false;
+		return isError;
 	}
 
 	@Override
 	public boolean isFatal() {
-		return false;
+		return isFatal;
 	}
 
 	@Override
 	public ResultKind getResultKind() {
 		return resultKind;
+	}
+
+	@Override
+	public void setIsSuccess(boolean isSuccess) {
+		this.isSuccess = isSuccess;
+	}
+
+	@Override
+	public void setIsFailure(boolean isFailure) {
+		this.isFailure = isFailure;
+	}
+
+	@Override
+	public void setIsError(boolean isError) {
+		this.isError = isError;
 	}
 }
