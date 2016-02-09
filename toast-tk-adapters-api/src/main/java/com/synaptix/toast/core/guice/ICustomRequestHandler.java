@@ -3,7 +3,6 @@ package com.synaptix.toast.core.guice;
 import java.awt.Component;
 import java.util.List;
 
-import com.synaptix.toast.core.net.request.CommandRequest;
 import com.synaptix.toast.core.net.request.IIdRequest;
 
 /**
@@ -44,7 +43,7 @@ public interface ICustomRequestHandler {
 	 * @param command -> Custom Command Request
 	 */
 	public String processCustomCall(
-		CommandRequest command);
+		IIdRequest command);
 
 	/**
 	 * Check the handler is interested in handling the command request

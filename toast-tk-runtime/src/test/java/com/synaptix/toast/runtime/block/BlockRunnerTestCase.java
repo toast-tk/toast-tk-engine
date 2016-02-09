@@ -17,7 +17,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
-import com.synaptix.toast.adapter.swing.AbstractSwingActionAdapter;
 import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
@@ -48,20 +47,6 @@ public class BlockRunnerTestCase {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Test
-	public void testDialogMethod() {
-		TestBlockRunner blockRunner = new TestBlockRunner();
-		ActionCommandDescriptor method = blockRunner.findMatchingAction("Affichage dialogue *Choix service*", AbstractSwingActionAdapter.class);
-		Assert.assertNotNull(method);
-	}
-
-	@Test
-	public void testWaitMethod() {
-		TestBlockRunner blockRunner = new TestBlockRunner();
-		ActionCommandDescriptor method = blockRunner.findMatchingAction("wait for *10* sec", AbstractSwingActionAdapter.class);
-		Assert.assertNotNull(method);
 	}
 
 	@Test

@@ -1,14 +1,14 @@
 package com.synaptix.toast.adapter.swing.component;
 
 import com.synaptix.toast.core.adapter.AutoSwingType;
-import com.synaptix.toast.core.runtime.ISwingElement;
+import com.synaptix.toast.core.runtime.ISwingElementDescriptor;
 
 /**
  * 
  * @author skokaina
  * 
  */
-public class DefaultSwingElement implements ISwingElement {
+public class DefaultSwingElement implements ISwingElementDescriptor {
 
 	public String locator;
 
