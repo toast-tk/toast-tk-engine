@@ -4,10 +4,11 @@ cache:
 language: java
 jdk:
   - oraclejdk8
-deploy:
- provider: script
- script: mvn deploy --settings ./settings.xml -PDEPLOY_NEXUS_SYNAPTIX
- on:
-  branch: master
-after_success:
-  - mvn --batch-mode verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.0.1:sonar -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN}
+script: build.sh
+#deploy:
+# provider: script
+# script: mvn deploy --settings ./settings.xml -PDEPLOY_NEXUS_SYNAPTIX
+# on:
+#  branch: master
+#after_success:
+#  - mvn --batch-mode verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.0.1:sonar -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN}
