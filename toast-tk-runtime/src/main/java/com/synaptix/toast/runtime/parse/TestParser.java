@@ -64,9 +64,4 @@ public class TestParser extends AbstractParser {
 		return buildTestPage(list, scenarioName, null);
 	}
 
-	public void test(){
-		String toto = null;
-		toto.length();
-	}
-
 }
