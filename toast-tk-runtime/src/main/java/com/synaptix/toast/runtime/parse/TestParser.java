@@ -58,6 +58,7 @@ public class TestParser extends AbstractParser {
 	}
 
 	public ITestPage readString(String scenarioAsString, String scenarioName) throws IllegalArgumentException, IOException {
+		// Add error to tests sonar github plugin
 		String[] split = StringUtils.split(scenarioAsString, "\n");
 		ArrayList<String> list = new ArrayList<>(Arrays.asList(split));
 		return buildTestPage(list, scenarioName, null);
