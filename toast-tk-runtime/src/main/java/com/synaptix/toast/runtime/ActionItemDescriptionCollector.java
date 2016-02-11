@@ -21,17 +21,14 @@ public class ActionItemDescriptionCollector {
 
 	@SuppressWarnings("unchecked")
 	public static List<ActionItem> initActionItems() {
-		List<ActionItem> actionItems = new ArrayList<ActionItem>();
-		InputStream actionItemsSource = ActionItemDescriptionCollector.class.getClassLoader().getResourceAsStream("type_descriptor.json");
-		String json;
-		try {
-			json = IOUtils.toString(actionItemsSource, "UTF-8");
-			Gson g = new Gson();
-			Type typeOfT = new TypeToken<List<ActionItem>>() {
-			}.getType();
+		final List<ActionItem> actionItems = new ArrayList<>();
+		try(final InputStream actionItemsSource = ActionItemDescriptionCollector.class.getClassLoader().getResourceAsStream("type_descriptor.json");) {
+			final String json = IOUtils.toString(actionItemsSource, "UTF-8");
+			final Gson g = new Gson();
+			final Type typeOfT = new TypeToken<List<ActionItem>>() {/*NOOP*/}.getType();
 			actionItems.addAll((List<ActionItem>) g.fromJson(json, typeOfT));
 		}
-		catch(IOException e) {
+		catch(final IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
 		return actionItems;

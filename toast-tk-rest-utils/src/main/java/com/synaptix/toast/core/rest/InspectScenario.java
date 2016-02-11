@@ -10,11 +10,13 @@ public class InspectScenario {
 	public String steps = new String();
 
 	protected InspectScenario() {
+
 	}
 
 	public InspectScenario(
-		String item,
-		String recordedSteps) {
+		final String item,
+		final String recordedSteps
+	) {
 		this.name = item;
 		this.steps = recordedSteps;
 	}

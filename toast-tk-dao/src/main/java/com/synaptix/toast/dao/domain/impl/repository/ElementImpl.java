@@ -15,10 +15,10 @@ public class ElementImpl extends BasicEntityBean {
 	public int position;
 
 	public ElementImpl() {
-		type = "";
-		locator = "";
-		name = "";
-		method = "";
-		position = 0;
+		this.type = "";
+		this.locator = "";
+		this.name = "";
+		this.method = "";
+		this.position = 0;
 	}
 }

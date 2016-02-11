@@ -5,6 +5,5 @@ import com.synaptix.toast.core.runtime.ISwingElementDescriptor;
 
 public interface ISwingComponentFactory {
 
-	ISwingAutoElement getElement(ISwingElementDescriptor iSwingComponent);
-
+	ISwingAutoElement getElement(final ISwingElementDescriptor iSwingComponent);
 }

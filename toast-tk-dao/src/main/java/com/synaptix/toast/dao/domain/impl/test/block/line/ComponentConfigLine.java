@@ -24,9 +24,10 @@ public class ComponentConfigLine {
 	}
 
 	public ComponentConfigLine(
-		String testName,
-		String systemName,
-		String componentAssociation) {
+		final String testName,
+		final String systemName,
+		final String componentAssociation
+	) {
 		this.testName = testName;
 		this.systemName = systemName;
 		this.componentAssociation = componentAssociation;
@@ -36,8 +37,7 @@ public class ComponentConfigLine {
 		return testName;
 	}
 
-	public void setTestName(
-		String testName) {
+	public void setTestName(final String testName) {
 		this.testName = testName;
 	}
 
@@ -45,8 +45,7 @@ public class ComponentConfigLine {
 		return systemName;
 	}
 
-	public void setSystemName(
-		String systemName) {
+	public void setSystemName(final String systemName) {
 		this.systemName = systemName;
 	}
 
@@ -54,13 +53,11 @@ public class ComponentConfigLine {
 		return componentAssociation;
 	}
 
-	public void setComponentAssociation(
-		String componentAssociation) {
+	public void setComponentAssociation(final String componentAssociation) {
 		this.componentAssociation = componentAssociation;
 	}
 
-	public void setResult(
-			TestResult result) {
+	public void setResult(final TestResult result) {
 		this.result = result;
 	}
 }

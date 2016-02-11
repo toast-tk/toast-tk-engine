@@ -7,22 +7,24 @@ import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 public class StringValueHandler implements IValueHandler{
 
 	private Injector injector;
+
 	private ArgumentDescriptor descriptor;
+
 	private IActionItemRepository objectRepository;
 
 
 	@Override
-	public Object handle(String group, String argValue) {
+	public Object handle(final String group, final String argValue) {
 		return objectRepository.getUserVariables().getOrDefault(group, argValue);
 	}
 
 	@Override
-	public void setArgumentDescriptor(ArgumentDescriptor descriptor) {
+	public void setArgumentDescriptor(final ArgumentDescriptor descriptor) {
 		this.descriptor = descriptor;
 	}
 	
 	@Override
-	public void setInjector(Injector injector) {
+	public void setInjector(final Injector injector) {
 		this.injector = injector;
 		this.objectRepository = injector.getInstance(IActionItemRepository.class);
 	}

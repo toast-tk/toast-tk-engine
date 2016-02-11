@@ -9,13 +9,13 @@ public interface IFeedableSwingPage {
 	 * 
 	 * @param locator
 	 */
-	public void initElement(
-		ISwingElementDescriptor locator);
+	void initElement(final ISwingElementDescriptor locator);
 
 	public void addElement(
-		String elementName,
-		String type,
-		String locator);
+		final String elementName,
+		final String type,
+		final String locator
+	);
 
-	void setDriver(IRemoteSwingAgentDriver sDvr);
+	void setDriver(final IRemoteSwingAgentDriver sDvr);
 }

@@ -34,79 +34,78 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 
     private DefaultTestProgressReporter progressReporter;
 
-    protected AbstractScenarioRunner(Injector i) {
-    	super(i);
+    protected AbstractScenarioRunner(final Injector injector) {
+    	super(injector);
         this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
-        EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
+        final EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
         this.progressReporter = new DefaultTestProgressReporter(eventBus, htmlReportGenerator);
     }
     
-    
-    protected AbstractScenarioRunner(Module m) {
+    protected AbstractScenarioRunner(final Module m) {
     	super(m);
         this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
-        EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
+        final EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
         this.progressReporter = new DefaultTestProgressReporter(eventBus, htmlReportGenerator);
     }
-
     
     protected AbstractScenarioRunner() {
     	super();
         this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
-        EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
+        final EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
         this.progressReporter = new DefaultTestProgressReporter(eventBus, htmlReportGenerator);
     }
 
     public final void run(
-            String... scenarios)
-            throws Exception {
+    	final String... scenarios
+    ) throws Exception {
         runScenario(scenarios);
     }
 
     public final void runScenario(
-            String... scenarios)
-            throws Exception {
-        List<ITestPage> testPages = new ArrayList<>();
+    	final String... scenarios
+    ) throws Exception {
+    	final List<ITestPage> testPages = new ArrayList<>();
         initEnvironment();
-        for (String fileName : scenarios) {
-            LOG.info("Start main test parser: " + fileName);
-            File file = readTestFile(fileName);
-            ITestPage result = runScript(file, fileName);
+        for(final String fileName : scenarios) {
+            LOG.info("Start main test parser: {}", fileName);
+            final File file = readTestFile(fileName);
+            final ITestPage result = runScript(file, fileName);
             testPages.add(result);
         }
         tearDownEnvironment();
-        LOG.info(scenarios.length + "file(s) processed");
+        LOG.info("{}file(s) processed", scenarios.length);
         RunUtils.printResult(testPages);
     }
 
     public final void runRemote(
-            String... scenarios)
-            throws Exception {
+    	final String... scenarios
+    ) throws Exception {
         this.presetRepoFromWebApp = true;
         run(scenarios);
     }
 
     public final void runRemoteScript(
-            String script)
-            throws Exception {
+    	final String script
+    ) throws Exception {
         this.presetRepoFromWebApp = true;
         runScript(null, script);
     }
 
     public void runLocalScript(
-            String wikiScenario,
-            String repoWiki,
-            IReportUpdateCallBack callback)
-            throws IllegalAccessException, ClassNotFoundException, IOException {
+    	final String wikiScenario,
+    	final String repoWiki,
+    	final IReportUpdateCallBack callback
+    ) throws IllegalAccessException, ClassNotFoundException, IOException {
         this.progressReporter.setReportCallBack(callback);
-        TestParser parser = new TestParser();
+        final TestParser parser = new TestParser();
         this.localRepositoryTestPage = parser.readString(repoWiki, null);
         runScript(null, wikiScenario);
     }
 
     private File readTestFile(
-            String fileName) throws IOException {
-        URL resource = this.getClass().getClassLoader().getResource(fileName);
+    		final String fileName
+    ) throws IOException {
+    	final URL resource = this.getClass().getClassLoader().getResource(fileName);
         if (resource == null) {
             throw new FileNotFoundException(fileName);
         }
@@ -114,18 +113,19 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
     }
 
     private ITestPage runScript(
-            File file,
-            String script)
-            throws IllegalAccessException, ClassNotFoundException, IOException {
-        TestParser testParser = new TestParser();
+    	final File file,
+    	final String script
+    ) throws IllegalAccessException, ClassNotFoundException, IOException {
+    	final TestParser testParser = new TestParser();
         ITestPage result = file == null ? testParser.readString(script, null) : testParser.parse(file.getPath());
-        TestRunner runner = new TestRunner(injector);
+        final TestRunner runner = new TestRunner(injector);
         if (this.presetRepoFromWebApp) {
-            String repoWiki = RestUtils.downloadRepositoyAsWiki();
-            TestParser parser = new TestParser();
-            ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
+        	final String repoWiki = RestUtils.downloadRepositoyAsWiki();
+        	final TestParser parser = new TestParser();
+        	final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
             runner.run(repoAsTestPageForConvenience, false);
-        } else if (this.localRepositoryTestPage != null) {
+        } 
+        else if (this.localRepositoryTestPage != null) {
             runner.run(this.localRepositoryTestPage, false);
         }
         beginTest();
@@ -136,12 +136,12 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
     }
 
     protected void createAndOpenReport(
-            ITestPage testPage) {
-        String generatePageHtml = htmlReportGenerator.generatePageHtml(testPage);
-        String path = getReportsFolderPath();
+    	final ITestPage testPage
+    ) {
+    	final String generatePageHtml = htmlReportGenerator.generatePageHtml(testPage);
+    	final String path = getReportsFolderPath();
         final String pageName = testPage.getName();
-        this.htmlReportGenerator.writeFile(generatePageHtml, pageName, path);
+        htmlReportGenerator.writeFile(generatePageHtml, pageName, path);
         openReport(path, pageName);
     }
-
 }

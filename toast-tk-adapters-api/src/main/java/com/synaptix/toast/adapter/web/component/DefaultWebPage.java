@@ -1,15 +1,16 @@
 package com.synaptix.toast.adapter.web.component;
 
-
 public class DefaultWebPage extends AbstractWebPage {
 	
+	//utilite ?
+	@Override
 	public void addElement(
-		String name,
-		String type,
-		String method,
-		String locator,
-		Integer position) {
+		final String name,
+		final String type,
+		final String method,
+		final String locator,
+		final Integer position
+	) {
 		super.initElement(name, type, method, locator, position);
 	}
-	
 }

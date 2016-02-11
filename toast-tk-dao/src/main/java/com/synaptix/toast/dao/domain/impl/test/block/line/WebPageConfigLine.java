@@ -25,11 +25,12 @@ public class WebPageConfigLine{
 	}
 
 	public WebPageConfigLine(
-		String name,
-		String type,
-		String method,
-		String locator,
-		Integer position) {
+		final String name,
+		final String type,
+		final String method,
+		final String locator,
+		final Integer position
+	) {
 		this.elementName = name;
 		this.type = type;
 		this.method = method;
@@ -38,13 +39,10 @@ public class WebPageConfigLine{
 	}
 
 	public WebPageConfigLine() {
+
 	}
 
-	/**
-	 * @param result
-	 */
-	public void setResult(
-			TestResult result) {
+	public void setResult(final TestResult result) {
 		this.result = result;
 	}
 
@@ -72,28 +70,23 @@ public class WebPageConfigLine{
 		return result;
 	}
 
-	public void setElementName(
-		String elementName) {
+	public void setElementName(final String elementName) {
 		this.elementName = elementName;
 	}
 
-	public void setType(
-		String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
-	public void setMethod(
-		String method) {
+	public void setMethod(final String method) {
 		this.method = method;
 	}
 
-	public void setLocator(
-		String locator) {
+	public void setLocator(final String locator) {
 		this.locator = locator;
 	}
 
-	public void setPosition(
-		Integer position) {
+	public void setPosition(final Integer position) {
 		this.position = position;
 	}
 }

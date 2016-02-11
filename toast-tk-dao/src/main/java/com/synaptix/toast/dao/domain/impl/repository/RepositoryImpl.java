@@ -13,5 +13,5 @@ public class RepositoryImpl extends BasicEntityBean {
 	public String type;
 
 	@Reference(ignoreMissing = true)
-	public List<ElementImpl> rows = new ArrayList<ElementImpl>();
+	public List<ElementImpl> rows = new ArrayList<>();
 }

@@ -13,9 +13,10 @@ public class CampaignLine {
     private ITestPage file;
 
     public CampaignLine() {
+
     }
 
-    public CampaignLine(String name, ITestPage file) {
+    public CampaignLine(final String name, final ITestPage file) {
         this.setName(name);
         this.setFile(file);
     }
@@ -24,7 +25,7 @@ public class CampaignLine {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -32,7 +33,7 @@ public class CampaignLine {
         return file;
     }
 
-    public void setFile(ITestPage file) {
+    public void setFile(final ITestPage file) {
         this.file = file;
     }
 }

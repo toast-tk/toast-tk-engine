@@ -8,16 +8,15 @@ public interface IWebAutoElement<E> {
 	
 	E getWebElement();
 	
-	void setContainer(IFeedableWebPage abstractWebPage);
+	void setContainer(final IFeedableWebPage abstractWebPage);
 
 	IFeedableWebPage getContainer();
 
-	void setDriver(SynchronizedDriver<?, ?> sDvr);
+	void setDriver(final SynchronizedDriver<?, ?> sDvr);
 
 	IWebElementDescriptor getDescriptor();
 
 	List<E> getAllWebElements();
 
 	List<IWebElementDescriptor> getChildren();
-
 }

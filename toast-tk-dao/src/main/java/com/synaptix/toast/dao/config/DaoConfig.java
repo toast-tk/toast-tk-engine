@@ -2,25 +2,23 @@ package com.synaptix.toast.dao.config;
 
 public class DaoConfig {
 
-	private String mongoServer;
+	private final String mongoServer;
 
-	private int mongoPort;
+	private final int mongoPort;
+	
+	public DaoConfig(
+		final String mongoServer,
+		final int mongoPort
+	) {
+		this.mongoServer = mongoServer;
+		this.mongoPort = mongoPort;
+	}
 
 	public String getMongoServer() {
 		return mongoServer;
 	}
 
-	public void setMongoServer(
-		String mongoServer) {
-		this.mongoServer = mongoServer;
-	}
-
 	public int getMongoPort() {
 		return mongoPort;
-	}
-
-	public void setMongoPort(
-		int mongoPort) {
-		this.mongoPort = mongoPort;
 	}
 }

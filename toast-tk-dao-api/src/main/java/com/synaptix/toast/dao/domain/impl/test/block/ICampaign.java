@@ -8,8 +8,7 @@ public interface ICampaign extends ITaggable {
 
 	String getName();
 
-	void setId(
-		Object object);
+	void setId(final Object object);
 
 	String getIdAsString();
 }

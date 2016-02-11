@@ -19,49 +19,41 @@ public class CampaignDaoService extends AbstractMongoDaoService<Campaign> {
 
 	public interface Factory {
 
-		CampaignDaoService create(
-			@Assisted String dbName);
+		CampaignDaoService create(final @Assisted String dbName);
 	}
 
 	TestPageDaoService tService;
 
 	@Inject
 	public CampaignDaoService(
-		DbStarter starter,
-		CommonMongoDaoService cService,
-		@Assisted String dbName,
-		@Named("default_db") String default_db,
-		TestPageDaoService.Factory tDaoServiceFactory) {
+		final DbStarter starter,
+		final CommonMongoDaoService cService,
+		final @Assisted String dbName,
+		final @Named("default_db") String default_db,
+		final TestPageDaoService.Factory tDaoServiceFactory)
+	{
 		super(Campaign.class, starter.getDatabaseByName((dbName == null ? default_db : dbName)), cService);
-		tService = tDaoServiceFactory.create(dbName);
+		this.tService = tDaoServiceFactory.create(dbName);
 	}
 
-	public ICampaign getByName(
-		String name) {
-		Query<Campaign> query = createQuery();
+	public ICampaign getByName(final String name) {
+		final Query<Campaign> query = createQuery();
 		query.field("name").equal(name).order("-iteration");
 		return find(query).get();
 	}
 
-	public ICampaign saveAsNewIteration(
-		Campaign c) {
+	public ICampaign saveAsNewIteration(final Campaign c) {
 		c.setId(null);
-		List<ITestPage> savedTestCases = new ArrayList<ITestPage>(c.getTestCases().size());
-		for(ITestPage t : c.getTestCases()) {
-			savedTestCases.add(tService.saveAsNewIteration(t));
-		}
+		final List<ITestPage> savedTestCases = new ArrayList<>(c.getTestCases().size());
+		c.getTestCases().stream().forEach(t -> savedTestCases.add(tService.saveAsNewIteration(t)));
 		c.setTestCases(savedTestCases);
 		save(c);
 		return c;
 	}
 
-	public ICampaign saveReference(
-		Campaign c) {
-		for(ITestPage t : c.getTestCases()) {
-			tService.saveReference(t);
-		}
+	public ICampaign saveReference(final Campaign c) {
+		c.getTestCases().stream().forEach(t -> tService.saveReference(t));
 		save(c);
 		return c;
 	}
-
 }

@@ -3,7 +3,6 @@ package com.synaptix.toast.core.report;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
 import com.synaptix.toast.dao.domain.api.test.ITestResult.ResultKind;
 
-
 public class TestResult implements ITestResult{
 
 	protected String message;
@@ -31,46 +30,50 @@ public class TestResult implements ITestResult{
 	 * 
 	 * @param failureMessage
 	 */
-	public TestResult(String message) {
+	public TestResult(final String message) {
 		this.message = message;
 	}
 
 	public TestResult(
-		String message,
-		String img) {
+		final String message,
+		final String img
+	) {
 		this.message = message;
 		this.setScreenShot(img);
 	}
 
+	@Override
 	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(
-		String message) {
+	@Override
+	public void setMessage(final String message) {
 		this.message = message;
 	}
 
-	public void setResultKind(
-		ResultKind resultKind) {
+	@Override
+	public void setResultKind(final ResultKind resultKind) {
 		this.resultKind = resultKind;
 	}
 
-	public void setContextualTestSentence(
-		String contextualTestSentence) {
+	@Override
+	public void setContextualTestSentence(final String contextualTestSentence) {
 		this.contextualTestSentence = contextualTestSentence;
 	}
 
+	@Override
 	public String getContextualTestSentence() {
 		return contextualTestSentence;
 	}
 
+	@Override
 	public String getScreenShot() {
 		return screenShot;
 	}
 
-	public void setScreenShot(
-		String screenShot) {
+	@Override
+	public void setScreenShot(final String screenShot) {
 		this.screenShot = screenShot;
 	}
 
@@ -100,17 +103,17 @@ public class TestResult implements ITestResult{
 	}
 
 	@Override
-	public void setIsSuccess(boolean isSuccess) {
+	public void setIsSuccess(final boolean isSuccess) {
 		this.isSuccess = isSuccess;
 	}
 
 	@Override
-	public void setIsFailure(boolean isFailure) {
+	public void setIsFailure(final boolean isFailure) {
 		this.isFailure = isFailure;
 	}
 
 	@Override
-	public void setIsError(boolean isError) {
+	public void setIsError(final boolean isError) {
 		this.isError = isError;
 	}
 }

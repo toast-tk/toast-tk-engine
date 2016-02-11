@@ -10,13 +10,14 @@ import java.util.List;
 public class CampaignBlock implements IBlock {
 
     private List<CampaignLine> testCases;
+
     private String campaignName;
 
     public CampaignBlock() {
-        setTestCases(new ArrayList<>());
+    	this.testCases = new ArrayList<>();
     }
 
-    public void addTestCase(String name, ITestPage testCase) {
+    public void addTestCase(final String name, final ITestPage testCase) {
         testCases.add(new CampaignLine(name, testCase));
     }
 
@@ -24,7 +25,7 @@ public class CampaignBlock implements IBlock {
         return testCases;
     }
 
-    public void setTestCases(List<CampaignLine> lines) {
+    public void setTestCases(final List<CampaignLine> lines) {
         this.testCases = lines;
     }
 
@@ -38,7 +39,7 @@ public class CampaignBlock implements IBlock {
         return 1;
     }
 
-    public void setCampaignName(String campaignName) {
+    public void setCampaignName(final String campaignName) {
         this.campaignName = campaignName;
     }
 

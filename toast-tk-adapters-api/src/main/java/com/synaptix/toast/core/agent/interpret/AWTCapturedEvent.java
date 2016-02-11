@@ -26,12 +26,13 @@ public class AWTCapturedEvent {
 	}
 
 	public AWTCapturedEvent(
-		String container,
-		String locator,
-		String name,
-		String type,
-		String value,
-		long timeStamp) {
+		final String container,
+		final String locator,
+		final String name,
+		final String type,
+		final String value,
+		final long timeStamp
+	) {
 		this.container = container != null ? container.replace(" ", "_") : "COMMON_CONTAINER";
 		this.componentLocator = locator;
 		this.componentName = name;
@@ -44,8 +45,7 @@ public class AWTCapturedEvent {
 		return eventType;
 	}
 
-	public void setEventType(
-		EventType eventType) {
+	public void setEventType(final EventType eventType) {
 		this.eventType = eventType;
 	}
 }

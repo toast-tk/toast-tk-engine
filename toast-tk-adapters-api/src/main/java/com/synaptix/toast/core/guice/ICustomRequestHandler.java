@@ -19,9 +19,10 @@ public interface ICustomRequestHandler {
 	 * @return any response
 	 * @throws IllegalAccessException 
 	 */
-	public String hanldeFixtureCall(
-		Component target,
-		IIdRequest request) throws IllegalAccessException;
+	String hanldeFixtureCall(
+		final Component target,
+		final IIdRequest request
+	) throws IllegalAccessException;
 
 	/**
 	 * Locate an element, the method should return the component (value) if it happens that it
@@ -31,10 +32,11 @@ public interface ICustomRequestHandler {
 	 * @param value
 	 * @return
 	 */
-	public Component locateComponentTarget(
-		String item,
-		String itemType,
-		Component value);
+	Component locateComponentTarget(
+		final String item,
+		final String itemType,
+		final Component value
+	);
 
 	/**
 	 * Handle a custom request not covered by the framework standard commands
@@ -42,8 +44,7 @@ public interface ICustomRequestHandler {
 	 * 
 	 * @param command -> Custom Command Request
 	 */
-	public String processCustomCall(
-		IIdRequest command);
+	String processCustomCall(final IIdRequest command);
 
 	/**
 	 * Check the handler is interested in handling the command request
@@ -51,14 +52,14 @@ public interface ICustomRequestHandler {
 	 * @param command
 	 * @return
 	 */
-	public List<String> getCommandRequestWhiteList();
+	List<String> getCommandRequestWhiteList();
 
 	/**
 	 * A unique name
 	 * 
 	 * @return
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * Check the handler is interested in handling the Swing component
@@ -66,6 +67,5 @@ public interface ICustomRequestHandler {
 	 * @param component
 	 * @return
 	 */
-	public boolean isInterestedIn(
-		Component component);
+	boolean isInterestedIn(final Component component);
 }

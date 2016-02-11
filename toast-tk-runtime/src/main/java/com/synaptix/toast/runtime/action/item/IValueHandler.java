@@ -5,10 +5,9 @@ import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 
 public interface IValueHandler {
 
-	void setInjector(Injector injector);
+	void setInjector(final Injector injector);
 
-	Object handle(String group, String argValue) throws Exception;
+	Object handle(final String group, final String argValue) throws Exception;
 
-	void setArgumentDescriptor(ArgumentDescriptor descriptor);
-
+	void setArgumentDescriptor(final ArgumentDescriptor descriptor);
 }

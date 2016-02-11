@@ -15,31 +15,28 @@ import com.synaptix.toast.dao.service.init.DbStarter;
 public class ConfigBlockDaoService extends AbstractMongoDaoService<ConfigBlock> {
 
 	public interface Factory {
-		ConfigBlockDaoService create(
-			@Nullable @Assisted String dbName);
+		ConfigBlockDaoService create(final @Nullable @Assisted String dbName);
 	}
 
 	ConfigBlock configBlock;
 
 	@Inject
 	public ConfigBlockDaoService(
-		DbStarter starter,
-		CommonMongoDaoService cService,
-		@Nullable @Assisted String dbName,
-		@Named("default_db") String default_db) {
+		final DbStarter starter,
+		final CommonMongoDaoService cService,
+		final @Nullable @Assisted String dbName,
+		final @Named("default_db") String default_db
+	) {
 		super(ConfigBlock.class, starter.getDatabaseByName((dbName == null ? default_db : dbName)), cService);
 	}
 
-	public ConfigBlock loadConfigBlock(
-		String name) {
+	public ConfigBlock loadConfigBlock(final String name) {
 		final Query<ConfigBlock> query = createQuery();
 		query.field("componentName").equal(name);
 		return query.get();
 	}
 
-	public void saveNormal(
-		final ConfigBlock configBlock
-		) {
+	public void saveNormal(final ConfigBlock configBlock) {
 		save(configBlock, WriteConcern.NORMAL);
 	}
 }

@@ -10,17 +10,17 @@ public class InspectPage {
 
 	public String name;
 
-	public List<String> items = new ArrayList<String>();
+	public List<String> items = new ArrayList<>();
 
 	protected InspectPage() {
+
 	}
 
 	public InspectPage(
-		String item,
-		List<Object> items) {
+		final String item,
+		final List<Object> items
+	) {
 		this.name = item;
-		for(Object o : items) {
-			this.items.add(o.toString());
-		}
+		items.stream().forEach(o -> items.add(o.toString()));
 	}
 }

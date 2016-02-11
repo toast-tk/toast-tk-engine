@@ -7,11 +7,10 @@ public interface HasClickAction {
 	/**
 	 * represent a click action
 	 */
-	public ITestResult click()
-		throws Exception;
+	ITestResult click() throws Exception;
 
 	/**
 	 * represents a double click action
 	 */
-	public void dbClick();
+	void dbClick();
 }

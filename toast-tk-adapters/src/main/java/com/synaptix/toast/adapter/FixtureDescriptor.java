@@ -11,10 +11,11 @@ public class FixtureDescriptor {
 	public final String description;
 
 	public FixtureDescriptor(
-		String name,
-		String type,
-		String pattern, 
-		String description) {
+		final String name,
+		final String type,
+		final String pattern, 
+		final String description
+	) {
 		this.name = name;
 		this.fixtureType = type;
 		this.pattern = pattern;

@@ -5,6 +5,5 @@ import com.synaptix.toast.core.runtime.IWebElementDescriptor;
 
 public interface IWebComponentFactory {
 
-	IWebAutoElement<?> getElement(IWebElementDescriptor iWebElement);
-
+	IWebAutoElement<?> getElement(final IWebElementDescriptor iWebElement);
 }

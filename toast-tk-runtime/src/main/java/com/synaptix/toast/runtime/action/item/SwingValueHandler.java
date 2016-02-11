@@ -11,30 +11,31 @@ import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 public class SwingValueHandler implements IValueHandler{
 
 	private Injector injector;
+
 	private ArgumentDescriptor descriptor;
+
 	private IActionItemRepository objectRepository;
 
 	@Override
-	public void setInjector(Injector injector) {
+	public void setInjector(final Injector injector) {
 		this.injector = injector;
 		this.objectRepository = injector.getInstance(IActionItemRepository.class);
 	}
 
 	@Override
-	public Object handle(String group, String argValue) throws Exception {
+	public Object handle(final String group, final String argValue) throws Exception {
 		String[] components = StringUtils.split(group, ".");
 		return getPageField(components[0], components[1]);
 	}
 
 	@Override
-	public void setArgumentDescriptor(ArgumentDescriptor descriptor) {
+	public void setArgumentDescriptor(final ArgumentDescriptor descriptor) {
 		this.descriptor = descriptor;
 	}
 
-	private ISwingAutoElement getPageField(String pageName, String fieldName) {
-		DefaultSwingPage page = (DefaultSwingPage) objectRepository.getSwingPage(pageName);
-		ISwingAutoElement autoElement = page.getAutoElement(fieldName);
+	private ISwingAutoElement getPageField(final String pageName, final String fieldName) {
+		final DefaultSwingPage page = (DefaultSwingPage) objectRepository.getSwingPage(pageName);
+		final ISwingAutoElement autoElement = page.getAutoElement(fieldName);
 		return autoElement;
 	}
-
 }

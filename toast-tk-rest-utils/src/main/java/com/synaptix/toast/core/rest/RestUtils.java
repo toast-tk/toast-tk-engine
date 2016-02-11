@@ -22,122 +22,123 @@ import com.sun.jersey.api.client.WebResource;
 public class RestUtils {
 
 	private static final Logger LOG = LogManager.getLogger(RestUtils.class);
+
 	public static final String WEBAPP_ADDR = "toast.webapp.addr";
+
 	public static final String WEBAPP_PORT = "toast.webapp.port";
 	
-	public static void get(
-		String url) {
-		Client httpClient = Client.create();
-		WebResource webResource = httpClient.resource(StringEscapeUtils.escapeHtml3(url));
-		ClientResponse response = webResource.get(ClientResponse.class);
-		int statusCode = response.getStatus();
-		if(LOG.isDebugEnabled()) {
-			LOG.debug("Client response code: " + statusCode);
-		}
+	public static void get(final String url) {
+		final Client httpClient = Client.create();
+		final WebResource webResource = httpClient.resource(StringEscapeUtils.escapeHtml3(url));
+		final ClientResponse response = webResource.get(ClientResponse.class);
+		final int statusCode = response.getStatus();
+		LOG.debug("Client response code: {}", statusCode);
 	}
 
 	public static void postPage(
-		String webAppAddr,
-		String webAppPort,
-		String value,
-		Object[] selectedValues) {
-		Client httpClient = Client.create();
-		String webappURL = getWebAppURI(webAppAddr, webAppPort);
-		WebResource webResource = httpClient.resource(webappURL + "/saveNewInspectedPage");
-		InspectPage requestEntity = new InspectPage(value, Arrays.asList(selectedValues));
-		Gson gson = new Gson();
-		ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
+		final String webAppAddr,
+		final String webAppPort,
+		final String value,
+		final Object[] selectedValues
+	) {
+		final Client httpClient = Client.create();
+		final String webappURL = getWebAppURI(webAppAddr, webAppPort);
+		final WebResource webResource = httpClient.resource(webappURL + "/saveNewInspectedPage");
+		final InspectPage requestEntity = new InspectPage(value, Arrays.asList(selectedValues));
+		final Gson gson = new Gson();
+		final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 			.post(ClientResponse.class, gson.toJson(requestEntity));
-		int statusCode = response.getStatus();
-		LOG.info("Client response code: " + statusCode);
+		final int statusCode = response.getStatus();
+		LOG.info("Client response code: {}", statusCode);
 	}
 
 	public static String downloadRepositoyAsWiki() {
-		String webappURL = getWebAppURI();
+		final String webappURL = getWebAppURI();
 		return downloadRepository(webappURL + "/loadWikifiedRepository");
 	}
 
-	public static String downloadRepository(
-		String uri) {
-		Client httpClient = Client.create();
-		String jsonResponse = getJsonResponseAsString(uri, httpClient);
+	public static String downloadRepository(final String uri) {
+		final Client httpClient = Client.create();
+		final String jsonResponse = getJsonResponseAsString(uri, httpClient);
 		JSONArray jsonResult;
 		try {
 			jsonResult = new JSONArray(jsonResponse);
-			StringBuilder builder = new StringBuilder();
+			final StringBuilder builder = new StringBuilder(4096);
 			for(int i = 0; i < jsonResult.length(); i++) {
-				String page = jsonResult.getString(i);
+				final String page = jsonResult.getString(i);
 				builder.append(page);
 			}
 			return builder.toString();
 		}
-		catch(JSONException e) {
+		catch(final JSONException e) {
 			LOG.error(e.getMessage(), e);
 		}
 		return null;
 	}
 
 	public static String getJsonResponseAsString(
-		String uri,
-		Client httpClient) {
-		WebResource webResource = httpClient.resource(uri);
-		ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
-		int statusCode = response.getStatus();
+		final String uri,
+		final Client httpClient
+	) {
+		final WebResource webResource = httpClient.resource(uri);
+		final ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
+		final int statusCode = response.getStatus();
 		if(statusCode == 401) {
 			try {
 				throw new AuthenticationException("Invalid Username or Password");
 			}
-			catch(AuthenticationException e) {
-				e.printStackTrace();
+			catch(final AuthenticationException e) {
+				LOG.error(e.getMessage(), e);
 			}
 		}
-		String jsonResponse = response.getEntity(String.class);
-		return jsonResponse;
+		return response.getEntity(String.class);
 	}
 
 	public static boolean postScenario(
-		String scenarioName,
-		String webAppHost,
-		String webAppPort,
-		String scenarioSteps) {
+		final String scenarioName,
+		final String webAppHost,
+		final String webAppPort,
+		final String scenarioSteps
+	) {
 		try {
-			Client httpClient = Client.create();
-			String webappURL = getWebAppURI(webAppHost, webAppPort);
-			WebResource webResource = httpClient.resource(webappURL + "/saveNewInspectedScenario");
-			Gson gson = new Gson();
-			InspectScenario scenario = new InspectScenario(scenarioName, scenarioSteps);
-			String json = gson.toJson(scenario);
-			System.out.println(json);
-			ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-				.post(ClientResponse.class, json);
-			int statusCode = response.getStatus();
-			LOG.info("Client response code: " + statusCode);
+			final Client httpClient = Client.create();
+			final String webappURL = getWebAppURI(webAppHost, webAppPort);
+			final WebResource webResource = httpClient.resource(webappURL + "/saveNewInspectedScenario");
+			final Gson gson = new Gson();
+			final InspectScenario scenario = new InspectScenario(scenarioName, scenarioSteps);
+			final String json = gson.toJson(scenario);
+			LOG.debug(json);
+			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(ClientResponse.class, json);
+			final int statusCode = response.getStatus();
+			LOG.info("Client response code: {}", statusCode);
 			return statusCode >= 200 && statusCode < 400;
 		}
-		catch(Exception e) {
+		catch(final Exception e) {
 			LOG.error(e.getMessage(), e);
 			return false;
 		}
 	}
 
 	public static boolean postScenario(
-		String scenarioName,
-		String scenarioSteps) {
+		final String scenarioName,
+		final String scenarioSteps
+	) {
 		return postScenario(scenarioName, scenarioSteps, "one", "two");
 	}
 
 	public static String getWebAppURI(
-		String host,
-		String port) {
+		final String host,
+		final String port
+	) {
 		return "http://" + host + ":" + port;
 	}
 
 	public static String getWebAppURI() {
-		String webAppAddr = System.getProperty(WEBAPP_ADDR);
+		final String webAppAddr = System.getProperty(WEBAPP_ADDR);
 		if(webAppAddr == null || webAppAddr.isEmpty()) {
 			throw new RuntimeException(WEBAPP_ADDR + " system property isn't defined !");
 		}
-		String webAppPort = System.getProperty(WEBAPP_PORT);
+		final String webAppPort = System.getProperty(WEBAPP_PORT);
 		if(webAppPort == null || webAppPort.isEmpty()) {
 			throw new RuntimeException(WEBAPP_PORT + " system property isn't defined !");
 		}
@@ -146,51 +147,46 @@ public class RestUtils {
 
 	public static Collection<ImportedScenario> getListOfScenario() {
 		try {
-			Client httpClient = Client.create();
-			String webappURL = getWebAppURI();
-			String response = getJsonResponseAsString(webappURL + "/loadScenariiList", httpClient);
-			Gson g = new Gson();
-			Type typeOfT = new TypeToken<Collection<ImportedScenario>>() {
-			}.getType();
-			Collection<ImportedScenario> scenarioList = g.fromJson(response, typeOfT);
+			final Client httpClient = Client.create();
+			final String webappURL = getWebAppURI();
+			final String response = getJsonResponseAsString(webappURL + "/loadScenariiList", httpClient);
+			final Gson g = new Gson();
+			final Type typeOfT = new TypeToken<Collection<ImportedScenario>>() {/*NOOP*/}.getType();
+			final Collection<ImportedScenario> scenarioList = g.fromJson(response, typeOfT);
 			return scenarioList;
 		}
-		catch(Exception e) {
+		catch(final Exception e) {
 			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}
 
-	public static ImportedScenarioDescriptor getScenario(
-		ImportedScenario scenarioRef) {
+	public static ImportedScenarioDescriptor getScenario(final ImportedScenario scenarioRef) {
 		try {
-			Client httpClient = Client.create();
-			String webappURL = getWebAppURI();
-			String response = getJsonResponseAsString(
-				webappURL + "/loadScenarioSteps/" + scenarioRef.getId(),
-				httpClient);
-			Gson g = new Gson();
-			ImportedScenarioDescriptor scenarioDescriptor = g.fromJson(response, ImportedScenarioDescriptor.class);
+			final Client httpClient = Client.create();
+			final String webappURL = getWebAppURI();
+			final String response = getJsonResponseAsString(webappURL + "/loadScenarioSteps/" + scenarioRef.getId(), httpClient);
+			final Gson g = new Gson();
+			final ImportedScenarioDescriptor scenarioDescriptor = g.fromJson(response, ImportedScenarioDescriptor.class);
 			return scenarioDescriptor;
 		}
-		catch(Exception e) {
+		catch(final Exception e) {
 			LOG.error(e.getMessage(), e);
 			return null;
 		}
 	}
 
 	public static boolean post(
-		String url,
-		String jsonFixtureDescriptor) {
-		Client httpClient = Client.create();
-		WebResource webResource = httpClient.resource(url);
-		ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-			.post(ClientResponse.class, jsonFixtureDescriptor);
+		final String url,
+		final String jsonFixtureDescriptor
+	) {
+		final Client httpClient = Client.create();
+		final WebResource webResource = httpClient.resource(url);
+		final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).post(ClientResponse.class, jsonFixtureDescriptor);
 		return response.equals(200);
 	}
 
-	public static void main(
-		String[] args) {
+	public static void main(final String[] args) {
 		RestUtils.postScenario("newtest", "localhost", "9000", "a step");
 	}
 }

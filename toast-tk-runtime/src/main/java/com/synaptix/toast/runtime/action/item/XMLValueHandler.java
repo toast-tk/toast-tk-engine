@@ -15,28 +15,30 @@ import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 public class XMLValueHandler implements IValueHandler{
 
 	private Injector injector;
+
 	private ArgumentDescriptor descriptor;
+
 	private IActionItemRepository objectRepository;
 
 	@Override
-	public void setInjector(Injector injector) {
+	public void setInjector(final Injector injector) {
 		this.injector = injector;
 		this.objectRepository = injector.getInstance(IActionItemRepository.class);
 	}
 
 	@Override
-	public Object handle(String group, String argValue) throws Exception {
-		Class<?> xmlClazz = Class.forName(descriptor.name);
-		JAXBContext jaxbContext = JAXBContext.newInstance(xmlClazz);
-		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		InputStream stream = new ByteArrayInputStream(argValue.getBytes(StandardCharsets.UTF_8));
-		Object value = jaxbUnmarshaller.unmarshal(stream);
+	public Object handle(final String group, final String argValue) throws Exception {
+		final Class<?> xmlClazz = Class.forName(descriptor.name);
+		final JAXBContext jaxbContext = JAXBContext.newInstance(xmlClazz);
+		final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		final InputStream stream = new ByteArrayInputStream(argValue.getBytes(StandardCharsets.UTF_8));
+		final Object value = jaxbUnmarshaller.unmarshal(stream);
 		objectRepository.getUserVariables().put(group, value);
 		return value;
 	}
 
 	@Override
-	public void setArgumentDescriptor(ArgumentDescriptor descriptor) {
+	public void setArgumentDescriptor(final ArgumentDescriptor descriptor) {
 		this.descriptor = descriptor;
 	}
 }

@@ -13,16 +13,17 @@ import com.synaptix.toast.dao.service.init.DbStarter;
 public class TagDaoService extends AbstractMongoDaoService<TagImpl> {
 
 	public interface Factory {
-		TagDaoService create(
-			@Nullable @Assisted String dbName);
+
+		TagDaoService create(final @Nullable @Assisted String dbName);
 	}
 
 	@Inject
 	public TagDaoService(
-		DbStarter starter,
-		CommonMongoDaoService cService,
-		@Nullable @Assisted String dbName,
-		@Named("default_db") String default_db) {
+		final DbStarter starter,
+		final CommonMongoDaoService cService,
+		final @Nullable @Assisted String dbName,
+		final @Named("default_db") String default_db
+	) {
 		super(TagImpl.class, starter.getDatabaseByName((dbName == null ? default_db : dbName)), cService);
 	}
 }

@@ -17,15 +17,14 @@ public class ConfigBlock implements IBlock {
 	private List<ComponentConfigLine> lines;
 
 	public ConfigBlock() {
-		lines = new ArrayList<ComponentConfigLine>();
+		this.lines = new ArrayList<>();
 	}
 
 	public List<ComponentConfigLine> getLines() {
 		return lines;
 	}
 
-	public void setLines(
-		List<ComponentConfigLine> lines) {
+	public void setLines(final List<ComponentConfigLine> lines) {
 		this.lines = lines;
 	}
 
@@ -33,15 +32,15 @@ public class ConfigBlock implements IBlock {
 		return componentName;
 	}
 
-	public void setComponentName(
-		String componentName) {
+	public void setComponentName(final String componentName) {
 		this.componentName = componentName;
 	}
 
 	public void addLine(
-		String testName,
-		String systemName,
-		String componentAssociation) {
+		final String testName,
+		final String systemName,
+		final String componentAssociation
+	) {
 		lines.add(new ComponentConfigLine(testName, systemName, componentAssociation));
 	}
 
@@ -49,7 +48,6 @@ public class ConfigBlock implements IBlock {
 	public String getBlockType() {
 		return "config";
 	}
-
 
 	@Override
 	public int getHeaderSize() {

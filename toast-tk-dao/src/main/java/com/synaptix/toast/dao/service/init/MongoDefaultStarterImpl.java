@@ -38,11 +38,11 @@ public class MongoDefaultStarterImpl implements DbStarter {
 
 	@Inject
 	public MongoDefaultStarterImpl(
-		DaoConfig config,
-		EntityCollectionManager enitityManager,
-		@Named("MongoHost") String mongoHost,
-		@Named("MongoPort") int mongoPort)
-	{
+		final DaoConfig config,
+		final EntityCollectionManager enitityManager,
+		final @Named("MongoHost") String mongoHost,
+		final @Named("MongoPort") int mongoPort
+	) {
 		this.enitityManager = enitityManager;
 		this.mongoHost = mongoHost == null ? config.getMongoServer() : mongoHost;
 		this.mongoPort = mongoPort == -1 ? config.getMongoPort() : mongoPort;
@@ -51,31 +51,33 @@ public class MongoDefaultStarterImpl implements DbStarter {
 
 	private void init() {
 		try {
-			dsMap = new HashMap<String, Datastore>();
-			mClient = new MongoClient(this.mongoHost, this.mongoPort);
-			mClient.setWriteConcern(WriteConcern.JOURNALED);
-			morphia = new Morphia();
+			this.dsMap = new HashMap<>();
+			this.mClient = new MongoClient(this.mongoHost, this.mongoPort);
+			this.mClient.setWriteConcern(WriteConcern.JOURNALED);
+			this.morphia = new Morphia();
 			processMappings();
 		}
-		catch(UnknownHostException e) {
-			e.printStackTrace();
+		catch(final UnknownHostException e) {
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
 	private void processMappings() {
-		Reflections reflection = new Reflections(Domain.class.getPackage().getName());
-		Set<Class<?>> typesAnnotatedWith = reflection.getTypesAnnotatedWith(Entity.class);
-		for(Class<?> c : typesAnnotatedWith) {
-			Entity entity = c.getAnnotation(Entity.class);
-			enitityManager.register(entity.value(), c);
-			morphia.map(c);
-			LOG.info(c + " type has been registered to Morphia !");
-		}
+		final Reflections reflection = new Reflections(Domain.class.getPackage().getName());
+		final Set<Class<?>> typesAnnotatedWith = reflection.getTypesAnnotatedWith(Entity.class);
+		typesAnnotatedWith.stream().forEach(c -> processMapping(c));
 	}
 
+	private void processMapping(Class<?> c) {
+		final Entity entity = c.getAnnotation(Entity.class);
+		enitityManager.register(entity.value(), c);
+		morphia.map(c);
+		LOG.info("{} type has been registered to Morphia !", c);
+	}
+
+	//Thread Safety ?
 	@Override
-	public Datastore getDatabaseByName(
-		String name) {
+	public Datastore getDatabaseByName(final String name) {
 		if(dsMap.get(name) == null) {
 			Datastore ds = morphia.createDatastore(mClient, name);
 			ds.ensureCaps();

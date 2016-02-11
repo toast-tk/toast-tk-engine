@@ -30,8 +30,7 @@ public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl
 
 	public interface Factory {
 
-		RepositoryDaoService create(
-			@Nullable @Assisted String dbName);
+		RepositoryDaoService create(final @Nullable @Assisted String dbName);
 	}
 
 	private static final Logger LOG = LogManager.getLogger(RepositoryDaoService.class);
@@ -40,51 +39,52 @@ public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl
 
 	@Inject
 	public RepositoryDaoService(
-		DbStarter starter,
-		CommonMongoDaoService cService,
-		@Named("default_db") String default_db,
-		@Nullable @Assisted String dbName) {
+		final DbStarter starter,
+		final CommonMongoDaoService cService,
+		final @Named("default_db") String default_db,
+		final @Nullable @Assisted String dbName
+	) {
 		super(RepositoryImpl.class, starter.getDatabaseByName(dbName != null ? dbName : default_db), cService);
 	}
 
 	public String getRepoAsJson() {
-		Gson gSon = new Gson();
-		Query<RepositoryImpl> query = createQuery();
+		final Gson gSon = new Gson();//Gson is immutable
+		final Query<RepositoryImpl> query = createQuery();
 		query.field("type").equal(CONTAINER_TYPE);
-		List<RepositoryImpl> asList = query.asList();
+		final List<RepositoryImpl> asList = query.asList();
 		return gSon.toJson(asList);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Deprecated
 	public boolean saveRepoAsJson(
-		String jsonRepo) {
-		GsonBuilder gson = new GsonBuilder();
-		Type typeOfT = new TypeToken<Collection<RepositoryImpl>>() {
-		}.getType();
+		final String jsonRepo
+	) {
+		final GsonBuilder gson = new GsonBuilder();
+		final Type typeOfT = new TypeToken<Collection<RepositoryImpl>>() {private static final long serialVersionUID = 1L;}.getType();
 		try {
 			gson.registerTypeHierarchyAdapter(ObjectId.class, new com.google.gson.JsonDeserializer<ObjectId>() {
 
 				@Override
 				public ObjectId deserialize(
-					JsonElement json,
-					Type typeOfT,
-					JsonDeserializationContext context)
-					throws JsonParseException {
+					final JsonElement json,
+					final Type typeOfT,
+					final JsonDeserializationContext context
+				) throws JsonParseException {
 					if(json == null) {
 						return null;
 					}
 					return new ObjectId(json.toString());
 				}
 			});
-			Collection<RepositoryImpl> repository = (Collection<RepositoryImpl>) gson.create().fromJson(
+			final Collection<RepositoryImpl> repository = (Collection<RepositoryImpl>) gson.create().fromJson(
 				jsonRepo,
-				typeOfT);
-			for(RepositoryImpl r : repository) {
-				save(r, WriteConcern.ACKNOWLEDGED);
-			}
+				typeOfT
+			);
+			repository.stream().forEach(r -> save(r, WriteConcern.ACKNOWLEDGED));
 			return true;
 		}
-		catch(Exception e) {
+		catch(final Exception e) {
 			LOG.error("Couldn't save json representation to mongo instance", e);
 		}
 		return false;

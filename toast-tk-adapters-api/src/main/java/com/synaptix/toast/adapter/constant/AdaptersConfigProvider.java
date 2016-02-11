@@ -5,32 +5,31 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.inject.Provider;
 
 public class AdaptersConfigProvider implements Provider<AdaptersConfig> {
 
+	private static final Logger LOG = LogManager.getLogger(AdaptersConfigProvider.class);
+	
 	private AdaptersConfig config;
 
 	public AdaptersConfigProvider() {
-		super();
 		initConfig();
 	}
 
 	private void initConfig() {
-		Properties p = new Properties();
-		try {
-			URL resource = AdaptersConfigProvider.class.getClassLoader().getResource("toast.properties");
-			p.load(new FileReader(resource.getFile()));
+		final Properties p = new Properties();
+		final URL resource = AdaptersConfigProvider.class.getClassLoader().getResource("toast.properties");
+		try(final FileReader resourceFileReader = new FileReader(resource.getFile());) {
+			p.load(resourceFileReader);
 		}
 		catch(IOException e) {
+			LOG.error(e.getMessage(), e);
 		}
-		config = new AdaptersConfig();
-		String webDriver = p.getProperty("web.driver", "Chrome");
-		config.setWebDriver(webDriver);
-		String webDriverPath = p.getProperty("web.driver.path");
-		config.setWebDriverPath(webDriverPath);
-		boolean webDriverssl = Boolean.getBoolean("web.driver.ssl");
-		config.setIsSSl(webDriverssl);
+		this.config = new AdaptersConfig(p.getProperty("web.driver", "Chrome"), p.getProperty("web.driver.path"), Boolean.getBoolean("web.driver.ssl"));
 	}
 
 	@Override

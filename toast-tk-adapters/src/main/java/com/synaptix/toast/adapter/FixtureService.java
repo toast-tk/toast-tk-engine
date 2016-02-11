@@ -11,9 +11,10 @@ public class FixtureService {
 	public final String fixtureName;
 
 	public FixtureService(
-		Class<?> clazz,
-		ActionAdapterKind fixtureKind,
-		String fixtureName) {
+		final Class<?> clazz,
+		final ActionAdapterKind fixtureKind,
+		final String fixtureName
+	) {
 		this.clazz = clazz;
 		this.fixtureKind = fixtureKind;
 		this.fixtureName = fixtureName;

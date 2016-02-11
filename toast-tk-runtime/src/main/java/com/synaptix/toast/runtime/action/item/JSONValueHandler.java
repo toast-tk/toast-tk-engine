@@ -8,26 +8,27 @@ import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 public class JSONValueHandler implements IValueHandler{
 
 	private Injector injector;
+
 	private ArgumentDescriptor descriptor;
+
 	private IActionItemRepository objectRepository;
 
 	@Override
-	public void setInjector(Injector injector) {
+	public void setInjector(final Injector injector) {
 		this.injector = injector;
 		this.objectRepository = injector.getInstance(IActionItemRepository.class);
 	}
 
 	@Override
-	public Object handle(String group, String argValue) throws Exception {
-		Class<?> jsonClazz = Class.forName(descriptor.name);
-		Object value = new Gson().fromJson(argValue, jsonClazz);
+	public Object handle(final String group, final String argValue) throws Exception {
+		final Class<?> jsonClazz = Class.forName(descriptor.name);
+		final Object value = new Gson().fromJson(argValue, jsonClazz);
 		objectRepository.getUserVariables().put(group, value);
 		return value;
 	}
 
 	@Override
-	public void setArgumentDescriptor(ArgumentDescriptor descriptor) {
+	public void setArgumentDescriptor(final ArgumentDescriptor descriptor) {
 		this.descriptor = descriptor;
 	}
-
 }

@@ -14,11 +14,16 @@ import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 public class ActionItemValueProvider {
 
 	private static final Logger LOG = LogManager.getLogger(ActionItemValueProvider.class);
+
 	private Map<ActionTypeEnum, IValueHandler> map;
 	
 	@Inject
 	public ActionItemValueProvider(){
-		map = new HashMap<ActionTypeEnum, IValueHandler>();
+		this.map = new HashMap<>(10);
+		fillMap();
+	}
+
+	private void fillMap() {
 		map.put(ActionTypeEnum.json, new JSONValueHandler());
 		map.put(ActionTypeEnum.xml, new XMLValueHandler());
 		map.put(ActionTypeEnum.string, new StringValueHandler());
@@ -33,11 +38,11 @@ public class ActionItemValueProvider {
 			if(handler != null){
 				handler.setInjector(injector);
 				handler.setArgumentDescriptor(descriptor);
-			}else{
+			}
+			else{
 				LOG.warn("No value hanlder found for : " + descriptor.typeEnum);
 			}
 		}
 		return handler;
 	}
-	
 }

@@ -16,14 +16,13 @@ public abstract class BasicMongoBean {
 		return name;
 	}
 
-	public void setName(
-		String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@PrePersist
 	public void prePersist() {
-		if(creationDate == null) {
+		if(creationDate == null) { //in constructor ?
 			creationDate = new Date();
 		}
 		lastUpdated = new Date();

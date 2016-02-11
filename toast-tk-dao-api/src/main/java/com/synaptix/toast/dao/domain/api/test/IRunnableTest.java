@@ -4,10 +4,9 @@ import com.synaptix.toast.core.report.TestResult;
 
 public interface IRunnableTest {
 
-	public TestResult getTestResult();
+	TestResult getTestResult();
 
-	public void setTestResult(TestResult testResult);
+	void setTestResult(final TestResult testResult);
 
-	public long getExecutionTime();
-
+	long getExecutionTime();
 }

@@ -50,44 +50,47 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
     	this.blocks = new ArrayList<>();
     }
 
-    public int getTechnicalErrorNumber() {
+    @Override
+	public int getTechnicalErrorNumber() {
         return technicalErrorNumber;
     }
 
-    public void setTechnicalErrorNumber(
-            int technicalErrorNumber) {
+    @Override
+	public void setTechnicalErrorNumber(final int technicalErrorNumber) {
         this.technicalErrorNumber = technicalErrorNumber;
     }
 
-    public int getTestSuccessNumber() {
+    @Override
+	public int getTestSuccessNumber() {
         return testSuccessNumber;
     }
 
-    public void setTestSuccessNumber(
-            int testSuccessNumber) {
+    @Override
+	public void setTestSuccessNumber(final int testSuccessNumber) {
         this.testSuccessNumber = testSuccessNumber;
     }
 
-    public int getTestFailureNumber() {
+    @Override
+	public int getTestFailureNumber() {
         return testFailureNumber;
     }
 
-    public void setTestFailureNumber(
-            int testFailureNumber) {
+    @Override
+	public void setTestFailureNumber(final int testFailureNumber) {
         this.testFailureNumber = testFailureNumber;
     }
 
-    public void addBlock(
-            IBlock testBlock) {
+    @Override
+	public void addBlock(final IBlock testBlock) {
         blocks.add(testBlock);
     }
 
-    public String getParsingErrorMessage() {
+    @Override
+	public String getParsingErrorMessage() {
         return parsingErrorMessage;
     }
 
-    public void setParsingErrorMessage(
-            String parsingErrorMessage) {
+    public void setParsingErrorMessage(final String parsingErrorMessage) {
         this.parsingErrorMessage = parsingErrorMessage;
     }
 
@@ -96,8 +99,7 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
         return executionTime;
     }
 
-    public void setExecutionTime(
-            long executionTime) {
+    public void setExecutionTime(final long executionTime) {
         this.executionTime = executionTime;
     }
 
@@ -107,8 +109,7 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
     }
 
     @Override
-    public void setTestResult(
-    		TestResult testResult) {
+    public void setTestResult(final TestResult testResult) {
         this.testResult = testResult;
     }
 
@@ -123,13 +124,12 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
         setIsSuccess(ReportHelper.isSuccess(this));
     }
 
-
-    public List<IBlock> getBlocks() {
+    @Override
+	public List<IBlock> getBlocks() {
         return blocks;
     }
 
-    public void setBlocks(
-            List<IBlock> blocks) {
+    public void setBlocks(final List<IBlock> blocks) {
         this.blocks = blocks;
     }
 
@@ -139,8 +139,7 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
     }
 
     @Override
-    public void setPreviousExecutionTime(
-            long previousExecutionTime) {
+    public void setPreviousExecutionTime(final long previousExecutionTime) {
         this.previousExecutionTime = previousExecutionTime;
     }
 
@@ -150,13 +149,11 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
     }
 
     @Override
-    public void setPreviousIsSuccess(
-            boolean previousIsSuccess) {
+    public void setPreviousIsSuccess(final boolean previousIsSuccess) {
         this.previousIsSuccess = previousIsSuccess;
     }
 
-    public void setIsTemplate(
-            boolean isTemplate) {
+    public void setIsTemplate(final boolean isTemplate) {
         this.isTemplate = isTemplate;
     }
 
@@ -168,7 +165,6 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
     public String getBlockType() {
         return "testPageBlock";
     }
-
 
 	@Override
 	public long getStartDateTime() {
@@ -186,8 +182,7 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
 	}
 
     @Override
-    public void setIsSuccess(
-            boolean isSuccess) {
+    public void setIsSuccess(final boolean isSuccess) {
         this.isSuccess = isSuccess;
     }
 }

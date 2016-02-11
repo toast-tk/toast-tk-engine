@@ -6,4 +6,5 @@ package com.synaptix.toast.adapter.web;
  * 
  */
 public interface HasTextInput extends HasInputBase<String> {
+	/*NOOP*/
 }

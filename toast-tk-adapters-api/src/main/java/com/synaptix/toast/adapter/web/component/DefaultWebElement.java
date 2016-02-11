@@ -16,14 +16,15 @@ public class DefaultWebElement implements IWebElementDescriptor {
 	private String name;
 
 	private String referenceName;
-	
-	
+
 	public DefaultWebElement(
-		String name,
-		AutoWebType type,
-		String locator,
-		LocationMethod method,
-		int position, String referenceName) {
+		final String name,
+		final AutoWebType type,
+		final String locator,
+		final LocationMethod method,
+		final int position, 
+		final String referenceName
+	) {
 		this.locator = locator;
 		this.method = method;
 		this.position = position;
@@ -38,8 +39,7 @@ public class DefaultWebElement implements IWebElementDescriptor {
 	}
 
 	@Override
-	public void setLocator(
-		String locator) {
+	public void setLocator(final String locator) {
 		this.locator = locator;
 	}
 
@@ -49,8 +49,7 @@ public class DefaultWebElement implements IWebElementDescriptor {
 	}
 
 	@Override
-	public void setMethod(
-		LocationMethod method) {
+	public void setMethod(final LocationMethod method) {
 		this.method = method;
 	}
 
@@ -60,14 +59,12 @@ public class DefaultWebElement implements IWebElementDescriptor {
 	}
 
 	@Override
-	public void setPosition(
-		int position) {
+	public void setPosition(final int position) {
 		this.position = position;
 	}
 
 	@Override
-	public void setName(
-		String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -82,8 +79,7 @@ public class DefaultWebElement implements IWebElementDescriptor {
 	}
 
 	@Override
-	public void setType(
-		AutoWebType type) {
+	public void setType(final AutoWebType type) {
 		this.type = type;
 	}
 
@@ -93,7 +89,7 @@ public class DefaultWebElement implements IWebElementDescriptor {
 	}
 
 	@Override
-	public void setReferenceName(String referenceName) {
+	public void setReferenceName(final String referenceName) {
 		this.referenceName = referenceName;
 	}
 }

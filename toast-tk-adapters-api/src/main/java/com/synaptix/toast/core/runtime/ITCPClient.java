@@ -7,29 +7,24 @@ import com.synaptix.toast.core.net.request.IIdRequest;
 public interface ITCPClient {
 
 	void connect(
-		int timeout,
-		String host,
-		int tcpPort)
-		throws IOException;
+		final int timeout,
+		final String host,
+		final int tcpPort
+	) throws IOException;
 
 	boolean isConnected();
 
-	void reconnect()
-		throws IOException;
+	void reconnect() throws IOException;
 
-	void sendRequest(
-		IIdRequest request);
+	void sendRequest(final IIdRequest request);
 
 	void close();
 
 	void keepAlive();
 
-	void addResponseHandler(
-		ITCPResponseReceivedHandler itcpResponseReceivedHandler);
+	void addResponseHandler(final ITCPResponseReceivedHandler itcpResponseReceivedHandler);
 
-	void addConnectionHandler(
-		ITCPResponseReceivedHandler itcpResponseReceivedHandler);
+	void addConnectionHandler(final ITCPResponseReceivedHandler itcpResponseReceivedHandler);
 
-	void addDisconnectionHandler(
-		ITCPResponseReceivedHandler itcpResponseReceivedHandler);
+	void addDisconnectionHandler(final ITCPResponseReceivedHandler itcpResponseReceivedHandler);
 }

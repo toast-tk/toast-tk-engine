@@ -22,15 +22,14 @@ public class TestBlock implements IBlock {
     private int testFailureNumber;
 
 	public TestBlock() {
-		blockLines = new ArrayList<TestLine>();
+		this.blockLines = new ArrayList<>();
 	}
 
 	public List<TestLine> getBlockLines() {
 		return blockLines;
 	}
 
-	public void setBlockLines(
-			List<TestLine> blockLines) {
+	public void setBlockLines(final List<TestLine> blockLines) {
 		this.blockLines = blockLines;
 	}
 
@@ -38,10 +37,11 @@ public class TestBlock implements IBlock {
 	 * Add a test line
 	 */
 	public void addLine(
-			String test,
-			String expected,
-			String comment) {
-		TestLine blockLine = new TestLine(test, expected, comment);
+		final String test,
+		final String expected,
+		final String comment
+	) {
+		final TestLine blockLine = new TestLine(test, expected, comment);
 		blockLine.setComment(comment);
 		this.blockLines.add(blockLine);
 	}
@@ -50,8 +50,7 @@ public class TestBlock implements IBlock {
 		return fixtureName;
 	}
 
-	public void setFixtureName(
-			String fixtureName) {
+	public void setFixtureName(final String fixtureName) {
 		this.fixtureName = fixtureName;
 	}
 
@@ -69,8 +68,7 @@ public class TestBlock implements IBlock {
         return technicalErrorNumber;
     }
 
-    public void setTechnicalErrorNumber(
-            int technicalErrorNumber) {
+    public void setTechnicalErrorNumber(final int technicalErrorNumber) {
         this.technicalErrorNumber = technicalErrorNumber;
     }
 
@@ -78,8 +76,7 @@ public class TestBlock implements IBlock {
         return testSuccessNumber;
     }
 
-    public void setTestSuccessNumber(
-            int testSuccessNumber) {
+    public void setTestSuccessNumber(final int testSuccessNumber) {
         this.testSuccessNumber = testSuccessNumber;
     }
 
@@ -87,8 +84,7 @@ public class TestBlock implements IBlock {
         return testFailureNumber;
     }
 
-    public void setTestFailureNumber(
-            int testFailureNumber) {
+    public void setTestFailureNumber(final int testFailureNumber) {
         this.testFailureNumber = testFailureNumber;
     }
 }

@@ -7,9 +7,7 @@ package com.synaptix.toast.adapter.web;
  */
 public interface HasSelect {
 
-	public void selectByValue(
-		String value);
+	void selectByValue(final String value);
 
-	public void selectByIndex(
-		int index);
+	void selectByIndex(final int index);
 }

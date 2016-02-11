@@ -21,19 +21,19 @@ public class TestLine implements IRunnableTest {
 	 */
 	private String comment;
 
-
 	private long executionTime = 0;
 
 	public TestLine() {
 	}
 
 	public TestLine(
-			String test,
-			String expected,
-			String comment) {
-		this.setTest(test);
-		this.setExpected(expected);
-		this.setComment(comment);
+		final String test,
+		final String expected,
+		final String comment
+	) {
+		this.test = test;
+		this.expected = expected;
+		this.comment = comment;
 	}
 
 	@Override
@@ -42,8 +42,7 @@ public class TestLine implements IRunnableTest {
 	}
 
 	@Override
-	public void setTestResult(
-			TestResult testResult) {
+	public void setTestResult(final TestResult testResult) {
 		this.testResult = testResult;
 	}
 
@@ -51,8 +50,7 @@ public class TestLine implements IRunnableTest {
 		return test;
 	}
 
-	public void setTest(
-			String test) {
+	public void setTest(final String test) {
 		this.test = test;
 	}
 
@@ -60,8 +58,7 @@ public class TestLine implements IRunnableTest {
 		return expected;
 	}
 
-	public void setExpected(
-			String expected) {
+	public void setExpected(final String expected) {
 		this.expected = expected;
 	}
 
@@ -69,8 +66,7 @@ public class TestLine implements IRunnableTest {
 		return comment;
 	}
 
-	public void setComment(
-			String comment) {
+	public void setComment(final String comment) {
 		this.comment = comment;
 	}
 
@@ -79,7 +75,7 @@ public class TestLine implements IRunnableTest {
 		return executionTime;
 	}
 
-	public void setExcutionTime(long executionTime){
+	public void setExcutionTime(final long executionTime){
 		this.executionTime = executionTime;
 	}
 }

@@ -4,18 +4,9 @@ import com.synaptix.toast.core.adapter.AutoSwingType;
 
 public interface ISwingElementDescriptor {
 
-	public void setName(
-		String name);
+	String getName();
 
-	public String getName();
+	String getLocator();
 
-	public String getLocator();
-
-	public void setLocator(
-		String locator);
-
-	public AutoSwingType getType();
-
-	public void setType(
-		AutoSwingType type);
+	AutoSwingType getType();
 }

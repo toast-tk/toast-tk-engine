@@ -12,8 +12,11 @@ import com.google.inject.Inject;
 import com.synaptix.toast.dao.domain.impl.common.TagImpl;
 import com.synaptix.toast.dao.domain.impl.test.block.ITaggable;
 
-public abstract class AbstractMongoDaoService<E extends ITaggable> extends
-		BasicDAO<E, ObjectId> implements ICrudDaoService<E> {
+public abstract class AbstractMongoDaoService<E extends ITaggable> 
+extends
+		BasicDAO<E, ObjectId> 
+implements 
+		ICrudDaoService<E> {
 
 	@Inject
 	protected EntityCollectionManager entityManager;
@@ -23,26 +26,27 @@ public abstract class AbstractMongoDaoService<E extends ITaggable> extends
 	Class<E> clazz;
 
 	@Inject
-	protected AbstractMongoDaoService(Class<E> clazz, Datastore ds,
-			CommonMongoDaoService service) {
+	protected AbstractMongoDaoService(
+		final Class<E> clazz, 
+		final Datastore ds,
+		final CommonMongoDaoService service
+	) {
 		super(ds);
 		this.commonService = service;
 		this.clazz = clazz;
 	}
 
-	public List<E> getByTag(TagImpl tag) {
+	public List<E> getByTag(final TagImpl tag) {
 		return commonService.getTaggedItems(getDatastore(), clazz, tag);
 	}
 
 	@Override
-	public Key<E> saveAndIndex(E entity) {
-		Key<E> save = super.save(entity);
-		String collection = entityManager.getCollection(clazz);
+	public Key<E> saveAndIndex(final E entity) {
+		final Key<E> save = super.save(entity);
+		final String collection = entityManager.getCollection(clazz);
 		if (collection != null) {
-			commonService.indexEntity(ds, save.getKind(), save.getId()
-					.toString(), entity);
+			commonService.indexEntity(ds, save.getKind(), save.getId().toString(), entity);
 		}
 		return save;
 	}
-
 }

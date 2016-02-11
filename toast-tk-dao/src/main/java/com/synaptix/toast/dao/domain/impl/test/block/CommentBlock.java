@@ -12,11 +12,10 @@ public class CommentBlock implements IBlock {
 	private List<String> lines;
 
 	public CommentBlock() {
-		setLines(new ArrayList<>());
+		this.lines = new ArrayList<>();
 	}
 
-	public void addLine(
-		String line) {
+	public void addLine(final String line) {
 		lines.add(line);
 	}
 
@@ -24,8 +23,7 @@ public class CommentBlock implements IBlock {
 		return lines;
 	}
 
-	public void setLines(
-		List<String> lines) {
+	public void setLines(final List<String> lines) {
 		this.lines = lines;
 	}
 

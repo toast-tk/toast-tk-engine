@@ -3,23 +3,19 @@ package com.synaptix.toast.adapter.swing.component;
 import com.synaptix.toast.core.adapter.AutoSwingType;
 import com.synaptix.toast.core.runtime.ISwingElementDescriptor;
 
-/**
- * 
- * @author skokaina
- * 
- */
 public class DefaultSwingElement implements ISwingElementDescriptor {
 
-	public String locator;
+	public final String locator;
 
-	private AutoSwingType type;
+	private final AutoSwingType type;
 
-	private String name;
+	private final String name;
 
 	public DefaultSwingElement(
-		String name,
-		AutoSwingType type,
-		String locator) {
+		final String name,
+		final AutoSwingType type,
+		final String locator
+	) {
 		this.locator = locator;
 		this.type = type;
 		this.name = name;
@@ -31,18 +27,6 @@ public class DefaultSwingElement implements ISwingElementDescriptor {
 	}
 
 	@Override
-	public void setLocator(
-		String locator) {
-		this.locator = locator;
-	}
-
-	@Override
-	public void setName(
-		String name) {
-		this.name = name;
-	}
-
-	@Override
 	public String getName() {
 		return name;
 	}
@@ -50,11 +34,5 @@ public class DefaultSwingElement implements ISwingElementDescriptor {
 	@Override
 	public AutoSwingType getType() {
 		return type;
-	}
-
-	@Override
-	public void setType(
-		AutoSwingType type) {
-		this.type = type;
 	}
 }

@@ -1,7 +1,7 @@
 package com.synaptix.toast.core.adapter;
 
 public enum AutoSwingType {
-	input,
+	input, //constant to capitalize
 	button,
 	select,
 	date,

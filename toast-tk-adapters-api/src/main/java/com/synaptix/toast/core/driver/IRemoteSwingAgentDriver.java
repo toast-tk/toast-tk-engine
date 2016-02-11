@@ -5,21 +5,15 @@ import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 public interface IRemoteSwingAgentDriver {
 
-	public void init();
+	void init();
 
-	public void start(
-		String host);
+	void start(final String host);
 
-	public void stop();
+	void stop();
 
-	public void process(
-		IIdRequest request);
+	void process(final IIdRequest request);
 
-	public ITestResult processAndWaitForValue(
-		IIdRequest requestId)
-		throws Exception;
+	ITestResult processAndWaitForValue(final IIdRequest requestId) throws Exception;
 
-	public boolean waitForExist(
-		String requestId)
-		throws Exception;
+	boolean waitForExist(final String requestId) throws Exception;
 }
