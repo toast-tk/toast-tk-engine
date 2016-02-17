@@ -4,6 +4,7 @@ public interface IEventInterpreter {
 
 	public enum EventType {
 		CHECKBOX_CLICK,
+		RADIO_CLICK,
 		BUTTON_CLICK,
 		CLICK,
 		TABLE_CLICK,
