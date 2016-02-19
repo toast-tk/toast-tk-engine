@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/synaptix-labs/toast-tk-engine.svg?branch=master)](https://travis-ci.org/synaptix-labs/toast-tk-engine.svg?branch=master)
+[![Build Status](https://travis-ci.org/talan-labs/toast-tk-engine.svg?branch=master)](https://travis-ci.org/talan-labs/toast-tk-engine.svg?branch=master)
 
 # Toast Tk - Engine
 
