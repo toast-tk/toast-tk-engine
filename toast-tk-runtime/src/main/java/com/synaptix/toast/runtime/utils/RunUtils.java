@@ -6,21 +6,27 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 
 public class RunUtils {
+
+	private static final Logger LOG = LogManager.getLogger(RunUtils.class);
 
 	public static String readFileAsString(String path) throws IOException{
 		return new String(Files.readAllBytes(Paths.get(path)));
 	}
 	
 	public static void printResult(
-		List<ITestPage> testPages) {
+		final List<ITestPage> testPages
+	) {
 		int totalErrors = 0;
 		int totalTechnical = 0;
 		int totalSuccess = 0;
-		List<String> filesWithErrorsList = new ArrayList<String>();
-		for(ITestPage testPage : testPages) {
+		final List<String> filesWithErrorsList = new ArrayList<>();
+		for(final ITestPage testPage : testPages) {
 			totalErrors += testPage.getTestFailureNumber();
 			totalTechnical += testPage.getTechnicalErrorNumber();
 			if(testPage.getTechnicalErrorNumber() > 0) {
@@ -32,18 +38,19 @@ public class RunUtils {
 	}
 
 	private static void print(
-		int totalErrors,
-		int totalTechnical,
-		int totalSuccess,
-		List<String> filesWithErrorsList) {
+		final int totalErrors,
+		final int totalTechnical,
+		final int totalSuccess,
+		final List<String> filesWithErrorsList
+	) {
 		if(totalErrors > 0) {
-			System.out.println("Files with failed tests : ");
-			for(String string : filesWithErrorsList) {
-				System.out.println("- " + string);
+			LOG.info("Files with failed tests : ");
+			for(final String string : filesWithErrorsList) {
+				LOG.info("- {}", string);
 			}
 		}
-		System.out.println("Technical errors: " + totalTechnical);
-		System.out.println("Failures: " + totalErrors);
-		System.out.println("Success: " + totalSuccess);
+		LOG.info("Technical errors: {}", totalTechnical);
+		LOG.info("Failures: {}", totalErrors);
+		LOG.info("Success: {}", totalSuccess);
 	}
 }

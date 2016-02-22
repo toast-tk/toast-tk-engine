@@ -1,6 +1,5 @@
 package com.synaptix.toast.runtime.bean;
 
-
 public class ActionItem {
 
 	public String id;
@@ -16,6 +15,7 @@ public class ActionItem {
 	public String replacement;
 
 	protected ActionItem() {
+
 	}
 
 	public enum ActionCategoryEnum {

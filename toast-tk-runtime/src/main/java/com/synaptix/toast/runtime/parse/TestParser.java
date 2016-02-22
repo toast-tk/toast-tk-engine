@@ -30,37 +30,46 @@ public class TestParser extends AbstractParser {
 
 	public ITestPage parse(String path) throws IOException, IllegalArgumentException {
 		path = cleanPath(path);
-		Path p = Paths.get(path);
+		final Path p = Paths.get(path);
 		List<String> list;
-		try (Stream<String> lines = Files.lines(p)) {
+		try(Stream<String> lines = Files.lines(p)) {
 			list = lines.collect(Collectors.toList());
 		}
-		if (list.isEmpty()) {
-			throw new IllegalArgumentException("File empty at path: " + path);
-		}
+		assertFileWasNotEmpty(path, list);
 		removeBom(list);
 		return buildTestPage(list, p.getFileName().toString(), path);
 	}
 
-	private ITestPage buildTestPage(List<String> lines, String pageName, String filePath) throws IllegalArgumentException, IOException {
+	private static void assertFileWasNotEmpty(
+		final String path, 
+		final List<String> list
+	) {
+		if (list.isEmpty()) {
+			throw new IllegalArgumentException("File empty at path: " + path);
+		}
+	}
+
+	private ITestPage buildTestPage(
+		List<String> lines, 
+		final String pageName, 
+		final String filePath
+	) throws IllegalArgumentException, IOException {
 		LOG.info("Starting test page parsing: {}", pageName);
-		ITestPage testPage = DaoBeanFactory.getInstance().getBean(ITestPage.class);
+		final ITestPage testPage = DaoBeanFactory.getBean(ITestPage.class);
 		testPage.setName(pageName);
-		while (CollectionUtils.isNotEmpty(lines)) {
-			IBlock block = readBlock(lines, filePath);
+		while(CollectionUtils.isNotEmpty(lines)) {
+			final IBlock block = readBlock(lines, filePath);
 			testPage.addBlock(block);
-			int numberOfLines = TestParserHelper.getNumberOfBlockLines(block);
-			int numberOfLineIncludingHeaderSize = numberOfLines + block.getHeaderSize();
+			final int numberOfLines = TestParserHelper.getNumberOfBlockLines(block);
+			final int numberOfLineIncludingHeaderSize = numberOfLines + block.getHeaderSize();
 			lines = lines.subList(numberOfLineIncludingHeaderSize, lines.size()); //FIXME index offset needs to be revised, check test case 5
 		}
-
 		return testPage;
 	}
 
 	public ITestPage readString(String scenarioAsString, String scenarioName) throws IllegalArgumentException, IOException {
-		String[] split = StringUtils.split(scenarioAsString, "\n");
-		ArrayList<String> list = new ArrayList<>(Arrays.asList(split));
+		final String[] split = StringUtils.split(scenarioAsString, "\n");
+		final List<String> list = new ArrayList<>(Arrays.asList(split));
 		return buildTestPage(list, scenarioName, null);
 	}
-
 }

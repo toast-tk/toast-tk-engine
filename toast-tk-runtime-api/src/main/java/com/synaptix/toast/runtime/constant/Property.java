@@ -61,5 +61,4 @@ public class Property {
 	public static final int TOAST_AGENT_PORT = 7676;
 	
 	public static final String ACTION_ITEM_VAR_REGEX = "(\\$\\w+)";
-	
 }

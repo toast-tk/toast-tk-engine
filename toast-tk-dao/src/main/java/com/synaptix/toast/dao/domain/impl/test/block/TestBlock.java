@@ -41,11 +41,13 @@ public class TestBlock implements IBlock {
 		final String expected,
 		final String comment
 	) {
-		final TestLine blockLine = new TestLine(test, expected, comment);
-		blockLine.setComment(comment);
-		this.blockLines.add(blockLine);
+		this.blockLines.add(new TestLine(test, expected, comment));
 	}
 
+	public void addLine(final TestLine testLine) {
+			this.blockLines.add(testLine);
+		}
+	
 	public String getFixtureName() {
 		return fixtureName;
 	}

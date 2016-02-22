@@ -6,11 +6,14 @@ import java.io.FileWriter;
 import java.util.Locale;
 
 import org.apache.commons.lang.LocaleUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
+import com.synaptix.toast.adapter.constant.AdaptersConfigProvider;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.dao.domain.impl.test.block.TestPage;
 
@@ -20,34 +23,47 @@ import com.synaptix.toast.dao.domain.impl.test.block.TestPage;
  */
 public class ThymeLeafHTMLReporter implements IHTMLReportGenerator {
 
+	private static final Logger LOG = LogManager.getLogger(ThymeLeafHTMLReporter.class);
+	
 	@Override
 	public void writeFile(
-		String report,
-		String pageName,
-		String reportFolderPath) {
-		try {
-			FileWriter fstream = new FileWriter(reportFolderPath + File.separatorChar + pageName + ".html");
-			BufferedWriter out = new BufferedWriter(fstream);
+		final String report,
+		final String pageName,
+		final String reportFolderPath
+	) {
+		try(final BufferedWriter out = new BufferedWriter(new FileWriter(reportFolderPath + File.separatorChar + pageName + ".html"));) {
 			out.write(report);
-			out.close();
 		}
-		catch(Exception e) {
-			e.printStackTrace();
+		catch(final Exception e) {
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
 	@Override
-	public String generatePageHtml(
-		ITestPage test) {
-		TemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-		templateResolver.setTemplateMode("HTML5");
-		templateResolver.setCharacterEncoding("UTF-8");
-		TemplateEngine templateEngine = new TemplateEngine();
-		templateEngine.setTemplateResolver(templateResolver);
-		Locale locale = LocaleUtils.toLocale("fr");
+	public String generatePageHtml(final ITestPage test) {
+		final TemplateResolver templateResolver = buildTemplateResolver();
+		final TemplateEngine templateEngine = buildTemplateResolver(templateResolver);
+		final Locale locale = LocaleUtils.toLocale("fr");
+		final Context ctx = buildContext(test, locale);
+		return templateEngine.process("new_test_report_template.html", ctx);
+	}
+
+	private static Context buildContext(final ITestPage test, final Locale locale) {
 		final Context ctx = new Context(locale);
 		ctx.setVariable("test", test);
-		String htmlOutput = templateEngine.process("new_test_report_template.html", ctx);
-		return htmlOutput;
+		return ctx;
+	}
+
+	private static TemplateEngine buildTemplateResolver(final TemplateResolver templateResolver) {
+		final TemplateEngine templateEngine = new TemplateEngine();
+		templateEngine.setTemplateResolver(templateResolver);
+		return templateEngine;
+	}
+
+	private static TemplateResolver buildTemplateResolver() {
+		final TemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+		templateResolver.setTemplateMode("HTML5");
+		templateResolver.setCharacterEncoding("UTF-8");
+		return templateResolver;
 	}
 }

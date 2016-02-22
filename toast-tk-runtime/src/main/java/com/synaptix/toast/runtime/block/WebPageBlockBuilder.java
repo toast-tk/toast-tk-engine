@@ -13,22 +13,26 @@ public  class WebPageBlockBuilder implements IBlockRunner<WebPageBlock>{
 	IActionItemRepository objectRepository;
 	
 	@Override
-	public void run(WebPageBlock block) {
-		DefaultWebPage webPage = new DefaultWebPage();
-		for(WebPageConfigLine line : block.getBlockLines()) {
-			webPage.addElement(
-				line.getElementName(),
-				line.getType(),
-				line.getMethod(),
-				line.getLocator(),
-				line.getPosition());
-		}	
+	public void run(final WebPageBlock block) {
+		final DefaultWebPage webPage = new DefaultWebPage();
+		block.getBlockLines().stream().forEach(line -> addElement(webPage, line));
 		objectRepository.addWebPage(block.getFixtureName(), webPage);
 	}
 
-	@Override
-	public void setInjector(Injector injector) {
-		this.objectRepository = injector.getInstance(IActionItemRepository.class);
+	private static void addElement(
+		final DefaultWebPage webPage,
+		final WebPageConfigLine line
+	) {
+		webPage.addElement(
+			line.getElementName(),
+			line.getType(),
+			line.getMethod(),
+			line.getLocator(),
+			line.getPosition());
 	}
 
+	@Override
+	public void setInjector(final Injector injector) {
+		this.objectRepository = injector.getInstance(IActionItemRepository.class);
+	}
 }

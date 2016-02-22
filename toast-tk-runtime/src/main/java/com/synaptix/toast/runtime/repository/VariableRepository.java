@@ -8,10 +8,10 @@ import com.synaptix.toast.runtime.IRepository;
 
 public class VariableRepository implements IRepository<Object> {
 
-	private Map<String, Object> userVariables = new HashMap<String, Object>();
+	private Map<String, Object> userVariables = new HashMap<>();
 	
 	@Override
-	public Object get(String varName) {
+	public Object get(final String varName) {
 		return userVariables.get(varName);
 	}
 
@@ -21,7 +21,10 @@ public class VariableRepository implements IRepository<Object> {
 	}
 
 	@Override
-	public void add(String entityName, Object entity) {
+	public void add(
+		final String entityName, 
+		final Object entity
+	) {
 		userVariables.put(entityName, entity);
 	}
 
@@ -31,13 +34,12 @@ public class VariableRepository implements IRepository<Object> {
 	}
 
 	@Override
-	public void setMap(Map<String, Object> map) {
-		userVariables = map;
+	public void setMap(final Map<String, Object> userVariables) {
+		this.userVariables = userVariables;
 	}
 
 	@Override
 	public void clear() {
 		userVariables.clear();
 	}
-
 }

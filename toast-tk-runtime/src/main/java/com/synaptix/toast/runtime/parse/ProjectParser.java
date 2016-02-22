@@ -24,12 +24,12 @@ public class ProjectParser extends AbstractParser {
 
 	public ProjectParser() {
 		LOG.info("Parser initializing..");
-		blockParserProvider = new BlockParserProvider();
+		this.blockParserProvider = new BlockParserProvider();
 	}
 
 	public IProject parse(String path) throws IOException, IllegalArgumentException {
 		path = cleanPath(path);
-		Path p = Paths.get(path);
+		final Path p = Paths.get(path);
 		List<String> list;
 		try (Stream<String> lines = Files.lines(p)) {
 			list = lines.collect(Collectors.toList());
@@ -42,36 +42,50 @@ public class ProjectParser extends AbstractParser {
 		return buildProject(list, p.getFileName().toString(), path);
 	}
 
-	private IProject buildProject(List<String> lines, String pageName, String filePath) throws IllegalArgumentException, IOException {
+	private IProject buildProject(
+		List<String> lines, 
+		final String pageName, 
+		final String filePath
+	) throws IllegalArgumentException, IOException {
 		LOG.info("Starting project parsing: {}", pageName);
-		Project project = new Project();
-		project.setName(pageName);
-		project.setCampaigns(new ArrayList<>());
-		while (CollectionUtils.isNotEmpty(lines)) {
-			IBlock block = readBlock(lines, filePath);
-
-			if (block instanceof CampaignBlock) {
+		final Project project = initProject(pageName);
+		while(CollectionUtils.isNotEmpty(lines)) {
+			final IBlock block = readBlock(lines, filePath);
+			if(block instanceof CampaignBlock) {
 				project.getCampaigns().add(readCampaignBlock((CampaignBlock) block));
 			}
-
-			int numberOfLines = TestParserHelper.getNumberOfBlockLines(block);
-			int numberOfLineIncludingHeaderSize = numberOfLines + block.getHeaderSize();
+			final int numberOfLines = TestParserHelper.getNumberOfBlockLines(block);
+			final int numberOfLineIncludingHeaderSize = numberOfLines + block.getHeaderSize();
 			lines = lines.subList(numberOfLineIncludingHeaderSize, lines.size()); //FIXME index offset needs to be revised, check test case 5
 		}
-
 		return project;
 	}
 
-	private ICampaign readCampaignBlock(CampaignBlock block) {
-		Campaign campaign = new Campaign();
-		campaign.setTestCases(new ArrayList<>());
-		campaign.setName(block.getCampaignName());
-		List<CampaignLine> testCases = block.getTestCases();
-		for (CampaignLine testCase : testCases) {
-			testCase.getFile().setName(testCase.getName());
-			campaign.getTestCases().add(testCase.getFile());
-		}
+	private static Project initProject(final String pageName) {
+		final Project project = new Project();
+		project.setName(pageName);
+		project.setCampaigns(new ArrayList<>());
+		return project;
+	}
+
+	private static ICampaign readCampaignBlock(final CampaignBlock block) {
+		final Campaign campaign = initCampaign(block);
+		block.getTestCases().stream().forEach(testCase -> addTestCaseToCampaign(campaign, testCase));
 		return campaign;
 	}
 
+	private static void addTestCaseToCampaign(
+		final Campaign campaign,
+		final CampaignLine testCase
+	) {
+		testCase.getFile().setName(testCase.getName());
+		campaign.getTestCases().add(testCase.getFile());
+	}
+
+	private static Campaign initCampaign(final CampaignBlock block) {
+		final Campaign campaign = new Campaign();
+		campaign.setTestCases(new ArrayList<>());
+		campaign.setName(block.getCampaignName());
+		return campaign;
+	}
 }

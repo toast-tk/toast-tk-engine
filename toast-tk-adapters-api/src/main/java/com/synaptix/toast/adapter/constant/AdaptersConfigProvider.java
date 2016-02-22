@@ -26,7 +26,7 @@ public class AdaptersConfigProvider implements Provider<AdaptersConfig> {
 		try(final FileReader resourceFileReader = new FileReader(resource.getFile());) {
 			p.load(resourceFileReader);
 		}
-		catch(IOException e) {
+		catch(final IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
 		this.config = new AdaptersConfig(p.getProperty("web.driver", "Chrome"), p.getProperty("web.driver.path"), Boolean.getBoolean("web.driver.ssl"));

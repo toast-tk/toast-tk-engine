@@ -9,11 +9,19 @@ import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 
 public class TestLineDescriptor {
 
-	private static String KINDS = ActionAdapterKind.swing.name() + "|" 
-						 + ActionAdapterKind.web.name() + "|"
-						 + ActionAdapterKind.service.name();
+	private static final String KINDS;
 	
-	private static String REGEX = "@(" + KINDS + "):?([\\w\\-\\.]*) ([\\w\\W]+)";
+	private static final String REGEX;
+	
+	private static final Pattern PATTERN;
+	
+	static {
+		KINDS = ActionAdapterKind.swing.name() + "|" 
+				 + ActionAdapterKind.web.name() + "|"
+				 + ActionAdapterKind.service.name();
+		REGEX = "@(" + KINDS + "):?([\\w\\-\\.]*) ([\\w\\W]+)";
+		PATTERN = Pattern.compile(REGEX);
+	}
 
 	public final TestLine testLine;
 
@@ -24,17 +32,18 @@ public class TestLineDescriptor {
 	private ActionAdapterKind testLineFixtureKind;
 
 	public TestLineDescriptor(
-		TestBlock testBlock,
-		TestLine testLine) {
+		final TestBlock testBlock,
+		final TestLine testLine
+	) {
 		this.testLine = testLine;
 		initServiceKind(testBlock, testLine);
 	}
 
 	private void initServiceKind(
-		TestBlock testBlock,
-		TestLine testLine) {
-		Pattern pattern = Pattern.compile(REGEX);
-		Matcher matcher = pattern.matcher(testLine.getTest());
+		final TestBlock testBlock,
+		final TestLine testLine
+	) {
+		final Matcher matcher = PATTERN.matcher(testLine.getTest());
 		if(matcher.find()) {
 			setTestLineFixtureKind(ActionAdapterKind.valueOf(matcher.group(1)));
 			setTestLineFixtureName(matcher.group(2));
@@ -47,7 +56,8 @@ public class TestLineDescriptor {
 	}
 
 	private void setTestLineFixtureName(
-		String testLineFixtureName) {
+		final String testLineFixtureName
+	) {
 		this.testLineFixtureName = testLineFixtureName;
 	}
 
@@ -56,7 +66,8 @@ public class TestLineDescriptor {
 	}
 
 	private void setTestLineAction(
-		String testLineAction) {
+		final String testLineAction
+	) {
 		this.testLineAction = testLineAction;
 	}
 
@@ -69,7 +80,8 @@ public class TestLineDescriptor {
 	}
 
 	public void setTestLineFixtureKind(
-		ActionAdapterKind testLineFixtureKind) {
+		final ActionAdapterKind testLineFixtureKind
+	) {
 		this.testLineFixtureKind = testLineFixtureKind;
 	}
 
@@ -82,10 +94,6 @@ public class TestLineDescriptor {
 	}
 
 	public String getActionImpl() {
-		String actionImpl = testLineAction;
-		if(isFailFatalCommand()) {
-			actionImpl = actionImpl.substring(2);
-		}
-		return actionImpl;
+		return isFailFatalCommand() ? testLineAction.substring(2) : testLineAction; 
 	}
 }

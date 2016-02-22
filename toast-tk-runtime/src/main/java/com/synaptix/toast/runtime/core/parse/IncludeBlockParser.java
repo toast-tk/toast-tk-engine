@@ -21,14 +21,18 @@ public class IncludeBlockParser implements IBlockParser {
 	private static final Logger LOG = LogManager.getLogger(IncludeBlockParser.class);
 	
 	@Override
-	public IBlock digest(List<String> strings, String path) {
-		String string = strings.remove(0);
-		String pathName = StringUtils.removeStart(string, "#include").trim();
-		Path newPath = Paths.get(path).resolveSibling(pathName);
+	public IBlock digest(
+		final List<String> strings, 
+		final String path
+	) {
+		final String string = strings.remove(0);
+		final String pathName = StringUtils.removeStart(string, "#include").trim();
+		final Path newPath = Paths.get(path).resolveSibling(pathName);
 		ITestPage testPage = null;
 		try {
 			testPage = new TestParser().parse(newPath.toString());
-		} catch (IOException e) {
+		}
+		catch(final IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
 		return testPage;

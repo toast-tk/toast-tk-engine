@@ -30,9 +30,7 @@ package com.synaptix.toast.runtime;
 
 public interface IReportUpdateCallBack {
 
-	public void onUpdate(
-		String report);
+	void onUpdate(final String report);
 
-	public void onFatalStepError(
-		String message);
+	void onFatalStepError(final String message);
 }

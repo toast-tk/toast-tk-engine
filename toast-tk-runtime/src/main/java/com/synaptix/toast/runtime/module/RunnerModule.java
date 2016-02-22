@@ -18,5 +18,4 @@ public class RunnerModule extends AbstractModule {
 		bind(WebPageBlockBuilder.class).in(Singleton.class);
 		bind(TestBlockRunner.class).in(Singleton.class);
 	}
-
 }

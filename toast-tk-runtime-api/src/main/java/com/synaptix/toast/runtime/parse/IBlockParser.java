@@ -20,10 +20,10 @@ public interface IBlockParser {
      * @param path Path of the test text file.
      * @throws IOException 
      */
-    IBlock digest(List<String> strings, String path) throws IOException;
+    IBlock digest(final List<String> strings, final String path) throws IOException;
 
     /**
      * Return true if this string should be parsed with this parser.
      */
-    boolean isFirstLineOfBlock(String line);
+    boolean isFirstLineOfBlock(final String line);
 }

@@ -14,18 +14,18 @@ public class VariableBlockBuilder implements IBlockRunner<VariableBlock>{
 	IActionItemRepository objectRepository;
 	
 	@Override
-	public void run(VariableBlock block) {
-		List<BlockLine> blockLines = block.getBlockLines();
-		for(BlockLine blockLine : blockLines) {
-			String varName = getCellAt(0, blockLine);
-			String varValue = getCellAt(1, blockLine);
-			objectRepository.getUserVariables().put(varName, varValue);
-		}
+	public void run(final VariableBlock block) {
+		block.getBlockLines().stream().forEach(blockLine -> putUserVariable(blockLine));
 	}
-	
 
-	public String getCellAt(
-		int index, BlockLine blockLine) {
+	private void putUserVariable(final BlockLine blockLine) {
+		objectRepository.getUserVariables().put(getCellAt(0, blockLine), getCellAt(1, blockLine));
+	}
+
+	public static String getCellAt(
+		final int index, 
+		final BlockLine blockLine
+	) {
 		final List<String> cells = blockLine.getCells();
 		if(index < 0 || index >= cells.size()) {
 			return null;
@@ -34,7 +34,7 @@ public class VariableBlockBuilder implements IBlockRunner<VariableBlock>{
 	}
 	
 	@Override
-	public void setInjector(Injector injector) {
+	public void setInjector(final Injector injector) {
 		this.objectRepository = injector.getInstance(IActionItemRepository.class);
 	}
 }

@@ -21,11 +21,11 @@ public class SwingPageConfigLine {
 	}
 
 	public SwingPageConfigLine(
-		final String name,
+		final String elementName,
 		final String type,
 		final String locator
 	) {
-		this.elementName = name;
+		this.elementName = elementName;
 		this.type = type;
 		this.locator = locator;
 	}

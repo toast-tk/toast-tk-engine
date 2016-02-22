@@ -27,8 +27,8 @@ public class WebPageConfigLine{
 	public WebPageConfigLine(
 		final String name,
 		final String type,
-		final String method,
 		final String locator,
+		final String method,
 		final Integer position
 	) {
 		this.elementName = name;

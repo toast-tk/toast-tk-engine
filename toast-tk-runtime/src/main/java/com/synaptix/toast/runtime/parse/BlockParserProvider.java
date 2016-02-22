@@ -14,23 +14,28 @@ import java.util.Map;
 public class BlockParserProvider {
 
     private static final Logger LOG = LogManager.getLogger(BlockParserProvider.class);
+
     private Map<BlockType, IBlockParser> map;
 
     @Inject
     public BlockParserProvider() {
-        map = new HashMap<>();
-        map.put(BlockType.INCLUDE, new IncludeBlockParser());
+        this.map = new HashMap<>(10);
+        fillBlockTypeMap();
+    }
+
+	private void fillBlockTypeMap() {
+		map.put(BlockType.INCLUDE, new IncludeBlockParser());
         map.put(BlockType.TEST, new TestBlockParser());
         map.put(BlockType.VARIABLE, new VariableBlockParser());
         map.put(BlockType.WEB_PAGE_SETUP, new WebPageSetupBlockParser());
         map.put(BlockType.SWING_PAGE_SETUP, new SwingPageSetupBlockParser());
         map.put(BlockType.CAMPAIGN, new CampaignBlockParser());
-    }
+	}
 
-    public IBlockParser getBlockParser(BlockType blockType) {
-        IBlockParser parser = map.get(blockType);
+    public IBlockParser getBlockParser(final BlockType blockType) {
+    	final IBlockParser parser = map.get(blockType);
         if (parser == null) {
-            LOG.info("No parser found for : " + blockType.name());
+            LOG.info("No parser found for : {}", blockType.name());
         }
         return parser;
     }
@@ -38,5 +43,4 @@ public class BlockParserProvider {
     public Collection<IBlockParser> getAllBlockParsers() {
         return map.values();
     }
-
 }

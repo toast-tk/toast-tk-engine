@@ -1,12 +1,18 @@
 package com.synaptix.toast.runtime.bean;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.synaptix.toast.runtime.utils.ClassHelper;
 
 public class TestComponentConfig {
 
+	private static final Logger LOG = LogManager.getLogger(TestComponentConfig.class);
+	
 	public Class<?> componentClass;
 
 	public Class<Enum<?>> enumClass;
@@ -15,13 +21,7 @@ public class TestComponentConfig {
 
 	public final Map<String, TestEntityProperty> propertiesMap;
 
-	private final boolean isDomain;
-
 	private String tableName;
-
-	public boolean isError;
-
-	public String error;
 
 	/**
 	 * Constructor for entities configuration.
@@ -29,27 +29,26 @@ public class TestComponentConfig {
 	 * @param appClassName
 	 * @param searchBy
 	 */
-	@SuppressWarnings("unchecked")
 	public TestComponentConfig(
-		String appClassName,
-		String searchBy) {
-		this.propertiesMap = new HashMap<String,TestEntityProperty>();
+		final String appClassName,
+		final String searchBy
+	) {
+		this.propertiesMap = new HashMap<>();
 		this.searchBy = searchBy;
-		this.isDomain = false;
-		this.isError = false;
-		this.error = null;
-		Class<?> entityClass = null;
-		try {
-			entityClass = Class.forName(appClassName);
-		}
-		catch(ClassNotFoundException e) {
-			e.printStackTrace();
-			isError = true;
-			error = "Class not found. Please check entity configuration.";
-		}
-		if(entityClass != null/* && IEntity.class.isAssignableFrom(entityClass) */) {
+		final Class<?> entityClass = loadApplicationClass(appClassName);
+		if(entityClass != null) {
 			this.componentClass = entityClass;
 		}
+	}
+
+	private static Class<?> loadApplicationClass(final String appClassName) {
+		try {
+			return Class.forName(appClassName);
+		}
+		catch(final ClassNotFoundException e) {
+			LOG.error(e.getMessage(), e);
+		}
+		return null;
 	}
 
 	/**
@@ -58,34 +57,21 @@ public class TestComponentConfig {
 	 * @param appClassName
 	 */
 	public TestComponentConfig(
-		String appClassName) {
-		this.propertiesMap = new HashMap<String, TestEntityProperty>();
-		this.isDomain = true;
-		Class<?> domainInterfaceClass = null;
-		try {
-			domainInterfaceClass = Class.forName(appClassName);
-		}
-		catch(ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		final String appClassName
+	) {
+		this.propertiesMap = new HashMap<>();
+		final Class<?> domainInterfaceClass = loadApplicationClass(appClassName);
 		if(domainInterfaceClass != null) {
-			enumClass = getEnumSubClass(domainInterfaceClass);
-			componentClass = domainInterfaceClass;
+			this.enumClass = getEnumSubClass(domainInterfaceClass);
+			this.componentClass = domainInterfaceClass;
 			addProperty("code", "code", null);
 			addProperty("meaning", "meaning", null);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<Enum<?>> getEnumSubClass(
-		Class<?> domainClass) {
-		Class<?>[] classes = domainClass.getClasses();
-		for(Class<?> class1 : classes) {
-			if(class1.isEnum()) {
-				return (Class<Enum<?>>) class1;
-			}
-		}
-		return null;
+	private static Class<Enum<?>> getEnumSubClass(final Class<?> domainClass) {
+		return (Class<Enum<?>>) Arrays.stream(domainClass.getClasses()).filter(c -> c.isEnum()).findFirst().get();
 	}
 
 	/**
@@ -97,17 +83,15 @@ public class TestComponentConfig {
 	 * @return
 	 */
 	public boolean addProperty(
-		String testPropertyName,
-		String appPropertyName,
-		String objectType) {
+		final String testPropertyName,
+		final String appPropertyName,
+		final String objectType
+	) {
 		if(ClassHelper.hasProperty(componentClass, appPropertyName)) {
-			propertiesMap.put(testPropertyName, new TestEntityProperty(testPropertyName, appPropertyName,
-				objectType));
+			propertiesMap.put(testPropertyName, new TestEntityProperty(testPropertyName, appPropertyName, objectType));
 			return true;
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 	public Map<String, TestEntityProperty> getFieldNameMap() {
@@ -122,8 +106,7 @@ public class TestComponentConfig {
 		return tableName;
 	}
 
-	public void setTableName(
-		String tableName) {
+	public void setTableName(final String tableName) {
 		this.tableName = tableName;
 	}
 }

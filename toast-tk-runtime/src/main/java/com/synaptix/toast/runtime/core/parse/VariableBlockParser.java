@@ -23,7 +23,10 @@ import com.synaptix.toast.runtime.parse.IBlockParser;
 public class VariableBlockParser implements IBlockParser {
 
     private static String VARIABLE_ASSIGNATION_SEPARATOR = ":=";
+
     private static String FILE_REFERENCE_REGEX = "file\\(\'([\\/\\.\\w]+)\'\\)";
+    
+    private static Pattern FILE_REFERENCE_PATTERN = Pattern.compile(FILE_REFERENCE_REGEX);
 
     @Override
     public BlockType getBlockType() {
@@ -31,89 +34,113 @@ public class VariableBlockParser implements IBlockParser {
     }
 
     @Override
-    public IBlock digest(List<String> strings, String path) throws IOException {
-        VariableBlock variableBlock = new VariableBlock();
-
-        for (Iterator<String> iterator = strings.iterator(); iterator.hasNext(); ) {
+    public IBlock digest(
+    	final List<String> strings, 
+    	final String path
+    ) throws IOException {
+    	final VariableBlock variableBlock = new VariableBlock();
+        for(final Iterator<String> iterator = strings.iterator(); iterator.hasNext(); ) {
             final String line = iterator.next();
-
-            if (!isFirstLineOfBlock(line)) { // line is parsable
+            if(!isFirstLineOfBlock(line)) { // line is parsable
                 return variableBlock;
             }
-
-
-            String[] textLine = line.split(VARIABLE_ASSIGNATION_SEPARATOR);
-           
-            List<String> variableParts = new ArrayList<>();
-            String variableName = textLine[0].trim();
-            variableParts.add(variableName);
-
-            if (isVarMultiLine(line)) {
-                StringBuilder variableValue = new StringBuilder();
-                variableBlock.addTextLine(line);
-                while (iterator.hasNext()) {
-                	final String nextLine = iterator.next();
-                	variableBlock.addTextLine(nextLine);
-
-                    if (!nextLine.startsWith("\"\"\"")) {
-                    	variableValue.append(nextLine.replace("\n", " ").replace("\t", " ")).append(" ");
-                    } else {
-                        break;
-                    }
-                }
-                variableParts.add(variableValue.toString());
-            } else if (isVarLine(line)) {
-            	String variableValue = textLine[1].trim();
-            	variableParts.add(getVarValue(variableValue));
-            	variableBlock.addTextLine(line);
-            }
-            BlockLine blockLine = new BlockLine();
-            blockLine.setCells(variableParts);
-            variableBlock.addline(blockLine);
+            digestLine(variableBlock, iterator, line);
         }
         return variableBlock;
     }
 
-    private String getVarValue(String variableValue) throws IOException {
-    	if(isFileReference(variableValue)){
-    		String fileRef = getFileReference(variableValue);
-    		InputStream resourceAsStream = VariableBlockParser.class.getClassLoader().getResourceAsStream(fileRef);
-			return IOUtils.toString(resourceAsStream);
+	private static void digestLine(
+		final VariableBlock variableBlock,
+		final Iterator<String> iterator, 
+		final String line
+	) throws IOException {
+		final String[] textLine = line.split(VARIABLE_ASSIGNATION_SEPARATOR);
+		final List<String> variableParts = new ArrayList<>();
+		final String variableName = textLine[0].trim();
+		variableParts.add(variableName);
+		if(isVarMultiLine(line)) {
+		    variableParts.add(buildMultiLineValue(variableBlock, iterator, line));
+		} 
+		else if(isVarLine(line)) {
+			final String variableValue = textLine[1].trim();
+			variableParts.add(getVarValue(variableValue));
+			variableBlock.addTextLine(line);
+		}
+		final BlockLine blockLine = new BlockLine();
+		blockLine.setCells(variableParts);
+		variableBlock.addline(blockLine);
+	}
+
+	private static String buildMultiLineValue(
+		final VariableBlock variableBlock, 
+		final Iterator<String> iterator,
+		final String line
+	) {
+		final StringBuilder variableValue = new StringBuilder(512);
+		variableBlock.addTextLine(line);
+		while(iterator.hasNext()) {
+			final String nextLine = iterator.next();
+			variableBlock.addTextLine(nextLine);
+		    if(!nextLine.startsWith("\"\"\"")) {
+		    	variableValue.append(nextLine.replace("\n", " ").replace("\t", " ")).append(" ");
+		    } 
+		    else {
+		        break;
+		    }
+		}
+		return variableValue.toString();
+	}
+
+    private static String getVarValue(final String variableValue) throws IOException {
+    	if(isFileReference(variableValue)) {
+    		final String fileRef = getFileReference(variableValue);
+    		try(final InputStream resourceAsStream = VariableBlockParser.class.getClassLoader().getResourceAsStream(fileRef);) {
+    			return IOUtils.toString(resourceAsStream);
+    		}
     	}
 		return variableValue;
 	}
 
-	private String getFileReference(String variableValue) {
-		Matcher matcher = getFileRefMather(variableValue);
+	private static String getFileReference(final String variableValue) {
+		final Matcher matcher = getFileRefMather(variableValue);
 		matcher.find();
 		return matcher.group(1);
 	}
 
-	private Matcher getFileRefMather(String value) {
-		Pattern regexPattern = Pattern.compile(FILE_REFERENCE_REGEX);
-		Matcher matcher = regexPattern.matcher(value);
-		return matcher;
+	private static Matcher getFileRefMather(final String value) {
+		return FILE_REFERENCE_PATTERN.matcher(value);
 	}
 
-	private boolean isFileReference(String variableValue) {
-		Matcher matcher = getFileRefMather(variableValue);
-		return matcher.matches();
+	private static boolean isFileReference(final String variableValue) {
+		return getFileRefMather(variableValue).matches();
 	}
 
 	@Override
-    public boolean isFirstLineOfBlock(String line) {
+    public boolean isFirstLineOfBlock(final String line) {
         return isVarLine(line) || isVarMultiLine(line);
     }
 
-    private boolean isVarMultiLine(String line) {
-        return line != null && line.startsWith("$")
-                && line.contains(VARIABLE_ASSIGNATION_SEPARATOR)
-                && line.contains("\"\"\"");
+    private static boolean isVarMultiLine(final String line) {
+        return 
+        		line != null 
+        		&& 
+        		line.startsWith("$")
+                && 
+                line.contains(VARIABLE_ASSIGNATION_SEPARATOR)
+                && 
+                line.contains("\"\"\"")
+       ;
     }
 
-    private boolean isVarLine(String line) {
-        return line != null && line.startsWith("$")
-                && line.contains(VARIABLE_ASSIGNATION_SEPARATOR)
-                && !line.contains("\"\"\"");
+    private static boolean isVarLine(final String line) {
+        return 
+        		line != null 
+        		&& 
+        		line.startsWith("$")
+                && 
+                line.contains(VARIABLE_ASSIGNATION_SEPARATOR)
+                && 
+                !line.contains("\"\"\"")
+        ;
     }
 }

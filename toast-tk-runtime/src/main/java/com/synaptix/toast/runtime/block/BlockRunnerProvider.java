@@ -17,25 +17,33 @@ import com.synaptix.toast.dao.domain.impl.test.block.WebPageBlock;
 public class BlockRunnerProvider {
 
 	private static final Logger LOG = LogManager.getLogger(BlockRunnerProvider.class);
-	private Map<Class<? extends IBlock>, IBlockRunner<? extends IBlock>> map;
+
+	private Map<Class<? extends IBlock>, IBlockRunner<? extends IBlock>> blockMap;
 	
 	@Inject
 	public BlockRunnerProvider(){
-		map = new HashMap<Class<? extends IBlock>, IBlockRunner<? extends IBlock>>();
-		map.put(WebPageBlock.class, new WebPageBlockBuilder());
-		map.put(TestBlock.class, new TestBlockRunner());
-		map.put(SwingPageBlock.class, new SwingPageBlockBuilder());
-		map.put(VariableBlock.class, new VariableBlockBuilder());
+		this.blockMap = new HashMap<>();
+		initBlockMap();
+	}
+
+	private void initBlockMap() {
+		blockMap.put(WebPageBlock.class, new WebPageBlockBuilder());
+		blockMap.put(TestBlock.class, new TestBlockRunner());
+		blockMap.put(SwingPageBlock.class, new SwingPageBlockBuilder());
+		blockMap.put(VariableBlock.class, new VariableBlockBuilder());
 	}
 		
-	public IBlockRunner<? extends IBlock> getBlockRunner(Class<? extends IBlock> clazz, Injector injector) throws IllegalAccessException{
-		IBlockRunner<? extends IBlock> runner = map.get(clazz);
+	public IBlockRunner<? extends IBlock> getBlockRunner(
+		final Class<? extends IBlock> clazz, 
+		final Injector injector
+	) {
+		final IBlockRunner<? extends IBlock> runner = blockMap.get(clazz);
 		if(runner != null){
 			runner.setInjector(injector);
-		}else{
-			LOG.warn("No runner found for : " + clazz.getSimpleName());
+		}
+		else {
+			LOG.warn("No runner found for : {}", clazz.getSimpleName());
 		}
 		return runner;
 	}
-	
 }
