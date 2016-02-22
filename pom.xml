@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.synaptix.toast</groupId>
 	<artifactId>toast-tk-engine</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Toast Toolkit - Engine</name>
 	<description>
@@ -26,7 +26,7 @@
 	</modules>
 	<properties>
 		<root-directory>${project.basedir}</root-directory>
-		<project.version>1.0.0-SNAPSHOT</project.version>
+		<project.version>1.0.1-SNAPSHOT</project.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>

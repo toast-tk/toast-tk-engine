@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.synaptix.toast</groupId>
     <artifactId>toast-tk-engine</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>toast-tk-dao-api</artifactId>
 	<name>Toast Toolkit - DAO Module Api</name>
