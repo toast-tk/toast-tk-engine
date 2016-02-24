@@ -19,7 +19,6 @@ public class TestResult implements ITestResult{
 
 	protected boolean isError;
 
-	protected boolean isFatal;
 
 	public TestResult() {
 		this("OK");
@@ -94,7 +93,7 @@ public class TestResult implements ITestResult{
 
 	@Override
 	public boolean isFatal() {
-		return isFatal;
+		return ResultKind.FATAL.equals(resultKind);
 	}
 
 	@Override

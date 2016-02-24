@@ -52,7 +52,7 @@ public class RestUtils {
 		LOG.info("Client response code: {}", statusCode);
 	}
 
-	public static String downloadRepositoyAsWiki() {
+	public static String downloadRepositoryAsWiki() {
 		final String webappURL = getWebAppURI();
 		return downloadRepository(webappURL + "/loadWikifiedRepository");
 	}

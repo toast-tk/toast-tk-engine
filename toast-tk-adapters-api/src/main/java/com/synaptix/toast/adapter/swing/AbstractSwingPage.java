@@ -41,7 +41,7 @@ public abstract class AbstractSwingPage implements IFeedableSwingPage {
 	
 	private String pageName;
 
-	public String beanClassName; // the bean class name
+	private String beanClassName; // the bean class name
 	
 	public AbstractSwingPage() {
 		this.elements = new HashMap<>();

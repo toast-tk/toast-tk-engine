@@ -26,9 +26,7 @@ public class DaoBeanFactory {
 
 	public static <E> E getBean(final Class<E> clazz) {
 		try {
-			if(isNotITestPage(clazz)) {
-				throw new IllegalAccessException("Proxy supported for ITestPage only !");
-			}
+			checkIfIsTestPage(clazz);
 			final Object implClassInst = TestPage.class.newInstance();
 			return Reflection.newProxy(clazz, new InvocationHandler() {
 				@Override
@@ -44,6 +42,13 @@ public class DaoBeanFactory {
 		catch(final InstantiationException | IllegalAccessException e) {
 			LOG.error(e.getMessage(), e);
 			return null;
+		}
+	}
+
+	private static <E> void checkIfIsTestPage(final Class<E> clazz)
+			throws IllegalAccessException {
+		if(isNotITestPage(clazz)) {
+			throw new IllegalAccessException("Proxy supported for ITestPage only !");
 		}
 	}
 

@@ -19,8 +19,12 @@ import com.google.inject.Key;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
 
-public class ActionAdapterCollector {
+public final class ActionAdapterCollector {
 
+	private ActionAdapterCollector() {
+
+	}
+	
 	/**
 	 * List sentences defined in the framework
 	 * 

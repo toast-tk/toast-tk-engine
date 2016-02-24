@@ -1,5 +1,6 @@
 package com.synaptix.toast.runtime.bean;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,9 +26,11 @@ public class TestLineDescriptor {
 
 	public final TestLine testLine;
 
+	private final TestBlock testBlock;
+	
 	private String testLineAction;
 
-	private String testLineFixtureName;
+	private String testLineFixtureName = "";
 
 	private ActionAdapterKind testLineFixtureKind;
 
@@ -36,6 +39,7 @@ public class TestLineDescriptor {
 		final TestLine testLine
 	) {
 		this.testLine = testLine;
+		this.testBlock = testBlock;
 		initServiceKind(testBlock, testLine);
 	}
 
@@ -55,19 +59,15 @@ public class TestLineDescriptor {
 		}
 	}
 
-	private void setTestLineFixtureName(
-		final String testLineFixtureName
-	) {
-		this.testLineFixtureName = testLineFixtureName;
+	private void setTestLineFixtureName(final String testLineFixtureName) {
+		this.testLineFixtureName = testLineFixtureName == null ? "" : testLineFixtureName;
 	}
 
 	public String getTestLineFixtureName() {
-		return testLineFixtureName == null ? "" : testLineFixtureName;
+		return testLineFixtureName;
 	}
 
-	private void setTestLineAction(
-		final String testLineAction
-	) {
+	private void setTestLineAction(final String testLineAction) {
 		this.testLineAction = testLineAction;
 	}
 
@@ -79,9 +79,7 @@ public class TestLineDescriptor {
 		return testLineFixtureKind;
 	}
 
-	public void setTestLineFixtureKind(
-		final ActionAdapterKind testLineFixtureKind
-	) {
+	public void setTestLineFixtureKind(final ActionAdapterKind testLineFixtureKind) {
 		this.testLineFixtureKind = testLineFixtureKind;
 	}
 
@@ -95,5 +93,15 @@ public class TestLineDescriptor {
 
 	public String getActionImpl() {
 		return isFailFatalCommand() ? testLineAction.substring(2) : testLineAction; 
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(testLine) + Objects.hashCode(testBlock);
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		return obj instanceof TestLineDescriptor ? Objects.equals(testLine, ((TestLineDescriptor) obj).testLine) && Objects.equals(testBlock, ((TestLineDescriptor) obj).testBlock): false;
 	}
 }

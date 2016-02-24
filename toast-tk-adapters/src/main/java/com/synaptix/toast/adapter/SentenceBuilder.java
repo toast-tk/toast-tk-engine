@@ -1,5 +1,7 @@
 package com.synaptix.toast.adapter;
 
+import java.util.Objects;
+
 import com.synaptix.toast.core.adapter.ActionAdapterSentenceRef.Types;
 
 public class SentenceBuilder {
@@ -11,12 +13,11 @@ public class SentenceBuilder {
 	}
 
 	public SentenceBuilder ofType(final Types type) {
-		this.output = type.metaValue();
+		this.output = Objects.requireNonNull(type.metaValue(), "SentenceBuilder.ofType null metaValue : " + type);
 		return this;
 	}
 
 	public SentenceBuilder withPage(final String page) {
-		assert output != null;
 		final String value = new StringBuilder(page.length() + 1).append('*').append(page).toString();
 		replaceInTemplate("@Page", value);
 		return this;
@@ -27,14 +28,12 @@ public class SentenceBuilder {
 	}
 	
 	public SentenceBuilder withComponent(final String item) {
-		assert output != null;
 		final String value = new StringBuilder(item.length() + 1).append(item).append('*').toString();
 		replaceInTemplate("@Item", value);
 		return this;
 	}
 
 	public SentenceBuilder withValue(final String value) {
-		assert output != null;
 		final String newValue = new StringBuilder(value.length() + 2).append('*').append(value).append('*').toString();
 		replaceInTemplate("@Value", newValue);
 		return this;

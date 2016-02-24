@@ -165,7 +165,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
     	final TestRunner runner = new TestRunner(injector);
         if(presetRepoFromWebApp) {
         	LOG.debug("Preset repository from webapp rest api...");
-        	final String repoWiki = RestUtils.downloadRepositoyAsWiki();
+        	final String repoWiki = RestUtils.downloadRepositoryAsWiki();
         	final TestParser parser = new TestParser();
         	final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
             runner.run(repoAsTestPageForConvenience, false);
@@ -176,7 +176,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
     private void execute(
     	final IProject project,
     	final TestRunner runner
-    ) throws ClassNotFoundException {
+    ) {
         initEnvironment();
         for(final ICampaign campaign : project.getCampaigns()) {
             for(ITestPage testPage : campaign.getTestCases()) {
@@ -185,7 +185,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
                     testPage = runner.run(testPage, true);
                     endTest();
                 } 
-                catch(final IllegalAccessException e) {
+                catch(final Exception e) {
                     LOG.error(e.getMessage(), e);
                 }
             }

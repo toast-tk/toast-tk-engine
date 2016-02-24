@@ -37,8 +37,12 @@ public class ActionAdapterHelper {
 	 */
 	public static final String DATETIME_PATTERN = "dd/MM/yyyy HH:mm:ss";
 
+	private ActionAdapterHelper() {
+
+	}
+	
 	public static boolean isEmptyOrNull(final String str) {
-		return StringUtils.isEmpty(str) || str.equals("null") || str.equals("ï¿½") || str.equals("�");
+		return StringUtils.isEmpty(str) || "null".equals(str) || "ï¿½".equals(str) || "�".equals(str);
 	}
 
 	public static boolean isNotEmptyOrNull(final String str) {
@@ -81,25 +85,6 @@ public class ActionAdapterHelper {
 	 */
 	public static String getString(final String str) {
 		return isEmptyOrNull(str) ? null : str;
-	}
-
-	public static String stringToHexString(String str) {
-		Pattern p = Pattern.compile("ID\\(([0-9A-F]+)\\)");
-		Matcher m = p.matcher(str);
-		if(m.matches()) {
-			return m.group(1);
-		}
-		if(str.length() <= 16) {
-			str = StringUtils.rightPad(str, 16);
-		}
-		else {
-			str.substring(0, 16);
-		}
-		final StringBuilder builder = new StringBuilder(str.length() * 2);
-		for(int i = 0; i < str.length(); i++) {
-			builder.append(Integer.toHexString(str.charAt(i)).toUpperCase());
-		}
-		return builder.toString();
 	}
 
 	/**

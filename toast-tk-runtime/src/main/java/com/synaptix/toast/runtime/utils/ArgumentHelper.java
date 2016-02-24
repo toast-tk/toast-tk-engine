@@ -27,7 +27,6 @@ public class ArgumentHelper {
 	}
 	
 	public static CommandArgumentDescriptor convertActionSentenceToRegex(final String actionSentence) {
-		final CommandArgumentDescriptor descriptor = new CommandArgumentDescriptor();
 		final List<ArgumentDescriptor> arguments = new ArrayList<>();
 		String convertedSentence = actionSentence;
 		final Pattern regexPattern = ActionItemRegexHolder.getMetaPattern();
@@ -35,24 +34,29 @@ public class ArgumentHelper {
 		while(matcher.find()) {
 			final String actionItemDefinition = matcher.group(1);
 			final String[] groupArray = actionItemDefinition.split(":");
-			String regex = null;
-			if(hasOnlyDeclaredActionItemCategory(groupArray)) {
-				regex = buildActionItemRegex_1arg(arguments, groupArray);
-			}
-			else if(hasDeclaredCategoryAndType(groupArray)) {
-				regex = buildActionItemRegex_2args(arguments, groupArray);
-			}
-			else if(hadDeclaredAll(groupArray)) {
-				regex = buildActionItemRegex_3args(arguments, groupArray);
-			}
+			final String regex = findRegex(arguments, groupArray);
 			if(regex != null) {
 				convertedSentence = matcher.replaceFirst(regex.replace("\\", "\\\\\\"));
 				matcher = regexPattern.matcher(convertedSentence);
 			}
 		}
-		descriptor.regex = convertedSentence;
-		descriptor.arguments = arguments;
-		return descriptor;
+		return new CommandArgumentDescriptor(convertedSentence, arguments);
+	}
+
+	private static String findRegex(
+		final List<ArgumentDescriptor> arguments,
+		final String[] groupArray 
+	) {
+		if(hasOnlyDeclaredActionItemCategory(groupArray)) {
+			return buildActionItemRegex_1arg(arguments, groupArray);
+		}
+		else if(hasDeclaredCategoryAndType(groupArray)) {
+			return buildActionItemRegex_2args(arguments, groupArray);
+		}
+		else if(hadDeclaredAll(groupArray)) {
+			return buildActionItemRegex_3args(arguments, groupArray);
+		}
+		return null;
 	}
 
 	private static String buildActionItemRegex_3args(List<ArgumentDescriptor> arguments, String[] groupArray) {
@@ -60,13 +64,7 @@ public class ArgumentHelper {
 		final ActionCategoryEnum categoryEnum = ActionItem.ActionCategoryEnum.valueOf(category);
 		final String type = groupArray[2];
 		final ActionTypeEnum typeEnum = ActionItem.ActionTypeEnum.valueOf(type);
-		
-		final ArgumentDescriptor argDescriptor = new ArgumentDescriptor();
-		argDescriptor.name = groupArray[0];
-		argDescriptor.categoryEnum = categoryEnum;
-		argDescriptor.typeEnum = typeEnum;	
-		arguments.add(argDescriptor);
-		
+		arguments.add(new ArgumentDescriptor(groupArray[0], categoryEnum, typeEnum));
 		return getActionItemRegex(categoryEnum, typeEnum);
 	}
 
@@ -78,10 +76,7 @@ public class ArgumentHelper {
 		final ActionCategoryEnum categoryEnum = ActionItem.ActionCategoryEnum.valueOf(category);
 		final String type = groupArray[1];
 		final ActionTypeEnum typeEnum = ActionItem.ActionTypeEnum.valueOf(type);
-		final ArgumentDescriptor argDescriptor = new ArgumentDescriptor();
-		argDescriptor.categoryEnum = categoryEnum;
-		argDescriptor.typeEnum = typeEnum;
-		arguments.add(argDescriptor);
+		arguments.add(new ArgumentDescriptor(categoryEnum, typeEnum));
 		return getActionItemRegex(categoryEnum, typeEnum);
 	}
 
@@ -91,10 +86,7 @@ public class ArgumentHelper {
 	) {
 		final String category = groupArray[0];
 		final ActionCategoryEnum categoryEnum = ActionItem.ActionCategoryEnum.valueOf(category);
-		final ArgumentDescriptor argDescriptor = new ArgumentDescriptor();
-		argDescriptor.categoryEnum = categoryEnum;
-		argDescriptor.typeEnum = ActionItem.ActionTypeEnum.string;
-		arguments.add(argDescriptor);
+		arguments.add(new ArgumentDescriptor(categoryEnum, ActionItem.ActionTypeEnum.string));
 		return getActionItemRegex(categoryEnum, ActionItem.ActionTypeEnum.string);
 	}
 
@@ -125,7 +117,7 @@ public class ArgumentHelper {
 		group = group.replaceAll("\\*", "");
 		if(repoSetup.getUserVariables().containsKey(group)) {
 			Object object = repoSetup.getUserVariables().get(group);
-			if(!(object instanceof String)){
+			if(!(object instanceof String)) {
 				return object;
 			}
 			if(isInputVariable(group)) {

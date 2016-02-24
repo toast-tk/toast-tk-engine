@@ -38,7 +38,7 @@ public class BlockRunnerProvider {
 		final Injector injector
 	) {
 		final IBlockRunner<? extends IBlock> runner = blockMap.get(clazz);
-		if(runner != null){
+		if(runner != null) {
 			runner.setInjector(injector);
 		}
 		else {

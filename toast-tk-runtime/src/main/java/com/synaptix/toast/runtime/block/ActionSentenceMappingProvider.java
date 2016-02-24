@@ -14,37 +14,41 @@ import com.synaptix.toast.adapter.constant.AdaptersConfigProvider;
 @SuppressWarnings("unchecked")
 public class ActionSentenceMappingProvider {
 
-	static final Map<String, List<Map<String,String>>> beanMap;
+	static final Map<String, List<Map<String, String>>> BEANS;
 
 	static {
 		try(final InputStream resourceAsStream = ActionSentenceMappingProvider.class.getClassLoader().getResourceAsStream("toast.yml");) {
-			beanMap = ((Map<String, List<Map<String,String>>>) new Yaml().load(resourceAsStream));
+			BEANS = ((Map<String, List<Map<String,String>>>) new Yaml().load(resourceAsStream));
 		}
 		catch(final IOException e) {
-			LogManager.getLogger(ActionSentenceMappingProvider.class).info(e.getMessage(), e);
+			LogManager.getLogger(ActionSentenceMappingProvider.class).error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static boolean hasMappingForAdapter(final String adapterName){
-		return beanMap.containsKey(adapterName);
+	private static boolean hasMappingForAdapter(final String adapterName) {
+		return BEANS.containsKey(adapterName);
 	}
 
 	public static boolean hasMappingForAction(
 		final String adapterName, 
 		final String actionId
 	) {
-		final List<Map<String,String>> list = beanMap.get(adapterName);
+		final List<Map<String,String>> list = BEANS.get(adapterName);
 		return list == null ? false : list.stream().anyMatch(m -> m.containsKey(actionId));
 	}
 
 	public static String getMappingForAction(
-			final String adapterName, 
-			final String actionId
-			) {
-		if(ActionSentenceMappingProvider.hasMappingForAdapter(adapterName) && ActionSentenceMappingProvider.hasMappingForAction(adapterName, actionId)) {
-			return beanMap.get(adapterName).stream().filter(m -> m.containsKey(actionId)).findFirst().get().get(actionId);
+		final String adapterName, 
+		final String actionId
+	) {
+		if(hasMappingForAdaptaterAndAction(adapterName, actionId)) {
+			return BEANS.get(adapterName).stream().filter(m -> m.containsKey(actionId)).findFirst().get().get(actionId);
 		}
 		return null;
+	}
+
+	private static boolean hasMappingForAdaptaterAndAction(final String adapterName, final String actionId) {
+		return ActionSentenceMappingProvider.hasMappingForAdapter(adapterName) && ActionSentenceMappingProvider.hasMappingForAction(adapterName, actionId);
 	}
 }

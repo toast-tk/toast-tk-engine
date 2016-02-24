@@ -7,16 +7,18 @@ import com.synaptix.toast.core.annotation.Action;
 
 public class ActionCommandDescriptor {
 
-	public Method method;
+	public final Method method;
 
-	public CommandArgumentDescriptor descriptor;
+	public final CommandArgumentDescriptor descriptor;
 
-	public Matcher matcher;
+	public final Matcher matcher;
 
 	private boolean isMapped;
 
 	private String actionMapping;
 
+	private final String actionId;
+	
 	public ActionCommandDescriptor(
 		final Method method,
 		final Matcher matcher,
@@ -25,13 +27,14 @@ public class ActionCommandDescriptor {
 		this.method = method;
 		this.matcher = matcher;
 		this.descriptor = descriptor;
+		this.actionId = method.getAnnotation(Action.class).id();
 	}
 	
-	public String getActionId(){
-		return method.getAnnotation(Action.class).id();
+	public String getActionId() {
+		return actionId;
 	}
 
-	public void setIsMappedMethod(boolean isMapped) {
+	public void setIsMappedMethod(final boolean isMapped) {
 		this.isMapped = isMapped;
 	}
 	
@@ -39,7 +42,7 @@ public class ActionCommandDescriptor {
 		return isMapped;
 	}
 
-	public void setActionMapping(String actionMapping) {
+	public void setActionMapping(final String actionMapping) {
 		this.actionMapping = actionMapping;
 	}
 	

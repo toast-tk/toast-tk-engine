@@ -10,11 +10,11 @@ import com.synaptix.toast.dao.service.dao.access.project.ProjectDaoService;
 
 public class DAOManager {
 
-	private static Injector MONGO_SERVICE_INJECTOR;
+	private Injector mongoServiceInjector;
 
-	private static ProjectDaoService.Factory PROJECT_FACTORY;
+	private ProjectDaoService.Factory projectFactory;
 
-	private static ProjectDaoService PROJECT_SERVICE;
+	private ProjectDaoService projectService;
 
 	private static DAOManager INSTANCE;
 
@@ -22,9 +22,9 @@ public class DAOManager {
 		final String mongoHost, 
 		final int mongoPort
 	) {
-		MONGO_SERVICE_INJECTOR = Guice.createInjector(new MongoModule(mongoHost, mongoPort));
-		PROJECT_FACTORY = MONGO_SERVICE_INJECTOR.getInstance(ProjectDaoService.Factory.class);
-		PROJECT_SERVICE = PROJECT_FACTORY.create("test_project_db");
+		this.mongoServiceInjector = Guice.createInjector(new MongoModule(mongoHost, mongoPort));
+		this.projectFactory = mongoServiceInjector.getInstance(ProjectDaoService.Factory.class);
+		this.projectService = projectFactory.create("test_project_db");
 	}
 	
 	public static synchronized DAOManager getInstance(
@@ -37,26 +37,30 @@ public class DAOManager {
 		return INSTANCE;
 	}
 	
-	public static synchronized DAOManager getInstance() throws IllegalAccessException {
+	public static synchronized DAOManager getInstance() {
 		if(INSTANCE == null) {
-			throw new IllegalAccessException("Mongo Host not provided !");
+			throw new RuntimeException("Mongo Host not provided !");
 		}
 		return INSTANCE;
 	}
 
+	ProjectDaoService getProjectDaoService() {
+		return projectService;
+	}
+	
 	public static Project getLastProjectByName(final String projectName) {
-		return PROJECT_SERVICE.getLastByName(projectName);
+		return getInstance().getProjectDaoService().getLastByName(projectName);
 	}
 
 	public static Project getReferenceProjectByName(final String projectName) {
-		return PROJECT_SERVICE.getReferenceProjectByName(projectName);
+		return getInstance().getProjectDaoService().getReferenceProjectByName(projectName);
 	}
 	
 	public static void saveProject(final Project project) {
-		PROJECT_SERVICE.saveNewIteration(project);
+		getInstance().getProjectDaoService().saveNewIteration(project);
 	}
 
 	public static List<Project> getProjectHistory(final Project project) {
-		return PROJECT_SERVICE.getProjectHistory(project);
+		return getInstance().getProjectDaoService().getProjectHistory(project);
 	}
 }

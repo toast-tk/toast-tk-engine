@@ -95,7 +95,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
     	final String wikiScenario,
     	final String repoWiki,
     	final IReportUpdateCallBack callback
-    ) throws IllegalAccessException, ClassNotFoundException, IOException {
+    ) throws IOException {
         this.progressReporter.setReportCallBack(callback);
         final TestParser parser = new TestParser();
         this.localRepositoryTestPage = parser.readString(repoWiki, null);
@@ -115,12 +115,12 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
     private ITestPage runScript(
     	final File file,
     	final String script
-    ) throws IllegalAccessException, ClassNotFoundException, IOException {
+    ) throws IOException {
     	final TestParser testParser = new TestParser();
         ITestPage result = file == null ? testParser.readString(script, null) : testParser.parse(file.getPath());
         final TestRunner runner = new TestRunner(injector);
-        if (this.presetRepoFromWebApp) {
-        	final String repoWiki = RestUtils.downloadRepositoyAsWiki();
+        if(this.presetRepoFromWebApp) {
+        	final String repoWiki = RestUtils.downloadRepositoryAsWiki();
         	final TestParser parser = new TestParser();
         	final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
             runner.run(repoAsTestPageForConvenience, false);

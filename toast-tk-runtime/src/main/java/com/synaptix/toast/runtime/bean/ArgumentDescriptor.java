@@ -20,6 +20,14 @@ public class ArgumentDescriptor {
 	}
 	
 	public ArgumentDescriptor(
+		final ActionCategoryEnum categoryEnum,
+		final ActionTypeEnum typeEnum
+	) {
+		this.categoryEnum = categoryEnum;
+		this.typeEnum = typeEnum;
+	}
+	
+	public ArgumentDescriptor(
 		final String name,
 		final ActionCategoryEnum categoryEnum,
 		final ActionTypeEnum typeEnum

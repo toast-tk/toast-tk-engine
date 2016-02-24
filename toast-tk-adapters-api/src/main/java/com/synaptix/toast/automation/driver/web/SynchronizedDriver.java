@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.synaptix.toast.core.runtime.IWebElementDescriptor;
 
-public interface SynchronizedDriver<E,D> {
+public interface SynchronizedDriver<E, D> {
 
 	/**
 	 * 

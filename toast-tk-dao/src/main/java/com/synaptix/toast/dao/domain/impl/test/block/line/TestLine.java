@@ -1,5 +1,7 @@
 package com.synaptix.toast.dao.domain.impl.test.block.line;
 
+import java.util.Objects;
+
 import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.github.jmkgreen.morphia.annotations.Entity;
 import com.synaptix.toast.core.report.TestResult;
@@ -77,5 +79,15 @@ public class TestLine implements IRunnableTest {
 
 	public void setExcutionTime(final long executionTime){
 		this.executionTime = executionTime;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(test);
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		return obj instanceof TestLine ? Objects.equals(test, ((TestLine) obj).test) : false;
 	}
 }

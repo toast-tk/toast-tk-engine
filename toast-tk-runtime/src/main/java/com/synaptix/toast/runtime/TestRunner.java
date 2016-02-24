@@ -39,7 +39,7 @@ class TestRunner {
 	public ITestPage run(
 		final ITestPage testPage,
 		final boolean inlineReport
-	) throws IllegalAccessException, ClassNotFoundException {
+	) {
 		testPage.startExecution();
 		runTestPageBlocks(testPage, inlineReport);
 		enrichTestPageResults(testPage);
@@ -88,9 +88,9 @@ class TestRunner {
 	private void runTestPageBlocks(
 		final ITestPage testPage, 
 		final boolean inlineReport
-	) throws IllegalAccessException, ClassNotFoundException {
+	) {
 		for(final IBlock block : testPage.getBlocks()) {
-			if(block instanceof ITestPage){
+			if(block instanceof ITestPage) {
 				run((ITestPage) block, inlineReport);
 				if(inlineReport) {
 					eventBus.post(new TestProgressMessage(testPage));

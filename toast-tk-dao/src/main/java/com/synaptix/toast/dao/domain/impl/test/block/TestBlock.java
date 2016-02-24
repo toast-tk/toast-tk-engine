@@ -2,6 +2,7 @@ package com.synaptix.toast.dao.domain.impl.test.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
@@ -89,4 +90,14 @@ public class TestBlock implements IBlock {
     public void setTestFailureNumber(final int testFailureNumber) {
         this.testFailureNumber = testFailureNumber;
     }
+    
+    @Override
+	public int hashCode() {
+		return Objects.hashCode(fixtureName);
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		return obj instanceof TestBlock ? Objects.equals(fixtureName, ((TestBlock) obj).fixtureName) : false;
+	}
 }
