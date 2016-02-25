@@ -1,7 +1,6 @@
 package com.synaptix.toast.core.report;
 
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
-import com.synaptix.toast.dao.domain.api.test.ITestResult.ResultKind;
 
 public class TestResult implements ITestResult{
 

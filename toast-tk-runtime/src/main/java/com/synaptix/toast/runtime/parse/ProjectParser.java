@@ -1,14 +1,5 @@
 package com.synaptix.toast.runtime.parse;
 
-import com.synaptix.toast.dao.domain.impl.report.Campaign;
-import com.synaptix.toast.dao.domain.impl.report.Project;
-import com.synaptix.toast.dao.domain.impl.test.block.*;
-import com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,6 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.synaptix.toast.dao.domain.impl.report.Campaign;
+import com.synaptix.toast.dao.domain.impl.report.Project;
+import com.synaptix.toast.dao.domain.impl.test.block.CampaignBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.ICampaign;
+import com.synaptix.toast.dao.domain.impl.test.block.IProject;
+import com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine;
 
 public class ProjectParser extends AbstractParser {
 

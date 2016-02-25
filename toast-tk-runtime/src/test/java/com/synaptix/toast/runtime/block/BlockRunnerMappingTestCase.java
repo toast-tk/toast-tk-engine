@@ -1,11 +1,8 @@
 package com.synaptix.toast.runtime.block;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -21,7 +18,6 @@ import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
-import com.synaptix.toast.test.runtime.resource.JsonAdapterExample;
 import com.synaptix.toast.test.runtime.resource.XmlAdapterExample;
 
 public class BlockRunnerMappingTestCase {

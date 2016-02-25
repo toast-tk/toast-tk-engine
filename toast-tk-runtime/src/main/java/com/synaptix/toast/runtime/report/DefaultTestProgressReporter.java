@@ -2,9 +2,6 @@ package com.synaptix.toast.runtime.report;
 
 import java.net.URL;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.synaptix.toast.core.event.TestProgressMessage;

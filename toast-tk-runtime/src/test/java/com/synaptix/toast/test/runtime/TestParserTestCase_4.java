@@ -1,6 +1,5 @@
 package com.synaptix.toast.test.runtime;
 
-import java.io.IOException;
 import java.net.URL;
 
 import org.junit.Assert;

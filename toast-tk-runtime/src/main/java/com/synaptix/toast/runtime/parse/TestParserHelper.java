@@ -1,6 +1,13 @@
 package com.synaptix.toast.runtime.parse;
 
-import com.synaptix.toast.dao.domain.impl.test.block.*;
+import com.synaptix.toast.dao.domain.impl.test.block.CampaignBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.CommentBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.SetupBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.SwingPageBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.VariableBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.WebPageBlock;
 
 public class TestParserHelper {
 

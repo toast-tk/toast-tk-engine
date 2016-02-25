@@ -1,13 +1,14 @@
 package com.synaptix.toast.runtime.core.parse;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.synaptix.toast.dao.domain.BlockType;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.WebPageBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine;
 import com.synaptix.toast.runtime.parse.IBlockParser;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 /**
  * Created by Nicolas Sauvage on 10/09/2015.

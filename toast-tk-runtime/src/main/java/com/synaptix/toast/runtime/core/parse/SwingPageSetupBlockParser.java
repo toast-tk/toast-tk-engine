@@ -1,16 +1,14 @@
 package com.synaptix.toast.runtime.core.parse;
 
-import com.synaptix.toast.dao.domain.BlockType;
-import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.SwingPageBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.WebPageBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine;
-import com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine;
-import com.synaptix.toast.runtime.parse.IBlockParser;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
+import com.synaptix.toast.dao.domain.BlockType;
+import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.SwingPageBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine;
+import com.synaptix.toast.runtime.parse.IBlockParser;
 
 public class SwingPageSetupBlockParser implements IBlockParser {
 

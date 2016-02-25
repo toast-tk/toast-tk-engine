@@ -1,15 +1,11 @@
 package com.synaptix.toast.adapter;
 
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.reflections.Reflections;
-import org.reflections.scanners.TypeAnnotationsScanner;
 
 import com.google.inject.Binding;
 import com.google.inject.Injector;

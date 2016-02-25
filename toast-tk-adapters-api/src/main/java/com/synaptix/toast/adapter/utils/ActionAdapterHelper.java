@@ -1,9 +1,6 @@
 package com.synaptix.toast.adapter.utils;
 
 import java.math.BigDecimal;
-import java.util.ServiceLoader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -15,8 +12,6 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatterBuilder;
 
 import com.google.common.base.CaseFormat;
-import com.synaptix.toast.adapter.swing.AbstractSwingPage;
-import com.synaptix.toast.adapter.swing.ISwingComponentFactory;
 
 public class ActionAdapterHelper {
 	

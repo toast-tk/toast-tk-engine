@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
-import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 
 @Embedded

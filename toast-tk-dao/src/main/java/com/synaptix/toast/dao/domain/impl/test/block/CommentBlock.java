@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
-import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 
 @Embedded
 public class CommentBlock implements IBlock {

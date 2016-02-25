@@ -6,7 +6,6 @@ import java.util.Map;
 import com.google.inject.Injector;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
-import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
 import com.synaptix.toast.runtime.bean.TestLineDescriptor;
 
 public class ActionAdaptaterLocators {

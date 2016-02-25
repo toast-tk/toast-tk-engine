@@ -12,9 +12,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.synaptix.toast.adapter.constant.AdaptersConfigProvider;
 import com.synaptix.toast.adapter.swing.component.DefaultSwingElement;
-import com.synaptix.toast.adapter.web.IWebComponentFactory;
 import com.synaptix.toast.core.adapter.AutoSwingType;
 import com.synaptix.toast.core.driver.IRemoteSwingAgentDriver;
 import com.synaptix.toast.core.runtime.IFeedableSwingPage;

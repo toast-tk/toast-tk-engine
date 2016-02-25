@@ -1,10 +1,10 @@
 package com.synaptix.toast.dao.domain.impl.test.block;
 
-import com.github.jmkgreen.morphia.annotations.Embedded;
-import com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.github.jmkgreen.morphia.annotations.Embedded;
+import com.synaptix.toast.dao.domain.impl.test.block.line.CampaignLine;
 
 @Embedded
 public class CampaignBlock implements IBlock {

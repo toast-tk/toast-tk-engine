@@ -1,14 +1,14 @@
 package com.synaptix.toast.runtime.core.parse;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.synaptix.toast.dao.domain.BlockType;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 import com.synaptix.toast.runtime.parse.IBlockParser;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 /**
  * Parse a test block.

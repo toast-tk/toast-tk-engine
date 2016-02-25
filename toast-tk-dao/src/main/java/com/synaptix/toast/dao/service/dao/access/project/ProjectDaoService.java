@@ -13,7 +13,6 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 import com.synaptix.toast.dao.domain.impl.report.Campaign;
 import com.synaptix.toast.dao.domain.impl.report.Project;
-import com.synaptix.toast.dao.domain.impl.test.block.ICampaign;
 import com.synaptix.toast.dao.service.dao.common.AbstractMongoDaoService;
 import com.synaptix.toast.dao.service.dao.common.CommonMongoDaoService;
 import com.synaptix.toast.dao.service.init.DbStarter;

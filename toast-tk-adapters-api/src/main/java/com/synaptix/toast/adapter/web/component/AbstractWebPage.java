@@ -13,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.synaptix.toast.adapter.swing.AbstractSwingPage;
-import com.synaptix.toast.adapter.swing.ISwingComponentFactory;
 import com.synaptix.toast.adapter.web.IWebComponentFactory;
 import com.synaptix.toast.automation.driver.web.SynchronizedDriver;
 import com.synaptix.toast.core.adapter.AutoWebType;

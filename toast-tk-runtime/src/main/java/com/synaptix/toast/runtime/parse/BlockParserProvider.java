@@ -1,15 +1,20 @@
 package com.synaptix.toast.runtime.parse;
 
-import com.google.inject.Inject;
-import com.synaptix.toast.dao.domain.BlockType;
-import com.synaptix.toast.runtime.core.parse.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.inject.Inject;
+import com.synaptix.toast.dao.domain.BlockType;
+import com.synaptix.toast.runtime.core.parse.CampaignBlockParser;
+import com.synaptix.toast.runtime.core.parse.IncludeBlockParser;
+import com.synaptix.toast.runtime.core.parse.SwingPageSetupBlockParser;
+import com.synaptix.toast.runtime.core.parse.TestBlockParser;
+import com.synaptix.toast.runtime.core.parse.VariableBlockParser;
+import com.synaptix.toast.runtime.core.parse.WebPageSetupBlockParser;
 
 public class BlockParserProvider {
 

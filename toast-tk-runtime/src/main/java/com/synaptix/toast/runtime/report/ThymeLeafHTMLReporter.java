@@ -13,9 +13,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
-import com.synaptix.toast.adapter.constant.AdaptersConfigProvider;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
-import com.synaptix.toast.dao.domain.impl.test.block.TestPage;
 
 /**
  * http://www.thymeleaf.org/doc/tutorials/2.1/usingthymeleaf.html
