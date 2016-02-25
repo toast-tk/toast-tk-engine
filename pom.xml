@@ -345,7 +345,7 @@
 		<profile>
 			<id>DEPLOY_NEXUS_SNCF</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>true</activeByDefault>
 			</activation>
 			<distributionManagement>
 				<repository>

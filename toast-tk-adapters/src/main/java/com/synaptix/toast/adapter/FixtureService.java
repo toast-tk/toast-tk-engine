@@ -1,5 +1,7 @@
 package com.synaptix.toast.adapter;
 
+import java.util.Objects;
+
 import com.synaptix.toast.core.adapter.ActionAdapterKind;
 
 public class FixtureService {
@@ -18,5 +20,25 @@ public class FixtureService {
 		this.clazz = clazz;
 		this.fixtureKind = fixtureKind;
 		this.fixtureName = fixtureName;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(clazz) + Objects.hashCode(fixtureKind) + Objects.hashCode(fixtureName);
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		if(obj instanceof FixtureService) {
+			final FixtureService fixtureService = (FixtureService) obj;
+			return 
+					Objects.equals(clazz, fixtureService.clazz)
+					&&
+					Objects.equals(fixtureKind, fixtureService.fixtureKind)
+					&&
+					Objects.equals(fixtureName, fixtureService.fixtureName)
+			;
+		}
+		return false;
 	}
 }

@@ -8,17 +8,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.script.ScriptException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
-import com.synaptix.toast.adapter.ActionAdapterCollector;
-import com.synaptix.toast.adapter.FixtureService;
+import com.synaptix.toast.adapter.cache.ActionMethodCache;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
 import com.synaptix.toast.core.report.FailureResult;
@@ -31,18 +27,15 @@ import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemRegexHolder;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
-import com.synaptix.toast.runtime.action.item.IValueHandler;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
 import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
 import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocator;
 import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocators;
-import com.synaptix.toast.runtime.block.locator.ActionMethodCache;
 import com.synaptix.toast.runtime.block.locator.ArgumentsBuilder;
 import com.synaptix.toast.runtime.constant.Property;
 import com.synaptix.toast.runtime.utils.ArgumentHelper;
 
-//FIXME: TOO many methods
 public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private static final Logger LOG = LogManager.getLogger(BlockRunnerProvider.class);
@@ -54,8 +47,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	private ActionItemValueProvider actionItemValueProvider;
 
 	private Injector injector;
-
-	private List<FixtureService> fixtureApiServices;
 
 	@Override
 	public void run(final TestBlock block) {
@@ -109,7 +100,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	 * @return
 	 */
 	private TestResult invokeActionAdapterAction(final ActionAdaptaterLocator actionAdaptaterLocator)  {
-		if(hasFoundActionAdapter(actionAdaptaterLocator.getActionAdaptaterClass())) {
+		if(hasFoundActionAdapter(actionAdaptaterLocator)) {
 			final TestResult result = doLocalActionCall(actionAdaptaterLocator);
 			updateFatal(result, actionAdaptaterLocator);
 			return result; 
@@ -117,8 +108,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		return new FailureResult("Action Implementation - Not Found");
 	}
 
-	private static boolean hasFoundActionAdapter(final Class<?> actionAdapter) {
-		return actionAdapter != null;
+	private static boolean hasFoundActionAdapter(final ActionAdaptaterLocator actionAdaptaterLocator) {
+		return actionAdaptaterLocator.getActionAdaptaterClass() != null;
 	}
 
 	private static void updateFatal(
@@ -133,8 +124,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	private TestResult doLocalActionCall(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		TestResult result = null;
 		try {
-			final ArgumentsBuilder argumentsBuilder = new ArgumentsBuilder(actionAdaptaterLocator.getActionCommandDescriptor(), actionItemValueProvider, injector, objectRepository);
-			result = (TestResult) actionAdaptaterLocator.getActionCommandDescriptor().method.invoke(actionAdaptaterLocator.getInstance(), argumentsBuilder.buildArgumentList());
+			result = (TestResult) actionAdaptaterLocator.getActionCommandDescriptor().method.invoke(actionAdaptaterLocator.getInstance(), buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
 		} 
 		catch(final Exception e) {
 			result = handleInvocationError(e);
@@ -350,7 +340,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		this.injector = injector;
 		this.actionItemValueProvider = injector.getInstance(ActionItemValueProvider.class);
 		this.objectRepository = injector.getInstance(IActionItemRepository.class);
-		this.fixtureApiServices = ActionAdapterCollector.listAvailableServicesByInjection(injector);
 	}
 
 	public void setObjectRepository(IActionItemRepository repository) {

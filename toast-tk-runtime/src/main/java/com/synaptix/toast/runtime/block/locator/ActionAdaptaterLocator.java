@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
 import com.synaptix.toast.adapter.FixtureService;
+import com.synaptix.toast.adapter.cache.ActionMethodCache;
 import com.synaptix.toast.core.adapter.ActionAdapterKind;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;

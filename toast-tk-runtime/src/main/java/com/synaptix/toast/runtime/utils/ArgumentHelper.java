@@ -22,6 +22,8 @@ public class ArgumentHelper {
 	
 	private static final List<ActionItem> ACTION_ITEMS = ActionItemDescriptionCollector.initActionItems();
 	
+	private static final Pattern ACTION_ITEM_VAR_PATTERN = Pattern.compile(Property.ACTION_ITEM_VAR_REGEX, Pattern.MULTILINE);
+	
 	public static CommandArgumentDescriptor convertActionSentenceToRegex(final Action action) {
 		return convertActionSentenceToRegex(action.action());
 	}
@@ -135,8 +137,7 @@ public class ArgumentHelper {
 		final IActionItemRepository repoSetup,
 		String value
 	) {
-		final Pattern p = Pattern.compile(Property.ACTION_ITEM_VAR_REGEX, Pattern.MULTILINE);
-		final Matcher m = p.matcher(value);
+		final Matcher m = ACTION_ITEM_VAR_PATTERN.matcher(value);
 		int pos = 0;
 		while(m.find()) {
 			final String varName = m.group(pos + 1);
