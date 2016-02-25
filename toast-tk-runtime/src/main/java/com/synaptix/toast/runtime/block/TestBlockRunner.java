@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Injector;
 import com.synaptix.toast.adapter.cache.ActionMethodCache;
+import com.synaptix.toast.adapter.cache.ToastCache;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
 import com.synaptix.toast.core.report.FailureResult;
@@ -180,7 +181,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		final String actionImpl, 
 		final Class<?> actionAdapterClass
 	) {
-		final List<Method> actionMethods = ActionMethodCache.getInstance().getActionMethods(actionAdapterClass);
+		final List<Method> actionMethods = ToastCache.getInstance().getActionMethodsByClass(actionAdapterClass);
 		final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
 		for(final Method actionMethod : actionMethods) {
 			final Action mainAction = actionMethod.getAnnotation(Action.class);

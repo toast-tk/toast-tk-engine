@@ -112,6 +112,10 @@ public final class ToastCache {
 		return actionMethodsByClass;
 	}
 
+	public List<Method> getActionMethodsByClass(final Class<?> actionAdaptaterClass) {
+		return actionMethodsByClass.get(actionAdaptaterClass);
+	}
+	
 	public Set<FixtureDescriptor> getFixtureDescriptors() {
 		return fixtureDescriptors;
 	}
