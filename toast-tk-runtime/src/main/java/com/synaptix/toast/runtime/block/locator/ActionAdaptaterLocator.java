@@ -175,7 +175,7 @@ public class ActionAdaptaterLocator {
 	}
 	
 	private ActionCommandDescriptor findMatchingAction(final Class<?> actionAdapterClass) {
-		final List<Method> actionMethods = getActionMethods(actionAdapterClass);
+		final List<Method> actionMethods = ActionMethodCache.getInstance().getActionMethods(actionAdapterClass);
 		final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
 		for(final Method actionMethod : actionMethods) {
 			final Action mainAction = actionMethod.getAnnotation(Action.class);
@@ -267,23 +267,6 @@ public class ActionAdaptaterLocator {
 
 	private static boolean hasId(final Action action) {
 		return !StringUtils.isEmpty(action.id());
-	}
-
-	private static List<Method> getActionMethods(final Class<?> actionAdapterClass) {
-		final Method[] methods = actionAdapterClass.getMethods();
-		final List<Method> actionMethods = new ArrayList<>(methods.length);
-		Arrays.stream(methods).forEach(method -> addActionMethod(actionMethods, method));
-		return actionMethods;
-	}
-
-	private static void addActionMethod(
-		final List<Method> actionMethods,
-		final Method method
-	) {
-		final Action action = method.getAnnotation(Action.class);
-		if (action != null) {
-			actionMethods.add(method);
-		}
 	}
 
 	private static ActionCommandDescriptor matchMethod(

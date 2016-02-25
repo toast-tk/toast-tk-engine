@@ -35,9 +35,10 @@ import com.synaptix.toast.runtime.action.item.IValueHandler;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
 import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
-import com.synaptix.toast.runtime.bean.TestLineDescriptor;
 import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocator;
 import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocators;
+import com.synaptix.toast.runtime.block.locator.ActionMethodCache;
+import com.synaptix.toast.runtime.block.locator.ArgumentsBuilder;
 import com.synaptix.toast.runtime.constant.Property;
 import com.synaptix.toast.runtime.utils.ArgumentHelper;
 
@@ -132,7 +133,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	private TestResult doLocalActionCall(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		TestResult result = null;
 		try {
-			result = (TestResult) actionAdaptaterLocator.getActionCommandDescriptor().method.invoke(actionAdaptaterLocator.getInstance(), buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
+			final ArgumentsBuilder argumentsBuilder = new ArgumentsBuilder(actionAdaptaterLocator.getActionCommandDescriptor(), actionItemValueProvider, injector, objectRepository);
+			result = (TestResult) actionAdaptaterLocator.getActionCommandDescriptor().method.invoke(actionAdaptaterLocator.getInstance(), argumentsBuilder.buildArgumentList());
 		} 
 		catch(final Exception e) {
 			result = handleInvocationError(e);
@@ -161,27 +163,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	protected Object[] buildArgumentList(
 		final ActionCommandDescriptor execDescriptor
 	) throws Exception {
-		final int groupCount = execDescriptor.matcher.groupCount();
-		final Object[] args = new Object[groupCount];
-		for(int index = 0; index < groupCount; ++index) {
-			final String group = execDescriptor.matcher.group(index + 1);
-			final Object obj = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
-			if(obj instanceof String) {
-				final String argValue = (String) obj;
-				final ArgumentDescriptor argumentDescriptor = execDescriptor.descriptor.arguments.get(index);
-				final int argIndex = execDescriptor.isMappedMethod() ? argumentDescriptor.index : index;
-				final IValueHandler valueHandlder = actionItemValueProvider.get(argumentDescriptor, injector);
-				final Object argument = valueHandlder == null ? group : valueHandlder.handle(group, argValue);
-				if(argument == null) {
-					throw new ScriptException("Element " + argValue + " was not defined");
-				}
-				args[argIndex] = argument;
-			} 
-			else {
-				args[index] = obj;
-			}
-		}
-		return args;
+		final ArgumentsBuilder argumentsBuilder = new ArgumentsBuilder(execDescriptor, actionItemValueProvider, injector, objectRepository);
+		return argumentsBuilder.buildArgumentList();
 	}
 
 	protected String updateCommandWithVarValues(final ActionAdaptaterLocator actionAdaptaterLocator) {
@@ -207,7 +190,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		final String actionImpl, 
 		final Class<?> actionAdapterClass
 	) {
-		final List<Method> actionMethods = getActionMethods(actionAdapterClass);
+		final List<Method> actionMethods = ActionMethodCache.getInstance().getActionMethods(actionAdapterClass);
 		final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
 		for(final Method actionMethod : actionMethods) {
 			final Action mainAction = actionMethod.getAnnotation(Action.class);
@@ -354,25 +337,12 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 	}
 
-	private static boolean isVariable(String group) {
+	private static boolean isVariable(final String group) {
 		return group.startsWith("$");
 	}
 
 	private static boolean isVariable(Object[] args, int i, String group) {
 		return isVariable(group) && args[i] != null && !group.contains(Property.DEFAULT_PARAM_SEPARATOR);
-	}
-
-	private Object getClassInstance(final Class<?> clz) {
-		if (injector != null) {
-			try {
-				return injector.getInstance(clz);
-			} 
-			catch(final ConfigurationException e) {
-				LOG.error(e.getMessage(), e);
-				return null;
-			}
-		}
-		return null;
 	}
 
 	@Override

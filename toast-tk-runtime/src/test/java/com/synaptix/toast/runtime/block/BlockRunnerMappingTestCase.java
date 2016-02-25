@@ -54,7 +54,7 @@ public class BlockRunnerMappingTestCase {
 	public void compareAndSwapInputsTest() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
 		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
-		Map<String, Object> userVarMap = new HashMap<String, Object>();
+		Map<String, Object> userVarMap = new HashMap<>();
 		userVarMap.put("$var1", "value1");
 		userVarMap.put("$var2", "value2");
 		repo.setUserVariables(userVarMap);
@@ -80,7 +80,7 @@ public class BlockRunnerMappingTestCase {
 	public void compareAndSwapInputsTest2() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
 		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
-		Map<String, Object> userVarMap = new HashMap<String, Object>();
+		Map<String, Object> userVarMap = new HashMap<>();
 		userVarMap.put("$var1", "value1");
 		userVarMap.put("$var2", "value2");
 		repo.setUserVariables(userVarMap);

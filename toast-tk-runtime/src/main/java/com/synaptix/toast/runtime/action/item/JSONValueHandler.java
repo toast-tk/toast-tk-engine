@@ -5,7 +5,7 @@ import com.google.inject.Injector;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 
-public class JSONValueHandler implements IValueHandler{
+public class JSONValueHandler implements IValueHandler {
 
 	private Injector injector;
 

@@ -59,7 +59,10 @@ public class ArgumentHelper {
 		return null;
 	}
 
-	private static String buildActionItemRegex_3args(List<ArgumentDescriptor> arguments, String[] groupArray) {
+	private static String buildActionItemRegex_3args(
+		final List<ArgumentDescriptor> arguments, 
+		final String[] groupArray
+	) {
 		final String category = groupArray[1];
 		final ActionCategoryEnum categoryEnum = ActionItem.ActionCategoryEnum.valueOf(category);
 		final String type = groupArray[2];
@@ -121,7 +124,7 @@ public class ArgumentHelper {
 				return object;
 			}
 			if(isInputVariable(group)) {
-				String value = (String) object;
+				final String value = (String) object;
 				return handleValueWithNestedVars(repoSetup, value);
 			}
 		}
