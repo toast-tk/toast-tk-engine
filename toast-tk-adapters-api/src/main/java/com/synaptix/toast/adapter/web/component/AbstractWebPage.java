@@ -159,6 +159,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 	/**
 	 * Convenient method to call an element based on the page enclosed fields' enum
 	 */
+	@Override
 	public IWebAutoElement<?> getAutoElement(
 		String token) {
 		return autoElements.get(token);

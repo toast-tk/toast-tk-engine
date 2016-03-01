@@ -3,14 +3,14 @@ package com.synaptix.toast.adapter.cache;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -22,8 +22,6 @@ import com.synaptix.toast.core.annotation.ActionAdapter;
 
 public final class ToastCache {
 	
-	private static final Logger LOG = LogManager.getLogger(ToastCache.class);
-
 	private static final ToastCache INSTANCE = new ToastCache();
 	
 	public static ToastCache getInstance() {
@@ -33,8 +31,6 @@ public final class ToastCache {
 	private final Set<Method> actionMethods;
 
 	private final Map<Class<?>, List<Method>> actionMethodsByClass;
-	
-	private final Set<FixtureDescriptor> fixtureDescriptors; 
 	
 	private final Set<Class<?>> services;
 	
@@ -47,7 +43,6 @@ public final class ToastCache {
 	private ToastCache() {
 		this.actionMethods = new HashSet<>(2048);
 		this.actionMethodsByClass = new HashMap<>(512);
-		this.fixtureDescriptors = new HashSet<>(2048);
 		this.fixtureServices = new HashSet<>(2048);
 		this.services = new HashSet<>(512);
 		this.fixtureServicesByClass = new HashMap<>(512);
@@ -56,25 +51,17 @@ public final class ToastCache {
 	}
 	
 	private void initDatas() {
-		actionMethods.addAll(buildMethodAnnotationsReflection().getMethodsAnnotatedWith(Action.class));
+		actionMethods.addAll(buildActionMethods());
 		actionMethods.stream().forEach(method -> addMethod(method));
 		services.addAll(buildTypeAnnotationReflection().getTypesAnnotatedWith(ActionAdapter.class));
 		services.stream().forEach(service -> buildAndAddFixtureService(service));
 		fixtureServices.stream().forEach(fixtureService -> fixtureServicesByClass.putIfAbsent(fixtureService.clazz, fixtureService));
-		actionMethods.forEach(actionMethod -> buildAndAddFixtureDescriptor(actionMethod));
-		fixtureDescriptors.forEach(fixtureDescriptor -> fixtureDescriptorsByClass.putIfAbsent(getClass(fixtureDescriptor.name), fixtureDescriptor));
 	}
 
-	private static Class<?> getClass(final String className) {
-		try {
-			return Class.forName(className);
-		}
-		catch(final Exception e) {
-			LOG.error(e.getMessage(), e);
-			return Exception.class;
-		}
+	public static Set<Method> buildActionMethods() {
+		return buildMethodAnnotationsReflection().getMethodsAnnotatedWith(Action.class);
 	}
-	
+
 	private void addMethod(final Method method) {
 		final Class<?> methodClass = method.getDeclaringClass();
 		actionMethodsByClass.computeIfAbsent(methodClass, t -> actionMethodsByClass.put(t, new ArrayList<Method>()));
@@ -85,14 +72,6 @@ public final class ToastCache {
 		return new Reflections(new MethodAnnotationsScanner());
 	}
 
-	private void buildAndAddFixtureDescriptor(final Method method) {
-		final Action annotation = method.getAnnotation(Action.class);
-		final Class<?> declaringClass = method.getDeclaringClass();
-		final ActionAdapter docAnnotation = declaringClass.getAnnotation(ActionAdapter.class);
-		final String fixtureKind = docAnnotation != null ? docAnnotation.value().name() : "undefined";
-		fixtureDescriptors.add(new FixtureDescriptor(declaringClass.getSimpleName(), fixtureKind, annotation.action(), annotation.description()));
-	}
-	
 	private void buildAndAddFixtureService(final Class<?> service) {
 		if(!Modifier.isAbstract(service.getModifiers())) {
 			final ActionAdapter docAnnotation = service.getAnnotation(ActionAdapter.class);
@@ -113,13 +92,9 @@ public final class ToastCache {
 	}
 
 	public List<Method> getActionMethodsByClass(final Class<?> actionAdaptaterClass) {
-		return actionMethodsByClass.get(actionAdaptaterClass);
+		return Optional.ofNullable(actionMethodsByClass.get(actionAdaptaterClass)).orElse(Collections.emptyList());
 	}
 	
-	public Set<FixtureDescriptor> getFixtureDescriptors() {
-		return fixtureDescriptors;
-	}
-
 	public Set<Class<?>> getServices() {
 		return services;
 	}

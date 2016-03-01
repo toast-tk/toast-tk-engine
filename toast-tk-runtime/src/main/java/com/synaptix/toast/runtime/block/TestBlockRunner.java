@@ -180,23 +180,25 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		final String actionImpl, 
 		final Class<?> actionAdapterClass
 	) {
-		final List<Method> actionMethods = ToastCache.getInstance().getActionMethodsByClass(actionAdapterClass);
-		final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
-		for(final Method actionMethod : actionMethods) {
-			final Action mainAction = actionMethod.getAnnotation(Action.class);
-			ActionCommandDescriptor foundMethod = matchMethod(actionImpl, mainAction.action(), actionMethod);
-			if(foundMethod != null) {
-				return foundMethod;
-			}
-			else if(adapter != null && hasMapping(mainAction, adapter)) {
-				foundMethod = matchAgainstActionIdMapping(actionImpl, adapter.name(), actionMethod, mainAction);
-				if (foundMethod != null) {
+		if(actionAdapterClass != Object.class) {
+			final List<Method> actionMethods = ToastCache.getInstance().getActionMethodsByClass(actionAdapterClass);
+			final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
+			for(final Method actionMethod : actionMethods) {
+				final Action mainAction = actionMethod.getAnnotation(Action.class);
+				ActionCommandDescriptor foundMethod = matchMethod(actionImpl, mainAction.action(), actionMethod);
+				if(foundMethod != null) {
 					return foundMethod;
 				}
+				else if(adapter != null && hasMapping(mainAction, adapter)) {
+					foundMethod = matchAgainstActionIdMapping(actionImpl, adapter.name(), actionMethod, mainAction);
+					if (foundMethod != null) {
+						return foundMethod;
+					}
+				}
 			}
-		}
-		if (actionAdapterClass.getSuperclass() != null) {
-			return findMatchingAction(actionImpl, actionAdapterClass.getSuperclass());
+			if (actionAdapterClass.getSuperclass() != null) {
+				return findMatchingAction(actionImpl, actionAdapterClass.getSuperclass());
+			}
 		}
 		return null;
 	}

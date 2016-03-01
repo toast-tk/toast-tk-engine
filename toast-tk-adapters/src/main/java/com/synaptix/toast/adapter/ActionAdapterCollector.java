@@ -1,5 +1,6 @@
 package com.synaptix.toast.adapter;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.synaptix.toast.adapter.cache.ToastCache;
+import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
 
 public final class ActionAdapterCollector {
@@ -20,9 +22,23 @@ public final class ActionAdapterCollector {
 	}
 	
 	public static List<FixtureDescriptor> listAvailableSentences() {
-		return new ArrayList<>(ToastCache.getInstance().getFixtureDescriptors());
+		final Set<Method> methodsAnnotatedWith = ToastCache.buildActionMethods();
+		final List<FixtureDescriptor> out = new ArrayList<>(methodsAnnotatedWith.size());
+		methodsAnnotatedWith.stream().forEach(method -> buildAndAddFixtureDescriptor(out, method));
+		return out;
 	}
 
+	private static void buildAndAddFixtureDescriptor(
+		final List<FixtureDescriptor> out, 
+		final Method method
+	) {
+		final Action annotation = method.getAnnotation(Action.class);
+		final Class<?> declaringClass = method.getDeclaringClass();
+		final ActionAdapter docAnnotation = declaringClass.getAnnotation(ActionAdapter.class);
+		final String fixtureKind = docAnnotation != null ? docAnnotation.value().name() : "undefined";
+		out.add(new FixtureDescriptor(declaringClass.getSimpleName(), fixtureKind, annotation.action(), annotation.description()));
+	}
+	
 	public static List<FixtureService> listAvailableServicesByReflection() {
 		return new ArrayList<>(ToastCache.getInstance().getFixtureServices());
 	}
