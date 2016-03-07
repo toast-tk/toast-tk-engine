@@ -22,7 +22,6 @@ import java.util.List;
  * | check something 2 | <br>
  * | do something 2 | <br>
  * <p>
- * Created by Nicolas Sauvage on 06/08/2015.
  */
 public class TestBlockParser implements IBlockParser {
     @Override
