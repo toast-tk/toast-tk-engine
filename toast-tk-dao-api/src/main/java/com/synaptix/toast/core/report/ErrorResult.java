@@ -6,7 +6,7 @@ public class ErrorResult extends TestResult{
 
 	public ErrorResult() {
 		super("KO");
-		this.setIsSuccess(true);
+		this.setIsError(true);
 		this.resultKind =  ResultKind.ERROR;
 
 	}
