@@ -42,6 +42,8 @@ public interface ITestResult {
 	void setIsFailure(boolean isFailure);
 
 	void setIsError(boolean isError);
+
+	void setIsFatal(boolean isFatal);
 	
 	void setResultKind(ResultKind kind);
 

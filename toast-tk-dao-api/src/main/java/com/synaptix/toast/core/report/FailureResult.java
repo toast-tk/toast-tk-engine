@@ -6,6 +6,7 @@ public class FailureResult extends TestResult{
 
 	public FailureResult() {
 		super("KO");
+		this.setIsSuccess(false);
 		this.setIsFailure(true);
 		this.resultKind =  ResultKind.FAILURE;
 
