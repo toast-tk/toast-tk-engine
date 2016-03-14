@@ -113,4 +113,9 @@ public class TestResult implements ITestResult{
 	public void setIsError(boolean isError) {
 		this.isError = isError;
 	}
+	
+	@Override
+	public void setIsFatal(boolean isFatal) {
+		this.isFatal = isFatal;
+	}
 }

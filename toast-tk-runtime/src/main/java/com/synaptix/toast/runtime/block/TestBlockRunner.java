@@ -59,8 +59,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			TestResult result = invokeActionAdapterAction(descriptor);
 			line.setExcutionTime(System.currentTimeMillis() - startTime);
 			if (result.isFatal()) {
-				throw new IllegalAccessException(
-						"Test execution stopped, due to fail fatal error: " + line + " - Failed !");
+//				Désactivation issue #54
+//				throw new IllegalAccessException(
+//						"Test execution stopped, due to fail fatal error: " + line + " - Failed !");
 			}
 			finaliseResultKind(line, result);
 			line.setTestResult(result);
@@ -113,6 +114,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	private void updateFatal(ITestResult result, TestLineDescriptor descriptor) {
 		if (descriptor.isFailFatalCommand()) {
 			if (!result.isSuccess()) {
+				result.setIsFatal(true);
 				result.setResultKind(ResultKind.FATAL);
 			}
 		}
