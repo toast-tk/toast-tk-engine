@@ -2,10 +2,13 @@ package com.synaptix.toast.core.agent.interpret;
 
 
 public class WebEventRecord {
-	
+
+	public String value;
 	public String type;
 	public String target;
 	public String id;
+	public int keyCode;
+	public int charCode;
 	public int button;
 	public boolean altKey;
 	public boolean ctrlKey;
@@ -15,6 +18,14 @@ public class WebEventRecord {
 		
 	}
 
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
 	public String getType() {
 		return type;
 	}
@@ -38,13 +49,30 @@ public class WebEventRecord {
 	public void setId(String id) {
 		this.id = id;
 	}
-
+	
+	
 	public int getButton() {
 		return button;
 	}
 
 	public void setButton(int button) {
 		this.button = button;
+	}
+	
+	public int getKeyCode() {
+		return keyCode;
+	}
+
+	public void setKeyCode(int keyCode) {
+		this.keyCode = keyCode;
+	}
+
+	public int getCharCode() {
+		return charCode;
+	}
+
+	public void setCharCode(int charCode) {
+		this.charCode = charCode;
 	}
 
 	public boolean isAltKey() {
@@ -70,7 +98,5 @@ public class WebEventRecord {
 	public void setShiftKey(boolean shiftKey) {
 		this.shiftKey = shiftKey;
 	}
-	
-	
 	
 }
