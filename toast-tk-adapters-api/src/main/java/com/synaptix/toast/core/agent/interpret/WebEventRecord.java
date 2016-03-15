@@ -4,6 +4,7 @@ package com.synaptix.toast.core.agent.interpret;
 public class WebEventRecord {
 
 	public String value;
+	public String component;
 	public String type;
 	public String target;
 	public String id;
@@ -18,6 +19,14 @@ public class WebEventRecord {
 		
 	}
 
+	public String getComponent() {
+		return component;
+	}
+
+	public void setComponent(String component) {
+		this.component = component;
+	}
+	
 	public String getValue() {
 		return value;
 	}
