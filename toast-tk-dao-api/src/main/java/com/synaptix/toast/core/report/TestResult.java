@@ -17,6 +17,8 @@ public class TestResult implements ITestResult{
 	protected boolean isFailure;
 
 	protected boolean isError;
+	
+	protected boolean isFatal;
 
 
 	public TestResult() {
@@ -113,5 +115,10 @@ public class TestResult implements ITestResult{
 	@Override
 	public void setIsError(final boolean isError) {
 		this.isError = isError;
+	}
+	
+	@Override
+	public void setIsFatal(boolean isFatal) {
+		this.isFatal = isFatal;
 	}
 }

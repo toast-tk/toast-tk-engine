@@ -1,15 +1,16 @@
 package com.synaptix.toast.core.agent.interpret;
 
 public class WebEventRecord {
-	
-	//public with setter
-	
+
+	public String value;
+	public String componentName;
+	public String component;
 	public String type;
-
 	public String target;
-
+	public String parent;
 	public String id;
-
+	public int keyCode;
+	public int charCode;
 	public int button;
 
 	public boolean altKey;
@@ -21,7 +22,40 @@ public class WebEventRecord {
 	public WebEventRecord() {
 		
 	}
+	
+	public String getParent() {
+		return parent;
+	}
 
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
+	
+	public String getComponentName() {
+		return componentName;
+	}
+
+	public void setComponentName(String componentName) {
+		this.componentName = componentName;
+	}
+	
+
+	public String getComponent() {
+		return component;
+	}
+
+	public void setComponent(String component) {
+		this.component = component;
+	}
+	
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
 	public String getType() {
 		return type;
 	}
@@ -45,13 +79,29 @@ public class WebEventRecord {
 	public void setId(final String id) {
 		this.id = id;
 	}
-
+	
 	public int getButton() {
 		return button;
 	}
 
 	public void setButton(final int button) {
 		this.button = button;
+	}
+	
+	public int getKeyCode() {
+		return keyCode;
+	}
+
+	public void setKeyCode(int keyCode) {
+		this.keyCode = keyCode;
+	}
+
+	public int getCharCode() {
+		return charCode;
+	}
+
+	public void setCharCode(int charCode) {
+		this.charCode = charCode;
 	}
 
 	public boolean isAltKey() {

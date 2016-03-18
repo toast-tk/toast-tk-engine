@@ -68,8 +68,8 @@ public class TestParser extends AbstractParser {
 	}
 
 	public ITestPage readString(String scenarioAsString, String scenarioName) throws IllegalArgumentException, IOException {
-		final String[] split = StringUtils.split(scenarioAsString, "\n");
-		final List<String> list = new ArrayList<>(Arrays.asList(split));
+		String[] split = StringUtils.split(scenarioAsString, "\n");
+		ArrayList<String> list = new ArrayList<>(Arrays.asList(split));
 		return buildTestPage(list, scenarioName, null);
 	}
 }

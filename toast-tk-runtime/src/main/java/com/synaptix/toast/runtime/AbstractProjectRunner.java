@@ -56,6 +56,13 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
     	this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
         this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
     }
+    
+	public final void test(IProject project,
+            boolean overrideRepoFromWebApp)
+            throws Exception {
+        execute(project, overrideRepoFromWebApp);
+    }
+    
 
 	public final void test(
 		final String projectName,

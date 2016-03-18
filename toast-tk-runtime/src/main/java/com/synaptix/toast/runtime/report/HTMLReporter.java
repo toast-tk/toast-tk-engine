@@ -19,4 +19,5 @@ public class HTMLReporter {
 		final ThymeLeafHTMLReporter reporter = new ThymeLeafHTMLReporter();
 		return reporter.generatePageHtml(test);
 	}
+
 }

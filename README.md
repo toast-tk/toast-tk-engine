@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/synaptix-labs/toast-tk-engine.svg?branch=master)](https://travis-ci.org/synaptix-labs/toast-tk-engine.svg?branch=master)
+[![Build Status](https://travis-ci.org/talan-labs/toast-tk-engine.svg?branch=master)](https://travis-ci.org/talan-labs/toast-tk-engine.svg?branch=master)
 
 # Toast Tk - Engine
 
@@ -49,7 +49,7 @@ For the time being and once in a while, we merge pull requests into master, whic
 
 Toast Toolkit (Toast TK)
 
-Copyright 2012-2015 - Synaptix-Labs - http://www.synaptix-labs.com 
+Copyright 2012-2015 - Talan Labs - http://labs.talan.com/
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

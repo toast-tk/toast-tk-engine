@@ -92,6 +92,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	) {
 		return result.getMessage() != null && line.getExpected() != null && result.getMessage().equals(line.getExpected());
 	}
+	
+	private boolean hasFoundActionAdapter(Class<?> actionAdapter) {
+		return actionAdapter != null;
+	}
 
 	/**
 	 * invoke the method matching the test line descriptor
@@ -108,6 +112,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		return new FailureResult("Action Implementation - Not Found");
 	}
 
+
+
 	private static boolean hasFoundActionAdapter(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		return actionAdaptaterLocator.getActionAdaptaterClass() != null;
 	}
@@ -117,6 +123,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		final ActionAdaptaterLocator actionAdaptaterLocator
 	) {
 		if(actionAdaptaterLocator.getTestLineDescriptor().isFailFatalCommand() && !result.isSuccess()) {
+			result.setIsFatal(true);
+			result.setIsError(false);
+			result.setIsFailure(false);
 			result.setResultKind(ResultKind.FATAL);
 		}
 	}

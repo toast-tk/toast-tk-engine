@@ -11,10 +11,6 @@ import com.synaptix.toast.dao.domain.BlockType;
 import com.synaptix.toast.dao.domain.impl.test.block.CommentBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 
-/**
- * Abstract parser: contains methods to help parsing a file, and read blocks.
- * Created by Nicolas Sauvage on 19/11/2015.
- */
 public class AbstractParser {
 
     protected BlockParserProvider blockParserProvider;

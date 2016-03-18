@@ -47,7 +47,7 @@ public interface ISwingAutomationClient {
 
 	boolean isWebMode();
 
-	void startRecording(String url);
+	void startWebRecording(String url);
 	
 	void connect();
 	
