@@ -40,8 +40,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
         EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
         this.progressReporter = new DefaultTestProgressReporter(eventBus, htmlReportGenerator);
     }
-    
-    
+
     protected AbstractScenarioRunner(Module m) {
     	super(m);
         this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
@@ -49,7 +48,6 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
         this.progressReporter = new DefaultTestProgressReporter(eventBus, htmlReportGenerator);
     }
 
-    
     protected AbstractScenarioRunner() {
     	super();
         this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);

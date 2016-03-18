@@ -53,4 +53,8 @@ public interface ITestPage extends ITaggable, IBlock {
 	public boolean isSuccess();
 
 	void setIsSuccess(boolean isSuccess);
+
+	void setIsFatal(boolean isFatal);
+
+	boolean isFatal();
 }

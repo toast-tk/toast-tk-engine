@@ -52,20 +52,24 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	private List<FixtureService> fixtureApiServices;
 
 	@Override
-	public void run(TestBlock block) throws IllegalAccessException, ClassNotFoundException {
+	public void run(TestBlock block) throws IllegalAccessException, ClassNotFoundException, FatalExcecutionException{
 		for (TestLine line : block.getBlockLines()) {
-			long startTime = System.currentTimeMillis();
-			TestLineDescriptor descriptor = new TestLineDescriptor(block, line);
-			TestResult result = invokeActionAdapterAction(descriptor);
-			line.setExcutionTime(System.currentTimeMillis() - startTime);
+			TestResult result = getResultForLine(block, line);
 			if (result.isFatal()) {
-//				Désactivation issue #54
-//				throw new IllegalAccessException(
-//						"Test execution stopped, due to fail fatal error: " + line + " - Failed !");
+				throw new FatalExcecutionException();
 			}
-			finaliseResultKind(line, result);
-			line.setTestResult(result);
 		}
+	}
+
+	private TestResult getResultForLine(TestBlock block, TestLine line)
+			throws IllegalAccessException, ClassNotFoundException {
+		long startTime = System.currentTimeMillis();
+		TestLineDescriptor descriptor = new TestLineDescriptor(block, line);
+		TestResult result = invokeActionAdapterAction(descriptor);
+		line.setExcutionTime(System.currentTimeMillis() - startTime);
+		finaliseResultKind(line, result);
+		line.setTestResult(result);
+		return result;
 	}
 
 	private void finaliseResultKind(TestLine line, ITestResult result) {

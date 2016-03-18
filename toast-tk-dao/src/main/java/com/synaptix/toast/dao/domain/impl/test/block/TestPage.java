@@ -46,6 +46,8 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
 
 	private boolean isSuccess;
 
+	private boolean isFatal;
+
     public TestPage() {
     	this.blocks = new ArrayList<>();
     }
@@ -190,4 +192,15 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
             boolean isSuccess) {
         this.isSuccess = isSuccess;
     }
+
+    @Override
+    public void setIsFatal(
+            boolean isFatal) {
+        this.isFatal = isFatal;
+    }
+
+	@Override
+	public boolean isFatal() {
+		return this.isFatal;
+	}
 }
