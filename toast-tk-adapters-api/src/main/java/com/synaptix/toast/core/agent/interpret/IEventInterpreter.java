@@ -10,7 +10,7 @@ public interface IEventInterpreter {
 		TABLE_CLICK,
 		MENU_CLICK,
 		POPUP_MENU_CLICK,
-		JLIST_CLICk,
+		JLIST_CLICK,
 		COMBOBOX_CLICK,
 		WINDOW_DISPLAY,
 		KEY_INPUT,
