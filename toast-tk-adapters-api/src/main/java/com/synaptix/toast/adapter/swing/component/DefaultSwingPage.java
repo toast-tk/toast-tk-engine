@@ -4,10 +4,12 @@ import com.synaptix.toast.adapter.swing.AbstractSwingPage;
 
 public class DefaultSwingPage extends AbstractSwingPage {
 
+	@Override
 	public void addElement(
-		String name,
-		String type,
-		String locator) {
+		final String name,
+		final String type,
+		final String locator
+	) {
 		super.initElement(name, type, locator);
 	}
 }

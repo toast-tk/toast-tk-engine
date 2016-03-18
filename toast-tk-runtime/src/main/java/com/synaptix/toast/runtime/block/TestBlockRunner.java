@@ -3,24 +3,18 @@ package com.synaptix.toast.runtime.block;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.script.ScriptException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
-import com.synaptix.toast.adapter.ActionAdapterCollector;
-import com.synaptix.toast.adapter.FixtureService;
-import com.synaptix.toast.core.adapter.ActionAdapterKind;
+import com.synaptix.toast.adapter.cache.ToastCache;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
 import com.synaptix.toast.core.report.FailureResult;
@@ -33,56 +27,74 @@ import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemRegexHolder;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
-import com.synaptix.toast.runtime.action.item.IValueHandler;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
 import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
-import com.synaptix.toast.runtime.bean.TestLineDescriptor;
+import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocator;
+import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocators;
+import com.synaptix.toast.runtime.block.locator.ArgumentsBuilder;
 import com.synaptix.toast.runtime.constant.Property;
 import com.synaptix.toast.runtime.utils.ArgumentHelper;
 
-//FIXME: TOO many methods
 public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private static final Logger LOG = LogManager.getLogger(BlockRunnerProvider.class);
+	
+	private static final Pattern REGEX_PATTERN = Pattern.compile("\\$(\\d)");
 
 	private IActionItemRepository objectRepository;
+
 	private ActionItemValueProvider actionItemValueProvider;
+
 	private Injector injector;
-	private List<FixtureService> fixtureApiServices;
 
 	@Override
-	public void run(TestBlock block) throws IllegalAccessException, ClassNotFoundException {
-		for (TestLine line : block.getBlockLines()) {
-			long startTime = System.currentTimeMillis();
-			TestLineDescriptor descriptor = new TestLineDescriptor(block, line);
-			TestResult result = invokeActionAdapterAction(descriptor);
-			line.setExcutionTime(System.currentTimeMillis() - startTime);
-			if (result.isFatal()) {
-//				Désactivation issue #54
-//				throw new IllegalAccessException(
-//						"Test execution stopped, due to fail fatal error: " + line + " - Failed !");
-			}
-			finaliseResultKind(line, result);
-			line.setTestResult(result);
-		}
+	public void run(final TestBlock block) {
+		block.getBlockLines().stream().filter(line -> invokeTestAndAddResult(block, line)).findFirst();
 	}
 
-	private void finaliseResultKind(TestLine line, ITestResult result) {
-		if (isFailureExpected(line, result)) {
-			result.setResultKind(ResultKind.SUCCESS);
-		} else if (isExpectedResult(line, result)) {
-			result.setResultKind(ResultKind.SUCCESS);
+	private boolean invokeTestAndAddResult(
+		final TestBlock block, 
+		final TestLine line
+	) {
+		final long startTime = System.currentTimeMillis();
+		final ActionAdaptaterLocator actionCommandDescriptor = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
+		final TestResult result = invokeActionAdapterAction(actionCommandDescriptor);
+		line.setExcutionTime(System.currentTimeMillis() - startTime);
+		finaliseResultKind(line, result);
+		line.setTestResult(result);
+		if(result.isFatal()) {
+			LOG.error("Test execution stopped, due to fail fatal error: {} - Failed !", line);
+			return false;
 		}
+		return true;
 	}
 
-	private boolean isFailureExpected(TestLine line, ITestResult result) {
+	private static void finaliseResultKind(
+		final TestLine line, 
+		final ITestResult result
+	) {
+		if(isFailureExpected(line, result) || isExpectedResult(line, result)) {
+			result.setResultKind(ResultKind.SUCCESS);
+		} 
+	}
+
+	private static boolean isFailureExpected(
+		final TestLine line, 
+		final ITestResult result
+	) {
 		return "KO".equals(line.getExpected()) && ResultKind.FAILURE.equals(result.getResultKind());
 	}
 
-	private boolean isExpectedResult(TestLine line, ITestResult result) {
-		return result.getMessage() != null && line.getExpected() != null
-				&& result.getMessage().equals(line.getExpected());
+	private static boolean isExpectedResult(
+		final TestLine line, 
+		final ITestResult result
+	) {
+		return result.getMessage() != null && line.getExpected() != null && result.getMessage().equals(line.getExpected());
+	}
+	
+	private boolean hasFoundActionAdapter(Class<?> actionAdapter) {
+		return actionAdapter != null;
 	}
 
 	/**
@@ -90,178 +102,80 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	 *
 	 * @param descriptor: descriptor of current test line
 	 * @return
-	 * @throws IllegalAccessException
-	 * @throws ClassNotFoundException
 	 */
-	private TestResult invokeActionAdapterAction(TestLineDescriptor descriptor)
-			throws IllegalAccessException, ClassNotFoundException {
+	private TestResult invokeActionAdapterAction(final ActionAdaptaterLocator actionAdaptaterLocator)  {
+		if(hasFoundActionAdapter(actionAdaptaterLocator)) {
+			final TestResult result = doLocalActionCall(actionAdaptaterLocator);
+			updateFatal(result, actionAdaptaterLocator);
+			return result; 
+		} 
+		return new FailureResult("Action Implementation - Not Found");
+	}
+
+
+
+	private static boolean hasFoundActionAdapter(final ActionAdaptaterLocator actionAdaptaterLocator) {
+		return actionAdaptaterLocator.getActionAdaptaterClass() != null;
+	}
+
+	private static void updateFatal(
+		final ITestResult result, 
+		final ActionAdaptaterLocator actionAdaptaterLocator
+	) {
+		if(actionAdaptaterLocator.getTestLineDescriptor().isFailFatalCommand() && !result.isSuccess()) {
+			result.setIsFatal(true);
+			result.setIsError(false);
+			result.setIsFailure(false);
+			result.setResultKind(ResultKind.FATAL);
+		}
+	}
+
+	private TestResult doLocalActionCall(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		TestResult result = null;
-		Class<?> actionAdapter = locateActionAdapter(descriptor);
-		if (hasFoundActionAdapter(actionAdapter)) {
-			result = runThroughLocalActionAdapter(descriptor, actionAdapter);
-			updateFatal(result, descriptor);
-		} else {
-			return new FailureResult(String.format("Action Implementation - Not Found"));
-		}
-		return result;
-	}
-
-	private boolean hasFoundActionAdapter(Class<?> actionAdapter) {
-		return actionAdapter != null;
-	}
-
-
-	private void updateFatal(ITestResult result, TestLineDescriptor descriptor) {
-		if (descriptor.isFailFatalCommand()) {
-			if (!result.isSuccess()) {
-				result.setIsFatal(true);
-				result.setResultKind(ResultKind.FATAL);
-			}
-		}
-	}
-
-	private TestResult runThroughLocalActionAdapter(
-			TestLineDescriptor descriptor,
-			Class<?> actionAdapter) {
-		final TestResult result;
-		final String command = descriptor.getActionImpl();
-		Object actionAdapterInstance = getClassInstance(actionAdapter);
-		ActionCommandDescriptor actionDescriptor = findMatchingAction(command, actionAdapter);
-		result = doLocalActionCall(command, actionAdapterInstance, actionDescriptor);
-		return result;
-	}
-
-	/**
-	 * Locate among registered ActionAdapters the best match to execute the
-	 * action command
-	 *
-	 * @param action adapter kind (swing, web, service)
-	 * @return
-	 * @throws ClassNotFoundException
-	 * @throws IllegalAccessException
-	 */
-	private Class<?> locateActionAdapter(TestLineDescriptor descriptor)
-			throws ClassNotFoundException, IllegalAccessException {
-		ActionAdapterKind actionAdapterKind = descriptor.getTestLineFixtureKind();
-		String actionAdapterName = descriptor.getTestLineFixtureName();
-		String actionImpl = descriptor.getActionImpl();
-		Class<?> actionAdapter = null;
-		actionAdapter = pickActionAdapterByNameAndKind(actionAdapterKind, actionAdapterName, actionImpl);
-		if (actionAdapter == null) {
-			actionAdapter = pickActionAdapterByKind(actionAdapterKind, actionImpl);
-		}
-		if (actionAdapter == null) {
-			LOG.error("No ActionAdapter found for: {}", actionImpl);
-		}
-		return actionAdapter;
-	}
-
-	private Class<?> pickActionAdapterByKind(ActionAdapterKind actionAdapterKind, String actionImpl) {
-		Set<Class<?>> serviceClasses = new HashSet<Class<?>>();
-		serviceClasses.addAll(collectActionAdaptersByKind(actionAdapterKind, actionImpl));
-		if (serviceClasses.size() > 0) {
-			if (serviceClasses.size() > 1) {
-				LOG.warn("Multiple Adapters found for: {}", actionImpl);
-			}
-			return serviceClasses.iterator().next();
-		}
-		return null;
-	}
-
-	private Class<?> pickActionAdapterByNameAndKind(ActionAdapterKind actionAdapterKind, String actionAdapterName,
-			String actionImpl) {
-		Set<Class<?>> serviceClasses = new HashSet<Class<?>>();
-		Set<Class<?>> collectActionAdaptersByNameAndKind = collectActionAdaptersByNameAndKind(actionAdapterKind,
-				actionAdapterName, actionImpl);
-		serviceClasses.addAll(collectActionAdaptersByNameAndKind);
-		if (serviceClasses.size() > 0) {
-			if (serviceClasses.size() > 1) {
-				LOG.warn("Multiple Adapters found for: {}", actionImpl);
-			}
-			return serviceClasses.iterator().next();
-		}
-		return null;
-	}
-
-	private Set<Class<?>> collectActionAdaptersByKind(ActionAdapterKind fixtureKind, String actionImpl) {
-		Set<Class<?>> serviceClasses = new HashSet<Class<?>>();
-		for (FixtureService fixtureService : fixtureApiServices) {
-			if (fixtureService.fixtureKind.equals(fixtureKind)) {
-				ActionCommandDescriptor methodAndMatcher = findMatchingAction(actionImpl, fixtureService.clazz);
-				if (methodAndMatcher != null) {
-					serviceClasses.add(fixtureService.clazz);
-				}
-			}
-		}
-		return serviceClasses;
-	}
-
-	private Set<Class<?>> collectActionAdaptersByNameAndKind(ActionAdapterKind fixtureKind, String fixtureName,
-			String actionImpl) {
-		Set<Class<?>> serviceClasses = new HashSet<Class<?>>();
-		for (FixtureService fixtureService : fixtureApiServices) {
-			if (fixtureService.fixtureKind.equals(fixtureKind) && fixtureService.fixtureName.equals(fixtureName)) {
-				ActionCommandDescriptor methodAndMatcher = findMatchingAction(actionImpl, fixtureService.clazz);
-				if (methodAndMatcher != null) {
-					serviceClasses.add(fixtureService.clazz);
-				}
-			}
-		}
-		return serviceClasses;
-	}
-	
-	private TestResult doLocalActionCall(String command, Object instance, ActionCommandDescriptor execDescriptor) {
-		TestResult result;
 		try {
-			Object[] args = buildArgumentList(execDescriptor);
-			result = (TestResult) execDescriptor.method.invoke(instance, args);
-		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
-			if (e instanceof ErrorResultReceivedException) {
-				result = ((ErrorResultReceivedException) e).getResult();
-			} else {
-				result = new FailureResult(ExceptionUtils.getRootCauseMessage(e));
-			}
+			result = (TestResult) actionAdaptaterLocator.getActionCommandDescriptor().method.invoke(actionAdaptaterLocator.getInstance(), buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
+		} 
+		catch(final Exception e) {
+			result = handleInvocationError(e);
 		}
-		final String updatedCommand = updateCommandWithVarValues(command, execDescriptor);
-		result.setContextualTestSentence(updatedCommand);
+		setContextualTestSentence(actionAdaptaterLocator, result);
 		return result;
 	}
 
-	protected Object[] buildArgumentList(ActionCommandDescriptor execDescriptor) throws Exception {
-		Matcher matcher = execDescriptor.matcher;
-		int groupCount = matcher.groupCount();
-		Object[] args = new Object[groupCount];
-		for (int i = 0; i < groupCount; i++) {
-			String group = matcher.group(i + 1);
-			Object obj = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
-			ArgumentDescriptor argumentDescriptor = execDescriptor.descriptor.arguments.get(i);
-			if (obj instanceof String) {
-				String argValue = (String) obj;
-				int argIndex = execDescriptor.isMappedMethod() ? argumentDescriptor.index : i;
-				IValueHandler valueHanlder = actionItemValueProvider.get(argumentDescriptor, injector);
-				Object argument = valueHanlder == null ? group : valueHanlder.handle(group, argValue);
-				if (argument == null) {
-					throw new ScriptException("Element " + argValue + " was not defined");
-				}
-				args[argIndex] = argument;
-			} else {
-				args[i] = obj;
-			}
+	private void setContextualTestSentence(
+		final ActionAdaptaterLocator actionAdaptaterLocator,
+		final TestResult result
+	) {
+		if(result != null) {
+			result.setContextualTestSentence(updateCommandWithVarValues(actionAdaptaterLocator));
 		}
-		return args;
 	}
 
-	protected String updateCommandWithVarValues(String actionSentence, ActionCommandDescriptor execDescriptor) {
-		Matcher matcher = execDescriptor.matcher;
+	private static TestResult handleInvocationError(final Exception e) {
+		LOG.error(e.getMessage(), e);
+		if (e instanceof ErrorResultReceivedException) {
+			return ((ErrorResultReceivedException) e).getResult();
+		} 
+		return new FailureResult(ExceptionUtils.getRootCauseMessage(e));
+	}
+
+	protected Object[] buildArgumentList(
+		final ActionCommandDescriptor execDescriptor
+	) throws Exception {
+		final ArgumentsBuilder argumentsBuilder = new ArgumentsBuilder(execDescriptor, actionItemValueProvider, injector, objectRepository);
+		return argumentsBuilder.buildArgumentList();
+	}
+
+	protected String updateCommandWithVarValues(final ActionAdaptaterLocator actionAdaptaterLocator) {
+		final Matcher matcher = actionAdaptaterLocator.getActionCommandDescriptor().matcher;
 		matcher.matches();
-		String outCommand = actionSentence;
-		int groupCount = matcher.groupCount();
-		Object[] args = new Object[groupCount];
-		for (int i = 0; i < groupCount; i++) {
-			String group = matcher.group(i + 1);
+		String outCommand = actionAdaptaterLocator.getTestLineDescriptor().getActionImpl();
+		final int groupCount = matcher.groupCount();
+		final Object[] args = new Object[groupCount];
+		for(int i = 0; i < groupCount; ++i) {
+			final String group = matcher.group(i + 1);
 			args[i] = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
-			if (isVariable(args, i, group)) {
+			if(isVariable(args, i, group)) {
 				outCommand = outCommand.replaceFirst("\\" + group + "\\b", (args[i].toString()).replace("$", "\\$"));
 			}
 		}
@@ -271,43 +185,57 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	/**
 	 * Find the method in the action adapter class matching the command
 	 */
-	public ActionCommandDescriptor findMatchingAction(final String actionImpl, final Class<?> actionAdapterClass) {
-		ActionCommandDescriptor foundMethod;
-		final List<Method> actionMethods = getActionMethods(actionAdapterClass);
-		final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
-		for (Method actionMethod : actionMethods) {
-			final Action mainAction = actionMethod.getAnnotation(Action.class);
-			foundMethod = matchMethod(actionImpl, mainAction.action(), actionMethod);
-			if (foundMethod != null) {
-				return foundMethod;
-			} else if (adapter != null && hasMapping(mainAction, adapter)) {
-				foundMethod = matchAgainstActionIdMapping(actionImpl, adapter.name(), actionMethod, mainAction);
-				if (foundMethod != null) {
+	public ActionCommandDescriptor findMatchingAction(
+		final String actionImpl, 
+		final Class<?> actionAdapterClass
+	) {
+		if(actionAdapterClass != Object.class) {
+			final List<Method> actionMethods = ToastCache.getInstance().getActionMethodsByClass(actionAdapterClass);
+			final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
+			for(final Method actionMethod : actionMethods) {
+				final Action mainAction = actionMethod.getAnnotation(Action.class);
+				ActionCommandDescriptor foundMethod = matchMethod(actionImpl, mainAction.action(), actionMethod);
+				if(foundMethod != null) {
 					return foundMethod;
 				}
+				else if(adapter != null && hasMapping(mainAction, adapter)) {
+					foundMethod = matchAgainstActionIdMapping(actionImpl, adapter.name(), actionMethod, mainAction);
+					if (foundMethod != null) {
+						return foundMethod;
+					}
+				}
 			}
-		}
-		if (actionAdapterClass.getSuperclass() != null) {
-			return findMatchingAction(actionImpl, actionAdapterClass.getSuperclass());
+			if (actionAdapterClass.getSuperclass() != null) {
+				return findMatchingAction(actionImpl, actionAdapterClass.getSuperclass());
+			}
 		}
 		return null;
 	}
 
-	private boolean hasMapping(Action mainAction, ActionAdapter adapter) {
-		final String actionId = mainAction.id();
-		return adapter != null
-				&& hasId(mainAction)
-				&& ActionSentenceMappingProvider.hasMappingForAction(adapter.name(), actionId);
+	private static boolean hasMapping(
+		final Action mainAction, 
+		final ActionAdapter adapter
+	) {
+		return 
+				adapter != null
+				&& 
+				hasId(mainAction)
+				&& 
+				ActionSentenceMappingProvider.hasMappingForAction(adapter.name(), mainAction.id())
+		;
 	}
 
-	private ActionCommandDescriptor matchAgainstActionIdMapping(final String actionImpl, final String adapterName,
-			Method actionMethod, final Action mainAction) {
-		ActionCommandDescriptor foundMethod;
-		String actionMapping = ActionSentenceMappingProvider.getMappingForAction(adapterName, mainAction.id());
-		String alternativeAction = buildSustituteAction(mainAction, actionMapping);
+	private ActionCommandDescriptor matchAgainstActionIdMapping(
+		final String actionImpl, 
+		final String adapterName,
+		final Method actionMethod, 
+		final Action mainAction
+	) {
+		final String actionMapping = ActionSentenceMappingProvider.getMappingForAction(adapterName, mainAction.id());
+		final String alternativeAction = buildSustituteAction(mainAction, actionMapping);
 		//TODO: change mapping index position
-		foundMethod = matchMethod(actionImpl, alternativeAction, actionMethod);
-		if (foundMethod != null) {
+		final ActionCommandDescriptor foundMethod = matchMethod(actionImpl, alternativeAction, actionMethod);
+		if(foundMethod != null) {
 			foundMethod.setIsMappedMethod(true);
 			foundMethod.setActionMapping(actionMapping);
 			updateArgumentIndex(foundMethod);
@@ -315,112 +243,114 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		return foundMethod;
 	}
 
-	private void updateArgumentIndex(ActionCommandDescriptor foundMethod) {
-		Pattern regexPattern = Pattern.compile("\\$(\\d)");
-		Matcher matcher = regexPattern.matcher(foundMethod.getActionMapping());
+	private static void updateArgumentIndex(final ActionCommandDescriptor foundMethod) {
+		final Matcher matcher = REGEX_PATTERN.matcher(foundMethod.getActionMapping());
 		int pos = 0;
-		List<Integer> indexes = new ArrayList<Integer>();
-		while (matcher.find()) {
+		final List<Integer> indexes = new ArrayList<>();
+		while(matcher.find()) {
 			indexes.add(Integer.valueOf(matcher.group(1)));
 		}
-		for (ArgumentDescriptor aDescriptor : foundMethod.descriptor.arguments) {
+		for(final ArgumentDescriptor aDescriptor : foundMethod.descriptor.arguments) {
 			aDescriptor.index = indexes.get(pos) - 1;
-			pos++;
+			++pos;
 		}
 	}
 
-	private class ActionIndex {
+	class ActionIndex {
+
 		String item;
+
 		Integer start;
+
 		Integer end;
+		
+		public ActionIndex(
+			final String item,
+			final Integer start,
+			final Integer end
+		) {
+			this.item = item;
+			this.start = start;
+			this.end = end;
+		}
 	}
 
-	protected String buildSustituteAction(Action mainAction, String mapping) {
-		Pattern regexPattern = ActionItemRegexHolder.getFullMetaPattern();
-		String action = mainAction.action();
-		Matcher matcher = regexPattern.matcher(action);
-		List<ActionIndex> actionItems = new ArrayList<>();
-		while (matcher.find()) {
-			ActionIndex index = new ActionIndex();
-			index.item = matcher.group(0);
-			index.start = matcher.start();
-			index.end = matcher.end();
-			actionItems.add(index);
+	protected String buildSustituteAction(
+		final Action mainAction, 
+		String mapping
+	) {
+		final Matcher matcher = ActionItemRegexHolder.getFullMetaPattern().matcher(mainAction.action());
+		final List<ActionIndex> actionItems = new ArrayList<>();
+		while(matcher.find()) {
+			actionItems.add(new ActionIndex(matcher.group(0), matcher.start(), matcher.end()));
 		}
-		for (ActionIndex actionItem : actionItems) {
-			String index = "$" + (actionItems.indexOf(actionItem) + 1);
+		for(final ActionIndex actionItem : actionItems) {
+			final String index = "$" + (actionItems.indexOf(actionItem) + 1);
 			mapping = mapping.replace(index, actionItem.item);
 		}
 		return mapping;
 	}
 
-	private ActionCommandDescriptor matchMethod(
-			final String actionImpl,
-			final String actionTpl,
-			Method actionMethod) {
-		CommandArgumentDescriptor commandDescriptor = ArgumentHelper.convertActionSentenceToRegex(actionTpl);
-		ActionCommandDescriptor actionCommandWrapper = null;
-		Pattern regexPattern = Pattern.compile(commandDescriptor.regex);
-		Matcher methodMatcher = regexPattern.matcher(actionImpl);
-		if (methodMatcher.matches()) {
-			Pattern varRegexPattern = ActionItemRegexHolder.getVarPattern();
-			Matcher varMatcher = varRegexPattern.matcher(actionImpl);
+	private static ActionCommandDescriptor matchMethod(
+		final String actionImpl,
+		final String actionTpl,
+		final Method actionMethod
+	) {
+		final CommandArgumentDescriptor commandDescriptor = ArgumentHelper.convertActionSentenceToRegex(actionTpl);
+		final Pattern regexPattern = Pattern.compile(commandDescriptor.regex);
+		final Matcher methodMatcher = regexPattern.matcher(actionImpl);
+		if(methodMatcher.matches()) {
+			final Pattern varRegexPattern = ActionItemRegexHolder.getVarPattern();
+			final Matcher varMatcher = varRegexPattern.matcher(actionImpl);
 			int pos = 0;
-			while (varMatcher.find()) {
-				String varName = varMatcher.group(1);
-				ArgumentDescriptor argumentDescriptor = commandDescriptor.arguments.get(pos);
-				argumentDescriptor.varName = varName;
-				if (argumentDescriptor.name == null) {
-					Parameter parameter = actionMethod.getParameters()[pos];
+			while(varMatcher.find()) {
+				final ArgumentDescriptor argumentDescriptor = commandDescriptor.arguments.get(pos);
+				argumentDescriptor.varName = varMatcher.group(1);
+				if(argumentDescriptor.name == null) {
+					final Parameter parameter = actionMethod.getParameters()[pos];
 					argumentDescriptor.name = parameter.getType().getName();
 				}
-				pos++;
+				++pos;
 			}
-			actionCommandWrapper = new ActionCommandDescriptor(actionMethod, methodMatcher, commandDescriptor);
-		}
-		return actionCommandWrapper;
-	}
-
-	private boolean hasId(Action action) {
-		return !StringUtils.isEmpty(action.id());
-	}
-
-	private List<Method> getActionMethods(final Class<?> actionAdapterClass) {
-		List<Method> actionMethods = new ArrayList<>();
-		Method[] methods = actionAdapterClass.getMethods();
-		for (Method method : methods) {
-			Action action = method.getAnnotation(Action.class);
-			if (action != null) {
-				actionMethods.add(method);
-			}
-		}
-		return actionMethods;
-	}
-
-	private boolean isVariable(String group) {
-		return group.startsWith("$");
-	}
-
-	private boolean isVariable(Object[] args, int i, String group) {
-		return isVariable(group) && args[i] != null && !group.contains(Property.DEFAULT_PARAM_SEPARATOR);
-	}
-
-	private Object getClassInstance(Class<?> clz) {
-		if (injector != null) {
-			try {
-				return injector.getInstance(clz);
-			} catch (ConfigurationException _ce) {
-				return null;
-			}
+			return new ActionCommandDescriptor(actionMethod, methodMatcher, commandDescriptor);
 		}
 		return null;
 	}
 
-	public void setInjector(Injector injector) {
+	private static boolean hasId(final Action action) {
+		return !StringUtils.isEmpty(action.id());
+	}
+
+	private static List<Method> getActionMethods(final Class<?> actionAdapterClass) {
+		final Method[] methods = actionAdapterClass.getMethods();
+		final List<Method> actionMethods = new ArrayList<>(methods.length);
+		Arrays.stream(methods).forEach(method -> addActionMethod(actionMethods, method));
+		return actionMethods;
+	}
+
+	private static void addActionMethod(
+		final List<Method> actionMethods,
+		final Method method
+	) {
+		final Action action = method.getAnnotation(Action.class);
+		if (action != null) {
+			actionMethods.add(method);
+		}
+	}
+
+	private static boolean isVariable(final String group) {
+		return group.startsWith("$");
+	}
+
+	private static boolean isVariable(Object[] args, int i, String group) {
+		return isVariable(group) && args[i] != null && !group.contains(Property.DEFAULT_PARAM_SEPARATOR);
+	}
+
+	@Override
+	public void setInjector(final Injector injector) {
 		this.injector = injector;
-		setActionItemValueProvider(injector.getInstance(ActionItemValueProvider.class));
-		setObjectRepository(injector.getInstance(IActionItemRepository.class));
-		this.fixtureApiServices = ActionAdapterCollector.listAvailableServicesByInjection(injector);
+		this.actionItemValueProvider = injector.getInstance(ActionItemValueProvider.class);
+		this.objectRepository = injector.getInstance(IActionItemRepository.class);
 	}
 
 	public void setObjectRepository(IActionItemRepository repository) {

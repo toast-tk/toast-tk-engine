@@ -19,19 +19,15 @@ public class WebPageBlock implements IBlock {
 
     private TestResult testResult;
 
-    /**
-     *
-     */
     public WebPageBlock() {
-        blockLines = new ArrayList<WebPageConfigLine>();
+        this.blockLines = new ArrayList<>();
     }
 
     public List<WebPageConfigLine> getBlockLines() {
         return blockLines;
     }
 
-    public void setBlockLines(
-            List<WebPageConfigLine> blockLines) {
+    public void setBlockLines(final List<WebPageConfigLine> blockLines) {
         this.blockLines = blockLines;
     }
 
@@ -39,8 +35,7 @@ public class WebPageBlock implements IBlock {
         return columns;
     }
 
-    public void setColumns(
-            BlockLine columns) {
+    public void setColumns(final BlockLine columns) {
         this.columns = columns;
     }
 
@@ -48,13 +43,11 @@ public class WebPageBlock implements IBlock {
         return fixtureName;
     }
 
-    public void setFixtureName(
-            String fixtureName) {
+    public void setFixtureName(final String fixtureName) {
         this.fixtureName = fixtureName;
     }
 
-    public void addLine(
-            WebPageConfigLine line) {
+    public void addLine(final WebPageConfigLine line) {
         blockLines.add(line);
     }
 
@@ -62,8 +55,7 @@ public class WebPageBlock implements IBlock {
         return testResult;
     }
 
-    public void setTestResult(
-    		TestResult testResult) {
+    public void setTestResult(final TestResult testResult) {
         this.testResult = testResult;
     }
 

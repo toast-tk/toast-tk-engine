@@ -2,34 +2,31 @@ package com.synaptix.toast.adapter.constant;
 
 public class AdaptersConfig {
 
-	private String webDriver;
+	private final String webDriver;
 
-	private String webDriverPath;
+	private final String webDriverPath;
 
-	private boolean isSSl;
+	private final boolean isSSl;
 
+	public AdaptersConfig(
+		final String webDriver,
+		final String webDriverPath,
+		final boolean isSSl
+	) {
+		this.webDriver = webDriver;
+		this.webDriverPath = webDriverPath;
+		this.isSSl = isSSl;
+	}
+	
 	public String getWebDriver() {
 		return webDriver;
-	}
-
-	public void setWebDriver(String webDriver) {
-		this.webDriver = webDriver;
 	}
 
 	public String getWebDriverPath() {
 		return webDriverPath;
 	}
 
-	public void setWebDriverPath(String webDriverPath) {
-		this.webDriverPath = webDriverPath;
-	}
-
 	public boolean getIsSSl() {
 		return isSSl;
 	}
-
-	public void setIsSSl(boolean isSSl) {
-		this.isSSl = isSSl;
-	}
-
 }

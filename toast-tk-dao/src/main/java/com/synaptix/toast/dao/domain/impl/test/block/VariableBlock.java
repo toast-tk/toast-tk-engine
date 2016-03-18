@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
-import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.BlockLine;
 
 @Embedded
@@ -17,12 +16,11 @@ public class VariableBlock implements IBlock {
 	private BlockLine columns;
 
 	public VariableBlock() {
-		blockLines = new ArrayList<>();
-		textLines = new ArrayList<>();
+		this.blockLines = new ArrayList<>();
+		this.textLines = new ArrayList<>();
 	}
 
-	public void setBlockLines(
-			List<BlockLine> blockLines) {
+	public void setBlockLines(final List<BlockLine> blockLines) {
 		this.blockLines = blockLines;
 	}
 
@@ -35,13 +33,11 @@ public class VariableBlock implements IBlock {
 		return columns;
 	}
 
-	public void setColumns(
-			BlockLine columns) {
+	public void setColumns(final BlockLine columns) {
 		this.columns = columns;
 	}
 
-	public void addline(
-			BlockLine line) {
+	public void addline(final BlockLine line) {
 		blockLines.add(line);
 	}
 
@@ -55,7 +51,7 @@ public class VariableBlock implements IBlock {
 		return 0;
 	}
 
-	public void addTextLine(String line) {
+	public void addTextLine(final String line) {
 		textLines.add(line);
 	}
 	

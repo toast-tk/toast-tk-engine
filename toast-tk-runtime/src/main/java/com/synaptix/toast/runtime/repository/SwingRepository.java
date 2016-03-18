@@ -12,7 +12,7 @@ public class SwingRepository implements IRepository<IFeedableSwingPage> {
 	Map<String, IFeedableSwingPage> swingpages = new HashMap<>();
 	
 	@Override
-	public IFeedableSwingPage get(String entityName) {
+	public IFeedableSwingPage get(final String entityName) {
 		return swingpages.get(entityName);
 	}
 
@@ -22,7 +22,7 @@ public class SwingRepository implements IRepository<IFeedableSwingPage> {
 	}
 
 	@Override
-	public void add(String entityName, IFeedableSwingPage entity) {
+	public void add(final String entityName, final IFeedableSwingPage entity) {
 		swingpages.put(entityName, entity);
 	}
 
@@ -32,7 +32,7 @@ public class SwingRepository implements IRepository<IFeedableSwingPage> {
 	}
 
 	@Override
-	public void setMap(Map<String, IFeedableSwingPage> map) {
+	public void setMap(final Map<String, IFeedableSwingPage> map) {
 		this.swingpages = map;
 	}
 
@@ -40,5 +40,4 @@ public class SwingRepository implements IRepository<IFeedableSwingPage> {
 	public void clear() {
 		this.swingpages.clear();
 	}
-
 }

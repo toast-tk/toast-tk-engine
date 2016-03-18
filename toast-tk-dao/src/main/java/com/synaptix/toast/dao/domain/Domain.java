@@ -1,5 +1,5 @@
 package com.synaptix.toast.dao.domain;
 
-//dumb class to hook reflection
 public class Domain {
+	/*NOOP dumb class to hook reflection*/
 }

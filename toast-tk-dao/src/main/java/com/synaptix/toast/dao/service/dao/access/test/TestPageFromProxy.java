@@ -9,8 +9,8 @@ import com.synaptix.toast.dao.domain.impl.test.block.TestPage;
 
 public class TestPageFromProxy {
 
-	public static final TestPage from(ITestPage testPage){
-		TestPage page = new TestPage();
+	public static final TestPage from(final ITestPage testPage){
+		final TestPage page = new TestPage();
 		page.setName(testPage.getName());
 		page.setExecutionTime(testPage.getExecutionTime());
 		page.setBlocks(testPage.getBlocks());
@@ -34,5 +34,4 @@ public class TestPageFromProxy {
 		}
 		return page;
 	}
-	
 }

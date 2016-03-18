@@ -1,7 +1,5 @@
 package com.synaptix.toast.core.report;
 
-
-
 public class ErrorResult extends TestResult{
 
 	public ErrorResult() {

@@ -6,34 +6,43 @@ import java.util.regex.Matcher;
 import com.synaptix.toast.core.annotation.Action;
 
 public class ActionCommandDescriptor {
-	public Method method;
-	public CommandArgumentDescriptor descriptor;
-	public Matcher matcher;
+
+	public final Method method;
+
+	public final CommandArgumentDescriptor descriptor;
+
+	public final Matcher matcher;
+
 	private boolean isMapped;
+
 	private String actionMapping;
 
+	private final String actionId;
+	
 	public ActionCommandDescriptor(
-		Method method,
-		Matcher matcher,
-		CommandArgumentDescriptor descriptor) {
+		final Method method,
+		final Matcher matcher,
+		final CommandArgumentDescriptor descriptor
+	) {
 		this.method = method;
 		this.matcher = matcher;
 		this.descriptor = descriptor;
+		this.actionId = method.getAnnotation(Action.class).id();
 	}
 	
-	public String getActionId(){
-		return method.getAnnotation(Action.class).id();
+	public String getActionId() {
+		return actionId;
 	}
 
-	public void setIsMappedMethod(boolean isMapped) {
+	public void setIsMappedMethod(final boolean isMapped) {
 		this.isMapped = isMapped;
 	}
 	
 	public boolean isMappedMethod() {
-		return this.isMapped;
+		return isMapped;
 	}
 
-	public void setActionMapping(String actionMapping) {
+	public void setActionMapping(final String actionMapping) {
 		this.actionMapping = actionMapping;
 	}
 	

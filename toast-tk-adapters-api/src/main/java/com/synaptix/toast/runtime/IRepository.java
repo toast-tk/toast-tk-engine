@@ -5,16 +5,15 @@ import java.util.Map;
 
 public interface IRepository<E> {
 
-	public E get(String entityName);
+	E get(final String entityName);
 
-	public Collection<E> getAll();
+	Collection<E> getAll();
 	
-	public void add(String entityName, E entity);
+	void add(final String entityName, final E entity);
 	
-	public Map<String,E> getMap();
+	Map<String,E> getMap();
 
-	public void setMap(Map<String,E> map);
+	void setMap(final Map<String,E> map);
 	
-	public void clear();
-
+	void clear();
 }

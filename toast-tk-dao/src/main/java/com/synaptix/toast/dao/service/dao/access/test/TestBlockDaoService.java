@@ -14,16 +14,16 @@ public class TestBlockDaoService extends AbstractMongoDaoService<TestBlock> {
 
 	public interface Factory {
 
-		TestBlockDaoService create(
-			@Nullable @Assisted String dbName);
+		TestBlockDaoService create(final @Nullable @Assisted String dbName);
 	}
 
 	@Inject
 	public TestBlockDaoService(
-		DbStarter starter,
-		CommonMongoDaoService cService,
-		@Nullable @Assisted String dbName,
-		@Named("default_db") String default_db) {
+		final DbStarter starter,
+		final CommonMongoDaoService cService,
+		final @Nullable @Assisted String dbName,
+		final @Named("default_db") String default_db
+	) {
 		super(TestBlock.class, starter.getDatabaseByName((dbName == null ? default_db : dbName)), cService);
 	}
 }

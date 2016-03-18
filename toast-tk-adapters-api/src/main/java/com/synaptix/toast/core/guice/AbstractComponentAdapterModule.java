@@ -22,13 +22,13 @@ public abstract class AbstractComponentAdapterModule extends AbstractModule {
 	protected abstract void configureModule();
 
 	protected final void addCustomFilteredAWTEventListener(
-		Class<? extends FilteredAWTEventListener> customFilteredAWTEventListenerClass) {
+		final Class<? extends FilteredAWTEventListener> customFilteredAWTEventListenerClass
+	) {
 		bind(customFilteredAWTEventListenerClass).in(Singleton.class);
 		uriAwtEventListenerBinder.addBinding().to(customFilteredAWTEventListenerClass);
 	}
 
-	protected final void addTypeHandler(
-		Class<? extends ICustomRequestHandler> typeHandlerClass) {
+	protected final void addTypeHandler(final Class<? extends ICustomRequestHandler> typeHandlerClass) {
 		bind(typeHandlerClass).in(Singleton.class);
 		uriCustomFixtureHandlerBinder.addBinding().to(typeHandlerClass);
 	}
@@ -36,7 +36,7 @@ public abstract class AbstractComponentAdapterModule extends AbstractModule {
 	protected final void addTypeHandler(
 		final Class<? extends ICustomRequestHandler> typeHandlerClass,
 		final Class<? extends Annotation> annotationClass
-		) {
+	) {
 		bind(typeHandlerClass).annotatedWith(annotationClass).in(Singleton.class);
 		uriCustomFixtureHandlerBinder.addBinding().to(typeHandlerClass);
 	}

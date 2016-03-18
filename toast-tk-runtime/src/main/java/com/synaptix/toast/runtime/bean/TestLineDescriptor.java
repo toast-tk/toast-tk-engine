@@ -1,5 +1,6 @@
 package com.synaptix.toast.runtime.bean;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,32 +10,44 @@ import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 
 public class TestLineDescriptor {
 
-	private static String KINDS = ActionAdapterKind.swing.name() + "|" 
-						 + ActionAdapterKind.web.name() + "|"
-						 + ActionAdapterKind.service.name();
+	private static final String KINDS;
 	
-	private static String REGEX = "@(" + KINDS + "):?([\\w\\-\\.]*) ([\\w\\W]+)";
+	private static final String REGEX;
+	
+	private static final Pattern PATTERN;
+	
+	static {
+		KINDS = ActionAdapterKind.swing.name() + "|" 
+				 + ActionAdapterKind.web.name() + "|"
+				 + ActionAdapterKind.service.name();
+		REGEX = "@(" + KINDS + "):?([\\w\\-\\.]*) ([\\w\\W]+)";
+		PATTERN = Pattern.compile(REGEX);
+	}
 
 	public final TestLine testLine;
 
+	private final TestBlock testBlock;
+	
 	private String testLineAction;
 
-	private String testLineFixtureName;
+	private String testLineFixtureName = "";
 
 	private ActionAdapterKind testLineFixtureKind;
 
 	public TestLineDescriptor(
-		TestBlock testBlock,
-		TestLine testLine) {
+		final TestBlock testBlock,
+		final TestLine testLine
+	) {
 		this.testLine = testLine;
+		this.testBlock = testBlock;
 		initServiceKind(testBlock, testLine);
 	}
 
 	private void initServiceKind(
-		TestBlock testBlock,
-		TestLine testLine) {
-		Pattern pattern = Pattern.compile(REGEX);
-		Matcher matcher = pattern.matcher(testLine.getTest());
+		final TestBlock testBlock,
+		final TestLine testLine
+	) {
+		final Matcher matcher = PATTERN.matcher(testLine.getTest());
 		if(matcher.find()) {
 			setTestLineFixtureKind(ActionAdapterKind.valueOf(matcher.group(1)));
 			setTestLineFixtureName(matcher.group(2));
@@ -46,17 +59,15 @@ public class TestLineDescriptor {
 		}
 	}
 
-	private void setTestLineFixtureName(
-		String testLineFixtureName) {
-		this.testLineFixtureName = testLineFixtureName;
+	private void setTestLineFixtureName(final String testLineFixtureName) {
+		this.testLineFixtureName = testLineFixtureName == null ? "" : testLineFixtureName;
 	}
 
 	public String getTestLineFixtureName() {
-		return testLineFixtureName == null ? "" : testLineFixtureName;
+		return testLineFixtureName;
 	}
 
-	private void setTestLineAction(
-		String testLineAction) {
+	private void setTestLineAction(final String testLineAction) {
 		this.testLineAction = testLineAction;
 	}
 
@@ -68,8 +79,7 @@ public class TestLineDescriptor {
 		return testLineFixtureKind;
 	}
 
-	public void setTestLineFixtureKind(
-		ActionAdapterKind testLineFixtureKind) {
+	public void setTestLineFixtureKind(final ActionAdapterKind testLineFixtureKind) {
 		this.testLineFixtureKind = testLineFixtureKind;
 	}
 
@@ -82,10 +92,16 @@ public class TestLineDescriptor {
 	}
 
 	public String getActionImpl() {
-		String actionImpl = testLineAction;
-		if(isFailFatalCommand()) {
-			actionImpl = actionImpl.substring(2);
-		}
-		return actionImpl;
+		return isFailFatalCommand() ? testLineAction.substring(2) : testLineAction; 
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(testLine) + Objects.hashCode(testBlock);
+	}
+	
+	@Override
+	public boolean equals(final Object obj) {
+		return obj instanceof TestLineDescriptor ? Objects.equals(testLine, ((TestLineDescriptor) obj).testLine) && Objects.equals(testBlock, ((TestLineDescriptor) obj).testBlock): false;
 	}
 }

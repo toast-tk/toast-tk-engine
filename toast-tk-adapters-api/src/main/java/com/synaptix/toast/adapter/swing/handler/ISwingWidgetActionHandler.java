@@ -4,8 +4,7 @@ import java.awt.Component;
 
 import com.synaptix.toast.core.net.request.IIdRequest;
 
-
-public interface ISwingwidgetActionHandler<E extends Component, O, R extends IIdRequest> {
+public interface ISwingWidgetActionHandler<E extends Component, O, R extends IIdRequest> {
 	
-	public O handle(E component, R command);
+	O handle(final E component, final R command);
 }

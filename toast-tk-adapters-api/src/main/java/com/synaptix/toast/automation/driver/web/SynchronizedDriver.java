@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.synaptix.toast.core.runtime.IWebElementDescriptor;
 
-public interface SynchronizedDriver<E,D> {
+public interface SynchronizedDriver<E, D> {
 
 	/**
 	 * 
@@ -12,15 +12,14 @@ public interface SynchronizedDriver<E,D> {
 	 *            locator description
 	 * @return
 	 */
-	public E find(
-		IWebElementDescriptor element);
+	E find(final IWebElementDescriptor element);
 
 	/**
 	 * selenium driver
 	 * 
 	 * @return
 	 */
-	public D getWebDriver();
+	D getWebDriver();
 
-	List<E> findAll(IWebElementDescriptor element);
+	List<E> findAll(final IWebElementDescriptor element);
 }

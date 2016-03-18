@@ -1,6 +1,5 @@
 package com.synaptix.toast.dao.domain.api.test;
 
-
 public interface ITestResult {
 	
 	public enum ResultKind {
@@ -26,7 +25,6 @@ public interface ITestResult {
 		INFO
 	}
 
-
 	String getContextualTestSentence();
 
 	String getMessage();
@@ -37,26 +35,25 @@ public interface ITestResult {
 
 	boolean isError();
 
-	void setIsSuccess(boolean isSuccess);
+	void setIsSuccess(final boolean isSuccess);
 	
-	void setIsFailure(boolean isFailure);
+	void setIsFailure(final boolean isFailure);
 
-	void setIsError(boolean isError);
+	void setIsError(final boolean isError);
 
-	void setIsFatal(boolean isFatal);
+	void setIsFatal(final boolean isFatal);
 	
-	void setResultKind(ResultKind kind);
+	void setResultKind(final ResultKind kind);
 
 	String getScreenShot();
 
-	void setScreenShot(String screenshot);
+	void setScreenShot(final String screenshot);
 
-	void setContextualTestSentence(String updatedCommand);
+	void setContextualTestSentence(final String updatedCommand);
 
 	boolean isFatal();
 
 	ResultKind getResultKind();
 
-	void setMessage(String parameters);
-
+	void setMessage(final String parameters);
 }

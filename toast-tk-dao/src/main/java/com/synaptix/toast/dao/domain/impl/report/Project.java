@@ -43,39 +43,28 @@ public class Project extends BasicTaggableMongoBean implements IProject {
 		return id;
 	}
 
-	public void setId(
-		ObjectId id) {
+	public void setId(final ObjectId id) {
 		this.id = id;
 	}
 
+	@Override
 	public List<ICampaign> getCampaigns() {
 		return campaigns;
 	}
 
-	public void setCampaigns(
-		List<ICampaign> campaigns) {
+	public void setCampaigns(final List<ICampaign> campaigns) {
 		this.campaigns = campaigns;
 	}
 
-	public void setCampaignsImpl(
-		List<Campaign> campaigns) {
-		if(campaigns != null) {
-			this.campaigns = new ArrayList<ICampaign>();
-			for(Campaign campaign : campaigns) {
-				this.campaigns.add(campaign);
-			}
-		}
-		else {
-			this.campaigns = null;
-		}
+	public void setCampaignsImpl(List<Campaign> campaigns) {
+		this.campaigns = campaigns != null ? new ArrayList<>(campaigns) : null;
 	}
 
 	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(
-		Date startDate) {
+	public void setStartDate(final Date startDate) {
 		this.startDate = startDate;
 	}
 
@@ -83,8 +72,7 @@ public class Project extends BasicTaggableMongoBean implements IProject {
 		return demoDate;
 	}
 
-	public void setDemoDate(
-		Date demoDate) {
+	public void setDemoDate(final Date demoDate) {
 		this.demoDate = demoDate;
 	}
 
@@ -92,8 +80,7 @@ public class Project extends BasicTaggableMongoBean implements IProject {
 		return prodDate;
 	}
 
-	public void setProdDate(
-		Date prodDate) {
+	public void setProdDate(final Date prodDate) {
 		this.prodDate = prodDate;
 	}
 
@@ -101,8 +88,7 @@ public class Project extends BasicTaggableMongoBean implements IProject {
 		return version;
 	}
 
-	public void setVersion(
-		String version) {
+	public void setVersion(final String version) {
 		this.version = version;
 	}
 
@@ -110,8 +96,7 @@ public class Project extends BasicTaggableMongoBean implements IProject {
 		return iteration;
 	}
 
-	public void setIteration(
-		short iteration) {
+	public void setIteration(final short iteration) {
 		this.iteration = iteration;
 	}
 
@@ -119,8 +104,7 @@ public class Project extends BasicTaggableMongoBean implements IProject {
 		return last;
 	}
 
-	public void setLast(
-		boolean last) {
+	public void setLast(final boolean last) {
 		this.last = last;
 	}
 }

@@ -7,18 +7,13 @@ import com.synaptix.toast.core.agent.interpret.AWTCapturedEvent;
 
 public interface ISwingInspectionServer {
 
-	void highlight(
-		String selectedValue);
+	void highlight(final String selectedValue);
 
-	String getComponentLocator(
-		Component component);
+	String getComponentLocator(final Component component);
 
-	void publishRecordEvent(
-		AWTCapturedEvent eventObject);
+	void publishRecordEvent(final AWTCapturedEvent eventObject);
 
-	void publishInterpretedEvent(
-		String sentence);
+	void publishInterpretedEvent(final String sentence);
 
-	Set<String> scan(
-		boolean b);
+	Set<String> scan(final boolean b);
 }

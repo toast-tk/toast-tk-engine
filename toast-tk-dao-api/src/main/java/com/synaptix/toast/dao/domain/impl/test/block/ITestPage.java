@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.synaptix.toast.core.report.TestResult;
 
-public interface ITestPage extends ITaggable, IBlock {
+public interface ITestPage extends IBlock {
 
     List<IBlock> getBlocks();
 
@@ -16,19 +16,19 @@ public interface ITestPage extends ITaggable, IBlock {
 
     int getTestSuccessNumber();
 
-    void setTechnicalErrorNumber(int technicalErrorNumber);
+    void setTechnicalErrorNumber(final int technicalErrorNumber);
 
-    void setTestFailureNumber(int testFailureNumber);
+    void setTestFailureNumber(final int testFailureNumber);
 
-    void setTestSuccessNumber(int testSuccessNumber);
+    void setTestSuccessNumber(final int testSuccessNumber);
 
     String getName();
 
-    void setId(String id);
+    void setId(final String id);
 
     boolean isPreviousIsSuccess();
 
-    void setPreviousIsSuccess(boolean isSuccess);
+    void setPreviousIsSuccess(final boolean isSuccess);
 
     long getPreviousExecutionTime();
 
@@ -40,17 +40,17 @@ public interface ITestPage extends ITaggable, IBlock {
 
     String getIdAsString();
 
-    void setPreviousExecutionTime(long previousExecutionTime);
+    void setPreviousExecutionTime(final long previousExecutionTime);
 
     long getStartDateTime();
 
-    void setName(String name);
+    void setName(final String name);
 
-    void addBlock(IBlock block);
+    void addBlock(final IBlock block);
 
     TestResult getTestResult();
 	
 	public boolean isSuccess();
 
-	void setIsSuccess(boolean isSuccess);
+	void setIsSuccess(final boolean isSuccess);
 }

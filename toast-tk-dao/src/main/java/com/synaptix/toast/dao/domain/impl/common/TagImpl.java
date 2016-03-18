@@ -7,7 +7,7 @@ import com.github.jmkgreen.morphia.annotations.Id;
 import com.synaptix.toast.dao.domain.impl.test.block.ITaggable;
 
 @Entity(value = "tags", noClassnameStored = true)
-public class TagImpl  implements ITaggable{
+public class TagImpl  implements ITaggable {
 
 	@Id
 	public ObjectId id = new ObjectId();
@@ -15,13 +15,13 @@ public class TagImpl  implements ITaggable{
 	public String name;
 
 	public TagImpl() {
-		super();
+
 	}
 
 	public TagImpl(
-		ObjectId id,
-		String name) {
-		super();
+		final ObjectId id,
+		final String name
+	) {
 		this.id = id;
 		this.name = name;
 	}
@@ -30,8 +30,7 @@ public class TagImpl  implements ITaggable{
 		return id;
 	}
 
-	public void setId(
-		ObjectId id) {
+	public void setId(final ObjectId id) {
 		this.id = id;
 	}
 
@@ -39,8 +38,7 @@ public class TagImpl  implements ITaggable{
 		return name;
 	}
 
-	public void setName(
-		String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 }

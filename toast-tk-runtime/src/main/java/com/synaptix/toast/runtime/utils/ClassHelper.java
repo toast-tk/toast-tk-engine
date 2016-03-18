@@ -1,37 +1,17 @@
 package com.synaptix.toast.runtime.utils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import org.apache.commons.beanutils.BeanUtils;
 
 public class ClassHelper {
 
-	private Object straightGetProperty(
-		Object object,
-		String property) {
-		try {
-			return BeanUtils.getProperty(object, property);
-		}
-		catch(IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		catch(InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		catch(NoSuchMethodException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	public static boolean hasProperty(
-		Class<?> clazz,
-		String property) {
-		Method[] methods = clazz.getMethods();
-		String methoProp = property.substring(0, 1).toUpperCase() + property.substring(1);
-		for(Method method : methods) {
+		final Class<?> clazz,
+		final String property
+	) {
+		final Method[] methods = clazz.getMethods();
+		final String methoProp = property.substring(0, 1).toUpperCase() + property.substring(1);
+		for(final Method method : methods) {
 			if(method.getName().equals("get" + methoProp)) {
 				return true;
 			}
@@ -52,10 +32,11 @@ public class ClassHelper {
 	}
 
 	static boolean inspect(
-		Class<?> klazz,
-		String property) {
-		Field[] fields = klazz.getDeclaredFields();
-		for(Field field : fields) {
+		final Class<?> klazz,
+		final String property
+	) {
+		final Field[] fields = klazz.getDeclaredFields();
+		for(final Field field : fields) {
 			if(field.getName().equalsIgnoreCase(property)) {
 				return true;
 			}
@@ -64,11 +45,12 @@ public class ClassHelper {
 	}
 
 	public static Class<?> getPropertyClass(
-		Class<?> clazz,
-		String propertyName) {
-		Method[] methods = clazz.getMethods();
-		String methoProp = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
-		for(Method method : methods) {
+		final Class<?> clazz,
+		final String propertyName
+	) {
+		final Method[] methods = clazz.getMethods();
+		final String methoProp = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+		for(final Method method : methods) {
 			if(method.getName().equals("get" + methoProp)) {
 				return method.getReturnType();
 			}

@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.synaptix.toast.core.runtime.IFeedableWebPage;
 import com.synaptix.toast.core.runtime.IWebAutoElement;
 import com.synaptix.toast.runtime.IRepository;
 
@@ -13,7 +12,7 @@ public class WebComponentRepository implements IRepository<IWebAutoElement<?>> {
 	Map<String, IWebAutoElement<?>> components = new HashMap<>();
 	
 	@Override
-	public IWebAutoElement<?> get(String entityName) {
+	public IWebAutoElement<?> get(final String entityName) {
 		return components.get(entityName);
 	}
 
@@ -23,7 +22,10 @@ public class WebComponentRepository implements IRepository<IWebAutoElement<?>> {
 	}
 
 	@Override
-	public void add(String entityName, IWebAutoElement<?> entity) {
+	public void add(
+		final String entityName, 
+		final IWebAutoElement<?> entity
+	) {
 		components.put(entityName, entity);
 	}
 
@@ -33,13 +35,12 @@ public class WebComponentRepository implements IRepository<IWebAutoElement<?>> {
 	}
 
 	@Override
-	public void setMap(Map<String, IWebAutoElement<?>> map) {
-		this.components = map;
+	public void setMap(final Map<String, IWebAutoElement<?>> components) {
+		this.components = components;
 	}
 
 	@Override
 	public void clear() {
 		components.clear();		
 	}
-
 }

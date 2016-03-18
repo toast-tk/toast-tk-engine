@@ -9,8 +9,6 @@ public class WebRecordResponse implements IIdRequest {
 
 	public WebEventRecord value;
 
-	private String sentence;
-
 	public String b64ScreenShot;
 	
 	/**
@@ -19,11 +17,9 @@ public class WebRecordResponse implements IIdRequest {
 	public WebRecordResponse() {
 	}
 
-	public WebRecordResponse(
-		WebEventRecord eventObject) {
+	public WebRecordResponse(final WebEventRecord eventObject) {
 		this.value = eventObject;
 	}
-
 
 	@Override
 	public String getId() {
@@ -38,5 +34,4 @@ public class WebRecordResponse implements IIdRequest {
 	public String getBase64ScreenShot() {
 		return b64ScreenShot;
 	}
-
 }

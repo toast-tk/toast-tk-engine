@@ -12,7 +12,7 @@ public class WebContainerRepository implements IRepository<IFeedableWebPage> {
 	Map<String, IFeedableWebPage> pages = new HashMap<>();
 	
 	@Override
-	public IFeedableWebPage get(String entityName) {
+	public IFeedableWebPage get(final String entityName) {
 		return pages.get(entityName);
 	}
 
@@ -22,7 +22,10 @@ public class WebContainerRepository implements IRepository<IFeedableWebPage> {
 	}
 
 	@Override
-	public void add(String entityName, IFeedableWebPage entity) {
+	public void add(
+		final String entityName, 
+		final IFeedableWebPage entity
+	) {
 		pages.put(entityName, entity);
 	}
 
@@ -32,13 +35,12 @@ public class WebContainerRepository implements IRepository<IFeedableWebPage> {
 	}
 
 	@Override
-	public void setMap(Map<String, IFeedableWebPage> map) {
-		this.pages = map;
+	public void setMap(final Map<String, IFeedableWebPage> pages) {
+		this.pages = pages;
 	}
 
 	@Override
 	public void clear() {
 		pages.clear();		
 	}
-
 }

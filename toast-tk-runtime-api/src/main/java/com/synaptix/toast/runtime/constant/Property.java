@@ -2,8 +2,12 @@ package com.synaptix.toast.runtime.constant;
 
 import java.io.File;
 
-public class Property {
+public final class Property {
 
+	private Property() {
+
+	}
+	
 	public static final String DEFAULT_WEBAPP_ADDR_PORT = "http://localhost:9000";
 
 	public static final String WEBAPP_ADDR = "toast.webapp.addr";
@@ -61,5 +65,4 @@ public class Property {
 	public static final int TOAST_AGENT_PORT = 7676;
 	
 	public static final String ACTION_ITEM_VAR_REGEX = "(\\$\\w+)";
-	
 }

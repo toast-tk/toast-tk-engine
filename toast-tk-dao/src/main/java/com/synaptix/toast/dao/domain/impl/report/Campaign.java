@@ -17,7 +17,6 @@ import com.synaptix.toast.dao.domain.impl.test.block.ICampaign;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.dao.domain.impl.test.block.TestPage;
 
-
 @Entity(value = "report.campaigns")
 @Indexes({
 		@Index(value = "name, -iteration"), @Index("iteration")
@@ -37,15 +36,13 @@ public class Campaign extends BasicTaggableMongoBean implements ICampaign {
 	private List<ITestPage> testCases;
 
 	@Override
-	public void setId(
-		Object object) {
+	public void setId(final Object object) {
 		if(object == null) {
 			this.id = null;
 		}
 	}
 	
-	public void setId(
-		ObjectId id) {
+	public void setId(final ObjectId id) {
 		this.id = id;
 	}
 
@@ -62,8 +59,7 @@ public class Campaign extends BasicTaggableMongoBean implements ICampaign {
 		return iteration;
 	}
 
-	public void setIteration(
-		short iteration) {
+	public void setIteration(final short iteration) {
 		this.iteration = iteration;
 	}
 
@@ -71,42 +67,31 @@ public class Campaign extends BasicTaggableMongoBean implements ICampaign {
 		return execDay;
 	}
 
-	public void setExecDay(
-		Date execDay) {
+	public void setExecDay(final Date execDay) {
 		this.execDay = execDay;
 	}
 
+	@Override
 	public List<ITestPage> getTestCases() {
 		return testCases;
 	}
 
-	public void setTestCases(
-		List<ITestPage> testCases) {
+	public void setTestCases(final List<ITestPage> testCases) {
 		this.testCases = testCases;
 	}
 
-	public void setTestCasesImpl(
-		List<TestPage> testCases) {
-		if(testCases != null) {
-			this.testCases = new ArrayList<ITestPage>();
-			for(TestPage testPage : testCases) {
-				this.testCases.add(testPage);
-			}
-		}
-		else {
-			this.testCases = null;
-		}
+	public void setTestCasesImpl(final List<TestPage> testCases) {
+		this.testCases = testCases != null ? new ArrayList<>(testCases) : null;
 	}
 
 	@Override
 	@PrePersist
 	public void prePersist() {
-		execDay = new Date();
-		iteration++;
+		this.execDay = new Date();
+		++iteration;
 	}
 
-	public void setHadINTDb(
-		boolean hasDB) {
+	public void setHadINTDb(final boolean hasDB) {
 		this.hasINTDb = hasDB;
 	}
 

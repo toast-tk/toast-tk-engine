@@ -16,15 +16,14 @@ public class MongoModule extends AbstractModule {
 	private final int mongoPort;
 
 	public MongoModule() {
-		super();
 		this.mongoHost = "";
 		this.mongoPort = -1;
 	}
 
 	public MongoModule(
-		String mongoHost,
-		int mongoPort) {
-		super();
+		final String mongoHost,
+		final int mongoPort
+	) {
 		this.mongoHost = mongoHost;
 		this.mongoPort = mongoPort;
 	}

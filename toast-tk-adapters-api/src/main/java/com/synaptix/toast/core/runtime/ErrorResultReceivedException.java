@@ -8,9 +8,7 @@ public class ErrorResultReceivedException extends Exception {
 
 	private TestResult result;
 
-	public ErrorResultReceivedException(
-			TestResult result) {
-		super();
+	public ErrorResultReceivedException(final TestResult result) {
 		this.result = result;
 	}
 

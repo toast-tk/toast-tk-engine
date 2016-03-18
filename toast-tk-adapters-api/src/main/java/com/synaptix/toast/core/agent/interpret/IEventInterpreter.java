@@ -17,35 +17,25 @@ public interface IEventInterpreter {
 		BRING_ON_TOP_DISPLAY
 	}
 
-	public String onCheckBoxClick(
-		AWTCapturedEvent eventObject);
+	public String onCheckBoxClick(final AWTCapturedEvent eventObject);
 
-	public String onButtonClick(
-		AWTCapturedEvent eventObject);
+	public String onButtonClick(final AWTCapturedEvent eventObject);
 
-	public String onClick(
-		AWTCapturedEvent eventObject);
+	public String onClick(final AWTCapturedEvent eventObject);
 
-	public String onTableClick(
-		AWTCapturedEvent eventObject);
+	public String onTableClick(final AWTCapturedEvent eventObject);
 
-	public String onMenuClick(
-		AWTCapturedEvent eventObject);
+	public String onMenuClick(final AWTCapturedEvent eventObject);
 
-	public String onComboBoxClick(
-		AWTCapturedEvent eventObject);
+	public String onComboBoxClick(final AWTCapturedEvent eventObject);
 
-	public String onWindowDisplay(
-		AWTCapturedEvent eventObject);
+	public String onWindowDisplay(final AWTCapturedEvent eventObject);
 
-	public String onKeyInput(
-		AWTCapturedEvent eventObject);
+	public String onKeyInput(final AWTCapturedEvent eventObject);
 
-	public String onBringOnTop(
-		AWTCapturedEvent eventObject);
+	public String onBringOnTop(final AWTCapturedEvent eventObject);
 
-	public String onPopupMenuClick(
-		AWTCapturedEvent eventObject);
+	public String onPopupMenuClick(final AWTCapturedEvent eventObject);
 
 	/**
 	 * Checks if the interpreter is connected to a remote repository

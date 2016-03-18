@@ -10,11 +10,13 @@ public class ImportedScenarioDescriptor {
 	private String rows = new String();
 
 	protected ImportedScenarioDescriptor() {
+
 	}
 
 	public ImportedScenarioDescriptor(
-		String type,
-		String rows) {
+		final String type,
+		final String rows
+	) {
 		this.type = type;
 		this.rows = rows;
 	}
@@ -23,8 +25,7 @@ public class ImportedScenarioDescriptor {
 		return type;
 	}
 
-	public void setType(
-		String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
@@ -32,8 +33,7 @@ public class ImportedScenarioDescriptor {
 		return rows;
 	}
 
-	public void setRows(
-		String rows) {
+	public void setRows(final String rows) {
 		this.rows = rows;
 	}
 }

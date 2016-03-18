@@ -1,7 +1,5 @@
 package com.synaptix.toast.runtime.report;
 
-import java.util.List;
-
 import org.joda.time.LocalDateTime;
 
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
@@ -12,61 +10,57 @@ import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 
 public class TemplateHelper {
 
-	public static String getBlockName(IBlock block){
-		if(block instanceof ITestPage){
+	public static String getBlockName(final IBlock block) {
+		if(block instanceof ITestPage) {
 			return ((ITestPage)block).getName();
 		}
 		return null;
 	}
-	
-	public static LocalDateTime getStartTime(IBlock block){
+
+	public static LocalDateTime getStartTime(final IBlock block) {
 		if(block instanceof ITestPage){
-			long startTime =  ((ITestPage)block).getStartDateTime();
+			final long startTime = ((ITestPage)block).getStartDateTime();
 			return new LocalDateTime(startTime);
 		}
 		return null;
 	}
-	
-	public static Long getExecutionTime(IBlock block){
-		if(block instanceof ITestPage){
+
+	public static Long getExecutionTime(final IBlock block) {
+		if(block instanceof ITestPage) {
 			return ((ITestPage)block).getExecutionTime();
 		}
 		return 0L;
 	}
 	
-	public static int getTechnicalErrorNumber(IBlock block){
-		if(block instanceof ITestPage){
+	public static int getTechnicalErrorNumber(final IBlock block) {
+		if(block instanceof ITestPage) {
 			return ((ITestPage)block).getTechnicalErrorNumber();
 		}
 		return 0;
 	}
 
-	public static int getTestFailureNumber(IBlock block){
-		if(block instanceof ITestPage){
+	public static int getTestFailureNumber(final IBlock block) {
+		if(block instanceof ITestPage) {
 			return ((ITestPage)block).getTestFailureNumber();
 		}
 		return 0;
 	}
 
-	public static int getTestSuccessNumber(IBlock block){
-		if(block instanceof ITestPage){
+	public static int getTestSuccessNumber(final IBlock block) {
+		if(block instanceof ITestPage) {
 			return ((ITestPage)block).getTestSuccessNumber();
 		}
 		return 0;
 	}
 	
-	public static String getResultKindAsString(
-		ITestResult testResult) {
+	public static String getResultKindAsString(final ITestResult testResult) {
 		if(testResult != null) {
 			return getResultKindAsString(testResult.getResultKind());
 		}
-		else {
-			return "";
-		}
+		return "";
 	}
 
-	public static String getResultKindAsString(
-		ResultKind resultKind) {
+	public static String getResultKindAsString(final ResultKind resultKind) {
 		if(ResultKind.SUCCESS.equals(resultKind)) {
 			return "success";
 		}
@@ -82,51 +76,33 @@ public class TemplateHelper {
 		return "";
 	}
 
-	public static String getResultScreenshotAsBase64(
-		ITestResult testResult) {
-		String screenShot = testResult.getScreenShot();
-		return screenShot;
+	public static String getResultScreenshotAsBase64(final ITestResult testResult) {
+		return testResult.getScreenShot();
 	}
 
-	public static String formatStringToHtml(
-		TestLine line) {
+	public static String formatStringToHtml(final TestLine line) {
 		if(line.getTestResult() != null) {
-			String message = line.getTestResult().getMessage();
+			final String message = line.getTestResult().getMessage();
 			return message != null ? message.replace("\n", "<br>") : "";
 		}
 		return "&nbsp;";
 	}
 
-	public static String getStepSentence(
-		TestLine line) {
-		String contextualTestSentence = line.getTestResult() != null ? line.getTestResult().getContextualTestSentence() : null;
+	public static String getStepSentence(final TestLine line) {
+		final String contextualTestSentence = line.getTestResult() != null ? line.getTestResult().getContextualTestSentence() : null;
 		return contextualTestSentence == null ? line.getTest() : contextualTestSentence;
 	}
 
-	public static boolean hasScreenShot(
-			ITestResult testResult) {
+	public static boolean hasScreenShot(final ITestResult testResult) {
 		return testResult != null && testResult.getScreenShot() != null;
 	}
 	
-	//FIXME add in template
-	private void setExecStatistics(ITestPage testPage, List<ITestResult> results) {
-		testPage.setTechnicalErrorNumber(getTotal(results, ResultKind.ERROR));
-		testPage.setTestSuccessNumber(getTotal(results, ResultKind.SUCCESS));
-		testPage.setTestFailureNumber(getTotal(results, ResultKind.FAILURE));
-	}
-	
-	private int getTotal(List<ITestResult> results, ResultKind resultKindFilter) {
-		int count = 0;
-		for (ITestResult testResult : results) {
-			if (resultKindFilter.equals(testResult.getResultKind())) {
-				count++;
-			}
-		}
-		return count;
-	}
-	
-	public static String getPieChartJson(int success, int error, int failure){
-		StringBuilder builder = new StringBuilder();
+	public static String getPieChartJson(
+		final int success, 
+		final int error, 
+		final int failure
+	) {
+		final StringBuilder builder = new StringBuilder();
 		builder.append("[ {");
 		builder.append("\"value\" : \"" + success + "\",");
 		builder.append("\"color\" : \"#5cb85c\",");

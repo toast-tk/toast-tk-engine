@@ -1,13 +1,16 @@
 package com.synaptix.toast.test.runtime;
 
-import com.synaptix.toast.dao.domain.impl.test.block.*;
-import com.synaptix.toast.runtime.parse.ProjectParser;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.synaptix.toast.dao.domain.impl.test.block.ICampaign;
+import com.synaptix.toast.dao.domain.impl.test.block.IProject;
+import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
+import com.synaptix.toast.runtime.parse.ProjectParser;
 
 /**
  * Test with a project definition

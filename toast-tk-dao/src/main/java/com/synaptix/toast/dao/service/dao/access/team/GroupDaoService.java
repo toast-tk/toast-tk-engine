@@ -11,15 +11,15 @@ public class GroupDaoService extends AbstractMongoDaoService<GroupImpl> {
 
 	public interface Factory {
 
-		GroupDaoService create(
-			@Assisted String dbName);
+		GroupDaoService create(final @Assisted String dbName);
 	}
 
 	@Inject
 	public GroupDaoService(
-		DbStarter starter,
-		CommonMongoDaoService cService,
-		@Assisted String dbName) {
+		final DbStarter starter,
+		final CommonMongoDaoService cService,
+		final @Assisted String dbName
+	) {
 		super(GroupImpl.class, starter.getDatabaseByName(dbName), cService);
 	}
 }

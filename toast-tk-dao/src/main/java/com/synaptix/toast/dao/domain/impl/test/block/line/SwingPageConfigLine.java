@@ -21,22 +21,23 @@ public class SwingPageConfigLine {
 	}
 
 	public SwingPageConfigLine(
-		String name,
-		String type,
-		String locator) {
-		this.elementName = name;
+		final String elementName,
+		final String type,
+		final String locator
+	) {
+		this.elementName = elementName;
 		this.type = type;
 		this.locator = locator;
 	}
 
 	public SwingPageConfigLine() {
+
 	}
 
 	/**
 	 * @param result
 	 */
-	public void setResult(
-			TestResult result) {
+	public void setResult(final TestResult result) {
 		this.result = result;
 	}
 
@@ -56,18 +57,15 @@ public class SwingPageConfigLine {
 		return result;
 	}
 
-	public void setElementName(
-		String elementName) {
+	public void setElementName(final String elementName) {
 		this.elementName = elementName;
 	}
 
-	public void setType(
-		String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
-	public void setLocator(
-		String locator) {
+	public void setLocator(final String locator) {
 		this.locator = locator;
 	}
 }

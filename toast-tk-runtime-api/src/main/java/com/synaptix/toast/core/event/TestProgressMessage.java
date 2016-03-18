@@ -6,24 +6,19 @@ public class TestProgressMessage {
 	
 	private ITestPage page;
 
-
-	protected TestProgressMessage(){
+	protected TestProgressMessage() {
 		
 	}
-
 	
-	public TestProgressMessage(ITestPage page){
+	public TestProgressMessage(final ITestPage page){
 		this.setPage(page);
 	}
-
 
 	public ITestPage getPage() {
 		return page;
 	}
 
-
-	private void setPage(ITestPage page) {
+	private void setPage(final ITestPage page) {
 		this.page = page;
 	}
-
 }

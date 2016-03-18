@@ -19,10 +19,8 @@ import com.synaptix.toast.test.runtime.mock.DefaultRepositorySetup;
 
 public class TestRunnerTestCase {
 
-
 	@Test
-	public void testEmptyResult()
-		throws IOException {
+	public void testEmptyResult() throws IOException {
 		TestBlockRunner runner = new TestBlockRunner();
 		ActionCommandDescriptor findMethodInClass = runner.findMatchingAction("Titi", Toto.class);
 		assertNull(findMethodInClass);

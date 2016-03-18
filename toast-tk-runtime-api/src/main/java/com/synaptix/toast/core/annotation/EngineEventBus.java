@@ -13,5 +13,5 @@ import com.google.inject.BindingAnnotation;
 })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EngineEventBus {
-
+	/*NOOP*/
 }

@@ -32,11 +32,11 @@ import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 
 public interface IHTMLReportGenerator {
 
-	public String generatePageHtml(
-		ITestPage testPage);
+	String generatePageHtml(final ITestPage testPage);
 
-	public void writeFile(
-		String generatePageHtml,
-		String pageName,
-		String path);
+	void writeFile(
+		final String generatePageHtml,
+		final String pageName,
+		final String path
+	);
 }

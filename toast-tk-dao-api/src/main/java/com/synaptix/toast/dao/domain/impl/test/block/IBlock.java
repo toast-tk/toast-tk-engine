@@ -5,5 +5,4 @@ public interface IBlock extends ITaggable {
 	String getBlockType();
 
 	int getHeaderSize();
-
 }

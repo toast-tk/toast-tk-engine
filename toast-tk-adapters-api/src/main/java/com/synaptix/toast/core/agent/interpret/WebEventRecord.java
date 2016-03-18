@@ -1,6 +1,5 @@
 package com.synaptix.toast.core.agent.interpret;
 
-
 public class WebEventRecord {
 
 	public String value;
@@ -13,11 +12,14 @@ public class WebEventRecord {
 	public int keyCode;
 	public int charCode;
 	public int button;
+
 	public boolean altKey;
+
 	public boolean ctrlKey;
+
 	public boolean shiftKey;
-	
-	public WebEventRecord(){
+
+	public WebEventRecord() {
 		
 	}
 	
@@ -58,7 +60,7 @@ public class WebEventRecord {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
@@ -66,7 +68,7 @@ public class WebEventRecord {
 		return target;
 	}
 
-	public void setTarget(String target) {
+	public void setTarget(final String target) {
 		this.target = target;
 	}
 
@@ -74,7 +76,7 @@ public class WebEventRecord {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 	
@@ -82,7 +84,7 @@ public class WebEventRecord {
 		return button;
 	}
 
-	public void setButton(int button) {
+	public void setButton(final int button) {
 		this.button = button;
 	}
 	
@@ -106,7 +108,7 @@ public class WebEventRecord {
 		return altKey;
 	}
 
-	public void setAltKey(boolean altKey) {
+	public void setAltKey(final boolean altKey) {
 		this.altKey = altKey;
 	}
 
@@ -114,7 +116,7 @@ public class WebEventRecord {
 		return ctrlKey;
 	}
 
-	public void setCtrlKey(boolean ctrlKey) {
+	public void setCtrlKey(final boolean ctrlKey) {
 		this.ctrlKey = ctrlKey;
 	}
 
@@ -122,8 +124,7 @@ public class WebEventRecord {
 		return shiftKey;
 	}
 
-	public void setShiftKey(boolean shiftKey) {
+	public void setShiftKey(final boolean shiftKey) {
 		this.shiftKey = shiftKey;
 	}
-	
 }

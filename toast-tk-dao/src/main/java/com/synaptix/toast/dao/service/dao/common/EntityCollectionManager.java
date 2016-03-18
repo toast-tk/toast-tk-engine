@@ -3,25 +3,30 @@ package com.synaptix.toast.dao.service.dao.common;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class EntityCollectionManager {
 
-	Map<Class<?>, String> mongoEntityMap = new HashMap<Class<?>, String>();
+	private static final Logger LOG = LogManager.getLogger(EntityCollectionManager.class);
+	
+	Map<Class<?>, String> mongoEntityMap = new HashMap<>();
 
 	public void register(
-		String value,
-		Class<?> c) {
+		final String value,
+		final Class<?> c
+	) {
 		try {
-			Class<?> interfaceClass = Class.forName("I" + c.getSimpleName());
+			final Class<?> interfaceClass = Class.forName("I" + c.getSimpleName());
 			mongoEntityMap.put(interfaceClass, value);
 		}
-		catch(Exception e) {
-			//
+		catch(final Exception e) {
+			LOG.error(e.getMessage(), e);
 		}
 		mongoEntityMap.put(c, value);
 	}
 
-	public String getCollection(
-		Class<?> clazz) {
+	public String getCollection(final Class<?> clazz) {
 		return mongoEntityMap.get(clazz);
 	}
 }

@@ -11,15 +11,15 @@ public class UserDaoService extends AbstractMongoDaoService<UserImpl> {
 
 	public interface Factory {
 
-		UserDaoService create(
-			@Assisted String dbName);
+		UserDaoService create(final @Assisted String dbName);
 	}
 
 	@Inject
 	public UserDaoService(
-		DbStarter starter,
-		CommonMongoDaoService cService,
-		@Assisted String dbName) {
+		final DbStarter starter,
+		final CommonMongoDaoService cService,
+		final @Assisted String dbName
+	) {
 		super(UserImpl.class, starter.getDatabaseByName(dbName), cService);
 	}
 }

@@ -9,7 +9,10 @@ import java.util.ServiceLoader;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import com.synaptix.toast.adapter.swing.AbstractSwingPage;
 import com.synaptix.toast.adapter.web.IWebComponentFactory;
 import com.synaptix.toast.automation.driver.web.SynchronizedDriver;
 import com.synaptix.toast.core.adapter.AutoWebType;
@@ -26,11 +29,23 @@ import com.synaptix.toast.core.runtime.IWebElementDescriptor.LocationMethod;
  */
 public abstract class AbstractWebPage implements IFeedableWebPage {
 
+	//ca a un air de deja vu
+	//a abstraire
+	
+	private static final Logger LOG;
+
+	private static final ServiceLoader<IWebComponentFactory> factoryLoader;
+	
+	static {
+		LOG = LogManager.getLogger(AbstractSwingPage.class);
+		factoryLoader = ServiceLoader.load(IWebComponentFactory.class);
+	}
+	
 	public String beanClassName; // the bean class name
 
-	Map<String, IWebElementDescriptor> elements = new HashMap<String, IWebElementDescriptor>();
+	protected final Map<String, IWebElementDescriptor> elements;
 
-	protected Map<String, IWebAutoElement<?>> autoElements = new HashMap<String, IWebAutoElement<?>>();
+	protected final Map<String, IWebAutoElement<?>> autoElements;
 
 	private String pageName;
 	
@@ -38,15 +53,17 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 
 	private SynchronizedDriver driver;
 	
-	private static ServiceLoader<IWebComponentFactory> factoryLoader = ServiceLoader.load(IWebComponentFactory.class);
+	public AbstractWebPage() {
+		this.elements = new HashMap<>();
+		this.autoElements = new HashMap<>();
+	}
 	
 	/**
 	 * 
 	 * @param elementDefinition
 	 */
 	@Override
-	public void initElement(
-		IWebElementDescriptor e) {
+	public void initElement(final IWebElementDescriptor e) {
 		initElement(e.getName(), e.getType().name(), e.getMethod().name(), e.getLocator(), e.getPosition());
 	}
 
@@ -59,23 +76,22 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 	 * @param position
 	 */
 	protected void initElement(
-		String name,
-		String type,
-		String method,
-		String locator,
-		Integer position) {
-		
-		DefaultWebElement defaultWebElement = buildWebElementDescriptor(name,type, method, locator, position);
+		final String name,
+		final String type,
+		final String method,
+		final String locator,
+		final Integer position
+	) {
+		final DefaultWebElement defaultWebElement = buildWebElementDescriptor(name,type, method, locator, position);
 		elements.put(name, defaultWebElement);
-		
 		try {
-			IWebElementDescriptor iWebElement = elements.get(name);
-			IWebComponentFactory factory = factoryLoader.iterator().next();
-			if(factory == null){
+			final IWebElementDescriptor iWebElement = elements.get(name);
+			final IWebComponentFactory factory = factoryLoader.iterator().next();
+			if(factory == null) {
 				throw new IllegalAccessError("No Web Element Factory declared !");
 			}
 			if(iWebElement != null) {
-				IWebAutoElement<?> execAutoClass = factory.getElement(iWebElement);
+				final IWebAutoElement<?> execAutoClass = factory.getElement(iWebElement);
 				execAutoClass.setContainer(this);
 				initBeanFields(name, execAutoClass);
 				autoElements.put(name, execAutoClass);
@@ -84,38 +100,41 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 				// throw something
 			}
 		}
-		catch(Exception e) {
-			e.printStackTrace();
+		catch(final Exception e) {
+			LOG.error(e.getMessage(), e);
 		}
 	}
 
-	protected DefaultWebElement buildWebElementDescriptor(String name,
-			String type, String method, String locator, Integer position) {
+	protected static DefaultWebElement buildWebElementDescriptor(
+		final String name,
+		final String type, 
+		final String method, 
+		final String locator, 
+		final Integer position
+	) {
 		String kind;
 		String referenceName = null;
-		
-		if(isReferenceComponent(type)){
+		if(isReferenceComponent(type)) {
 			kind = StringUtils.split(type, ":")[0];
 			referenceName = StringUtils.split(type, ":")[1];
-		}else{
+		}
+		else {
 			kind = type;
 		}
-		
-		LocationMethod method2 = method == null ? LocationMethod.CSS : LocationMethod.valueOf(method);
-		AutoWebType webType = AutoWebType.valueOf(kind);
-		DefaultWebElement defaultWebElement = new DefaultWebElement(name, webType, locator,
-			method2, position, referenceName);
-		return defaultWebElement;
+		final LocationMethod locationMethod = method == null ? LocationMethod.CSS : LocationMethod.valueOf(method);
+		final AutoWebType webType = AutoWebType.valueOf(kind);
+		return new DefaultWebElement(name, webType, locator, locationMethod, position, referenceName);
 	}
 
-	private boolean isReferenceComponent(String type) {
+	private static boolean isReferenceComponent(String type) {
 		return type.contains(":");
 	}
 
 	private void initBeanFields(
-		String name,
-		IWebAutoElement<?> execAutoClass) {
-		for(Field f : this.getClass().getFields()) {
+		final String name,
+		final IWebAutoElement<?> execAutoClass
+	) {
+		for(Field f : getClass().getFields()) {
 			Class<?> automationClass = f.getType();
 			if(IWebAutoElement.class.isAssignableFrom(automationClass)) {
 				if(f.getName().equals(name)) {
@@ -123,7 +142,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 						BeanUtils.setProperty(this, name, execAutoClass);
 					}
 					catch(Exception e) {
-						e.printStackTrace();
+						LOG.error(e.getMessage(), e);
 					}
 				}
 			}
@@ -140,6 +159,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 	/**
 	 * Convenient method to call an element based on the page enclosed fields' enum
 	 */
+	@Override
 	public IWebAutoElement<?> getAutoElement(
 		String token) {
 		return autoElements.get(token);
@@ -164,7 +184,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 
 	@Override
 	public List<IWebElementDescriptor> getChildren() {
-		return new ArrayList<IWebElementDescriptor>(elements.values());
+		return new ArrayList<>(elements.values());
 	}
 
 	@Override

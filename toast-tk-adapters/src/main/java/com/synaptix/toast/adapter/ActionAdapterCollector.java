@@ -1,77 +1,66 @@
 package com.synaptix.toast.adapter;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-
-import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
 
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.synaptix.toast.adapter.cache.ToastCache;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
 
-public class ActionAdapterCollector {
+public final class ActionAdapterCollector {
 
-	/**
-	 * List sentences defined in the framework
-	 * 
-	 * @return
-	 */
+	private ActionAdapterCollector() {
+
+	}
+	
 	public static List<FixtureDescriptor> listAvailableSentences() {
-		final List<FixtureDescriptor> out = new ArrayList<FixtureDescriptor>();
-		final Reflections ref = new Reflections(new MethodAnnotationsScanner());
-		final Set<Method> methodsAnnotatedWith = ref.getMethodsAnnotatedWith(Action.class);
-		for(Method method : methodsAnnotatedWith) {
-			Action annotation = method.getAnnotation(Action.class);
-			Class<?> declaringClass = method.getDeclaringClass();
-			ActionAdapter docAnnotation = declaringClass.getAnnotation(ActionAdapter.class);
-			final String fixtureKind;
-			if(docAnnotation != null) {
-				fixtureKind = docAnnotation.value().name();
-			}
-			else {
-				fixtureKind = "undefined";
-			}
-			out.add(new FixtureDescriptor(declaringClass.getSimpleName(), fixtureKind, annotation.action(), annotation.description()));
-		}
+		final Set<Method> methodsAnnotatedWith = ToastCache.buildActionMethods();
+		final List<FixtureDescriptor> out = new ArrayList<>(methodsAnnotatedWith.size());
+		methodsAnnotatedWith.stream().forEach(method -> buildAndAddFixtureDescriptor(out, method));
 		return out;
 	}
 
+	private static void buildAndAddFixtureDescriptor(
+		final List<FixtureDescriptor> out, 
+		final Method method
+	) {
+		final Action annotation = method.getAnnotation(Action.class);
+		final Class<?> declaringClass = method.getDeclaringClass();
+		final ActionAdapter docAnnotation = declaringClass.getAnnotation(ActionAdapter.class);
+		final String fixtureKind = docAnnotation != null ? docAnnotation.value().name() : "undefined";
+		out.add(new FixtureDescriptor(declaringClass.getSimpleName(), fixtureKind, annotation.action(), annotation.description()));
+	}
+	
 	public static List<FixtureService> listAvailableServicesByReflection() {
-		final List<FixtureService> out = new ArrayList<FixtureService>();
-		final Reflections ref = new Reflections(new TypeAnnotationsScanner());
-		final Set<Class<?>> services = ref.getTypesAnnotatedWith(ActionAdapter.class);
-		for(Class<?> service : services) {
-			if(!Modifier.isAbstract(service.getModifiers())) {
-				ActionAdapter docAnnotation = service.getAnnotation(ActionAdapter.class);
-				out.add(new FixtureService(service, docAnnotation.value(), docAnnotation.name()));
-			}
-		}
+		return new ArrayList<>(ToastCache.getInstance().getFixtureServices());
+	}
+
+	public static List<FixtureService> listAvailableServicesByInjection(final Injector injector) {
+		final Set<Entry<Key<?>, Binding<?>>> bindings = injector.getAllBindings().entrySet();
+		final List<FixtureService> out = new ArrayList<>(bindings.size());
+		bindings.stream().forEach(bindingEntrySet -> buildAndAddFixtureService(out, bindingEntrySet));
 		return out;
 	}
 
-	public static List<FixtureService> listAvailableServicesByInjection(
-		Injector injector) {
-		final List<FixtureService> out = new ArrayList<FixtureService>();
-		Map<Key<?>, Binding<?>> allBindings = injector.getAllBindings();
-		for(Map.Entry<Key<?>, Binding<?>> bindingEntrySet : allBindings.entrySet()) {
-			final Type type = bindingEntrySet.getKey().getTypeLiteral().getType();
-			if(type instanceof Class) {
-				final Class<?> beanClass = (Class<?>) type;
-				if(beanClass.isAnnotationPresent(ActionAdapter.class)) {
-					ActionAdapter docAnnotation = beanClass.getAnnotation(ActionAdapter.class);
-					out.add(new FixtureService(beanClass, docAnnotation.value(), docAnnotation.name()));
-				}
+	private static void buildAndAddFixtureService(
+		final List<FixtureService> out,
+		final Map.Entry<Key<?>, Binding<?>> bindingEntrySet
+	) {
+		final Type type = bindingEntrySet.getKey().getTypeLiteral().getType();
+		if(type instanceof Class) {
+			final Class<?> beanClass = (Class<?>) type;
+			if(beanClass.isAnnotationPresent(ActionAdapter.class)) {
+				final ActionAdapter docAnnotation = beanClass.getAnnotation(ActionAdapter.class);
+				out.add(new FixtureService(beanClass, docAnnotation.value(), docAnnotation.name()));
 			}
 		}
-		return out;
 	}
 }

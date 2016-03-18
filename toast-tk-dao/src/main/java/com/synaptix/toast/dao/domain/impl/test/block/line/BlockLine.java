@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.synaptix.toast.core.report.TestResult;
-import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 @Embedded
 public class BlockLine {
@@ -14,19 +13,18 @@ public class BlockLine {
 	private TestResult testResult;
 
 	public BlockLine() {
+
 	}
 
-	public BlockLine(
-		List<String> cells) {
-		this.setCells(cells);
+	public BlockLine(final List<String> cells) {
+		this.cells = cells;
 	}
 
 	public List<String> getCells() {
 		return cells;
 	}
 
-	public void setCells(
-		List<String> cells) {
+	public void setCells(final List<String> cells) {
 		this.cells = cells;
 	}
 
@@ -34,8 +32,7 @@ public class BlockLine {
 		return testResult;
 	}
 
-	public void setTestResult(
-			TestResult testResult) {
+	public void setTestResult(final TestResult testResult) {
 		this.testResult = testResult;
 	}
 }

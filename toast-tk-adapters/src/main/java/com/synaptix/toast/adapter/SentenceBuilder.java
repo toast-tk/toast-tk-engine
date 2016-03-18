@@ -1,44 +1,47 @@
 package com.synaptix.toast.adapter;
 
+import java.util.Objects;
+
 import com.synaptix.toast.core.adapter.ActionAdapterSentenceRef.Types;
 
 public class SentenceBuilder {
 
-	String output = "";
+	String output;
 
 	public SentenceBuilder() {
+		this.output = "";
 	}
 
-	public SentenceBuilder ofType(
-		Types type) {
-		this.output = type.metaValue();
+	public SentenceBuilder ofType(final Types type) {
+		this.output = Objects.requireNonNull(type.metaValue(), "SentenceBuilder.ofType null metaValue : " + type);
 		return this;
 	}
 
-	public SentenceBuilder withPage(
-		String page) {
-		assert output != null;
-		output = output.replace("@Page", "*" + page);
+	public SentenceBuilder withPage(final String page) {
+		final String value = new StringBuilder(page.length() + 1).append('*').append(page).toString();
+		replaceInTemplate("@Page", value);
 		return this;
 	}
 
-	public SentenceBuilder withComponent(
-		String item) {
-		assert output != null;
-		output = output.replace("@Item", item + "*");
+	private void replaceInTemplate(final String marker, final String value) {
+		this.output = output.replace(marker, value);
+	}
+	
+	public SentenceBuilder withComponent(final String item) {
+		final String value = new StringBuilder(item.length() + 1).append(item).append('*').toString();
+		replaceInTemplate("@Item", value);
 		return this;
 	}
 
-	public SentenceBuilder withValue(
-		String value) {
-		assert output != null;
-		output = output.replace("@Value", "*" + value + "*");
+	public SentenceBuilder withValue(final String value) {
+		final String newValue = new StringBuilder(value.length() + 2).append('*').append(value).append('*').toString();
+		replaceInTemplate("@Value", newValue);
 		return this;
 	}
 
 	public String build() {
-		String result = new String(output);
-		output = null;
+		final String result = output;
+		this.output = null;
 		return result;
 	}
 }

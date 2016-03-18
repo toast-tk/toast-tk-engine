@@ -14,28 +14,27 @@ public interface IWebElementDescriptor {
 		XPATH
 	}
 
-	public void setName(
-		String name);
+	void setName(final String name);
 
-	public String getName();
+	String getName();
 
-	public String getLocator();
+	String getLocator();
 
-	public void setLocator(String locator);
+	void setLocator(final String locator);
 
-	public LocationMethod getMethod();
+	LocationMethod getMethod();
 
-	public void setMethod(LocationMethod method);
+	void setMethod(final LocationMethod method);
 
-	public int getPosition();
+	int getPosition();
 
-	public void setPosition(int position);
+	void setPosition(final int position);
 
-	public AutoWebType getType();
+	AutoWebType getType();
 
-	public void setType(AutoWebType type);
+	void setType(final AutoWebType type);
 
-	public String getReferenceName();
+	String getReferenceName();
 
-	public void setReferenceName(String referenceName);
+	void setReferenceName(final String referenceName);
 }

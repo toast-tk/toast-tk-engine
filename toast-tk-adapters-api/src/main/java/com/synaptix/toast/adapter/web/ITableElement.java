@@ -4,21 +4,15 @@ import java.util.List;
 
 public interface ITableElement {
 
-	public void dbClickAtRow(
-		int index);
+	void dbClickAtRow(final int index);
 
-	public int getNbRows();
+	int getNbRows();
 
-	public List<String> getColumns();
+	List<String> getColumns();
 
-	public String getValue(
-		String columnName,
-		int row);
+	String getValue(final String columnName, final int row);
 
-	public String getValue(
-		int col,
-		int row);
+	String getValue(final int col, final int row);
 
-	public boolean containsText(
-		String text);
+	boolean containsText(final String text);
 }

@@ -3,7 +3,6 @@ package com.synaptix.toast.adapter.web.component;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.synaptix.toast.adapter.web.component.DefaultWebPage;
 import com.synaptix.toast.core.adapter.AutoWebType;
 import com.synaptix.toast.core.runtime.IWebElementDescriptor.LocationMethod;
 

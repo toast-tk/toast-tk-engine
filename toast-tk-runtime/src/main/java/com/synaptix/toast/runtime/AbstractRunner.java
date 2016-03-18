@@ -28,8 +28,8 @@ public abstract class AbstractRunner {
 
     public AbstractRunner() {
     	listAvailableServicesByReflection = ActionAdapterCollector.listAvailableServicesByReflection();
-		System.out.println("Found adapters: " + listAvailableServicesByReflection.size());
-    	injector = Guice.createInjector(new AbstractActionAdapterModule(){
+		LOG.info("Found adapters: {}", listAvailableServicesByReflection.size());
+    	this.injector = Guice.createInjector(new AbstractActionAdapterModule(){
 			@Override
 			protected void configure() {
 				install(new EngineModule());
@@ -38,14 +38,14 @@ public abstract class AbstractRunner {
     	});
     }
 
-    public AbstractRunner(Injector i) {
-    	injector = i;
+    public AbstractRunner(final Injector injector) {
+    	this.injector = injector;
     }
 
-	public AbstractRunner(Module extraModule) {
+	public AbstractRunner(final Module extraModule) {
 		listAvailableServicesByReflection = ActionAdapterCollector.listAvailableServicesByReflection();
-		System.out.println("Found adapters: " + listAvailableServicesByReflection.size());
-		injector = Guice.createInjector(new AbstractActionAdapterModule(){
+		LOG.info("Found adapters: {}", listAvailableServicesByReflection.size());
+		this.injector = Guice.createInjector(new AbstractActionAdapterModule(){
 			@Override
 			protected void configure() {
 				install(new EngineModule());
@@ -69,29 +69,32 @@ public abstract class AbstractRunner {
      *
      * @return Path as a string
      */
-    protected String getReportsFolderPath() {
-        Path currentRelativePath = Paths.get("target/toast-test-results");
-
-        File file = new File(currentRelativePath.toUri());
+    protected static String getReportsFolderPath() {
+    	final Path currentRelativePath = Paths.get("target/toast-test-results");
+    	final File file = new File(currentRelativePath.toUri());
         if (!file.exists()) {
-            boolean mkdirsResult = file.mkdirs();
+        	final boolean mkdirsResult = file.mkdirs();
             if (!mkdirsResult) {
-                System.out.println("Report folder creation failed");
+                LOG.info("Report folder creation failed");
                 return null;
             }
         }
-        String path = currentRelativePath.toAbsolutePath().toString();
-        System.out.println("Report generated in folder: " + path);
+        final String path = currentRelativePath.toAbsolutePath().toString();
+        LOG.info("Report generated in folder: {}", path);
         return path;
     }
 
-    protected void openReport(String path, String pageName) {
+    protected static void openReport(
+    	final String path, 
+    	final String pageName
+    ) {
         try {
             if (!Boolean.getBoolean("java.awt.headless")) {
-                File htmlFile = new File(path + File.separatorChar + pageName + ".html");
+            	final File htmlFile = new File(path + File.separatorChar + pageName + ".html");
                 Desktop.getDesktop().browse(htmlFile.toURI());
             }
-        } catch (IOException e) {
+        } 
+        catch(final IOException e) {
             LOG.error(e.getMessage(), e);
         }
     }

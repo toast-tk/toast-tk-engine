@@ -5,8 +5,7 @@ import com.google.inject.Singleton;
 
 public abstract class AbstractActionAdapterModule extends AbstractModule {
 
-	protected final void bindActionAdapter(
-		Class<?> fixtureClass) {
+	protected final void bindActionAdapter(final Class<?> fixtureClass) {
 		bind(fixtureClass).in(Singleton.class);
 	}
 }

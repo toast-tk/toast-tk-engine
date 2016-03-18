@@ -15,36 +15,34 @@ import com.synaptix.toast.dao.service.init.DbStarter;
 public class TestPageDaoService extends AbstractMongoDaoService<TestPage> {
 
 	public interface Factory {
-		TestPageDaoService create(
-			@Nullable @Assisted String dbName);
+
+		TestPageDaoService create(final @Nullable @Assisted String dbName);
 	}
 
 	@Inject
 	public TestPageDaoService(
-		DbStarter starter,
-		CommonMongoDaoService cService,
-		@Nullable @Assisted String dbName,
-		@Named("default_db") String default_db) {
+		final DbStarter starter,
+		final CommonMongoDaoService cService,
+		final @Nullable @Assisted String dbName,
+		final @Named("default_db") String default_db
+	) {
 		super(TestPage.class, starter.getDatabaseByName((dbName == null ? default_db : dbName)), cService);
 	}
 
-	public ITestPage getByName(
-		String name) {
-		Query<TestPage> query = createQuery();
+	public ITestPage getByName(final String name) {
+		final Query<TestPage> query = createQuery();
 		query.field("name").equals(name);
 		return query.get();
 	}
 
-	public ITestPage saveAsNewIteration(
-		ITestPage t) {
+	public ITestPage saveAsNewIteration(final ITestPage t) {
 		t.setId(null);
 		TestPage savedInstance = TestPageFromProxy.from(t);
 		save(savedInstance);
 		return savedInstance;
 	}
 
-	public ITestPage saveReference(
-		ITestPage t) {
+	public ITestPage saveReference(final ITestPage t) {
 		TestPage savedInstance = TestPageFromProxy.from(t);
 		save(savedInstance);
 		return savedInstance;		

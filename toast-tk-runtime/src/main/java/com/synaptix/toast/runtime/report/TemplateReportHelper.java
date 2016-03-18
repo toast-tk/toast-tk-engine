@@ -7,18 +7,18 @@ import com.synaptix.toast.dao.domain.impl.repository.ReportHelper;
 import com.synaptix.toast.dao.domain.impl.test.block.ICampaign;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 
-
 public class TemplateReportHelper {
 
 	public static double[][] getExecTrendData(
-		Project project,
-		List<Project> projectsHistory) {
-		double[][] array = new double[projectsHistory.size()+1][2];
+		final Project project,
+		final List<Project> projectsHistory
+	) {
+		final double[][] array = new double[projectsHistory.size()+1][2];
 		int projectIndex = 0;
-		for(Project p : projectsHistory) {
+		for(final Project p : projectsHistory) {
 			long executionTotal = 0;
-			for(ICampaign campaign : p.getCampaigns()) {
-				for(ITestPage testPage : campaign.getTestCases()) {
+			for(final ICampaign campaign : p.getCampaigns()) {
+				for(final ITestPage testPage : campaign.getTestCases()) {
 					executionTotal += testPage.getExecutionTime();
 				}
 			}
@@ -27,8 +27,8 @@ public class TemplateReportHelper {
 			projectIndex++;	
 		}
 		long executionTotal = 0;
-		for(ICampaign campaign : project.getCampaigns()) {
-			for(ITestPage testPage : campaign.getTestCases()) {
+		for(final ICampaign campaign : project.getCampaigns()) {
+			for(final ITestPage testPage : campaign.getTestCases()) {
 				executionTotal += testPage.getExecutionTime();
 			}
 		}
@@ -38,28 +38,31 @@ public class TemplateReportHelper {
 	}
 	
 	public static double[][] getResultTrendData(
-		Project project,
-		List<Project> projectsHistory) {
-		double[][] array = new double[projectsHistory.size()+1][5];
+		final Project project,
+		final List<Project> projectsHistory
+	) {
+		final double[][] array = new double[projectsHistory.size()+1][5];
 		int projectIndex = 0;
 		
-		for(Project p : projectsHistory) {
-			array[projectIndex][0] = p.getIteration();
-			array[projectIndex][1] = ReportHelper.getTotalOk(p);
-			array[projectIndex][2] = ReportHelper.getTotalKo(p);
-			array[projectIndex][3] = 0.0;
-			array[projectIndex][4] = 0.0;
+		for(final Project p : projectsHistory) {
+			majTrendData(array, projectIndex, p);
 			projectIndex++;
 		}
 		
-		array[projectIndex][0] = project.getIteration();
-		array[projectIndex][1] = ReportHelper.getTotalOk(project);
-		array[projectIndex][2] = ReportHelper.getTotalKo(project);
-		array[projectIndex][3] = 0.0;
-		array[projectIndex][4] = 0.0;
+		majTrendData(array, projectIndex, project);
 
 		return array;
 	}
 
-
+	private static void majTrendData(
+		final double[][] array, 
+		final int projectIndex,
+		final Project p
+	) {
+		array[projectIndex][0] = p.getIteration();
+		array[projectIndex][1] = ReportHelper.getTotalOk(p);
+		array[projectIndex][2] = ReportHelper.getTotalKo(p);
+		array[projectIndex][3] = 0.0;
+		array[projectIndex][4] = 0.0;
+	}
 }

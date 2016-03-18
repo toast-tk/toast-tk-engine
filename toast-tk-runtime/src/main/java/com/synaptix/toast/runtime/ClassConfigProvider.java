@@ -11,7 +11,7 @@ import com.synaptix.toast.runtime.bean.TestEntityProperty;
 @Singleton
 public class ClassConfigProvider {
 
-	private final Map<String, TestComponentConfig> classesConfig = new HashMap<String, TestComponentConfig>();
+	private final Map<String, TestComponentConfig> classesConfig = new HashMap<>();
 
 	public Map<String, TestComponentConfig> getConfigMap() {
 		return classesConfig;
@@ -19,16 +19,14 @@ public class ClassConfigProvider {
 
 	public String getTranslatedPropertyName(
 		String testClassName,
-		String testPropertyName) {
+		String testPropertyName
+	) {
 		testClassName = ActionAdapterHelper.parseTestString(testClassName);
 		testPropertyName = ActionAdapterHelper.parseTestString(testPropertyName);
-		TestEntityProperty testEntityProperty = classesConfig.get(testClassName).getFieldNameMap()
-			.get(testPropertyName);
+		final TestEntityProperty testEntityProperty = classesConfig.get(testClassName).getFieldNameMap().get(testPropertyName);
 		if(testEntityProperty != null) {
 			return testEntityProperty.appName;
 		}
-		else {
-			return testPropertyName;
-		}
+		return testPropertyName;
 	}
 }

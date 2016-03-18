@@ -4,24 +4,19 @@ import com.synaptix.toast.core.net.request.IIdRequest;
 
 public interface ISwingAutomationClient {
 
-	void highlight(
-		String selectedValue);
+	void highlight(final String selectedValue);
 
-	void scanUi(
-		boolean selected);
+	void scanUi(final boolean selected);
 
 	void startRecording();
 
 	void stopRecording();
 
-	void setMode(
-		int i);
+	void setMode(final int i);
 
-	void processCustomCommand(
-		String command);
+	void processCustomCommand(final String command);
 
-	void processCustomCommand(
-		final IIdRequest commandRequest);
+	void processCustomCommand(final IIdRequest commandRequest);
 
 	void killServer();
 

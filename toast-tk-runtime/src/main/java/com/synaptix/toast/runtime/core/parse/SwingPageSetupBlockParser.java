@@ -1,16 +1,14 @@
 package com.synaptix.toast.runtime.core.parse;
 
-import com.synaptix.toast.dao.domain.BlockType;
-import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.SwingPageBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.WebPageBlock;
-import com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine;
-import com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine;
-import com.synaptix.toast.runtime.parse.IBlockParser;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
+import com.synaptix.toast.dao.domain.BlockType;
+import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.SwingPageBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.line.SwingPageConfigLine;
+import com.synaptix.toast.runtime.parse.IBlockParser;
 
 public class SwingPageSetupBlockParser implements IBlockParser {
 
@@ -20,50 +18,58 @@ public class SwingPageSetupBlockParser implements IBlockParser {
     }
 
     @Override
-    public IBlock digest(List<String> strings, String path) {
-        String firstLine = strings.get(0);
+    public IBlock digest(
+    	final List<String> strings, 
+    	final String path
+    ) {
+    	final String firstLine = strings.get(0);
         if (!firstLine.startsWith("||")) {
             throw new IllegalArgumentException("Setup block does not have a title: " + firstLine);
         }
 
-        SwingPageBlock swingPageBlock = new SwingPageBlock();
+        final SwingPageBlock swingPageBlock = new SwingPageBlock();
 
         // Find web page name
-        String[] title = StringUtils.split(firstLine, "||");
-        if (title.length >= 2) {
-        	String fixtureName = title[2] != null ? title[2].trim() : null;
+        final String[] title = StringUtils.split(firstLine, "||");
+        if(title.length >= 2) {
+        	final String fixtureName = title[2] != null ? title[2].trim() : null;
         	swingPageBlock.setFixtureName(fixtureName);
         }
 
         // Add test lines to block
-        for (String string : strings.subList(2, strings.size())) {
+        for(final String string : strings.subList(2, strings.size())) {
             if (!string.startsWith("|")) {
                 return swingPageBlock;
             }
-            String[] split = StringUtils.split(string, "|");
-            if (split.length != 3) {
-                throw new IllegalArgumentException("Swing page setup line does not have enough columns: " + firstLine);
-            }
-            SwingPageConfigLine swingPageConfigLine = new SwingPageConfigLine();
-            swingPageConfigLine.setElementName(split[0].trim());
-            swingPageConfigLine.setType(split[1].trim());
-            swingPageConfigLine.setLocator(split[2].trim());
-            swingPageBlock.addLine(swingPageConfigLine);
+            final String[] split = StringUtils.split(string, "|");
+            assertHasElementNameTypeAndLocator(firstLine, split);
+            swingPageBlock.addLine(new SwingPageConfigLine(split[0].trim(), split[1].trim(), split[2].trim()));
         }
-
         return swingPageBlock;
     }
 
+	private static void assertHasElementNameTypeAndLocator(
+		final String firstLine,
+		final String[] split
+	) {
+		if(split.length != 3) {
+		    throw new IllegalArgumentException("Swing page setup line does not have enough columns: " + firstLine);
+		}
+	}
+
     @Override
     public boolean isFirstLineOfBlock(String line) {
-        String trimmedLine = line.trim();
-        if (trimmedLine.startsWith("||")) {
-            String[] split = StringUtils.split(trimmedLine,"||");
-
-            if (split.length >= 2 && split[0].contains("setup")  && split[1].contains("swing")) {
+        final String trimmedLine = line.trim();
+        if(trimmedLine.startsWith("||")) {
+            final String[] split = StringUtils.split(trimmedLine,"||");
+            if(isSetupOrSwing(split)) {
                 return true;
             }
         }
         return false;
     }
+
+	private static boolean isSetupOrSwing(final String[] split) {
+		return split.length >= 2 && split[0].contains("setup")  && split[1].contains("swing");
+	}
 }

@@ -18,19 +18,15 @@ public class SetupBlock implements IBlock {
 
 	private TestResult testResult;
 
-	/**
-	 * 
-	 */
 	public SetupBlock() {
-		blockLines = new ArrayList<BlockLine>();
+		this.blockLines = new ArrayList<>();
 	}
 
 	public List<BlockLine> getBlockLines() {
 		return blockLines;
 	}
 
-	public void setBlockLines(
-		List<BlockLine> blockLines) {
+	public void setBlockLines(final List<BlockLine> blockLines) {
 		this.blockLines = blockLines;
 	}
 
@@ -38,8 +34,7 @@ public class SetupBlock implements IBlock {
 		return columns;
 	}
 
-	public void setColumns(
-		BlockLine columns) {
+	public void setColumns(final BlockLine columns) {
 		this.columns = columns;
 	}
 
@@ -47,18 +42,15 @@ public class SetupBlock implements IBlock {
 		return fixtureName;
 	}
 
-	public void setFixtureName(
-		String fixtureName) {
+	public void setFixtureName(final String fixtureName) {
 		this.fixtureName = fixtureName;
 	}
 
-	public void addLine(
-		List<String> cells) {
+	public void addLine(final List<String> cells) {
 		blockLines.add(new BlockLine(cells));
 	}
 
-	public void addLine(
-		BlockLine line) {
+	public void addLine(final BlockLine line) {
 		blockLines.add(line);
 	}
 
@@ -66,8 +58,7 @@ public class SetupBlock implements IBlock {
 		return testResult;
 	}
 
-	public void setTestResult(
-			TestResult testResult) {
+	public void setTestResult(final TestResult testResult) {
 		this.testResult = testResult;
 	}
 
@@ -75,7 +66,6 @@ public class SetupBlock implements IBlock {
 	public String getBlockType() {
 		return "setup";
 	}
-
 
 	@Override
 	public int getHeaderSize() {
