@@ -367,11 +367,11 @@
 			</activation>
 			<distributionManagement>
 				<repository>
-					<id>synaptix-releases-repository</id>
+					<id>talanlabs-releases-repository</id>
 					<url>http://nexus.talanlabs.com/content/repositories/releases/</url>
 				</repository>
 				<snapshotRepository>
-					<id>synaptix-snapshots-repository</id>
+					<id>talanlabs-snapshots-repository</id>
 					<url>http://nexus.talanlabs.com/content/repositories/snapshots/</url>
 				</snapshotRepository>
 			</distributionManagement>

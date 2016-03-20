@@ -1,7 +1,7 @@
 <settings>
     <servers>
         <server>
-            <id>synaptix-snapshots-repository</id>
+            <id>talanlabs-snapshots-repository</id>
             <username>${env.NEXUS_USER}</username>
             <password>${env.NEXUS_PASSWORD}</password>
         </server>
