@@ -5,20 +5,32 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.synaptix.toast.adapter.cache.ToastCache;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
 import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
+import com.synaptix.toast.runtime.block.BlockRunnerTestCase;
 import com.synaptix.toast.runtime.block.TestBlockRunner;
 import com.synaptix.toast.test.runtime.mock.DefaultRepositorySetup;
+import com.synaptix.toast.test.runtime.resource.JsonAdapterExample;
+import com.synaptix.toast.test.runtime.resource.XmlAdapterExample;
 
 public class TestRunnerTestCase {
 
+	@BeforeClass
+	public static void init() {
+		ToastCache.getInstance().addActionAdapter(Titi.class);
+		ToastCache.getInstance().addActionAdapter(Toto.class);
+	}
+	
 	@Test
 	public void testEmptyResult() throws IOException {
 		TestBlockRunner runner = new TestBlockRunner();

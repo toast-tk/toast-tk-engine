@@ -31,6 +31,7 @@ public class ActionSentenceMappingProvider {
 		final String adapterName, 
 		final String actionId
 	) {
+		System.out.println("ActionSentenceMappingProvider.hasMappingForAction() -> " +adapterName + "/" +actionId +" - beans size - " + BEANS.size());
 		final List<Map<String,String>> list = BEANS.get(adapterName);
 		return list == null ? false : list.stream().anyMatch(m -> m.containsKey(actionId));
 	}

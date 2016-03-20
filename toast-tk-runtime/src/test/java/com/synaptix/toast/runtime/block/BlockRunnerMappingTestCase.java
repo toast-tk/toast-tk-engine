@@ -14,6 +14,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
+import com.synaptix.toast.adapter.cache.ToastCache;
 import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
@@ -28,6 +29,7 @@ public class BlockRunnerMappingTestCase {
 
 	@BeforeClass
 	public static void init() {
+		ToastCache.getInstance().addActionAdapter(XmlAdapterExample.class);
 		Module module = new AbstractModule() {
 			@Override
 			protected void configure() {
@@ -58,10 +60,12 @@ public class BlockRunnerMappingTestCase {
 		blockRunner.setObjectRepository(repo);
 		
 		String actionSentence = "Comparer *$var2* a *$var1*";
-		ActionCommandDescriptor method = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		ToastCache.getInstance().addActionAdapter(XmlAdapterExample.class);
+		ActionCommandDescriptor execDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		System.out.println("BlockRunnerMappingTestCase.compareAndSwapInputsTest() -> " + execDescriptor);
 		Object[] args = null;
 		try {
-			args = blockRunner.buildArgumentList(method);
+			args = blockRunner.buildArgumentList(execDescriptor);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

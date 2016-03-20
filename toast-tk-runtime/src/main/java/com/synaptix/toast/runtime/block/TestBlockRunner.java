@@ -189,8 +189,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		final String actionImpl, 
 		final Class<?> actionAdapterClass
 	) {
+		ToastCache cache = ToastCache.getInstance();
 		if(actionAdapterClass != Object.class) {
-			final List<Method> actionMethods = ToastCache.getInstance().getActionMethodsByClass(actionAdapterClass);
+			final List<Method> actionMethods = cache.getActionMethodsByClass(actionAdapterClass);
 			final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
 			for(final Method actionMethod : actionMethods) {
 				final Action mainAction = actionMethod.getAnnotation(Action.class);

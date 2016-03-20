@@ -17,6 +17,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
+import com.synaptix.toast.adapter.cache.ToastCache;
 import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
@@ -34,6 +35,9 @@ public class BlockRunnerTestCase {
 	@BeforeClass
 	public static void init() {
 		InputStream stream = BlockRunnerTestCase.class.getClassLoader().getResourceAsStream("./flux.scenario.txt");
+		ToastCache.getInstance().addActionAdapter(XmlAdapterExample.class);
+		ToastCache.getInstance().addActionAdapter(JsonAdapterExample.class);
+		ToastCache.getInstance().addActionAdapter(HttpAdapterExample.class);
 		Module module = new AbstractModule() {
 			@Override
 			protected void configure() {
@@ -149,7 +153,7 @@ public class BlockRunnerTestCase {
 	public void testRunnerArgumentBuilderJsonAndVar() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
 		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
-
+		
 		Map<String, Object> userVarMap = new HashMap<>();
 		StringBuilder userValue = new StringBuilder();
 		userValue.append("{").append("\n");

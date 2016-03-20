@@ -1,8 +1,10 @@
 package com.synaptix.toast.adapter.cache;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,9 +24,12 @@ import com.synaptix.toast.core.annotation.ActionAdapter;
 
 public final class ToastCache {
 	
-	private static final ToastCache INSTANCE = new ToastCache();
+	private static ToastCache INSTANCE;
 	
 	public static ToastCache getInstance() {
+		if(INSTANCE == null){
+			INSTANCE = new ToastCache();
+		}
 		return INSTANCE;
 	}
 	
@@ -70,6 +75,35 @@ public final class ToastCache {
 
 	private static Reflections buildMethodAnnotationsReflection() {
 		return new Reflections(new MethodAnnotationsScanner());
+	}
+	
+	public void addActionAdapter(final Class<?> service){
+		final ActionAdapter docAnnotation = service.getAnnotation(ActionAdapter.class);
+		if(docAnnotation != null){
+			List<Method> methods = getMethodsAnnotatedWith(service, Action.class);
+			if(methods != null){
+				for(Method m : methods){
+					addMethod(m);
+				}
+			}
+		}
+	}
+	
+	public static List<Method> getMethodsAnnotatedWith(final Class<?> type, final Class<? extends Annotation> annotation) {
+	    final List<Method> methods = new ArrayList<Method>();
+	    Class<?> klass = type;
+	    while (klass != Object.class) { 
+	        final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(klass.getDeclaredMethods()));       
+	        for (final Method method : allMethods) {
+	            if (method.isAnnotationPresent(annotation)) {
+	                Annotation annotInstance = method.getAnnotation(annotation);
+	                methods.add(method);
+	            }
+	        }
+	        // move to the upper class in the hierarchy in search for more methods
+	        klass = klass.getSuperclass();
+	    }
+	    return methods;
 	}
 
 	private void buildAndAddFixtureService(final Class<?> service) {

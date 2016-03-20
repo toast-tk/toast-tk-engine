@@ -33,6 +33,7 @@ public class ArgumentsBuilder {
 	}
 	
 	public Object[] buildArgumentList() throws Exception {
+		System.out.println("Exec descriptor: " + execDescriptor);
 		final int groupCount = execDescriptor.matcher.groupCount();
 		final Object[] args = new Object[groupCount];
 		for(int index = 0; index < groupCount; ++index) {

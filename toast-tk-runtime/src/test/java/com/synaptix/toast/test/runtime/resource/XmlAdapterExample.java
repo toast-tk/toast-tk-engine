@@ -34,7 +34,7 @@ public class XmlAdapterExample {
 			id="compare1",
 			action="{{value}} == {{value}}", 
 			description="comparer une valeur à une autre")
-	public ITestResult integrateXmlAsVar(String var1, String var2){
+	public ITestResult compare(String var1, String var2){
 		return new SuccessResult();
 	}
 }
