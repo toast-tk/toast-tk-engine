@@ -50,7 +50,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	@Override
 	public void run(final TestBlock block) {
-		block.getBlockLines().stream().filter(line -> invokeTestAndAddResult(block, line)).findFirst();
+		block.getBlockLines().stream().forEach(line -> invokeTestAndAddResult(block, line));
 	}
 
 	private boolean invokeTestAndAddResult(
