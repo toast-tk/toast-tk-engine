@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/talan-labs/toast-tk-engine.svg?branch=master)](https://travis-ci.org/talan-labs/toast-tk-engine)
+
 # Toast Tk - Engine
 
 Toast TK Engine provides a concise, self-explanatory and type safe way for writing test cases. No more “REGEX HELL” :)
