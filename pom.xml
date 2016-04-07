@@ -23,6 +23,7 @@
 		<module>toast-tk-runtime</module>
 		<module>toast-tk-dao-api</module>
 		<module>toast-tk-rest-utils</module>
+		<module>toast-tk-interpret</module>
 	</modules>
 	<properties>
 		<root-directory>${project.basedir}</root-directory>
