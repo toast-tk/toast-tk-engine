@@ -2,6 +2,7 @@ package com.synaptix.toast.core.guice;
 
 import java.awt.Component;
 import java.util.List;
+import java.util.Set;
 
 import com.synaptix.toast.core.net.request.IIdRequest;
 
@@ -68,4 +69,6 @@ public interface ICustomRequestHandler {
 	 * @return
 	 */
 	boolean isInterestedIn(final Component component);
+
+	Set<Class<?>> getComponentsWhiteList();
 }
