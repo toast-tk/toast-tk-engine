@@ -6,11 +6,13 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mongodb.WriteConcern;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.synaptix.toast.core.agent.interpret.WebEventRecord;
 import com.synaptix.toast.dao.RestMongoWrapper;
 import com.synaptix.toast.dao.domain.impl.repository.ElementImpl;
 import com.synaptix.toast.dao.domain.impl.repository.RepositoryImpl;
+import com.synaptix.toast.dao.service.dao.access.repository.RepositoryDaoService;
 
 public class MongoRepositoryCacheWrapper {
 
@@ -22,6 +24,33 @@ public class MongoRepositoryCacheWrapper {
 
 	private String port;
 
+	private RepositoryDaoService service;
+	
+	private RepositoryImpl container;
+
+	
+	public RepositoryImpl getLastKnownContainer(){
+		return container;
+	}
+	
+	public RepositoryImpl saveLastKnownContainer(){
+		service.save(container, WriteConcern.ACKNOWLEDGED);
+		return container;
+	}
+	
+	
+	public void initCache(RepositoryDaoService service) {
+		try {
+			this.service = service;
+			cache = service.find().asList();
+		}
+		catch(ClientHandlerException e) {
+			LOG.error(
+				String.format("WebApp not active at address %s:%s", host, port),
+				e);
+		}
+	}
+	
 	public void initCache(String host, String port) {
 		try {
 			this.host = host;
@@ -74,17 +103,26 @@ public class MongoRepositoryCacheWrapper {
 
 	public RepositoryImpl findContainer(
 		String lastKnownContainer, String type) {
+		
 		lastKnownContainer = formatLabel(lastKnownContainer);
-		for(RepositoryImpl repImpl : cache) {
-			if(repImpl.getName().equals(lastKnownContainer)) {
-				return repImpl;
+		
+		for(RepositoryImpl page : cache) {
+			if(page.getName().equals(lastKnownContainer)) {
+				if(this.container == null){
+					this.container = page;
+				}
+				return page;
 			}
 		}
-		RepositoryImpl repImpl = new RepositoryImpl();
-		repImpl.setName(lastKnownContainer);
-		repImpl.type = type;
-		cache.add(repImpl);
-		return repImpl;
+	
+		RepositoryImpl page = new RepositoryImpl();
+		page.setName(lastKnownContainer);
+		page.type = type;
+		cache.add(page);
+		
+		this.container = page;
+	
+		return page;
 	}
 
 	private String formatLabel(
@@ -92,6 +130,11 @@ public class MongoRepositoryCacheWrapper {
 		return name.trim().replace(" ", "_").replace("'", "_").replace("°", "_");
 	}
 
+	public void saveRepository(RepositoryImpl repo) {
+		service.save(repo, WriteConcern.ACKNOWLEDGED);
+		initCache(service);
+	}
+	
 	public boolean saveCache(String host, String port) {
 		boolean saveRepository = RestMongoWrapper.saveRepository(cache, host, port);
 		initCache(host, port);
@@ -131,6 +174,12 @@ public class MongoRepositoryCacheWrapper {
 				}
 			}
 		}
+		ElementImpl element = buildElement(eventRecord, locator);
+		container.rows.add(element);
+		return element.name;
+	}
+
+	private ElementImpl buildElement(WebEventRecord eventRecord, String locator) {
 		ElementImpl impl = new ElementImpl();
 		String name = eventRecord.componentName;
 		String type = eventRecord.component;
@@ -143,8 +192,7 @@ public class MongoRepositoryCacheWrapper {
 		impl.name = formatLabel(impl.name);
 		impl.type = type;
 		impl.method="CSS";
-		container.rows.add(impl);
-		return impl.name;
+		return impl;
 	}
 	
 	public String getAdjustedType(String type){

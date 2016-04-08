@@ -5,7 +5,7 @@ public class WebEventRecord {
 	public String value;
 	public String componentName;
 	public String component;
-	public String type;
+	public String eventType;
 	public String target;
 	public String parent;
 	public String id;
@@ -56,12 +56,12 @@ public class WebEventRecord {
 		this.value = value;
 	}
 	
-	public String getType() {
-		return type;
+	public String getEventType() {
+		return eventType;
 	}
 
-	public void setType(final String type) {
-		this.type = type;
+	public void setEventType(final String type) {
+		this.eventType = type;
 	}
 
 	public String getTarget() {
