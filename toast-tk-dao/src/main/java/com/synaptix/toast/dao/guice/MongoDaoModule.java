@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.synaptix.toast.dao.service.dao.access.project.CampaignDaoService;
 import com.synaptix.toast.dao.service.dao.access.project.ProjectDaoService;
+import com.synaptix.toast.dao.service.dao.access.repository.ElementDaoService;
 import com.synaptix.toast.dao.service.dao.access.repository.RepositoryDaoService;
 import com.synaptix.toast.dao.service.dao.access.team.GroupDaoService;
 import com.synaptix.toast.dao.service.dao.access.team.UserDaoService;
@@ -22,6 +23,7 @@ public class MongoDaoModule extends AbstractModule {
 	protected void configure() {
 		bind(CommonMongoDaoService.class).in(Singleton.class);
 		install(new FactoryModuleBuilder().build(RepositoryDaoService.Factory.class));
+		install(new FactoryModuleBuilder().build(ElementDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(TestPageDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(CampaignDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(ProjectDaoService.Factory.class));

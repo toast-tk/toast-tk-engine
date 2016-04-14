@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.types.ObjectId;
 
 import com.mongodb.WriteConcern;
 import com.sun.jersey.api.client.ClientHandlerException;
@@ -161,14 +162,14 @@ public class MongoRepositoryCacheWrapper {
 		return res;
 	}
 
-	public String find(RepositoryImpl container, WebEventRecord eventRecord) {
+	public ElementImpl find(RepositoryImpl container, WebEventRecord eventRecord) {
 		String locator = eventRecord.target;
 		for(RepositoryImpl repImpl : cache) {
 			if(repImpl.getName().equals(container.getName())) {
 				if(repImpl.rows != null) {
 					for(ElementImpl element : repImpl.rows) {
 						if(element.locator.equalsIgnoreCase(locator.toLowerCase())) {
-							return "".equals(element.name) || element.name == null ? element.locator : element.name;
+							return element;
 						}
 					}
 				}
@@ -176,7 +177,8 @@ public class MongoRepositoryCacheWrapper {
 		}
 		ElementImpl element = buildElement(eventRecord, locator);
 		container.rows.add(element);
-		return element.name;
+		//save
+		return element;
 	}
 
 	private ElementImpl buildElement(WebEventRecord eventRecord, String locator) {
@@ -192,6 +194,7 @@ public class MongoRepositoryCacheWrapper {
 		impl.name = formatLabel(impl.name);
 		impl.type = type;
 		impl.method="CSS";
+		impl.setId(ObjectId.get());;
 		return impl;
 	}
 	

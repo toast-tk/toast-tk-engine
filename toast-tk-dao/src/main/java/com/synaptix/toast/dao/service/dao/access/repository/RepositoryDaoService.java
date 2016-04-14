@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 
+import com.github.jmkgreen.morphia.Key;
 import com.github.jmkgreen.morphia.query.Query;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -37,14 +38,18 @@ public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl
 
 	static final String CONTAINER_TYPE = "swing page";
 
+	private ElementDaoService eDaoService;
+
 	@Inject
 	public RepositoryDaoService(
 		final DbStarter starter,
 		final CommonMongoDaoService cService,
 		final @Named("default_db") String default_db,
-		final @Nullable @Assisted String dbName
+		final @Nullable @Assisted String dbName,
+		final ElementDaoService.Factory eDaoServiceFactory
 	) {
 		super(RepositoryImpl.class, starter.getDatabaseByName(dbName != null ? dbName : default_db), cService);
+		this.eDaoService = eDaoServiceFactory.create(dbName);
 	}
 
 	public String getRepoAsJson() {
@@ -89,4 +94,17 @@ public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl
 		}
 		return false;
 	}
+
+	@Override
+	public Key<RepositoryImpl> save(RepositoryImpl entity) {
+		entity.rows.stream().forEach(e -> eDaoService.save(e, WriteConcern.ACKNOWLEDGED));
+		return super.save(entity);
+	}
+
+	@Override
+	public Key<RepositoryImpl> save(RepositoryImpl entity, WriteConcern wc) {
+		entity.rows.stream().forEach(e -> eDaoService.save(e, wc));
+		return super.save(entity, wc);
+	}
+	
 }

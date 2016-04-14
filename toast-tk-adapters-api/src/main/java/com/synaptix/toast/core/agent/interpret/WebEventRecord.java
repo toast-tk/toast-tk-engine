@@ -12,11 +12,8 @@ public class WebEventRecord {
 	public int keyCode;
 	public int charCode;
 	public int button;
-
 	public boolean altKey;
-
 	public boolean ctrlKey;
-
 	public boolean shiftKey;
 
 	public WebEventRecord() {
