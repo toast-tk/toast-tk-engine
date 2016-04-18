@@ -192,7 +192,7 @@ public class MongoRepositoryCacheWrapper {
 			impl.name = name == null ? type + "-" + UUID.randomUUID().toString() : name;
 		}
 		impl.name = formatLabel(impl.name);
-		impl.type = type;
+		impl.type = getAdjustedType(type);
 		impl.method="CSS";
 		impl.setId(ObjectId.get());;
 		return impl;
