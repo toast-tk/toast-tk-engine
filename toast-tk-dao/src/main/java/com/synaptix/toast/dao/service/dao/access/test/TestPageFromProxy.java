@@ -32,6 +32,7 @@ public class TestPageFromProxy {
 				out.add(iBlock);
 			}
 		}
+		page.setBlocks(out);
 		return page;
 	}
 }
