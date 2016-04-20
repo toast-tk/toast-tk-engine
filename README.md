@@ -49,7 +49,7 @@ For the time being and once in a while, we merge pull requests into master, whic
 
 Toast Toolkit (Toast TK)
 
-Copyright 2012-2015 - Talan Labs - http://labs.talan.com/
+Copyright 2012-2016 - Toast TK - http://toast-tk.io/
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
