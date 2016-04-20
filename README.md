@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/talan-labs/toast-tk-engine.svg?branch=master)](https://travis-ci.org/talan-labs/toast-tk-engine)
+[![Build Status](https://travis-ci.org/toast-tk/toast-tk-engine.svg?branch=master)](https://travis-ci.org/talan-labs/toast-tk-engine)
 
 # Toast Tk - Engine
 
@@ -16,8 +16,8 @@ Navigate to url *([\w\W]+)*
 ```
 
 ## Toast TK Engine
-1. Parses a script written in a [markdown format](https://github.com/synaptix-labs/toast-tk-engine/wiki/how-to-create-a-scenario) to a TestPage
-2. Executes the TestPage by locating the best matching [@Action](https://github.com/synaptix-labs/toast-tk-engine/wiki/how-to-declare-new-actions) within a given [@ActionAdapter](https://github.com/synaptix-labs/toast-tk-engine/wiki/how-to-declare-new-actions) 
+1. Parses a script written in a [markdown format](https://github.com/toast-tk/toast-tk-engine/wiki/how-to-create-a-scenario) to a TestPage
+2. Executes the TestPage by locating the best matching [@Action](https://github.com/toast-tk/toast-tk-engine/wiki/how-to-declare-new-actions) within a given [@ActionAdapter](https://github.com/toast-tk/toast-tk-engine/wiki/how-to-declare-new-actions) 
 3. Outputs a [Value Based Test Execution Report]()
 
 Toast TK is not another Cucumber / JBehave like framework, nor a Gherkin based toolkit.  
@@ -26,7 +26,7 @@ It makes test scripts easier to share between technical team members (i.e: Devel
 
 # How to use Toast Tk Engine
 
-The [toast-tk-example](https://github.com/synaptix-labs/toast-tk-examples) project hosts different examples for:
+The [toast-tk-example](https://github.com/toast-tk/toast-tk-examples) project hosts different examples for:
 - Web Browser automation
 - Custom sentences
 - Rest API automation
@@ -39,10 +39,10 @@ Toast TK is a young open source project.
 We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: from the website through the documentation to the very core of the application.  
 So, if you like open-source projects and would like to give back some help, we'd like to see your contributions!  
 It doesn't matter how familiar you are with test automation applications, or whether you know how to write programs for Java. There are plenty of ways to be helpful! One of the first things you should do is actually use Toast TK, and get to know it - read about it, evangelise it, and engage with the wider community.  
-If you'd like to help, [get in touch](mailto:sallah.kokaina@synaptix-labs.com) and let us know how you'd like to help. We love contributors!! 
+If you'd like to help, [get in touch](mailto:sallah.kokaina@gmail.com) and let us know how you'd like to help. We love contributors!! 
 
 # Development workflow
-The main development happens on [Github](https://github.com/synaptix-labs/toast-tk-engine). To contribute, [fork](http://help.github.com/fork-a-repo/) the [main repo](https://github.com/synaptix-labs/toast-tk-engine), branch off a [feature branch](https://www.google.com/search?q=git+feature+branches) from master, make your changes and [commit](http://git-scm.com/docs/git-commit) them, [push](http://git-scm.com/docs/git-push) to your fork and submit a [pull request](http://help.github.com/send-pull-requests/).
+The main development happens on [Github](https://github.com/toast-tk/toast-tk-engine). To contribute, [fork](http://help.github.com/fork-a-repo/) the [main repo](https://github.com/toast-tk/toast-tk-engine), branch off a [feature branch](https://www.google.com/search?q=git+feature+branches) from master, make your changes and [commit](http://git-scm.com/docs/git-commit) them, [push](http://git-scm.com/docs/git-push) to your fork and submit a [pull request](http://help.github.com/send-pull-requests/).
 For the time being and once in a while, we merge pull requests into master, which results in a new snapshot update. 
 
 # Licence
