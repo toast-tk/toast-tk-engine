@@ -16,6 +16,9 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.synaptix.toast.adapter.cache.ToastCache;
+import com.synaptix.toast.core.report.FailureResult;
+import com.synaptix.toast.core.report.SuccessResult;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 import com.synaptix.toast.runtime.ActionItemRepository;
@@ -68,9 +71,47 @@ public class BlockRunnerMappingTestCase {
 		block.setBlockLines(Arrays.asList(line));
 		
 		ActionAdaptaterLocator locator = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
-		blockRunner.invokeActionAdapterAction(locator);
+		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 		
-		Assert.assertNotNull(actionDescriptor);
+		Assert.assertEquals(result.getClass(), SuccessResult.class);
+	}
+	
+	@Test
+	public void executeStringTest() {
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		String actionSentence = "do *toto*";
+		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		blockRunner.setInjector(injector);
+		
+		TestBlock block = new TestBlock();
+		block.setFixtureName("service");
+		TestLine line = new TestLine();
+		line.setTest(actionSentence);
+		block.setBlockLines(Arrays.asList(line));
+		
+		ActionAdaptaterLocator locator = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
+		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
+		
+		Assert.assertEquals(result.getMessage(), "toto");
+	}
+	
+	@Test
+	public void assertTest() {
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		String actionSentence = "assert *toto*";
+		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		blockRunner.setInjector(injector);
+		
+		TestBlock block = new TestBlock();
+		block.setFixtureName("service");
+		TestLine line = new TestLine();
+		line.setTest(actionSentence);
+		block.setBlockLines(Arrays.asList(line));
+		
+		ActionAdaptaterLocator locator = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
+		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
+		
+		Assert.assertEquals(result.getClass(), FailureResult.class);
 	}
 	
 	@Test

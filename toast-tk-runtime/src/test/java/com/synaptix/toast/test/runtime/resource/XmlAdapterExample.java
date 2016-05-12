@@ -39,4 +39,20 @@ public class XmlAdapterExample {
 	public void compare(String var1, String var2){
 
 	}
+	
+	@Action(
+			id="doValue",
+			action="do {{value}}", 
+			description="comparer une valeur à une autre")
+	public String returnString(String var1){
+		return var1;
+	}
+	
+	@Action(
+			id="errorValue",
+			action="assert {{value}}", 
+			description="comparer une valeur à une autre")
+	public void assertErrorTest(String var1){
+		Assert.assertNull(var1);
+	}
 }
