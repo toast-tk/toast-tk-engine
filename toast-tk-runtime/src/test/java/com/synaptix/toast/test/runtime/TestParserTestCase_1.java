@@ -95,12 +95,13 @@ public class TestParserTestCase_1 {
 		ITestPage testPage = par.readString(scenario.toString(), null);
 		TestBlock testBlock = (TestBlock) testPage.getBlocks().get(0);
 		List<TestLine> blockLines = testBlock.getBlockLines();
-		assertEquals("@swing:connector Saisir *valeur* dans *ChooseApplicationRusDialog.applicationBox*", blockLines
-			.get(5).getTest());
+		assertEquals("@swing:connector Saisir *valeur* dans *ChooseApplicationRusDialog.applicationBox*", 
+				blockLines.get(5).getTest());
 		TestLineDescriptor descriptor = new TestLineDescriptor(testBlock, blockLines.get(5));
 		assertEquals(ActionAdapterKind.swing, descriptor.getTestLineFixtureKind());
 		assertEquals("connector", descriptor.getTestLineFixtureName());
 	}
+
 
 	@AfterClass
 	public static void end() {

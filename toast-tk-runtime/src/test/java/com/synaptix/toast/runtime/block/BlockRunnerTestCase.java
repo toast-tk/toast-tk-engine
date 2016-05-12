@@ -178,5 +178,10 @@ public class BlockRunnerTestCase {
 		Assert.assertEquals(args.length, 2);
 		Assert.assertEquals(args[1], repo.getUserVariables().get("$url"));
 	}
+	
+	@Test
+	public void toastRunner() {
+		
+	}
 
 }

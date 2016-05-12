@@ -1,5 +1,6 @@
 package com.synaptix.toast.runtime.block;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,10 +16,14 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.synaptix.toast.adapter.cache.ToastCache;
+import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
+import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
+import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocator;
+import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocators;
 import com.synaptix.toast.test.runtime.resource.XmlAdapterExample;
 
 public class BlockRunnerMappingTestCase {
@@ -35,6 +40,7 @@ public class BlockRunnerMappingTestCase {
 			protected void configure() {
 				bind(IActionItemRepository.class).to(ActionItemRepository.class).in(Singleton.class);
 				bind(ActionItemValueProvider.class).in(Singleton.class);
+				bind(XmlAdapterExample.class).in(Singleton.class);
 			}
 		};
 		injector = Guice.createInjector(module);
@@ -45,6 +51,26 @@ public class BlockRunnerMappingTestCase {
 		TestBlockRunner blockRunner = new TestBlockRunner();
 		String actionSentence = "Comparer *$var2* a *$var1*";
 		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		Assert.assertNotNull(actionDescriptor);
+	}
+	
+	@Test
+	public void executeVoidTest() {
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		String actionSentence = "*$var2* == *$var1*";
+		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		blockRunner.setInjector(injector);
+		
+		TestBlock block = new TestBlock();
+		block.setFixtureName("service");
+		TestLine line = new TestLine();
+		line.setTest(actionSentence);
+		block.setBlockLines(Arrays.asList(line));
+		
+		ActionAdaptaterLocator locator = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
+		
+		blockRunner.invokeActionAdapterAction(locator);
+		
 		Assert.assertNotNull(actionDescriptor);
 	}
 	

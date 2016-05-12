@@ -1,5 +1,7 @@
 package com.synaptix.toast.test.runtime.resource;
 
+import org.junit.Assert;
+
 import com.synaptix.toast.core.adapter.ActionAdapterKind;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
@@ -34,7 +36,7 @@ public class XmlAdapterExample {
 			id="compare1",
 			action="{{value}} == {{value}}", 
 			description="comparer une valeur à une autre")
-	public ITestResult compare(String var1, String var2){
-		return new SuccessResult();
+	public void compare(String var1, String var2){
+
 	}
 }

@@ -103,7 +103,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	 * @param descriptor: descriptor of current test line
 	 * @return
 	 */
-	private TestResult invokeActionAdapterAction(final ActionAdaptaterLocator actionAdaptaterLocator)  {
+	protected TestResult invokeActionAdapterAction(final ActionAdaptaterLocator actionAdaptaterLocator)  {
 		if(hasFoundActionAdapter(actionAdaptaterLocator)) {
 			final TestResult result = doLocalActionCall(actionAdaptaterLocator);
 			updateFatal(result, actionAdaptaterLocator);
@@ -111,8 +111,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		} 
 		return new FailureResult("Action Implementation - Not Found");
 	}
-
-
 
 	private static boolean hasFoundActionAdapter(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		return actionAdaptaterLocator.getActionAdaptaterClass() != null;
@@ -133,10 +131,28 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	private TestResult doLocalActionCall(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		TestResult result = null;
 		try {
-			result = (TestResult) actionAdaptaterLocator.getActionCommandDescriptor().method.invoke(actionAdaptaterLocator.getInstance(), buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
+			Method actionMethod = actionAdaptaterLocator.getActionCommandDescriptor().method;
+			Class<?> returnType = actionMethod.getReturnType();
+			Object output = actionMethod.invoke(actionAdaptaterLocator.getInstance(), buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
+			if(returnType.equals(String.class)){
+				
+			}
+			else if(returnType.equals(Void.class)){
+				
+			}
+			else{
+				if(output instanceof TestResult){
+					result = (TestResult) output;
+				}else{
+					result = new FailureResult("Unknown result type !"); 
+				}
+			}
 		} 
 		catch(final Exception e) {
 			result = handleInvocationError(e);
+		}
+		catch(final AssertionError er){
+			result = handleInvocationError(er);
 		}
 		setContextualTestSentence(actionAdaptaterLocator, result);
 		return result;
@@ -157,6 +173,11 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			return ((ErrorResultReceivedException) e).getResult();
 		} 
 		return new FailureResult(ExceptionUtils.getRootCauseMessage(e));
+	}
+	
+	private static TestResult handleInvocationError(final AssertionError er) {
+		LOG.error(er.getMessage(), er);
+		return new FailureResult(ExceptionUtils.getRootCauseMessage(er));
 	}
 
 	protected Object[] buildArgumentList(
@@ -217,13 +238,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		final Action mainAction, 
 		final ActionAdapter adapter
 	) {
-		return 
-				adapter != null
-				&& 
-				hasId(mainAction)
-				&& 
-				ActionSentenceMappingProvider.hasMappingForAction(adapter.name(), mainAction.id())
-		;
+		return adapter != null && hasId(mainAction) && 
+				ActionSentenceMappingProvider.hasMappingForAction(adapter.name(), mainAction.id());
 	}
 
 	private ActionCommandDescriptor matchAgainstActionIdMapping(
