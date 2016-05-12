@@ -18,6 +18,7 @@ import com.synaptix.toast.adapter.cache.ToastCache;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
 import com.synaptix.toast.core.report.FailureResult;
+import com.synaptix.toast.core.report.SuccessResult;
 import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.core.runtime.ErrorResultReceivedException;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
@@ -135,10 +136,14 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			Class<?> returnType = actionMethod.getReturnType();
 			Object output = actionMethod.invoke(actionAdaptaterLocator.getInstance(), buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
 			if(returnType.equals(String.class)){
-				
+				result = new SuccessResult(output.toString()); 
+				String expected = actionAdaptaterLocator.getTestLineDescriptor().testLine.getExpected();
+				if (!objectRepository.getUserVariables().containsKey(expected)){
+					objectRepository.getUserVariables().put(expected, output.toString());
+				}
 			}
-			else if(returnType.equals(Void.class)){
-				
+			else if(returnType.getName().equals("void")){
+				result = new SuccessResult(); 
 			}
 			else{
 				if(output instanceof TestResult){

@@ -68,7 +68,6 @@ public class BlockRunnerMappingTestCase {
 		block.setBlockLines(Arrays.asList(line));
 		
 		ActionAdaptaterLocator locator = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
-		
 		blockRunner.invokeActionAdapterAction(locator);
 		
 		Assert.assertNotNull(actionDescriptor);
