@@ -4,7 +4,7 @@
 		"name" : "Value",
 		"kind": "string",	
 		"category" : "value",
-		"regex" : "\\*([\\$?\\w\\W]+)\\*",
+		"regex" : "\\*([^\\*]+)\\*",
 		"replacement" : "@[[1:value:string]]"
 	},
 	{
@@ -12,7 +12,7 @@
 		"name" : "Value",
 		"kind": "xml",	
 		"category" : "value",
-		"regex" : "\\*([\\$?\\w\\W]+)\\*",
+		"regex" : "\\*([\\$?\\w\\W][^\\*]+)\\*",
 		"replacement" : "@[[1:value:string]]"
 	},
 		{
@@ -20,7 +20,7 @@
 		"name" : "Value",
 		"kind": "date",	
 		"category" : "value",
-		"regex" : "\\*([\\$?\\w\\W]+)\\*",
+		"regex" : "\\*([\\$?\\w\\W][^\\*]+)\\*",
 		"replacement" : "@[[1:value:string]]"
 	},
 			{
@@ -28,7 +28,7 @@
 		"name" : "Value",
 		"kind": "json",	
 		"category" : "value",
-		"regex" : "\\*([\\$?\\w\\W]+)\\*",
+		"regex" : "\\*([\\$?\\w\\W][^\\*]+)\\*",
 		"replacement" : "@[[1:value:string]]"
 	},
 	{
@@ -44,7 +44,7 @@
 		"name" : "WebPageItem",
 		"kind" : "web",
 		"category": "component",
-		"regex": "\\*([\\w\\W]+\\.[\\w\\W]+)\\*",
+		"regex": "\\*([\\w\\W][^\\*]+\\.[\\w\\W][^\\*]+)\\*",
 		"replacement" : "@[[4:component:web]]"
 	},
 	{
@@ -60,7 +60,7 @@
 		"name" : "SwingComponent",
 		"kind" : "swing",
 		"category": "component",
-		"regex": "\\*([\\w\\W]+\\.[\\w\\W]+)\\*",
+		"regex": "\\*([\\w\\W][^\\*]+\\.[\\w\\W][^\\*]+)\\*",
 		"replacement" : "@[[6:component:swing]]"
 	}
 ]

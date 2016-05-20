@@ -23,28 +23,28 @@ import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
 
 public final class ToastCache {
-	
+
 	private static ToastCache INSTANCE;
-	
+
 	public static ToastCache getInstance() {
 		if(INSTANCE == null){
 			INSTANCE = new ToastCache();
 		}
 		return INSTANCE;
 	}
-	
+
 	private final Set<Method> actionMethods;
 
 	private final Map<Class<?>, List<Method>> actionMethodsByClass;
-	
+
 	private final Set<Class<?>> services;
-	
+
 	private final Set<FixtureService> fixtureServices;
-	
+
 	private final Map<Class<?>, FixtureService> fixtureServicesByClass;
-	
+
 	private final Map<Class<?>, FixtureDescriptor> fixtureDescriptorsByClass;
-	
+
 	private ToastCache() {
 		this.actionMethods = new HashSet<>(2048);
 		this.actionMethodsByClass = new HashMap<>(512);
@@ -54,7 +54,7 @@ public final class ToastCache {
 		this.fixtureDescriptorsByClass = new NoExceptionMap(2048);
 		initDatas();
 	}
-	
+
 	private void initDatas() {
 		actionMethods.addAll(buildActionMethods());
 		actionMethods.stream().forEach(method -> addMethod(method));
@@ -74,9 +74,9 @@ public final class ToastCache {
 	}
 
 	private static Reflections buildMethodAnnotationsReflection() {
-		return new Reflections(new MethodAnnotationsScanner());
+		return new Reflections( new MethodAnnotationsScanner());
 	}
-	
+
 	public void addActionAdapter(final Class<?> service){
 		final ActionAdapter docAnnotation = service.getAnnotation(ActionAdapter.class);
 		if(docAnnotation != null){
@@ -88,12 +88,12 @@ public final class ToastCache {
 			}
 		}
 	}
-	
+
 	public static List<Method> getMethodsAnnotatedWith(final Class<?> type, final Class<? extends Annotation> annotation) {
 	    final List<Method> methods = new ArrayList<Method>();
 	    Class<?> klass = type;
-	    while (klass != Object.class) { 
-	        final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(klass.getDeclaredMethods()));       
+	    while (klass != Object.class) {
+	        final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(klass.getDeclaredMethods()));
 	        for (final Method method : allMethods) {
 	            if (method.isAnnotationPresent(annotation)) {
 	                Annotation annotInstance = method.getAnnotation(annotation);
@@ -112,9 +112,9 @@ public final class ToastCache {
 			fixtureServices.add(new FixtureService(service, docAnnotation.value(), docAnnotation.name()));
 		}
 	}
-	
+
 	private static Reflections buildTypeAnnotationReflection() {
-		return new Reflections(new TypeAnnotationsScanner());
+		return new Reflections( new TypeAnnotationsScanner());
 	}
 
 	public Set<Method> getActionMethods() {
@@ -128,7 +128,7 @@ public final class ToastCache {
 	public List<Method> getActionMethodsByClass(final Class<?> actionAdaptaterClass) {
 		return Optional.ofNullable(actionMethodsByClass.get(actionAdaptaterClass)).orElse(Collections.emptyList());
 	}
-	
+
 	public Set<Class<?>> getServices() {
 		return services;
 	}

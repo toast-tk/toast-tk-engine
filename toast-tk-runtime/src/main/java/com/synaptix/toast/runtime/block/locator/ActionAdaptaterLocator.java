@@ -88,7 +88,7 @@ public class ActionAdaptaterLocator {
 		if(nbServiceClasses > 1) {
 			LOG.warn("Multiple Adapters found for: {}", testLineDescriptor.getActionImpl());
 		}
-		else if(nbServiceClasses > 0) {
+		if(nbServiceClasses > 0) {
 			return serviceClasses.iterator().next();
 		}
 		return null;
@@ -190,7 +190,7 @@ public class ActionAdaptaterLocator {
 				}
 			}
 		}
-		if(actionAdapterClass.getSuperclass() != null) {
+		if(actionAdapterClass.getSuperclass() != null && !actionAdapterClass.getSuperclass().equals(Object.class)) {
 			return findMatchingAction(actionAdapterClass.getSuperclass());
 		}
 		return null;

@@ -27,7 +27,7 @@ public class TestParserTestCase_2 {
 	@Test
 	public void testParserArgument() {
 		CommandArgumentDescriptor descriptor = ArgumentHelper.convertActionSentenceToRegex("{{com.synaptix.toast.test.runtime.resource.ProjetFlux:value:xml}}");
-		Assert.assertEquals("\\*([\\$?\\w\\W]+)\\*", descriptor.regex);
+		Assert.assertEquals("\\*([\\$?\\w\\W][^\\*]+)\\*", descriptor.regex);
 		Assert.assertEquals(descriptor.arguments.size(), 1);
 	}
 	
