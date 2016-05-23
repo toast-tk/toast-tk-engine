@@ -47,7 +47,15 @@ public class BlockRunnerMappingTestCase {
 		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
 		Assert.assertNotNull(actionDescriptor);
 	}
-	
+
+	@Test
+	public void compareTestEmpty() {
+		TestBlockRunner blockRunner = new TestBlockRunner();
+		String actionSentence = "Comparer ** a *$var1*";
+		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		Assert.assertNotNull(actionDescriptor);
+	}
+
 	@Test
 	public void compareAndSwapInputsTest() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
