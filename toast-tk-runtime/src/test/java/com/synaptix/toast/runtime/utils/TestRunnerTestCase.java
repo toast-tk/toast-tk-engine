@@ -99,7 +99,7 @@ public class TestRunnerTestCase {
 		throws IOException {
 		CommandArgumentDescriptor descriptor = ArgumentHelper
 			.convertActionSentenceToRegex("Faire action sur {{value}}");
-		assertEquals("Faire action sur \\*([^\\*]+)\\*", descriptor.regex);
+		assertEquals("Faire action sur \\*([^\\*]*)\\*", descriptor.regex);
 	}
 
 	@AfterClass

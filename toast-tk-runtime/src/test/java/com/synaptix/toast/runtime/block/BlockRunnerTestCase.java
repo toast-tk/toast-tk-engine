@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.eventbus.EventBus;
+import com.synaptix.toast.core.annotation.EngineEventBus;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,6 +43,7 @@ public class BlockRunnerTestCase {
 		Module module = new AbstractModule() {
 			@Override
 			protected void configure() {
+				bind(EventBus.class).annotatedWith(EngineEventBus.class).to(EventBus.class).in(Singleton.class);
 				bind(IActionItemRepository.class).to(ActionItemRepository.class).in(Singleton.class);
 				bind(ActionItemValueProvider.class).in(Singleton.class);
 			}

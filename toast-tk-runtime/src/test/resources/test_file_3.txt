@@ -1,4 +1,4 @@
-|| auto setup || swing page || Rechercher_un_utilisateur ||
+|| setup || swing page || Rechercher_un_utilisateur ||
 | name | type | locator |
 |table|table|com.synaptix.swing.table.JSyExportControl:table|
 
