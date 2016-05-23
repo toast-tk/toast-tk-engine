@@ -38,7 +38,7 @@ public class SwingPageSetupBlockParser implements IBlockParser {
 
         // Add test lines to block
         for(final String string : strings.subList(2, strings.size())) {
-            if (!string.startsWith("|")) {
+            if (isFirstLineOfBlock(string)) {
                 return swingPageBlock;
             }
             final String[] split = StringUtils.split(string, "|");

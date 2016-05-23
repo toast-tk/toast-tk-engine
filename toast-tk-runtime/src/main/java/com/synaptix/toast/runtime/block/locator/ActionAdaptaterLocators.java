@@ -26,15 +26,15 @@ public class ActionAdaptaterLocators {
 			final TestBlock block, 
 			final TestLine line,
 			final Injector injector
-	) {
+	) throws NoActionAdapterFound {
 		return getActionCommandDescriptor(new ActionAdaptaterLocator(new TestLineDescriptor(block, line), injector));
 	}
 	
-	public ActionAdaptaterLocator getActionCommandDescriptor(final TestLineDescriptor testLineDescriptor, final Injector injector) {
+	public ActionAdaptaterLocator getActionCommandDescriptor(final TestLineDescriptor testLineDescriptor, final Injector injector) throws NoActionAdapterFound {
 		return getActionCommandDescriptor(new ActionAdaptaterLocator(testLineDescriptor, injector));
 	}
 	
-	public ActionAdaptaterLocator getActionCommandDescriptor(final ActionAdaptaterLocator actionAdaptaterLocator) {
+	public ActionAdaptaterLocator getActionCommandDescriptor(final ActionAdaptaterLocator actionAdaptaterLocator) throws NoActionAdapterFound {
 		final String name = Integer.toString(actionAdaptaterLocator.hashCode());
 		final ActionAdaptaterLocator findedActionAdaptaterLocator = actionAdaptaterLocators.get(name);
 		if(findedActionAdaptaterLocator == null) {

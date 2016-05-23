@@ -5,6 +5,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,10 +14,14 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.synaptix.toast.adapter.cache.ToastCache;
 import com.synaptix.toast.core.annotation.Action;
 import com.synaptix.toast.core.annotation.ActionAdapter;
+import com.synaptix.toast.core.annotation.EngineEventBus;
+import com.synaptix.toast.core.event.TestProgressMessage;
 import com.synaptix.toast.core.report.FailureResult;
 import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.core.runtime.ErrorResultReceivedException;
@@ -33,6 +38,7 @@ import com.synaptix.toast.runtime.bean.CommandArgumentDescriptor;
 import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocator;
 import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocators;
 import com.synaptix.toast.runtime.block.locator.ArgumentsBuilder;
+import com.synaptix.toast.runtime.block.locator.NoActionAdapterFound;
 import com.synaptix.toast.runtime.constant.Property;
 import com.synaptix.toast.runtime.utils.ArgumentHelper;
 
@@ -48,26 +54,38 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private Injector injector;
 
+	private EventBus eventBus;
+
 	@Override
 	public void run(final TestBlock block) {
 		block.getBlockLines().stream().forEach(line -> invokeTestAndAddResult(block, line));
 	}
 
-	private boolean invokeTestAndAddResult(
+	private void invokeTestAndAddResult(
 		final TestBlock block, 
 		final TestLine line
 	) {
 		final long startTime = System.currentTimeMillis();
-		final ActionAdaptaterLocator actionCommandDescriptor = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
-		final TestResult result = invokeActionAdapterAction(actionCommandDescriptor);
+		ActionAdaptaterLocator actionCommandDescriptor;
+		if(Objects.nonNull(eventBus)){
+			eventBus.post(new TestProgressMessage(line.getTest()));
+		}
+		
+		TestResult result;
+		try {
+			actionCommandDescriptor = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
+			result = invokeActionAdapterAction(actionCommandDescriptor);
+		} catch (NoActionAdapterFound e) {
+			result = new FailureResult("No Action Adapter found !");
+		}
 		line.setExcutionTime(System.currentTimeMillis() - startTime);
 		finaliseResultKind(line, result);
 		line.setTestResult(result);
 		if(result.isFatal()) {
 			LOG.error("Test execution stopped, due to fail fatal error: {} - Failed !", line);
-			return false;
 		}
-		return true;
+		
+		
 	}
 
 	private static void finaliseResultKind(
@@ -352,6 +370,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		this.injector = injector;
 		this.actionItemValueProvider = injector.getInstance(ActionItemValueProvider.class);
 		this.objectRepository = injector.getInstance(IActionItemRepository.class);
+        this.eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
 	}
 
 	public void setObjectRepository(IActionItemRepository repository) {

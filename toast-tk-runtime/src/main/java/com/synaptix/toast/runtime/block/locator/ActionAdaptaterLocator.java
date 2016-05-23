@@ -56,13 +56,13 @@ public class ActionAdaptaterLocator {
 		this.fixtureServicesLocator = FixtureServicesLocator.getFixtureServicesLocator(injector);
 	}
 
-	private Class<?> locateActionAdapter() {
+	private Class<?> locateActionAdapter() throws NoActionAdapterFound {
 		Class<?> actionAdapter = pickActionAdapterByNameAndKind();
 		if(actionAdapter == null) {
 			actionAdapter = pickActionAdapterByKind();
 		}
 		if(actionAdapter == null) {
-			LOG.error("No ActionAdapter found for: {}", testLineDescriptor.getActionImpl());
+			throw new NoActionAdapterFound(testLineDescriptor.getActionImpl());
 		}
 		instance = getClassInstance(actionAdapter);
 		
@@ -154,7 +154,7 @@ public class ActionAdaptaterLocator {
 		return fixtureService.fixtureKind.equals(testLineDescriptor.getTestLineFixtureKind()) && fixtureService.fixtureName.equals(testLineDescriptor.getTestLineFixtureName());
 	}
 
-	public ActionCommandDescriptor findActionCommandDescriptor() {
+	public ActionCommandDescriptor findActionCommandDescriptor() throws NoActionAdapterFound {
 		return actionCommandDescriptor == null ? actionCommandDescriptor = findMatchingAction(actionAdaptaterClass = locateActionAdapter()) : actionCommandDescriptor;
 	}
 	
@@ -174,7 +174,8 @@ public class ActionAdaptaterLocator {
 		return actionAdaptaterClass;
 	}
 	
-	private ActionCommandDescriptor findMatchingAction(final Class<?> actionAdapterClass) {
+	private ActionCommandDescriptor findMatchingAction(final Class<?> actionAdapterClass)  {
+		//if(actionAdapterClass == null) throw new NoActionAdapterFound();
 		final List<Method> actionMethods = ToastCache.getInstance().getActionMethodsByClass(actionAdapterClass);
 		final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
 		for(final Method actionMethod : actionMethods) {
