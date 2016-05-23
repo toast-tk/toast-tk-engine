@@ -4,7 +4,7 @@
 		"name" : "Value",
 		"kind": "string",	
 		"category" : "value",
-		"regex" : "\\*([^\\*]+)\\*",
+		"regex" : "\\*([^\\*]*)\\*",
 		"replacement" : "@[[1:value:string]]"
 	},
 	{
