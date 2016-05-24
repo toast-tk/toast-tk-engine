@@ -1,5 +1,8 @@
 package com.synaptix.toast.core.agent.interpret;
 
+import com.synaptix.toast.core.annotation.Action;
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
+
 
 public class DefaultEventInterpreter implements IEventInterpreter {
 
@@ -73,5 +76,11 @@ public class DefaultEventInterpreter implements IEventInterpreter {
 	@Override
 	public boolean isConnectedToWebApp() {
 		return false;
+	}
+
+
+	@Override
+	public String onOpenPopupMenu(AWTCapturedEvent eventObject) {
+		return String.format("Ouvrir menu contextuel de *%s*", eventObject.componentLocator);
 	}
 }

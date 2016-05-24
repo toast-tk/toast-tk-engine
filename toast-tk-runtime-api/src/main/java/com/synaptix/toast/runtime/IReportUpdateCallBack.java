@@ -28,9 +28,9 @@ Creation date: 24 mars 2015
 */
 package com.synaptix.toast.runtime;
 
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
+
 public interface IReportUpdateCallBack {
 
-	void onUpdate(final String report);
-
-	void onFatalStepError(final String message);
+	void onUpdate(final ITestResult result);
 }

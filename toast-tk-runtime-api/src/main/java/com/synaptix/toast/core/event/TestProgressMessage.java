@@ -1,36 +1,21 @@
 package com.synaptix.toast.core.event;
 
-import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
-
+import com.synaptix.toast.dao.domain.api.test.ITestResult;
 public class TestProgressMessage {
 	
-	private ITestPage page;
-
-	private String msg;
+	private ITestResult result;
 	
 	protected TestProgressMessage() {
 		
 	}
 	
-	public TestProgressMessage(String msg) {
-		this.msg = msg;
+	public TestProgressMessage(ITestResult result) {
+		this.result = result;
 	}
 	
-	
-	public TestProgressMessage(final ITestPage page){
-		this.setPage(page);
-	}
 
-	public ITestPage getPage() {
-		return page;
-	}
-
-	private void setPage(final ITestPage page) {
-		this.page = page;
-	}
-
-	public String getMsg() {
-		return msg;
+	public ITestResult getMsg() {
+		return result;
 	}
 
 }

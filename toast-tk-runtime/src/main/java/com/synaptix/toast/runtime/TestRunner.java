@@ -37,11 +37,10 @@ class TestRunner {
 	 * @return test page result
 	 */
 	public ITestPage run(
-		final ITestPage testPage,
-		final boolean inlineReport
+		final ITestPage testPage
 	) {
 		testPage.startExecution();
-		runTestPageBlocks(testPage, inlineReport);
+		runTestPageBlocks(testPage);
 		enrichTestPageResults(testPage);
 		testPage.stopExecution();
 		return testPage;
@@ -86,15 +85,11 @@ class TestRunner {
 	}
 
 	private void runTestPageBlocks(
-		final ITestPage testPage, 
-		final boolean inlineReport
+		final ITestPage testPage
 	) {
 		for(final IBlock block : testPage.getBlocks()) {
 			if(block instanceof ITestPage) {
-				run((ITestPage) block, inlineReport);
-				if(inlineReport) {
-					eventBus.post(new TestProgressMessage(testPage));
-				}
+				run((ITestPage) block);
 			}
 			else {
 				final IBlockRunner blockRunner = blockRunnerProvider.getBlockRunner(block.getClass(), injector);

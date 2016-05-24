@@ -67,14 +67,13 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	) {
 		final long startTime = System.currentTimeMillis();
 		ActionAdaptaterLocator actionCommandDescriptor;
-		if(Objects.nonNull(eventBus)){
-			eventBus.post(new TestProgressMessage(line.getTest()));
-		}
+		
 		
 		TestResult result;
 		try {
 			actionCommandDescriptor = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
 			result = invokeActionAdapterAction(actionCommandDescriptor);
+			
 		} catch (NoActionAdapterFound e) {
 			result = new FailureResult("No Action Adapter found !");
 		}
@@ -84,8 +83,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		if(result.isFatal()) {
 			LOG.error("Test execution stopped, due to fail fatal error: {} - Failed !", line);
 		}
-		
-		
+		if(Objects.nonNull(eventBus)){
+			eventBus.post(new TestProgressMessage(result));
+		}
 	}
 
 	private static void finaliseResultKind(

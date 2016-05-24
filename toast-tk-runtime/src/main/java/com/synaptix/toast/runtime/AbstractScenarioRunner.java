@@ -123,13 +123,13 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
         	final String repoWiki = RestUtils.downloadRepositoryAsWiki();
         	final TestParser parser = new TestParser();
         	final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
-            runner.run(repoAsTestPageForConvenience, false);
+            runner.run(repoAsTestPageForConvenience);
         } 
         else if (this.localRepositoryTestPage != null) {
-            runner.run(this.localRepositoryTestPage, false);
+            runner.run(this.localRepositoryTestPage);
         }
         beginTest();
-        result = runner.run(result, true);
+        result = runner.run(result);
         createAndOpenReport(result);
         endTest();
         return result;

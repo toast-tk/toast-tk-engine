@@ -175,7 +175,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
         	final String repoWiki = RestUtils.downloadRepositoryAsWiki();
         	final TestParser parser = new TestParser();
         	final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
-            runner.run(repoAsTestPageForConvenience, false);
+            runner.run(repoAsTestPageForConvenience);
         }
         execute(project, runner);
     }
@@ -189,7 +189,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
             for(ITestPage testPage : campaign.getTestCases()) {
                 try {
                     beginTest();
-                    testPage = runner.run(testPage, true);
+                    testPage = runner.run(testPage);
                     endTest();
                 } 
                 catch(final Exception e) {

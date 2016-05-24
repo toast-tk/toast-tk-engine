@@ -6,12 +6,14 @@ public interface IEventInterpreter {
 		CHECKBOX_CLICK,
 		RADIO_CLICK,
 		BUTTON_CLICK,
+		RIGHT_CLICK,
 		CLICK,
 		TABLE_CLICK,
 		MENU_CLICK,
 		POPUP_MENU_CLICK,
 		JLIST_CLICK,
 		COMBOBOX_CLICK,
+		OPEN_POPUP,
 		WINDOW_DISPLAY,
 		KEY_INPUT,
 		BRING_ON_TOP_DISPLAY
@@ -44,4 +46,6 @@ public interface IEventInterpreter {
 	 * @return
 	 */
 	public boolean isConnectedToWebApp();
+
+	public String onOpenPopupMenu(final AWTCapturedEvent value);
 }

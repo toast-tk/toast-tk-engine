@@ -31,6 +31,8 @@ public class ActionAdapterSentenceRef {
 	public static final String GetComponentValue = "Récupérer la valeur de " + SWING_COMPONENT_REGEX;
 
 	public static final String SelectContectualMenu = "Selectionner le menu contextuel " + VALUE_REGEX;
+	
+	public static final String OpenContectualMenu = "Ouvrir le menu contextuel de " + SWING_COMPONENT_REGEX;
 
 	public static final String SelectValueInList = "Selectionner " + VALUE_REGEX + " dans " + SWING_COMPONENT_REGEX;
 
@@ -69,6 +71,7 @@ public class ActionAdapterSentenceRef {
 		SELECT_VALUE_IN_LIST(SelectValueInList),
 		SELECT_SUB_MENU(SelectMenuPath),
 		SELECT_TABLE_ROW(SelectTableRow),
+		OPEN_CONTEXTUAL_MENU(OpenContectualMenu),
 		SELECT_CONTEXTUAL_MENU(SelectContectualMenu);
 
 		public final String regex;
