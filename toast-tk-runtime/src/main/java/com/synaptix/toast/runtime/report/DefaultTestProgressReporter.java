@@ -21,7 +21,9 @@ public class DefaultTestProgressReporter {
 	
 	@Subscribe
 	public void handleTestExecutionProgress(final TestProgressMessage progressMessage){
-		this.reportUpdateCallBack.onUpdate(progressMessage.getMsg());
+		if(this.reportUpdateCallBack != null){
+			this.reportUpdateCallBack.onUpdate(progressMessage.getMsg());
+		}
 	}
 
 }
