@@ -7,6 +7,7 @@ import com.synaptix.toast.runtime.block.BlockRunnerProvider;
 import com.synaptix.toast.runtime.block.SwingPageBlockBuilder;
 import com.synaptix.toast.runtime.block.TestBlockRunner;
 import com.synaptix.toast.runtime.block.WebPageBlockBuilder;
+import com.synaptix.toast.runtime.block.locator.FixtureServicesLocator;
 
 public class RunnerModule extends AbstractModule {
 
@@ -17,5 +18,6 @@ public class RunnerModule extends AbstractModule {
 		bind(SwingPageBlockBuilder.class).in(Singleton.class);
 		bind(WebPageBlockBuilder.class).in(Singleton.class);
 		bind(TestBlockRunner.class).in(Singleton.class);
+		bind(FixtureServicesLocator.class).in(Singleton.class);
 	}
 }

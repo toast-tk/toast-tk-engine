@@ -1,6 +1,5 @@
 package com.synaptix.toast.runtime.block;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +25,7 @@ import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
 import com.synaptix.toast.runtime.bean.ActionCommandDescriptor;
 import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocator;
 import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocators;
+import com.synaptix.toast.runtime.module.RunnerModule;
 import com.synaptix.toast.test.runtime.resource.XmlAdapterExample;
 
 public class BlockRunnerMappingTestCase {
@@ -43,7 +43,7 @@ public class BlockRunnerMappingTestCase {
 				bind(XmlAdapterExample.class).in(Singleton.class);
 			}
 		};
-		injector = Guice.createInjector(module);
+		injector = Guice.createInjector(module, new RunnerModule());
 	}
 
 	@Test
@@ -57,9 +57,8 @@ public class BlockRunnerMappingTestCase {
 
 	@Test
 	public void executeVoidTest() {
-		TestBlockRunner blockRunner = new TestBlockRunner();
+		TestBlockRunner blockRunner = injector.getInstance(TestBlockRunner.class);
 		String actionSentence = "*$var2* == *$var1*";
-		blockRunner.setInjector(injector);
 
 		TestBlock block = new TestBlock();
 		block.setFixtureName("service");
@@ -67,7 +66,7 @@ public class BlockRunnerMappingTestCase {
 		line.setTest(actionSentence);
 		block.setBlockLines(Collections.singletonList(line));
 
-		ActionAdaptaterLocator locator = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block,
+		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block,
 				line, injector);
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
@@ -76,8 +75,7 @@ public class BlockRunnerMappingTestCase {
 
 	@Test
 	public void executeStringTest() {
-		TestBlockRunner blockRunner = new TestBlockRunner();
-		blockRunner.setInjector(injector);
+		TestBlockRunner blockRunner = injector.getInstance(TestBlockRunner.class);
 
 		TestLine line = new TestLine();
 		line.setTest("echo *foo*");
@@ -88,7 +86,7 @@ public class BlockRunnerMappingTestCase {
 		block.setBlockLines(Collections.singletonList(line));
 
 		ActionAdaptaterLocator locator =
-				ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
+				injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line, injector);
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals("foo", result.getMessage());
@@ -97,8 +95,7 @@ public class BlockRunnerMappingTestCase {
 
 	@Test
 	public void executeStringTestFailing() {
-		TestBlockRunner blockRunner = new TestBlockRunner();
-		blockRunner.setInjector(injector);
+		TestBlockRunner blockRunner = injector.getInstance(TestBlockRunner.class);
 
 		TestLine line = new TestLine();
 		line.setTest("echo *foo*");
@@ -113,13 +110,13 @@ public class BlockRunnerMappingTestCase {
 		block.setBlockLines(Collections.singletonList(line));
 
 		ActionAdaptaterLocator locator =
-				ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line, injector);
+				injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line, injector);
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals("foo", locator.getTestLineDescriptor().testLine.getExpected());
 		Assert.assertEquals(ITestResult.ResultKind.SUCCESS, result.getResultKind());
 
-		locator = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block, line2, injector);
+		locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line2, injector);
 		result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals("bar", locator.getTestLineDescriptor().testLine.getExpected());
@@ -128,9 +125,8 @@ public class BlockRunnerMappingTestCase {
 
 	@Test
 	public void assertTest() {
-		TestBlockRunner blockRunner = new TestBlockRunner();
+		TestBlockRunner blockRunner = injector.getInstance(TestBlockRunner.class);
 		String actionSentence = "assert *toto*";
-		blockRunner.setInjector(injector);
 
 		TestBlock block = new TestBlock();
 		block.setFixtureName("service");
@@ -138,7 +134,7 @@ public class BlockRunnerMappingTestCase {
 		line.setTest(actionSentence);
 		block.setBlockLines(Collections.singletonList(line));
 
-		ActionAdaptaterLocator locator = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block,
+		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block,
 				line, injector);
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
@@ -147,11 +143,10 @@ public class BlockRunnerMappingTestCase {
 
 	@Test
 	public void saveStringTest() {
-		TestBlockRunner blockRunner = new TestBlockRunner();
+		TestBlockRunner blockRunner = injector.getInstance(TestBlockRunner.class);
 		String actionSentence = "Say hello";
 		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample
 				.class);
-		blockRunner.setInjector(injector);
 
 		TestBlock block = new TestBlock();
 		block.setFixtureName("service");
@@ -159,7 +154,7 @@ public class BlockRunnerMappingTestCase {
 		line.setTest(actionSentence);
 		block.setBlockLines(Collections.singletonList(line));
 
-		ActionAdaptaterLocator locator = ActionAdaptaterLocators.getInstance().getActionCommandDescriptor(block,
+		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block,
 				line, injector);
 
 		ITestResult testResult = blockRunner.invokeActionAdapterAction(locator);
@@ -172,7 +167,7 @@ public class BlockRunnerMappingTestCase {
 
 	@Test
 	public void compareAndSwapInputsTest() {
-		TestBlockRunner blockRunner = new TestBlockRunner();
+		TestBlockRunner blockRunner = injector.getInstance(TestBlockRunner.class);
 		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
 		Map<String, Object> userVarMap = new HashMap<>();
 		userVarMap.put("$var1", "value1");
@@ -201,7 +196,7 @@ public class BlockRunnerMappingTestCase {
 
 	@Test
 	public void compareAndSwapInputsTest2() {
-		TestBlockRunner blockRunner = new TestBlockRunner();
+		TestBlockRunner blockRunner = injector.getInstance(TestBlockRunner.class);
 		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
 		Map<String, Object> userVarMap = new HashMap<>();
 		userVarMap.put("$var1", "value1");

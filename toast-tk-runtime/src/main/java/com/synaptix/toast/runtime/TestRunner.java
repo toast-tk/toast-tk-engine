@@ -1,6 +1,7 @@
 package com.synaptix.toast.runtime;
 
 import com.google.common.eventbus.EventBus;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.synaptix.toast.core.annotation.EngineEventBus;
@@ -15,21 +16,11 @@ import com.synaptix.toast.runtime.block.IBlockRunner;
 
 class TestRunner {
 
+	@Inject
 	private BlockRunnerProvider blockRunnerProvider;
 
-	private Injector injector;
-
+	@Inject
 	private EventBus eventBus;
-
-	public TestRunner(final Injector injector){
-		this.setInjector(injector);
-	}
-
-	private void setInjector(final Injector injector) {
-		this.injector = injector;
-		this.blockRunnerProvider = injector.getInstance(BlockRunnerProvider.class);
-		this.eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
-	}
 
 	/**
 	 * Execute the different blocks within the test page
@@ -97,7 +88,7 @@ class TestRunner {
 				}
 			}
 			else {
-				final IBlockRunner blockRunner = blockRunnerProvider.getBlockRunner(block.getClass(), injector);
+				final IBlockRunner blockRunner = blockRunnerProvider.getBlockRunner(block.getClass());
 				if(blockRunner != null){
 					blockRunner.run(block);
 				}

@@ -1,5 +1,6 @@
 package com.synaptix.toast.runtime.block;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.synaptix.toast.adapter.cache.ToastCache;
 import com.synaptix.toast.core.annotation.Action;
@@ -44,16 +45,29 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private static final Pattern REGEX_PATTERN = Pattern.compile("\\$(\\d)");
 
+	@Inject
 	private IActionItemRepository objectRepository;
 
+	@Inject
 	private ActionItemValueProvider actionItemValueProvider;
 
+	@Inject
 	private Injector injector;
+
+	@Inject
 	private ResultProvider resultProvider;
+
+	@Inject
+	private ActionAdaptaterLocators actionAdaptaterLocators;
 
 	@Override
 	public void run(final TestBlock block) {
 		block.getBlockLines().stream().forEach(line -> invokeTestAndAddResult(block, line));
+	}
+
+	@Override
+	public void setInjector(Injector injector) {
+
 	}
 
 	private boolean invokeTestAndAddResult(
@@ -61,8 +75,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			final TestLine line
 	) {
 		final long startTime = System.currentTimeMillis();
-		final ActionAdaptaterLocator actionCommandDescriptor = ActionAdaptaterLocators.getInstance()
-				.getActionCommandDescriptor(block, line, injector);
+		final ActionAdaptaterLocator actionCommandDescriptor = actionAdaptaterLocators.getActionCommandDescriptor(block, line, injector);
 		final TestResult result = invokeActionAdapterAction(actionCommandDescriptor);
 		line.setExcutionTime(System.currentTimeMillis() - startTime);
 		finaliseResultKind(line, result);
@@ -362,14 +375,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private static boolean isVariable(Object[] args, int i, String group) {
 		return isVariable(group) && args[i] != null && !group.contains(Property.DEFAULT_PARAM_SEPARATOR);
-	}
-
-	@Override
-	public void setInjector(final Injector injector) {
-		this.injector = injector;
-		this.actionItemValueProvider = injector.getInstance(ActionItemValueProvider.class);
-		this.objectRepository = injector.getInstance(IActionItemRepository.class);
-		this.resultProvider = new ResultProvider(objectRepository);
 	}
 
 	public void setObjectRepository(IActionItemRepository repository) {
