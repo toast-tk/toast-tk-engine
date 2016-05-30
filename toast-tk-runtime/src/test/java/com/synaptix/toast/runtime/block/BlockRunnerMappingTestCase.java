@@ -67,7 +67,7 @@ public class BlockRunnerMappingTestCase {
 		block.setBlockLines(Collections.singletonList(line));
 
 		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block,
-				line, injector);
+				line);
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals(SuccessResult.class, result.getClass());
@@ -86,7 +86,7 @@ public class BlockRunnerMappingTestCase {
 		block.setBlockLines(Collections.singletonList(line));
 
 		ActionAdaptaterLocator locator =
-				injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line, injector);
+				injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line);
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals("foo", result.getMessage());
@@ -110,13 +110,13 @@ public class BlockRunnerMappingTestCase {
 		block.setBlockLines(Collections.singletonList(line));
 
 		ActionAdaptaterLocator locator =
-				injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line, injector);
+				injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line);
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals("foo", locator.getTestLineDescriptor().testLine.getExpected());
 		Assert.assertEquals(ITestResult.ResultKind.SUCCESS, result.getResultKind());
 
-		locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line2, injector);
+		locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line2);
 		result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals("bar", locator.getTestLineDescriptor().testLine.getExpected());
@@ -134,8 +134,7 @@ public class BlockRunnerMappingTestCase {
 		line.setTest(actionSentence);
 		block.setBlockLines(Collections.singletonList(line));
 
-		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block,
-				line, injector);
+		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line);
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals(result.getClass(), FailureResult.class);
@@ -145,8 +144,7 @@ public class BlockRunnerMappingTestCase {
 	public void saveStringTest() {
 		TestBlockRunner blockRunner = injector.getInstance(TestBlockRunner.class);
 		String actionSentence = "Say hello";
-		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample
-				.class);
+		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
 
 		TestBlock block = new TestBlock();
 		block.setFixtureName("service");
@@ -154,8 +152,7 @@ public class BlockRunnerMappingTestCase {
 		line.setTest(actionSentence);
 		block.setBlockLines(Collections.singletonList(line));
 
-		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block,
-				line, injector);
+		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line);
 
 		ITestResult testResult = blockRunner.invokeActionAdapterAction(locator);
 		Assert.assertEquals(ITestResult.ResultKind.SUCCESS, testResult.getResultKind());
@@ -178,8 +175,7 @@ public class BlockRunnerMappingTestCase {
 
 		String actionSentence = "Comparer *$var2* a *$var1*";
 		ToastCache.getInstance().addActionAdapter(XmlAdapterExample.class);
-		ActionCommandDescriptor execDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample
-				.class);
+		ActionCommandDescriptor execDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
 		System.out.println("BlockRunnerMappingTestCase.compareAndSwapInputsTest() -> " + execDescriptor);
 		Object[] args = null;
 		try {

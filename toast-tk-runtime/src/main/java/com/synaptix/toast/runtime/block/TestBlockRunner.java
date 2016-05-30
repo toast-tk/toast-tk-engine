@@ -75,7 +75,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			final TestLine line
 	) {
 		final long startTime = System.currentTimeMillis();
-		final ActionAdaptaterLocator actionCommandDescriptor = actionAdaptaterLocators.getActionCommandDescriptor(block, line, injector);
+		final ActionAdaptaterLocator actionCommandDescriptor = actionAdaptaterLocators.getActionCommandDescriptor(block, line);
 		final TestResult result = invokeActionAdapterAction(actionCommandDescriptor);
 		line.setExcutionTime(System.currentTimeMillis() - startTime);
 		finaliseResultKind(line, result);

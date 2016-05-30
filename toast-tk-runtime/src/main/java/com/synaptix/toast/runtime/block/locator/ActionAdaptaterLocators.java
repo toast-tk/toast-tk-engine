@@ -13,10 +13,10 @@ import com.synaptix.toast.runtime.bean.TestLineDescriptor;
 @Singleton
 public class ActionAdaptaterLocators {
 
-	private final Map<String, ActionAdaptaterLocator> actionAdaptaterLocators;
-
 	@Inject
-	private FixtureServicesLocator fixtureServicesLocator;
+	private ActionAdaptaterLocator actionAdaptaterLocator;
+
+	private final Map<String, ActionAdaptaterLocator> actionAdaptaterLocators;
 
 	ActionAdaptaterLocators() {
 		this.actionAdaptaterLocators = new HashMap<>();
@@ -24,30 +24,24 @@ public class ActionAdaptaterLocators {
 
 	public ActionAdaptaterLocator getActionCommandDescriptor(
 			final TestBlock block,
-			final TestLine line,
-			final Injector injector
+			final TestLine line
 	) {
 
 		TestLineDescriptor testLineDescriptor = new TestLineDescriptor(block, line);
-		ActionAdaptaterLocator actionAdaptaterLocator = injector.getInstance(ActionAdaptaterLocator.class);
 		actionAdaptaterLocator.setTestLineDescriptor(testLineDescriptor);
 		return getActionCommandDescriptor(actionAdaptaterLocator);
 	}
 
-	public ActionAdaptaterLocator getActionCommandDescriptor(final TestLineDescriptor testLineDescriptor, final Injector injector) {
-		return getActionCommandDescriptor(new ActionAdaptaterLocator());
-	}
-
 	public ActionAdaptaterLocator getActionCommandDescriptor(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		final String name = Integer.toString(actionAdaptaterLocator.hashCode());
-		final ActionAdaptaterLocator findedActionAdaptaterLocator = actionAdaptaterLocators.get(name);
+		final ActionAdaptaterLocator foundActionAdapterLocator = actionAdaptaterLocators.get(name);
 
-		if (findedActionAdaptaterLocator == null) {
+		if (foundActionAdapterLocator == null) {
 			actionAdaptaterLocators.put(name, actionAdaptaterLocator);
 			actionAdaptaterLocator.findActionCommandDescriptor();
 			return actionAdaptaterLocator;
 		}
 
-		return findedActionAdaptaterLocator;
+		return foundActionAdapterLocator;
 	}
 }
