@@ -10,7 +10,7 @@ public class FixtureServicesLocator {
 
 	private final List<FixtureService> fixtureApiServices;
 	
-	public FixtureServicesLocator(final Injector injector) {
+	private FixtureServicesLocator(final Injector injector) {
 		this.fixtureApiServices = ActionAdapterCollector.listAvailableServicesByInjection(injector);
 	}
 	

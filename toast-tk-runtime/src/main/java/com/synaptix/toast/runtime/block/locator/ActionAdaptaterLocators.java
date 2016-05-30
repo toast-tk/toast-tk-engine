@@ -37,11 +37,13 @@ public class ActionAdaptaterLocators {
 	public ActionAdaptaterLocator getActionCommandDescriptor(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		final String name = Integer.toString(actionAdaptaterLocator.hashCode());
 		final ActionAdaptaterLocator findedActionAdaptaterLocator = actionAdaptaterLocators.get(name);
+
 		if(findedActionAdaptaterLocator == null) {
 			actionAdaptaterLocators.put(name, actionAdaptaterLocator);
 			actionAdaptaterLocator.findActionCommandDescriptor();
 			return actionAdaptaterLocator;
 		}
+
 		return findedActionAdaptaterLocator;
 	}
 }
