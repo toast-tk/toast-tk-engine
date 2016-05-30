@@ -1,23 +1,21 @@
 package com.synaptix.toast.runtime;
 
+import java.util.Map;
+
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.synaptix.toast.core.annotation.EngineEventBus;
 import com.synaptix.toast.core.event.TestProgressMessage;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
-import com.synaptix.toast.runtime.block.BlockRunnerProvider;
 import com.synaptix.toast.runtime.block.IBlockRunner;
 
 class TestRunner {
 
 	@Inject
-	private BlockRunnerProvider blockRunnerProvider;
+	private Map<Class, IBlockRunner> blockRunnerMap;
 
 	@Inject
 	private EventBus eventBus;
@@ -88,7 +86,7 @@ class TestRunner {
 				}
 			}
 			else {
-				final IBlockRunner blockRunner = blockRunnerProvider.getBlockRunner(block.getClass());
+				final IBlockRunner blockRunner = blockRunnerMap.get(block.getClass());
 				if(blockRunner != null){
 					blockRunner.run(block);
 				}
