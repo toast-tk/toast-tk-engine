@@ -52,7 +52,9 @@ public class CampaignDaoService extends AbstractMongoDaoService<Campaign> {
 	}
 
 	public ICampaign saveReference(final Campaign c) {
-		c.getTestCases().stream().forEach(t -> tService.saveReference(t));
+		final List<ITestPage> savedTestCases = new ArrayList<>(c.getTestCases().size());
+		c.getTestCases().stream().forEach(t -> savedTestCases.add(tService.saveReference(t)));
+		c.setTestCases(savedTestCases);
 		save(c);
 		return c;
 	}
