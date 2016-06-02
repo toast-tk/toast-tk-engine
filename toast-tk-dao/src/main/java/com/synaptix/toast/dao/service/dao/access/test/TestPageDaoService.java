@@ -12,6 +12,8 @@ import com.synaptix.toast.dao.service.dao.common.AbstractMongoDaoService;
 import com.synaptix.toast.dao.service.dao.common.CommonMongoDaoService;
 import com.synaptix.toast.dao.service.init.DbStarter;
 
+import java.util.List;
+
 public class TestPageDaoService extends AbstractMongoDaoService<TestPage> {
 
 	public interface Factory {
@@ -34,6 +36,14 @@ public class TestPageDaoService extends AbstractMongoDaoService<TestPage> {
 		query.field("name").equals(name);
 		return query.get();
 	}
+
+	public ITestPage getLastByName(final String name) {
+		final Query<TestPage> query = createQuery();
+		query.field("name").equal(name).order("-lastUpdated");
+		final List<TestPage> asList = query.asList();
+		return asList.get(0);
+	}
+
 
 	public ITestPage saveAsNewIteration(final ITestPage t) {
 		t.setId(null);
