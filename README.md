@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/toast-tk/toast-tk-engine.svg?branch=master)](https://travis-ci.org/talan-labs/toast-tk-engine)  
-[![Stories in Ready](https://badge.waffle.io/toast-tk/toast-tk-engine.svg?label=ready&title=Ready)](http://waffle.io/toast-tk/toast-tk-engine)
+[![Stories in Ready](https://badge.waffle.io/toast-tk/toast-tk-engine.svg?label=ready&title=Ready)](http://waffle.io/toast-tk/toast-tk-engine)  
+[![Gitter](https://badges.gitter.im/toast-tk/toast-tk-engine.svg)](https://gitter.im/toast-tk/toast-tk-engine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 # Toast Tk - Engine
 
