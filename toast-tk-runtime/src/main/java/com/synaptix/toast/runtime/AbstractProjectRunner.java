@@ -169,7 +169,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
     	final IProject project,
     	final boolean presetRepoFromWebApp
     )	throws Exception {
-    	final TestRunner runner = new TestRunner(injector);
+    	final TestRunner runner = injector.getInstance(TestRunner.class);
         if(presetRepoFromWebApp) {
         	LOG.debug("Preset repository from webapp rest api...");
         	final String repoWiki = RestUtils.downloadRepositoryAsWiki();

@@ -2,7 +2,6 @@ package com.synaptix.toast.runtime.action.item;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.inject.Injector;
 import com.synaptix.toast.adapter.swing.component.DefaultSwingPage;
 import com.synaptix.toast.core.runtime.ISwingAutoElement;
 import com.synaptix.toast.runtime.IActionItemRepository;
@@ -10,16 +9,13 @@ import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 
 public class SwingValueHandler implements IValueHandler{
 
-	private Injector injector;
-
 	private ArgumentDescriptor descriptor;
 
 	private IActionItemRepository objectRepository;
 
 	@Override
-	public void setInjector(final Injector injector) {
-		this.injector = injector;
-		this.objectRepository = injector.getInstance(IActionItemRepository.class);
+	public void setRepository(final IActionItemRepository objectRepository) {
+		this.objectRepository = objectRepository;
 	}
 
 	@Override

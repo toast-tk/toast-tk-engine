@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.synaptix.toast.runtime.bean.ActionItem.ActionTypeEnum;
+import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 
 public class ActionItemValueProvider {
@@ -31,12 +32,12 @@ public class ActionItemValueProvider {
 		map.put(ActionTypeEnum.swing, new SwingValueHandler());
 	}
 
-	public IValueHandler get(ArgumentDescriptor descriptor, Injector injector) {
+	public IValueHandler get(ArgumentDescriptor descriptor, IActionItemRepository repository) {
 		IValueHandler handler = null;
 		if(descriptor != null && descriptor.typeEnum != null){
 			handler = map.get(descriptor.typeEnum);
 			if(handler != null){
-				handler.setInjector(injector);
+				handler.setRepository(repository);
 				handler.setArgumentDescriptor(descriptor);
 			}
 			else{

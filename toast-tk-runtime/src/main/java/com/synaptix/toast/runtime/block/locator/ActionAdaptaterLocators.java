@@ -3,45 +3,47 @@ package com.synaptix.toast.runtime.block.locator;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 import com.synaptix.toast.runtime.bean.TestLineDescriptor;
 
+@Singleton
 public class ActionAdaptaterLocators {
 
-	private static final ActionAdaptaterLocators INSTANCE = new ActionAdaptaterLocators();
-	
-	public static ActionAdaptaterLocators getInstance() {
-		return INSTANCE;
-	}
-	
+	@Inject
+	private ActionAdaptaterLocator actionAdaptaterLocator;
+
 	private final Map<String, ActionAdaptaterLocator> actionAdaptaterLocators;
-	
+
 	ActionAdaptaterLocators() {
 		this.actionAdaptaterLocators = new HashMap<>();
 	}
-	
+
 	public ActionAdaptaterLocator getActionCommandDescriptor(
-			final TestBlock block, 
-			final TestLine line,
-			final Injector injector
+			final TestBlock block,
+			final TestLine line
 	) {
-		return getActionCommandDescriptor(new ActionAdaptaterLocator(new TestLineDescriptor(block, line), injector));
+
+		TestLineDescriptor testLineDescriptor = new TestLineDescriptor(block, line);
+		actionAdaptaterLocator.setTestLineDescriptor(testLineDescriptor);
+		actionAdaptaterLocator.findActionCommandDescriptor();
+		return actionAdaptaterLocator;
 	}
-	
-	public ActionAdaptaterLocator getActionCommandDescriptor(final TestLineDescriptor testLineDescriptor, final Injector injector) {
-		return getActionCommandDescriptor(new ActionAdaptaterLocator(testLineDescriptor, injector));
-	}
-	
-	public ActionAdaptaterLocator getActionCommandDescriptor(final ActionAdaptaterLocator actionAdaptaterLocator) {
+
+	//FIXME: review the hashcode mechanism
+	/*public ActionAdaptaterLocator getActionCommandDescriptor(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		final String name = Integer.toString(actionAdaptaterLocator.hashCode());
-		final ActionAdaptaterLocator findedActionAdaptaterLocator = actionAdaptaterLocators.get(name);
-		if(findedActionAdaptaterLocator == null) {
+		final ActionAdaptaterLocator foundActionAdapterLocator = actionAdaptaterLocators.get(name);
+
+		if (foundActionAdapterLocator == null) {
 			actionAdaptaterLocators.put(name, actionAdaptaterLocator);
 			actionAdaptaterLocator.findActionCommandDescriptor();
 			return actionAdaptaterLocator;
 		}
-		return findedActionAdaptaterLocator;
-	}
+
+		return foundActionAdapterLocator;
+	}*/
 }
