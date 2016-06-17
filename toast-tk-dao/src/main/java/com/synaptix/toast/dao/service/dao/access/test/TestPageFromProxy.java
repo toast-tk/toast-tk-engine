@@ -16,6 +16,7 @@ public class TestPageFromProxy {
 		page.setBlocks(testPage.getBlocks());
 		page.setId(testPage.getIdAsString());
 		page.setIsSuccess(testPage.isSuccess());
+		page.setIsFatal(testPage.isFatal());
 		page.setPreviousIsSuccess(testPage.isPreviousIsSuccess());
 		page.setParsingErrorMessage(testPage.getParsingErrorMessage());
 		page.setPreviousExecutionTime(testPage.getPreviousExecutionTime());

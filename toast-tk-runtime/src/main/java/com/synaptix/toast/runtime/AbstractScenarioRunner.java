@@ -47,7 +47,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
         final EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
         this.progressReporter = new DefaultTestProgressReporter(eventBus);
     }
-    
+
     protected AbstractScenarioRunner() {
     	super();
         this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);

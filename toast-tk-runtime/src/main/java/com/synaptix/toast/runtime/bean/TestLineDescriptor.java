@@ -88,7 +88,7 @@ public class TestLineDescriptor {
 	}
 
 	public boolean isFailFatalCommand() {
-		return testLineAction.startsWith("* ");
+		return testLineAction.startsWith("! ");
 	}
 
 	public String getActionImpl() {

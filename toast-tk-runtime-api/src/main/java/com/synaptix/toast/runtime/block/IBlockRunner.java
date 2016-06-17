@@ -5,7 +5,7 @@ import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 
 public interface IBlockRunner<E extends IBlock> {
 	
-	void run(final E block);
+	public void run(E block) throws FatalExcecutionError;
 
 	void setInjector(final Injector injector);
 }

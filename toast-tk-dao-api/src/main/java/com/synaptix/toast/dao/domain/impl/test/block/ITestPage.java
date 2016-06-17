@@ -53,4 +53,8 @@ public interface ITestPage extends IBlock {
 	public boolean isSuccess();
 
 	void setIsSuccess(final boolean isSuccess);
+
+	void setIsFatal(boolean isFatal);
+
+	boolean isFatal();
 }

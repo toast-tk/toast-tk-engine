@@ -55,7 +55,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	private Injector injector;
 
 	private EventBus eventBus;
-
+	
 	@Override
 	public void run(final TestBlock block) {
 		block.getBlockLines().stream().forEach(line -> invokeTestAndAddResult(block, line));
@@ -145,6 +145,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			result.setIsError(false);
 			result.setIsFailure(false);
 			result.setResultKind(ResultKind.FATAL);
+			throw new FatalExcecutionError();
 		}
 	}
 
@@ -381,3 +382,4 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		this.actionItemValueProvider = repository;
 	}
 }
+
