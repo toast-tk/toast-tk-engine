@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,7 +30,7 @@ public class AdaptersConfigProvider implements Provider<AdaptersConfig> {
 		catch(final IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
-		this.config = new AdaptersConfig(p.getProperty("web.driver", "Chrome"), p.getProperty("web.driver.path"), Boolean.getBoolean("web.driver.ssl"));
+		this.config = new AdaptersConfig(p.getProperty("web.driver", "Chrome"), p.getProperty("web.driver.path"), p.getProperty("browser.path"), Boolean.getBoolean("web.driver.ssl"));
 	}
 
 	@Override
