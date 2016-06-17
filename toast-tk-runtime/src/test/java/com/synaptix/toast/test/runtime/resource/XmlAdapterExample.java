@@ -16,40 +16,35 @@ public class XmlAdapterExample {
 		return new SuccessResult();
 	}
 	
-	@Action(
-			id="integrate2",
+	@Action(id="integrate2",
 			action="Integrate {{value:xml}}", 
 			description="Intégrer xml avec type non defini")
 	public ITestResult integrateNameLessXml(ProjetFlux fluxFromXml){
 		return new SuccessResult();
 	}
 	
-	@Action(
-			id="integrate3",
+	@Action(id="integrate3",
 			action="Integrate {{value:xml}} as {{value}}", 
 			description="Intégrer xml avec type non defini")
 	public ITestResult integrateXmlAsVar(ProjetFlux fluxFromXml, String variable){
 		return new SuccessResult();
 	}
 	
-	@Action(
-			id="compare1",
+	@Action(id="compare1",
 			action="{{value}} == {{value}}", 
 			description="comparer une valeur à une autre")
 	public void compare(String var1, String var2){
 
 	}
 	
-	@Action(
-			id="doValue",
+	@Action(id="doValue",
 			action="do {{value}}", 
 			description="comparer une valeur à une autre")
 	public String returnString(String var1){
 		return var1;
 	}
 	
-	@Action(
-			id="errorValue",
+	@Action(id="errorValue",
 			action="assert {{value}}", 
 			description="comparer une valeur à une autre")
 	public void assertErrorTest(String var1){
