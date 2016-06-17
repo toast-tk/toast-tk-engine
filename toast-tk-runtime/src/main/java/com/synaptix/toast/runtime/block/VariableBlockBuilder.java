@@ -34,7 +34,7 @@ public class VariableBlockBuilder implements IBlockRunner<VariableBlock>{
 	}
 	
 	@Override
-	public void setInjector(final Injector injector) {
-		this.objectRepository = injector.getInstance(IActionItemRepository.class);
+	public void setRepository(final IActionItemRepository objectRepository) {
+		this.objectRepository = objectRepository;
 	}
 }

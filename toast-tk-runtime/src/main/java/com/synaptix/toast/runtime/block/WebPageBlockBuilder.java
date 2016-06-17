@@ -1,7 +1,6 @@
 package com.synaptix.toast.runtime.block;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.synaptix.toast.adapter.web.component.DefaultWebPage;
 import com.synaptix.toast.dao.domain.impl.test.block.WebPageBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.WebPageConfigLine;
@@ -32,7 +31,7 @@ public  class WebPageBlockBuilder implements IBlockRunner<WebPageBlock>{
 	}
 
 	@Override
-	public void setInjector(final Injector injector) {
-		this.objectRepository = injector.getInstance(IActionItemRepository.class);
+	public void setRepository(final IActionItemRepository objectRepository) {
+		this.objectRepository = objectRepository;
 	}
 }

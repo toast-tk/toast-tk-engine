@@ -1,12 +1,10 @@
 package com.synaptix.toast.runtime.action.item;
 
-import com.google.inject.Injector;
+
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
 
 public class StringValueHandler implements IValueHandler{
-
-	private Injector injector;
 
 	private ArgumentDescriptor descriptor;
 
@@ -24,8 +22,7 @@ public class StringValueHandler implements IValueHandler{
 	}
 	
 	@Override
-	public void setInjector(final Injector injector) {
-		this.injector = injector;
-		this.objectRepository = injector.getInstance(IActionItemRepository.class);
+	public void setRepository(final IActionItemRepository objectRepository) {
+		this.objectRepository = objectRepository;
 	}
 }

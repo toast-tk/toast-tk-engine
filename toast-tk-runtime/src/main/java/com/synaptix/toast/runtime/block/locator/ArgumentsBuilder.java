@@ -16,19 +16,15 @@ public class ArgumentsBuilder {
 	
 	private final ActionItemValueProvider actionItemValueProvider;
 	
-	private final Injector injector;
-	
 	private final IActionItemRepository objectRepository;
 	
 	public ArgumentsBuilder(
 		final ActionCommandDescriptor execDescriptor,
 		final ActionItemValueProvider actionItemValueProvider,
-		final Injector injector,
 		final IActionItemRepository objectRepository
 	) {
 		this.execDescriptor = execDescriptor;
 		this.actionItemValueProvider = actionItemValueProvider;
-		this.injector = injector;
 		this.objectRepository = objectRepository;
 	}
 	
@@ -43,7 +39,7 @@ public class ArgumentsBuilder {
 				final String argValue = (String) obj;
 				final ArgumentDescriptor argumentDescriptor = execDescriptor.descriptor.arguments.get(index);
 				final int argIndex = execDescriptor.isMappedMethod() ? argumentDescriptor.index : index;
-				final IValueHandler valueHandlder = actionItemValueProvider.get(argumentDescriptor, injector);
+				final IValueHandler valueHandlder = actionItemValueProvider.get(argumentDescriptor, objectRepository);
 				final Object argument = valueHandlder == null ? group : valueHandlder.handle(group, argValue);
 				checkIfArgumentIsNull(argValue, argument);
 				args[argIndex] = argument;

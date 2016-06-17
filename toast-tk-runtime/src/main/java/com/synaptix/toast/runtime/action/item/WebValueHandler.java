@@ -16,16 +16,13 @@ import com.synaptix.toast.runtime.bean.ArgumentDescriptor;
  */
 public class WebValueHandler implements IValueHandler{
 
-	private Injector injector;
-
 	private ArgumentDescriptor descriptor;
 
 	private IActionItemRepository objectRepository;
 
 	@Override
-	public void setInjector(final Injector injector) {
-		this.injector = injector;
-		this.objectRepository = injector.getInstance(IActionItemRepository.class);
+	public void setRepository(final IActionItemRepository objectRepository) {
+		this.objectRepository = objectRepository;
 	}
 
 	@Override

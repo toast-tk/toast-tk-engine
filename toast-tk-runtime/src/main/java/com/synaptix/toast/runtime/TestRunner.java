@@ -1,41 +1,26 @@
 package com.synaptix.toast.runtime;
 
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.Map;
 
-import com.google.common.base.Objects;
 import com.google.common.eventbus.EventBus;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.synaptix.toast.core.annotation.EngineEventBus;
-import com.synaptix.toast.core.event.TestProgressMessage;
+import com.google.inject.Inject;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
-import com.synaptix.toast.runtime.block.BlockRunnerProvider;
 import com.synaptix.toast.runtime.block.FatalExcecutionError;
+
 import com.synaptix.toast.runtime.block.IBlockRunner;
 
 class TestRunner {
 
-	private BlockRunnerProvider blockRunnerProvider;
+	@Inject
+	private Map<Class, IBlockRunner> blockRunnerMap;
 
-	private Injector injector;
-
+	@Inject
 	private EventBus eventBus;
-
-	public TestRunner(final Injector injector){
-		this.setInjector(injector);
-	}
-
-	private void setInjector(final Injector injector) {
-		this.injector = injector;
-		this.blockRunnerProvider = injector.getInstance(BlockRunnerProvider.class);
-		this.eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
-	}
 
 	/**
 	 * Execute the different blocks within the test page
@@ -105,7 +90,7 @@ class TestRunner {
 				run((ITestPage) block);
 			}
 			else {
-				final IBlockRunner blockRunner = blockRunnerProvider.getBlockRunner(block.getClass(), injector);
+				final IBlockRunner blockRunner = blockRunnerMap.get(block.getClass());
 				if(blockRunner != null && !fatalExec){
 					try {
 						blockRunner.run(block);
@@ -113,6 +98,7 @@ class TestRunner {
 						fatalExec = true;
 					}
 				}
+
 			}
 		}
 	}

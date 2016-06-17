@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.multibindings.MapBinder;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.SwingPageBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
@@ -19,9 +20,9 @@ public class BlockRunnerProvider {
 	private static final Logger LOG = LogManager.getLogger(BlockRunnerProvider.class);
 
 	private Map<Class<? extends IBlock>, IBlockRunner<? extends IBlock>> blockMap;
-	
+
 	@Inject
-	public BlockRunnerProvider(){
+	public BlockRunnerProvider() {
 		this.blockMap = new HashMap<>();
 		initBlockMap();
 	}
@@ -32,16 +33,10 @@ public class BlockRunnerProvider {
 		blockMap.put(SwingPageBlock.class, new SwingPageBlockBuilder());
 		blockMap.put(VariableBlock.class, new VariableBlockBuilder());
 	}
-		
-	public IBlockRunner<? extends IBlock> getBlockRunner(
-		final Class<? extends IBlock> clazz, 
-		final Injector injector
-	) {
+
+	public IBlockRunner<? extends IBlock> getBlockRunner(final Class<? extends IBlock> clazz) {
 		final IBlockRunner<? extends IBlock> runner = blockMap.get(clazz);
-		if(runner != null) {
-			runner.setInjector(injector);
-		}
-		else {
+		if (runner == null) {
 			LOG.warn("No runner found for : {}", clazz.getSimpleName());
 		}
 		return runner;

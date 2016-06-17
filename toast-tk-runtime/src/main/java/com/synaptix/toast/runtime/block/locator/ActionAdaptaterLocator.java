@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.ConfigurationException;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.synaptix.toast.adapter.FixtureService;
 import com.synaptix.toast.adapter.cache.ToastCache;
@@ -35,46 +36,39 @@ public class ActionAdaptaterLocator {
 
 	private static final Logger LOG = LogManager.getLogger(ActionAdaptaterLocator.class);
 
-	private final TestLineDescriptor testLineDescriptor;
-
-	private final Injector injector;
-	
-	private FixtureServicesLocator fixtureServicesLocator;
+	private TestLineDescriptor testLineDescriptor;
 
 	private ActionCommandDescriptor actionCommandDescriptor;
-	
+
 	private Object instance;
-	
+
 	private Class<?> actionAdaptaterClass;
-	
-	public ActionAdaptaterLocator(
-		final TestLineDescriptor testLineDescriptor,
-		final Injector injector
-	) {
-		this.testLineDescriptor = Objects.requireNonNull(testLineDescriptor, "ActionAdaptaterLocator.testLineDescriptor is null");
-		this.injector = Objects.requireNonNull(injector, "ActionAdaptaterLocator.injector is null");
-		this.fixtureServicesLocator = FixtureServicesLocator.getFixtureServicesLocator(injector);
-	}
+
+	@Inject
+	private Injector injector;
+
+	@Inject
+	private FixtureServicesLocator fixtureServicesLocator;
 
 	private Class<?> locateActionAdapter() throws NoActionAdapterFound {
 		Class<?> actionAdapter = pickActionAdapterByNameAndKind();
-		if(actionAdapter == null) {
+		if (actionAdapter == null) {
 			actionAdapter = pickActionAdapterByKind();
 		}
 		if(actionAdapter == null) {
 			throw new NoActionAdapterFound(testLineDescriptor.getActionImpl());
 		}
+
 		instance = getClassInstance(actionAdapter);
-		
+
 		return actionAdapter;
 	}
-	
+
 	private Object getClassInstance(final Class<?> clz) {
-		if(injector != null && clz != null) {
+		if (injector != null && clz != null) {
 			try {
 				return injector.getInstance(clz);
-			} 
-			catch(final ConfigurationException e) {
+			} catch (final ConfigurationException e) {
 				LOG.error(e.getMessage(), e);
 				return null;
 			}
@@ -85,10 +79,10 @@ public class ActionAdaptaterLocator {
 	private Class<?> pickActionAdapterByKind() {
 		final Set<Class<?>> serviceClasses = new HashSet<>(collectActionAdaptersByKind());
 		final int nbServiceClasses = serviceClasses.size();
-		if(nbServiceClasses > 1) {
+		if (nbServiceClasses > 1) {
 			LOG.warn("Multiple Adapters found for: {}", testLineDescriptor.getActionImpl());
 		}
-		if(nbServiceClasses > 0) {
+		if (nbServiceClasses > 0) {
 			return serviceClasses.iterator().next();
 		}
 		return null;
@@ -96,9 +90,9 @@ public class ActionAdaptaterLocator {
 
 	private Class<?> pickActionAdapterByNameAndKind() {
 		final Set<Class<?>> serviceClasses = new HashSet<>(collectActionAdaptersByNameAndKind());
-		final int nbServiceClasse = serviceClasses.size(); 
-		if(nbServiceClasse > 0) {
-			if(nbServiceClasse > 1) {
+		final int nbServiceClasse = serviceClasses.size();
+		if (nbServiceClasse > 0) {
+			if (nbServiceClasse > 1) {
 				LOG.warn("Multiple Adapters found for: {}", testLineDescriptor.getActionImpl());
 			}
 			return serviceClasses.iterator().next();
@@ -113,21 +107,21 @@ public class ActionAdaptaterLocator {
 	}
 
 	private void addFixtureByFixtureKind(
-		final ActionAdapterKind fixtureKind,
-		final Set<Class<?>> serviceClasses,
-		final FixtureService fixtureService
+			final ActionAdapterKind fixtureKind,
+			final Set<Class<?>> serviceClasses,
+			final FixtureService fixtureService
 	) {
-		if(sameFixtureKind(fixtureKind, fixtureService)) {
+		if (sameFixtureKind(fixtureKind, fixtureService)) {
 			final ActionCommandDescriptor methodAndMatcher = findMatchingAction(fixtureService.clazz);
-			if(methodAndMatcher != null) {
+			if (methodAndMatcher != null) {
 				serviceClasses.add(fixtureService.clazz);
 			}
 		}
 	}
 
 	private static boolean sameFixtureKind(
-		final ActionAdapterKind fixtureKind,
-		final FixtureService fixtureService
+			final ActionAdapterKind fixtureKind,
+			final FixtureService fixtureService
 	) {
 		return fixtureService.fixtureKind.equals(fixtureKind);
 	}
@@ -139,12 +133,12 @@ public class ActionAdaptaterLocator {
 	}
 
 	private void addFixtureByFixtureKindAndName(
-		final Set<Class<?>> serviceClasses,
-		final FixtureService fixtureService
+			final Set<Class<?>> serviceClasses,
+			final FixtureService fixtureService
 	) {
-		if(sameKindAndName(fixtureService)) {
+		if (sameKindAndName(fixtureService)) {
 			final ActionCommandDescriptor methodAndMatcher = findMatchingAction(fixtureService.clazz);
-			if(methodAndMatcher != null) {
+			if (methodAndMatcher != null) {
 				serviceClasses.add(fixtureService.clazz);
 			}
 		}
@@ -154,14 +148,16 @@ public class ActionAdaptaterLocator {
 		return fixtureService.fixtureKind.equals(testLineDescriptor.getTestLineFixtureKind()) && fixtureService.fixtureName.equals(testLineDescriptor.getTestLineFixtureName());
 	}
 
+
 	public ActionCommandDescriptor findActionCommandDescriptor() throws NoActionAdapterFound {
-		return actionCommandDescriptor == null ? actionCommandDescriptor = findMatchingAction(actionAdaptaterClass = locateActionAdapter()) : actionCommandDescriptor;
-	}
-	
-	public ActionCommandDescriptor getActionCommandDescriptor() {
+		this.actionCommandDescriptor = findMatchingAction(actionAdaptaterClass = locateActionAdapter());
 		return actionCommandDescriptor;
 	}
 	
+	public ActionCommandDescriptor getActionCommandDescriptor(){
+		return actionCommandDescriptor;
+	}
+
 	public Object getInstance() {
 		return instance;
 	}
@@ -169,28 +165,27 @@ public class ActionAdaptaterLocator {
 	public TestLineDescriptor getTestLineDescriptor() {
 		return testLineDescriptor;
 	}
-	
+
 	public Class<?> getActionAdaptaterClass() {
 		return actionAdaptaterClass;
 	}
 	
 	private ActionCommandDescriptor findMatchingAction(final Class<?> actionAdapterClass)  {
-		//if(actionAdapterClass == null) throw new NoActionAdapterFound();
 		final List<Method> actionMethods = ToastCache.getInstance().getActionMethodsByClass(actionAdapterClass);
 		final ActionAdapter adapter = actionAdapterClass.getAnnotation(ActionAdapter.class);
-		for(final Method actionMethod : actionMethods) {
+		for (final Method actionMethod : actionMethods) {
 			final Action mainAction = actionMethod.getAnnotation(Action.class);
 			ActionCommandDescriptor foundMethod = matchMethod(testLineDescriptor.getActionImpl(), mainAction.action(), actionMethod);
-			if(foundMethod != null) {
+			if (foundMethod != null) {
 				return foundMethod;
-			}
-			else if(adapter != null && hasMapping(mainAction, adapter)) {
+			} else if (adapter != null && hasMapping(mainAction, adapter)) {
 				foundMethod = matchAgainstActionIdMapping(testLineDescriptor.getActionImpl(), adapter.name(), actionMethod, mainAction);
 				if (foundMethod != null) {
 					return foundMethod;
 				}
 			}
 		}
+		
 		if(actionAdapterClass.getSuperclass() != null && !actionAdapterClass.getSuperclass().equals(Object.class)) {
 			return findMatchingAction(actionAdapterClass.getSuperclass());
 		}
@@ -198,16 +193,16 @@ public class ActionAdaptaterLocator {
 	}
 
 	private static ActionCommandDescriptor matchAgainstActionIdMapping(
-		final String actionImpl, 
-		final String adapterName,
-		final Method actionMethod, 
-		final Action mainAction
+			final String actionImpl,
+			final String adapterName,
+			final Method actionMethod,
+			final Action mainAction
 	) {
 		final String actionMapping = ActionSentenceMappingProvider.getMappingForAction(adapterName, mainAction.id());
 		final String alternativeAction = buildSubstituteAction(mainAction, actionMapping);
 		//TODO: change mapping index position
 		final ActionCommandDescriptor foundMethod = matchMethod(actionImpl, alternativeAction, actionMethod);
-		if(foundMethod != null) {
+		if (foundMethod != null) {
 			foundMethod.setIsMappedMethod(true);
 			foundMethod.setActionMapping(actionMapping);
 			updateArgumentIndex(foundMethod);
@@ -219,26 +214,26 @@ public class ActionAdaptaterLocator {
 		final Matcher matcher = REGEX_PATTERN.matcher(foundMethod.getActionMapping());
 		int pos = 0;
 		final List<Integer> indexes = buildIndexes(matcher);
-		for(final ArgumentDescriptor aDescriptor : foundMethod.descriptor.arguments) {
+		for (final ArgumentDescriptor aDescriptor : foundMethod.descriptor.arguments) {
 			aDescriptor.index = indexes.get(pos++) - 1;
 		}
 	}
 
 	private static List<Integer> buildIndexes(final Matcher matcher) {
 		final List<Integer> indexes = new ArrayList<>();
-		while(matcher.find()) {
+		while (matcher.find()) {
 			indexes.add(Integer.valueOf(matcher.group(1)));
 		}
 		return indexes;
 	}
 
 	private static String buildSubstituteAction(
-		final Action mainAction, 
-		String mapping
+			final Action mainAction,
+			String mapping
 	) {
 		final Matcher matcher = ActionItemRegexHolder.getFullMetaPattern().matcher(mainAction.action());
 		final List<ActionIndex> actionItems = buildActionIndexes(matcher);
-		for(final ActionIndex actionItem : actionItems) {
+		for (final ActionIndex actionItem : actionItems) {
 			final String index = "$" + (actionItems.indexOf(actionItem) + 1);
 			mapping = mapping.replace(index, actionItem.item);
 		}
@@ -247,22 +242,22 @@ public class ActionAdaptaterLocator {
 
 	private static List<ActionIndex> buildActionIndexes(final Matcher matcher) {
 		final List<ActionIndex> actionItems = new ArrayList<>();
-		while(matcher.find()) {
+		while (matcher.find()) {
 			actionItems.add(new ActionIndex(matcher.group(0), matcher.start(), matcher.end()));
 		}
 		return actionItems;
 	}
 
 	private static boolean hasMapping(
-		final Action mainAction, 
-		final ActionAdapter adapter
+			final Action mainAction,
+			final ActionAdapter adapter
 	) {
-		return 
+		return
 				adapter != null
-				&& 
-				hasId(mainAction)
-				&& 
-				ActionSentenceMappingProvider.hasMappingForAction(adapter.name(), mainAction.id())
+						&&
+						hasId(mainAction)
+						&&
+						ActionSentenceMappingProvider.hasMappingForAction(adapter.name(), mainAction.id())
 				;
 	}
 
@@ -271,16 +266,16 @@ public class ActionAdaptaterLocator {
 	}
 
 	private static ActionCommandDescriptor matchMethod(
-		final String actionImpl,
-		final String actionTpl,
-		final Method actionMethod
+			final String actionImpl,
+			final String actionTpl,
+			final Method actionMethod
 	) {
 		final CommandArgumentDescriptor commandDescriptor = ArgumentHelper.convertActionSentenceToRegex(actionTpl);
 		final Matcher methodMatcher = buildMethodMatcher(actionImpl, commandDescriptor);
-		if(methodMatcher.matches()) {
+		if (methodMatcher.matches()) {
 			final Matcher varMatcher = buildVarMatcher(actionImpl);
 			int pos = 0;
-			while(varMatcher.find()) {
+			while (varMatcher.find()) {
 				final ArgumentDescriptor argumentDescriptor = commandDescriptor.arguments.get(pos);
 				setVarName(varMatcher, argumentDescriptor);
 				setParameterClassName(actionMethod, pos, argumentDescriptor);
@@ -292,18 +287,18 @@ public class ActionAdaptaterLocator {
 	}
 
 	private static void setVarName(
-		final Matcher varMatcher,
-		final ArgumentDescriptor argumentDescriptor
+			final Matcher varMatcher,
+			final ArgumentDescriptor argumentDescriptor
 	) {
 		argumentDescriptor.varName = varMatcher.group(1);
 	}
 
 	private static void setParameterClassName(
-		final Method actionMethod,
-		final int pos, 
-		final ArgumentDescriptor argumentDescriptor
+			final Method actionMethod,
+			final int pos,
+			final ArgumentDescriptor argumentDescriptor
 	) {
-		if(argumentDescriptor.name == null) {
+		if (argumentDescriptor.name == null) {
 			final Parameter parameter = actionMethod.getParameters()[pos];
 			argumentDescriptor.name = parameter.getType().getName();
 		}
@@ -315,20 +310,24 @@ public class ActionAdaptaterLocator {
 	}
 
 	private static Matcher buildMethodMatcher(
-		final String actionImpl,
-		final CommandArgumentDescriptor commandDescriptor
+			final String actionImpl,
+			final CommandArgumentDescriptor commandDescriptor
 	) {
 		final Pattern regexPattern = Pattern.compile(commandDescriptor.regex);
 		return regexPattern.matcher(actionImpl);
 	}
 	
+	public void setTestLineDescriptor(TestLineDescriptor testLineDescriptor) {
+		this.testLineDescriptor = testLineDescriptor;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(testLineDescriptor);
 	}
-	
+
 	@Override
 	public boolean equals(final Object obj) {
-		return obj instanceof ActionAdaptaterLocator ? Objects.equals(testLineDescriptor, ((ActionAdaptaterLocator) obj).testLineDescriptor) : false; 
+		return obj instanceof ActionAdaptaterLocator ? Objects.equals(testLineDescriptor, ((ActionAdaptaterLocator) obj).testLineDescriptor) : false;
 	}
 }

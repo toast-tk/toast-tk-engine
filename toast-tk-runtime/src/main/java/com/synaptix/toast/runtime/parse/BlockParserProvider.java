@@ -1,6 +1,7 @@
 package com.synaptix.toast.runtime.parse;
 
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,11 +21,11 @@ public class BlockParserProvider {
 
     private static final Logger LOG = LogManager.getLogger(BlockParserProvider.class);
 
-    private Map<BlockType, IBlockParser> map;
+    private Map<BlockType,IBlockParser> map;
 
     @Inject
     public BlockParserProvider() {
-        this.map = new HashMap<>(10);
+        this.map = new EnumMap<>(BlockType.class);
         fillBlockTypeMap();
     }
 

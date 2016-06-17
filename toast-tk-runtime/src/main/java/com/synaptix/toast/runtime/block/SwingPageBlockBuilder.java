@@ -19,7 +19,7 @@ public class SwingPageBlockBuilder implements IBlockRunner<SwingPageBlock> {
 	}
 	
 	@Override
-	public void setInjector(Injector injector) {
-		this.objectRepository = injector.getInstance(IActionItemRepository.class);
+	public void setRepository(final IActionItemRepository objectRepository) {
+		this.objectRepository = objectRepository;
 	}
 }
