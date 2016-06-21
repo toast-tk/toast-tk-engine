@@ -1,5 +1,6 @@
 package com.synaptix.toast.runtime.core.parse;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +21,7 @@ public class SwingPageSetupBlockParser implements IBlockParser {
     @Override
     public IBlock digest(
     	final List<String> strings, 
-    	final String path
+    	final InputStream input
     ) {
     	final String firstLine = strings.get(0);
         if (!firstLine.startsWith("||")) {

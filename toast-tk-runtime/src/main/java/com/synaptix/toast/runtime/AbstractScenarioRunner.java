@@ -1,25 +1,11 @@
 package com.synaptix.toast.runtime;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -81,8 +67,8 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		initEnvironment();
 		for (final String fileName : scenarios) {
 			LOG.info("Start main test parser: {}", fileName);
-			final File file = readTestFile(fileName);
-			final ITestPage result = runScript(file, fileName);
+			InputStream inputStream = readTestFile(fileName);
+			final ITestPage result = runScript(inputStream, fileName);
 			testPages.add(result);
 		}
 		tearDownEnvironment();
@@ -115,47 +101,28 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		runScript(null, wikiScenario);
 	}
 
-	private File readTestFile(
-			final String fileName
-	) throws IOException, URISyntaxException {
-		InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream(fileName);
-
-		final File tempFile = File.createTempFile("test", "tmp");
-		tempFile.deleteOnExit();
-		try (FileOutputStream out = new FileOutputStream(tempFile)) {
-			IOUtils.copy(resourceAsStream, out);
-		}
-		return tempFile;
-
-//		final URI uri = resource.toURI();
-//		final Map<String, String> env = new HashMap<>();
-//		final String[] array = uri.toString().split("!");
-//		final FileSystem fs = FileSystems.newFileSystem(URI.create(array[0]), env);
-//		final Path path = fs.getPath(array[1]);
+	private InputStream readTestFile(final String fileName) throws IOException, URISyntaxException {
+		return this.getClass().getClassLoader().getResourceAsStream(fileName);
 	}
 
-    private ITestPage runScript(
-    	final File file,
-    	final String script
-    ) throws IOException {
-    	final TestParser testParser = new TestParser();
-        ITestPage result = file == null ? testParser.readString(script, null) : testParser.parse(file.getPath());
-        final TestRunner runner = injector.getInstance(TestRunner.class);
-        if(this.presetRepoFromWebApp) {
-        	final String repoWiki = RestUtils.downloadRepositoryAsWiki();
-        	final TestParser parser = new TestParser();
-        	final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
-            runner.run(repoAsTestPageForConvenience);
-        } 
-        else if (this.localRepositoryTestPage != null) {
-            runner.run(this.localRepositoryTestPage);
-        }
-        beginTest();
-        result = runner.run(result);
-        createAndOpenReport(result);
-        endTest();
-        return result;
-    }
+	private ITestPage runScript(final InputStream scriptInputStream, final String script) throws IOException {
+		final TestParser testParser = new TestParser();
+		ITestPage result = file == null ? testParser.readString(script, null) : testParser.parse(scriptInputStream);
+		final TestRunner runner = new TestRunner(injector);
+		if (this.presetRepoFromWebApp) {
+			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
+			final TestParser parser = new TestParser();
+			final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
+			runner.run(repoAsTestPageForConvenience);
+		} else if (this.localRepositoryTestPage != null) {
+			runner.run(this.localRepositoryTestPage);
+		}
+		beginTest();
+		result = runner.run(result);
+		createAndOpenReport(result);
+		endTest();
+		return result;
+	}
 
 	private void createAndOpenReport(
 			final ITestPage testPage

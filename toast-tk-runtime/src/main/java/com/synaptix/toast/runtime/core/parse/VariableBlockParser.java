@@ -36,7 +36,7 @@ public class VariableBlockParser implements IBlockParser {
     @Override
     public IBlock digest(
     	final List<String> strings, 
-    	final String path
+    	final InputStream input
     ) throws IOException {
     	final VariableBlock variableBlock = new VariableBlock();
         for(final Iterator<String> iterator = strings.iterator(); iterator.hasNext(); ) {

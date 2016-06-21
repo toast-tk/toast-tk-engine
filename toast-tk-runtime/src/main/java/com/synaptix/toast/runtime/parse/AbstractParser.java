@@ -1,10 +1,10 @@
 package com.synaptix.toast.runtime.parse;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synaptix.toast.dao.domain.BlockType;
@@ -19,16 +19,6 @@ public class AbstractParser {
         this.blockParserProvider = new BlockParserProvider();
     }
 
-    protected static String cleanPath(final String path) {
-    	if(SystemUtils.IS_OS_UNIX) {
-    		return path;
-    	}
-    	else if (path.startsWith("\\") || path.startsWith("/")) {
-            return path.substring(1);
-        }
-        return path;
-    }
-
     protected static void removeBom(final List<String> list) {
     	final String firstLine = list.get(0);
         if(firstLine.startsWith("\uFEFF")) {
@@ -38,7 +28,7 @@ public class AbstractParser {
 
     protected IBlock readBlock(
     	final List<String> list, 
-    	final String path
+    	final InputStream input
     ) throws IllegalArgumentException, IOException {
     	final String firstLine = list.get(0);
     	final BlockType blockType = getBlockType(firstLine);
@@ -49,7 +39,7 @@ public class AbstractParser {
         if (blockParser == null) {
         	throw new IllegalArgumentException("Could not parse line: " + firstLine);
         }
-        return blockParser.digest(list, path);
+        return blockParser.digest(list, input);
     }
 
     private IBlock digestCommentBlock(final List<String> lines) {

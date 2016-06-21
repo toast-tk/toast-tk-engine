@@ -1,14 +1,13 @@
 package com.synaptix.toast.runtime.parse;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,37 +27,28 @@ public class TestParser extends AbstractParser {
 		LOG.info("Parser intializing..");
 	}
 
-	public ITestPage parse(String path) throws IOException, IllegalArgumentException {
-		path = cleanPath(path);
-		final Path p = Paths.get(path);
+	public ITestPage parse(InputStream inputStream, String filename) throws IOException, IllegalArgumentException {
 		List<String> list;
-		try(Stream<String> lines = Files.lines(p)) {
-			list = lines.collect(Collectors.toList());
+		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream))) {
+			list = buffer.lines().collect(Collectors.toList());
 		}
-		assertFileWasNotEmpty(path, list);
-		removeBom(list);
-		return buildTestPage(list, p.getFileName().toString(), path);
-	}
-
-	private static void assertFileWasNotEmpty(
-		final String path, 
-		final List<String> list
-	) {
 		if (list.isEmpty()) {
-			throw new IllegalArgumentException("File empty at path: " + path);
+			throw new IllegalArgumentException("File " + filename + " is empty");
 		}
+		removeBom(list);
+		return buildTestPage(list, filename, inputStream);
 	}
 
 	private ITestPage buildTestPage(
-		List<String> lines, 
-		final String pageName, 
-		final String filePath
+			List<String> lines,
+			final String pageName,
+			final InputStream input
 	) throws IllegalArgumentException, IOException {
 		LOG.info("Starting test page parsing: {}", pageName);
 		final ITestPage testPage = DaoBeanFactory.getBean(ITestPage.class);
 		testPage.setName(pageName);
-		while(CollectionUtils.isNotEmpty(lines)) {
-			final IBlock block = readBlock(lines, filePath);
+		while (CollectionUtils.isNotEmpty(lines)) {
+			final IBlock block = readBlock(lines, input);
 			testPage.addBlock(block);
 			final int numberOfLines = TestParserHelper.getNumberOfBlockLines(block);
 			final int numberOfLineIncludingHeaderSize = numberOfLines + block.getHeaderSize();

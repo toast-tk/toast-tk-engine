@@ -1,6 +1,7 @@
 package com.synaptix.toast.runtime.core.parse;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -42,7 +43,7 @@ public class CampaignBlockParser implements IBlockParser {
     @Override
     public IBlock digest(
     	final List<String> strings, 
-    	final String path
+    	final InputStream input
     ) {
     	final String firstLine = strings.get(0);
         if(!firstLine.startsWith("||")) {
@@ -67,7 +68,7 @@ public class CampaignBlockParser implements IBlockParser {
             final String name = StringUtils.trim(split[0]);
             final String testPagePath = StringUtils.trim(split[1]);
             final String pathName = StringUtils.trim(testPagePath);
-            final Path newPath = Paths.get(path).resolveSibling(pathName);
+            final Path newPath = Paths.get(input).resolveSibling(pathName);
             ITestPage testPage = null;
             try {
                 testPage = new TestParser().parse(newPath.toString());
