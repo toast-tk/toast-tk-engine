@@ -97,7 +97,8 @@ public class TestLineDescriptor {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(testLine) + Objects.hashCode(testBlock);
+		int hashcode = Objects.hashCode(testLine) + Objects.hashCode(testBlock);
+		return hashcode;
 	}
 	
 	@Override

@@ -3,13 +3,13 @@ package com.synaptix.toast.runtime.block;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Objects;
 
 import com.google.common.eventbus.EventBus;
 import com.synaptix.toast.core.annotation.EngineEventBus;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,26 +47,28 @@ public class BlockRunnerMappingTestCase {
 		Module module = new AbstractModule() {
 			@Override
 			protected void configure() {
-				bind(EventBus.class).annotatedWith(EngineEventBus.class).to(EventBus.class).in(Singleton.class);
+				bind(EventBus.class).annotatedWith(EngineEventBus.class)
+						.to(EventBus.class).in(Singleton.class);
 
-				bind(IActionItemRepository.class).to(ActionItemRepository.class).in(Singleton.class);
+				bind(IActionItemRepository.class)
+						.to(ActionItemRepository.class).in(Singleton.class);
 				bind(ActionItemValueProvider.class).in(Singleton.class);
 				bind(XmlAdapterExample.class).in(Singleton.class);
 			}
 		};
 		injector = Guice.createInjector(module, new RunnerModule());
 	}
-	
+
 	@Before
-	public void initRunner(){
+	public void initRunner() {
 		this.blockRunner = injector.getInstance(TestBlockRunner.class);
 	}
 
 	@Test
 	public void compareTest() {
 		String actionSentence = "Comparer *$var2* a *$var1*";
-		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample
-				.class);
+		ActionCommandDescriptor actionDescriptor = blockRunner
+				.findMatchingAction(actionSentence, XmlAdapterExample.class);
 		Assert.assertNotNull(actionDescriptor);
 	}
 
@@ -74,11 +76,12 @@ public class BlockRunnerMappingTestCase {
 	public void compareTestEmpty() {
 		TestBlockRunner blockRunner = new TestBlockRunner();
 		String actionSentence = "Comparer ** a *$var1*";
-		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		ActionCommandDescriptor actionDescriptor = blockRunner
+				.findMatchingAction(actionSentence, XmlAdapterExample.class);
 		Assert.assertNotNull(actionDescriptor);
 	}
 
-	public void executeVoidTest() {
+	public void executeVoidTest() throws NoActionAdapterFound {
 		String actionSentence = "*$var2* == *$var1*";
 
 		TestBlock block = new TestBlock();
@@ -87,18 +90,59 @@ public class BlockRunnerMappingTestCase {
 		line.setTest(actionSentence);
 		block.setBlockLines(Collections.singletonList(line));
 
-		ActionAdaptaterLocator locator;
-		try {
-			locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block,
-					line);
+		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class)
+				.getActionCommandDescriptor(block, line);
 
-			ITestResult result = blockRunner.invokeActionAdapterAction(locator);
-			Assert.assertEquals(SuccessResult.class, result.getClass());
-		} catch (NoActionAdapterFound e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
+		Assert.assertEquals(SuccessResult.class, result.getClass());
 
+	}
+	
+	@Test
+	public void testLineHashcodeTest() throws NoActionAdapterFound {		
+		TestLine line = new TestLine();
+		line.setTest("Say hello");
+		TestBlock block = new TestBlock();
+		block.setFixtureName("service");
+		block.setBlockLines(Collections.singletonList(line));
+
+		ActionAdaptaterLocator locator1 = injector.getInstance(ActionAdaptaterLocators.class)
+												  .getActionCommandDescriptor(block, line);
+		int hasCode1  = locator1.hashCode();
+		
+		TestLine line2 = new TestLine();
+		line2.setTest("echo *foo*");
+		TestBlock block2 = new TestBlock();
+		block2.setFixtureName("service");
+		block2.setBlockLines(Collections.singletonList(line2));
+		
+		ActionAdaptaterLocator locator2 = injector.getInstance(ActionAdaptaterLocators.class)
+												  .getActionCommandDescriptor(block2, line2);
+		
+		int hasCode2  = locator2.hashCode();
+		
+		Assert.assertNotEquals(hasCode1, hasCode2);
+	}
+	
+	public static void main(String[] args) {
+		TestLine line = new TestLine();
+		line.setTest("Say hello");
+		
+		TestBlock block = new TestBlock();
+		block.setFixtureName("service");
+		block.setBlockLines(Collections.singletonList(line));
+		
+		int hashCode = Objects.hashCode(line) + Objects.hashCode(block);
+		System.out.println("BlockRunnerMappingTestCase.main()" + hashCode);
+
+		TestLine line2 = new TestLine();
+		line2.setTest("echo *foo*");
+		TestBlock block2 = new TestBlock();
+		block2.setFixtureName("service");
+		block2.setBlockLines(Collections.singletonList(line2));
+		
+		int hashCode2 = Objects.hashCode(line2) + Objects.hashCode(block2);
+		System.out.println("BlockRunnerMappingTestCase.main()" + hashCode2);
 	}
 
 	@Test
@@ -111,12 +155,14 @@ public class BlockRunnerMappingTestCase {
 		block.setFixtureName("service");
 		block.setBlockLines(Collections.singletonList(line));
 
-		ActionAdaptaterLocator locator =
-				injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line);
+		ActionAdaptaterLocator locator = injector.getInstance(
+				ActionAdaptaterLocators.class).getActionCommandDescriptor(
+				block, line);
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals("foo", result.getMessage());
-		Assert.assertEquals(ITestResult.ResultKind.SUCCESS, result.getResultKind());
+		Assert.assertEquals(ITestResult.ResultKind.SUCCESS,
+				result.getResultKind());
 	}
 
 	@Test
@@ -132,17 +178,20 @@ public class BlockRunnerMappingTestCase {
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals("foo", locator.getTestLineDescriptor().testLine.getExpected());
-		Assert.assertEquals(ITestResult.ResultKind.SUCCESS, result.getResultKind());
+		Assert.assertEquals(ITestResult.ResultKind.SUCCESS,
+				result.getResultKind());
 
 		TestLine line2 = new TestLine();
 		line2.setTest("echo *foo*");
 		line2.setExpected("bar");
 
-		locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line2);
+		locator = injector.getInstance(ActionAdaptaterLocators.class)
+				.getActionCommandDescriptor(block, line2);
 		result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals("bar", locator.getTestLineDescriptor().testLine.getExpected());
-		Assert.assertEquals(ITestResult.ResultKind.FAILURE, result.getResultKind());
+		Assert.assertEquals(ITestResult.ResultKind.FAILURE,
+				result.getResultKind());
 	}
 
 	@Test
@@ -157,24 +206,26 @@ public class BlockRunnerMappingTestCase {
 
 		ActionAdaptaterLocator locator;
 
-		locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line);
+		locator = injector.getInstance(ActionAdaptaterLocators.class)
+				.getActionCommandDescriptor(block, line);
 
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals(result.getClass(), SuccessResult.class);
 	}
+
 	@Test
 	public void assertFailureTest() throws NoActionAdapterFound {
-		String actionSentence = "assert not *toto*";
 
 		TestBlock block = new TestBlock();
 		block.setFixtureName("service");
 		TestLine line = new TestLine();
-		line.setTest(actionSentence);
+		line.setTest("assert not *toto*");
 		block.setBlockLines(Collections.singletonList(line));
 
 		ActionAdaptaterLocator locator;
-		locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line);
+		locator = injector.getInstance(ActionAdaptaterLocators.class)
+				.getActionCommandDescriptor(block, line);
 
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
@@ -184,27 +235,31 @@ public class BlockRunnerMappingTestCase {
 	@Test
 	public void saveStringTest() throws NoActionAdapterFound {
 		String actionSentence = "Say hello";
-		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		ActionCommandDescriptor actionDescriptor = blockRunner
+				.findMatchingAction(actionSentence, XmlAdapterExample.class);
 
 		Assert.assertNotNull(actionDescriptor);
-		
+
 		TestBlock block = new TestBlock();
 		block.setFixtureName("service");
 		TestLine line = new TestLine();
 		line.setTest(actionSentence);
 		block.setBlockLines(Collections.singletonList(line));
 
-		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class).getActionCommandDescriptor(block, line);
-	
+		ActionAdaptaterLocator locator = injector.getInstance(
+				ActionAdaptaterLocators.class).getActionCommandDescriptor(
+				block, line);
 
 		ITestResult testResult = blockRunner.invokeActionAdapterAction(locator);
-		Assert.assertEquals(ITestResult.ResultKind.SUCCESS, testResult.getResultKind());
+		Assert.assertEquals(ITestResult.ResultKind.SUCCESS,
+				testResult.getResultKind());
 		Assert.assertEquals("Hello", testResult.getMessage());
 	}
 
 	@Test
 	public void compareAndSwapInputsTest() {
-		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
+		IActionItemRepository repo = injector
+				.getInstance(IActionItemRepository.class);
 		Map<String, Object> userVarMap = new HashMap<>();
 		userVarMap.put("$var1", "value1");
 		userVarMap.put("$var2", "value2");
@@ -212,8 +267,11 @@ public class BlockRunnerMappingTestCase {
 
 		String actionSentence = "Comparer *$var2* a *$var1*";
 		ToastCache.getInstance().addActionAdapter(XmlAdapterExample.class);
-		ActionCommandDescriptor execDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
-		System.out.println("BlockRunnerMappingTestCase.compareAndSwapInputsTest() -> " + execDescriptor);
+		ActionCommandDescriptor execDescriptor = blockRunner
+				.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		System.out
+				.println("BlockRunnerMappingTestCase.compareAndSwapInputsTest() -> "
+						+ execDescriptor);
 		Object[] args = null;
 		try {
 			args = blockRunner.buildArgumentList(execDescriptor);
@@ -229,14 +287,16 @@ public class BlockRunnerMappingTestCase {
 
 	@Test
 	public void compareAndSwapInputsTest2() {
-		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
+		IActionItemRepository repo = injector
+				.getInstance(IActionItemRepository.class);
 		Map<String, Object> userVarMap = new HashMap<>();
 		userVarMap.put("$var1", "value1");
 		userVarMap.put("$var2", "value2");
 		repo.setUserVariables(userVarMap);
 
 		String actionSentence = "Comparer *$var1* a *$var2*";
-		ActionCommandDescriptor method = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		ActionCommandDescriptor method = blockRunner.findMatchingAction(
+				actionSentence, XmlAdapterExample.class);
 		Object[] args = null;
 		try {
 			args = blockRunner.buildArgumentList(method);
@@ -253,14 +313,16 @@ public class BlockRunnerMappingTestCase {
 	@Test
 	public void testMethodReplacement() {
 		String actionSentence = "Inclure le flux xml dans la variable *$flux*";
-		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		ActionCommandDescriptor actionDescriptor = blockRunner
+				.findMatchingAction(actionSentence, XmlAdapterExample.class);
 		Assert.assertNotNull(actionDescriptor);
 	}
 
 	@Test
 	public void testMethodReplacementWithTwoParamaters() {
 		String actionSentence = "Inclure dans la variable *$flux* le flux *$xml*";
-		ActionCommandDescriptor actionDescriptor = blockRunner.findMatchingAction(actionSentence, XmlAdapterExample.class);
+		ActionCommandDescriptor actionDescriptor = blockRunner
+				.findMatchingAction(actionSentence, XmlAdapterExample.class);
 		Assert.assertNotNull(actionDescriptor);
 	}
 
