@@ -3,7 +3,6 @@ package com.synaptix.toast.runtime.block;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -24,7 +23,6 @@ import com.synaptix.toast.core.report.FailureResult;
 import com.synaptix.toast.core.report.TestResult;
 import com.synaptix.toast.core.runtime.ErrorResultReceivedException;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
-import com.synaptix.toast.dao.domain.api.test.ITestResult.ResultKind;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.line.TestLine;
 import com.synaptix.toast.runtime.IActionItemRepository;
@@ -79,57 +77,30 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			actionCommandDescriptor = actionAdaptaterLocators.getActionCommandDescriptor(block, line);
 			result = invokeActionAdapterAction(actionCommandDescriptor);
 			line.setExcutionTime(System.currentTimeMillis() - startTime);
-			finaliseResultKind(line, result);
+			updateFatal(result, actionCommandDescriptor);
 			line.setTestResult((TestResult) result);
-			if (result.isFatal()) {
-				LOG.error("Test execution stopped, due to fail fatal error: {} - Failed !", line);
-			}
 		} catch (NoActionAdapterFound e) {
 			result = new FailureResult("No Action Adapter found !");
 		}
 		if(Objects.nonNull(eventBus)){
 			eventBus.post(new TestProgressMessage(result));
 		}
-	}
-
-	private static void finaliseResultKind(
-			final TestLine line,
-			final ITestResult result
-	) {
-		if (isFailureExpected(line, result) || isExpectedResult(line, result)) {
-			result.setResultKind(ResultKind.SUCCESS);
+		if (result.isFatal()) {
+			LOG.error("Test execution stopped, due to fail fatal error: {} - Failed !", line);
+			throw new FatalExcecutionError();
 		}
-	}
-
-	private static boolean isFailureExpected(
-			final TestLine line,
-			final ITestResult result
-	) {
-		return "KO".equals(line.getExpected()) && ResultKind.FAILURE.equals(result.getResultKind());
-	}
-
-	private static boolean isExpectedResult(
-			final TestLine line,
-			final ITestResult result
-	) {
-		return result.getMessage() != null && line.getExpected() != null && result.getMessage().equals(line
-				.getExpected());
-	}
-
-	private boolean hasFoundActionAdapter(Class<?> actionAdapter) {
-		return actionAdapter != null;
 	}
 
 	/**
 	 * invoke the method matching the test line descriptor
+	 * @throws NoActionAdapterFound 
 	 */
-	protected ITestResult invokeActionAdapterAction(final ActionAdaptaterLocator actionAdaptaterLocator) {
-		if (hasFoundActionAdapter(actionAdaptaterLocator)) {
-			final ITestResult result = doLocalActionCall(actionAdaptaterLocator);
-			updateFatal(result, actionAdaptaterLocator);
-			return result;
+	protected ITestResult invokeActionAdapterAction(final ActionAdaptaterLocator actionAdaptaterLocator) throws NoActionAdapterFound {
+		if (!hasFoundActionAdapter(actionAdaptaterLocator)) {
+			throw new NoActionAdapterFound(actionAdaptaterLocator.getTestLineDescriptor().testLine.getTest());
 		}
-		return new FailureResult("Action Implementation - Not Found");
+		final ITestResult result = doLocalActionCall(actionAdaptaterLocator);
+		return result;
 	}
 
 	private static boolean hasFoundActionAdapter(final ActionAdaptaterLocator actionAdaptaterLocator) {
@@ -142,10 +113,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	) {
 		if (actionAdaptaterLocator.getTestLineDescriptor().isFailFatalCommand() && !result.isSuccess()) {
 			result.setIsFatal(true);
-			result.setIsError(false);
-			result.setIsFailure(false);
-			result.setResultKind(ResultKind.FATAL);
-			throw new FatalExcecutionError();
 		}
 	}
 
@@ -154,11 +121,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		try {
 			Method actionMethod = actionAdaptaterLocator.getActionCommandDescriptor().method;
 			Class<?> returnType = actionMethod.getReturnType();
-			Object output = actionMethod.invoke(actionAdaptaterLocator.getInstance(), buildArgumentList
-					(actionAdaptaterLocator.getActionCommandDescriptor()));
-
+			Object output = actionMethod.invoke(actionAdaptaterLocator.getInstance(), 
+												buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
 			String expected = actionAdaptaterLocator.getTestLineDescriptor().testLine.getExpected();
-
 			if (ITestResult.class.isAssignableFrom(returnType)) {
 				return (ITestResult) output;
 			} else {
@@ -168,7 +133,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 				}
 				return handler.result(output, expected);
 			}
-
 		} catch (final Exception e) {
 			result = handleInvocationError(e);
 		} catch (final AssertionError er) {
@@ -355,23 +319,6 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private static boolean hasId(final Action action) {
 		return !StringUtils.isEmpty(action.id());
-	}
-
-	private static List<Method> getActionMethods(final Class<?> actionAdapterClass) {
-		final Method[] methods = actionAdapterClass.getMethods();
-		final List<Method> actionMethods = new ArrayList<>(methods.length);
-		Arrays.stream(methods).forEach(method -> addActionMethod(actionMethods, method));
-		return actionMethods;
-	}
-
-	private static void addActionMethod(
-			final List<Method> actionMethods,
-			final Method method
-	) {
-		final Action action = method.getAnnotation(Action.class);
-		if (action != null) {
-			actionMethods.add(method);
-		}
 	}
 
 	private static boolean isVariable(final String group) {

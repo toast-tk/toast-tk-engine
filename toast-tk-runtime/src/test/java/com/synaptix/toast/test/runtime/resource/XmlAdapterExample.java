@@ -35,8 +35,8 @@ public class XmlAdapterExample {
 			id = "compare1",
 			action = "{{value}} == {{value}}",
 			description = "comparer une valeur à une autre")
-	public void compare(String var1, String var2) {
-
+	public Boolean compare(String var1, String var2) {
+		return var1.equals(var2);
 	}
 
 	@Action(id = "echo", action = "echo {{value}}", description = "afficher valeur autre")

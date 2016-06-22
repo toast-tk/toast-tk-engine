@@ -94,7 +94,7 @@ public class TestResult implements ITestResult{
 
 	@Override
 	public boolean isFatal() {
-		return ResultKind.FATAL.equals(resultKind);
+		return isFatal;
 	}
 
 	@Override

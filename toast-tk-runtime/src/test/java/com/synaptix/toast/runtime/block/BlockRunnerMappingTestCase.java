@@ -3,13 +3,10 @@ package com.synaptix.toast.runtime.block;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import com.google.common.eventbus.EventBus;
 import com.synaptix.toast.core.annotation.EngineEventBus;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -123,27 +120,6 @@ public class BlockRunnerMappingTestCase {
 		
 		Assert.assertNotEquals(hasCode1, hasCode2);
 	}
-	
-	public static void main(String[] args) {
-		TestLine line = new TestLine();
-		line.setTest("Say hello");
-		
-		TestBlock block = new TestBlock();
-		block.setFixtureName("service");
-		block.setBlockLines(Collections.singletonList(line));
-		
-		int hashCode = Objects.hashCode(line) + Objects.hashCode(block);
-		System.out.println("BlockRunnerMappingTestCase.main()" + hashCode);
-
-		TestLine line2 = new TestLine();
-		line2.setTest("echo *foo*");
-		TestBlock block2 = new TestBlock();
-		block2.setFixtureName("service");
-		block2.setBlockLines(Collections.singletonList(line2));
-		
-		int hashCode2 = Objects.hashCode(line2) + Objects.hashCode(block2);
-		System.out.println("BlockRunnerMappingTestCase.main()" + hashCode2);
-	}
 
 	@Test
 	public void executeStringTest() throws NoActionAdapterFound {
@@ -246,20 +222,17 @@ public class BlockRunnerMappingTestCase {
 		line.setTest(actionSentence);
 		block.setBlockLines(Collections.singletonList(line));
 
-		ActionAdaptaterLocator locator = injector.getInstance(
-				ActionAdaptaterLocators.class).getActionCommandDescriptor(
-				block, line);
+		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class)
+												 .getActionCommandDescriptor(block, line);
 
 		ITestResult testResult = blockRunner.invokeActionAdapterAction(locator);
-		Assert.assertEquals(ITestResult.ResultKind.SUCCESS,
-				testResult.getResultKind());
+		Assert.assertEquals(ITestResult.ResultKind.SUCCESS, testResult.getResultKind());
 		Assert.assertEquals("Hello", testResult.getMessage());
 	}
 
 	@Test
 	public void compareAndSwapInputsTest() {
-		IActionItemRepository repo = injector
-				.getInstance(IActionItemRepository.class);
+		IActionItemRepository repo = injector.getInstance(IActionItemRepository.class);
 		Map<String, Object> userVarMap = new HashMap<>();
 		userVarMap.put("$var1", "value1");
 		userVarMap.put("$var2", "value2");

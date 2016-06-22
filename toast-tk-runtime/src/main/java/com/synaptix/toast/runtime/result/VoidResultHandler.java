@@ -9,9 +9,9 @@ public class VoidResultHandler extends AbstractResultHandler<Void> {
     public VoidResultHandler(IActionItemRepository objectRepository) {
         super(objectRepository);
     }
-
+    
     @Override
-    public ITestResult result(Void value, String expected) {
+    public ITestResult buildResult(Void value, String expected) {
         return new SuccessResult();
     }
 

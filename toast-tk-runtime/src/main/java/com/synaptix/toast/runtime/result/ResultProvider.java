@@ -12,21 +12,24 @@ public class ResultProvider {
 
     @Inject
     private IActionItemRepository objectRepository;
+    private ObjectResultHandler defaultResultHandler;
 
-    private Map<Class<?>, IResultHandler> map;
+    private Map<Class<?>, IResultHandler<?>> map;
 
     public ResultProvider() {
-
+    	
     }
 
-    public IResultHandler getHandler(Class<?> clazz) {
+    public IResultHandler<?> getHandler(Class<?> clazz) {
         if (map == null) {
             map = new HashMap<>();
             map.put(String.class, new StringResultHandler(objectRepository));
             map.put(Void.TYPE, new VoidResultHandler(objectRepository));
             map.put(Integer.class, new IntegerResultHandler(objectRepository));
+            map.put(Boolean.class, new BooleanResultHandler(objectRepository));
+            this.defaultResultHandler = new ObjectResultHandler(objectRepository);
         }
-        return map.get(clazz);
+        return map.getOrDefault(clazz, defaultResultHandler);
     }
 
 }

@@ -4,16 +4,16 @@ import com.synaptix.toast.core.report.SuccessResult;
 import com.synaptix.toast.dao.domain.api.test.ITestResult;
 import com.synaptix.toast.runtime.IActionItemRepository;
 
-public class IntegerResultHandler extends AbstractResultHandler<Integer> {
+public class ObjectResultHandler extends AbstractResultHandler<Object> {
 
-    public IntegerResultHandler(IActionItemRepository objectRepository) {
+    public ObjectResultHandler(IActionItemRepository objectRepository) {
         super(objectRepository);
     }
     
 	@Override
-	protected ITestResult buildResult(Integer value, String expected) {
+	protected ITestResult buildResult(Object value, String expected) {
 		ITestResult result = new SuccessResult(value.toString());
-	    return result;
+        return result;
 	}
 
 }

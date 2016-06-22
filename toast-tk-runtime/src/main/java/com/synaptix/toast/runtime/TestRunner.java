@@ -19,8 +19,6 @@ class TestRunner {
 	@Inject
 	private Map<Class, IBlockRunner> blockRunnerMap;
 
-	@Inject
-	private EventBus eventBus;
 
 	/**
 	 * Execute the different blocks within the test page

@@ -12,11 +12,7 @@ class StringResultHandler extends AbstractResultHandler<String> {
 	}
 
 	@Override
-	public ITestResult result(String value, String expected) {
-		if (!objectRepository.getUserVariables().containsKey(expected)) {
-			objectRepository.getUserVariables().put(expected, value);
-		}
-
+	protected ITestResult buildResult(String value, String expected) {
 		if (expected == null || expected.equals(value)) {
 			return new SuccessResult(value);
 		} else {
