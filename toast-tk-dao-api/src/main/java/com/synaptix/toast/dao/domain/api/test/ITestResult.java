@@ -1,6 +1,8 @@
 package com.synaptix.toast.dao.domain.api.test;
 
-public interface ITestResult {
+import java.io.Serializable;
+
+public interface ITestResult extends Serializable{
 	
 	public enum ResultKind {
 		/**

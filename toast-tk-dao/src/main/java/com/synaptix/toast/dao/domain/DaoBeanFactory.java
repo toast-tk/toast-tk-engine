@@ -12,7 +12,7 @@ import com.synaptix.toast.dao.domain.impl.test.block.TestPage;
 
 public class DaoBeanFactory {
 
-	// FIXME : add hashmap for implementations instead of hardcoded ClassForName
+
 	private static final Logger LOG = LogManager.getLogger(DaoBeanFactory.class);
 	
 	private static final DaoBeanFactory INSTANCE = new DaoBeanFactory();
@@ -53,6 +53,6 @@ public class DaoBeanFactory {
 	}
 
 	private static <E> boolean isNotITestPage(final Class<E> clazz) {
-		return !clazz.getName().equals(ITestPage.class.getName());
+		return (clazz != ITestPage.class);
 	}
 }

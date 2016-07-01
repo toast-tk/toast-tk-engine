@@ -19,8 +19,6 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
-import javassist.tools.web.Webserver;
-
 public class RestUtils {
 
 	private static final Logger LOG = LogManager.getLogger(RestUtils.class);
@@ -165,7 +163,7 @@ public class RestUtils {
 		final WebResource webResource = httpClient.resource(url);
 		final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
 				.post(ClientResponse.class, jsonFixtureDescriptor);
-		return response.equals(200);
+		return response.getStatus() == 200;
 	}
 
 	public static boolean postWebEventRecord(final String url, final String record) {
@@ -175,7 +173,7 @@ public class RestUtils {
 			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
 														.accept(MediaType.APPLICATION_JSON)
 														.post(ClientResponse.class, record);
-			return response.equals(200);
+			return response.getStatus() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
 			return false;
@@ -193,7 +191,7 @@ public class RestUtils {
 			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
 														.accept(MediaType.APPLICATION_JSON)
 														.get(ClientResponse.class);
-			return response.equals(200);
+			return response.getStatus() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
 		}

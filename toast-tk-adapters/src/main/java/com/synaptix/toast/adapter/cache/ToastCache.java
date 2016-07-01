@@ -26,7 +26,7 @@ public final class ToastCache {
 
 	private static ToastCache INSTANCE;
 
-	public static ToastCache getInstance() {
+	public static synchronized ToastCache getInstance() {
 		if(INSTANCE == null){
 			INSTANCE = new ToastCache();
 		}

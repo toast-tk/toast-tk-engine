@@ -88,6 +88,12 @@ public class TestLine implements IRunnableTest {
 	
 	@Override
 	public boolean equals(final Object obj) {
-		return obj instanceof TestLine ? Objects.equals(test, ((TestLine) obj).test) : false;
+		if (obj == this) {
+		      return true;
+	    }
+	    if (obj == null) {
+	      return false;
+	    }
+		return obj.getClass() == this.getClass() ? Objects.equals(test, ((TestLine) obj).test) : false;
 	}
 }

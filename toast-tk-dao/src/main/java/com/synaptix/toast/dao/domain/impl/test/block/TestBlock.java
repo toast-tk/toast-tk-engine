@@ -97,6 +97,12 @@ public class TestBlock implements IBlock {
 	
 	@Override
 	public boolean equals(final Object obj) {
-		return obj instanceof TestBlock ? Objects.equals(fixtureName, ((TestBlock) obj).fixtureName) : false;
+		if (obj == this) {
+	      return true;
+	    }
+	    if (obj == null) {
+	      return false;
+	    }
+		return obj.getClass() == this.getClass() ? Objects.equals(fixtureName, ((TestBlock) obj).fixtureName) : false;
 	}
 }

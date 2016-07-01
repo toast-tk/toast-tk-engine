@@ -103,6 +103,12 @@ public class TestLineDescriptor {
 	
 	@Override
 	public boolean equals(final Object obj) {
-		return obj instanceof TestLineDescriptor ? Objects.equals(testLine, ((TestLineDescriptor) obj).testLine) && Objects.equals(testBlock, ((TestLineDescriptor) obj).testBlock): false;
+		if (obj == this) {
+		      return true;
+	    }
+	    if (obj == null) {
+	      return false;
+	    }
+		return obj.getClass() == this.getClass() ? Objects.equals(testLine, ((TestLineDescriptor) obj).testLine) && Objects.equals(testBlock, ((TestLineDescriptor) obj).testBlock): false;
 	}
 }

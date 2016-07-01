@@ -4,6 +4,8 @@ import com.synaptix.toast.dao.domain.api.test.ITestResult;
 
 public class TestResult implements ITestResult{
 
+	private static final long serialVersionUID = -5044563355729241728L;
+
 	protected String message;
 
 	protected String contextualTestSentence;
