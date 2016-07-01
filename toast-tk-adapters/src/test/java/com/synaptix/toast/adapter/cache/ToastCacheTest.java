@@ -1,15 +1,12 @@
 package com.synaptix.toast.adapter.cache;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import org.junit.Assert;
+import org.junit.Test;
 
-@Ignore
+
 public class ToastCacheTest {
 
     @Test
