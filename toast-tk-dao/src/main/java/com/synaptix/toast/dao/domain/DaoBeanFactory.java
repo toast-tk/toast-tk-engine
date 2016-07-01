@@ -53,6 +53,6 @@ public class DaoBeanFactory {
 	}
 
 	private static <E> boolean isNotITestPage(final Class<E> clazz) {
-		return (clazz != ITestPage.class);
+		return clazz != ITestPage.class;
 	}
 }

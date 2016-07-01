@@ -161,7 +161,7 @@ public class MongoRepositoryCacheWrapper {
 	}
 
 	public ElementImpl find(RepositoryImpl container, WebEventRecord eventRecord) {
-		String locator = eventRecord.target;
+		String locator = eventRecord.getTarget();
 		for(RepositoryImpl repImpl : cache) {
 			if(repImpl.getName().equals(container.getName()) && repImpl.rows != null) {
 				for(ElementImpl element : repImpl.rows) {
@@ -179,8 +179,8 @@ public class MongoRepositoryCacheWrapper {
 
 	private ElementImpl buildElement(WebEventRecord eventRecord, String locator) {
 		ElementImpl impl = new ElementImpl();
-		String name = eventRecord.componentName;
-		String type = eventRecord.component;
+		String name = eventRecord.getComponentName();
+		String type = eventRecord.getComponent();
 		impl.locator = locator;
 		if(locator.contains(":")) {
 			impl.name = locator.split(":")[1];

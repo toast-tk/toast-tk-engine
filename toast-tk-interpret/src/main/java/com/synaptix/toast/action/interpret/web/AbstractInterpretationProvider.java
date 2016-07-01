@@ -19,7 +19,7 @@ public abstract class AbstractInterpretationProvider implements IActionInterpret
 	}
 	
 	public String getLabel(WebEventRecord eventRecord) {
-		RepositoryImpl container = mongoRepoManager.findContainer(eventRecord.parent, "web page");
+		RepositoryImpl container = mongoRepoManager.findContainer(eventRecord.getParent(), "web page");
 		ElementImpl element = mongoRepoManager.find(container, eventRecord);
 		elements.add(element);
 		return container.name + "." + getElementLabel(element);
@@ -27,7 +27,7 @@ public abstract class AbstractInterpretationProvider implements IActionInterpret
 	
 	@Override
 	public List<ElementImpl> getElements(){
-		return elements;
+		return new ArrayList<>(elements);
 	}
 	
 	@Override

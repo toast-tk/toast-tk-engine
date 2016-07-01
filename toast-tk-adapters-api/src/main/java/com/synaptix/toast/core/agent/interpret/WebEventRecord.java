@@ -2,19 +2,19 @@ package com.synaptix.toast.core.agent.interpret;
 
 public class WebEventRecord {
 
-	public String value;
-	public String componentName;
-	public String component;
-	public String eventType;
-	public String target;
-	public String parent;
-	public String id;
-	public int keyCode;
-	public int charCode;
-	public int button;
-	public boolean altKey;
-	public boolean ctrlKey;
-	public boolean shiftKey;
+	private String value;
+	private String componentName;
+	private String component;
+	private String eventType;
+	private String target;
+	private String parent;
+	private String id;
+	private int keyCode;
+	private int charCode;
+	private int button;
+	private boolean altKey;
+	private boolean ctrlKey;
+	private boolean shiftKey;
 
 	public WebEventRecord() {
 		

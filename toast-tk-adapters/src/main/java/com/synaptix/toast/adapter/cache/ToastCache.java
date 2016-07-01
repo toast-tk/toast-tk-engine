@@ -96,11 +96,10 @@ public final class ToastCache {
 	        final List<Method> allMethods = new ArrayList<Method>(Arrays.asList(klass.getDeclaredMethods()));
 	        for (final Method method : allMethods) {
 	            if (method.isAnnotationPresent(annotation)) {
-	                Annotation annotInstance = method.getAnnotation(annotation);
 	                methods.add(method);
 	            }
 	        }
-	        // move to the upper class in the hierarchy in search for more methods
+	        //TODO: move to the upper class in the hierarchy in search for more methods
 	        klass = klass.getSuperclass();
 	    }
 	    return methods;

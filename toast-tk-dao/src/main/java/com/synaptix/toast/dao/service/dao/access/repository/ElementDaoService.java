@@ -14,13 +14,10 @@ import com.synaptix.toast.dao.service.dao.common.CommonMongoDaoService;
 import com.synaptix.toast.dao.service.init.DbStarter;
 
 public class ElementDaoService extends AbstractMongoDaoService<ElementImpl> {
-
 	public interface Factory {
-
 		ElementDaoService create(final @Nullable @Assisted String dbName);
 	}
 
-	private static final Logger LOG = LogManager.getLogger(ElementDaoService.class);
 
 	static final String CONTAINER_TYPE = "swing page";
 

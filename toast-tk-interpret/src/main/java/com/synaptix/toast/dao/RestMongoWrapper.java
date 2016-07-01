@@ -36,8 +36,7 @@ public class RestMongoWrapper extends RestUtils {
 		Gson g = new Gson();
 		Type typeOfT = new TypeToken<Collection<RepositoryImpl>>() {
 		}.getType();
-		Collection<RepositoryImpl> repository = (Collection<RepositoryImpl>) g.fromJson(response, typeOfT);
-		return repository;
+		return (Collection<RepositoryImpl>) g.fromJson(response, typeOfT);
 	}
 
 	public static boolean saveRepository(

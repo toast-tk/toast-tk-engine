@@ -12,7 +12,7 @@ public class OpenNewPageInterpret extends AbstractInterpretationProvider{
 
 	@Override
 	public String getSentence(WebEventRecord event) {
-		return "Open browser at *" + event.target + "*";
+		return "Open browser at *" + event.getTarget() + "*";
 	}
 
 	@Override

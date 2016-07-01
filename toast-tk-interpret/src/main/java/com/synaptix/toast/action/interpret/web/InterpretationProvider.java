@@ -32,10 +32,11 @@ public class InterpretationProvider {
 	}
 
 	private IActionInterpret getInterpretFor(
-		String type) {
-		if(type != null && type.contains(":")){
-			type = StringUtils.split(type, ":")[0];
+		final String type) {
+		String formatedType = type;
+		if(formatedType != null && formatedType.contains(":")){
+			formatedType = StringUtils.split(type, ":")[0];
 		}
-		return map.get(type);
+		return map.get(formatedType);
 	}
 }

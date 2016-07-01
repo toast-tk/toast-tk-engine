@@ -18,7 +18,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.WriteConcern;
 import com.synaptix.toast.dao.config.DaoConfig;
 import com.synaptix.toast.dao.domain.Domain;
-import com.synaptix.toast.dao.service.dao.common.EntityCollectionManager;
 
 public class MongoDefaultStarterImpl implements DbStarter {
 
@@ -30,7 +29,6 @@ public class MongoDefaultStarterImpl implements DbStarter {
 
 	private Map<String, Datastore> dsMap;
 
-	//private final EntityCollectionManager enitityManager;
 
 	private final String mongoHost;
 
@@ -42,7 +40,6 @@ public class MongoDefaultStarterImpl implements DbStarter {
 		final @Named("MongoHost") String mongoHost,
 		final @Named("MongoPort") int mongoPort
 	) {
-		//this.enitityManager = enitityManager;
 		this.mongoHost = mongoHost == null ? config.getMongoServer() : mongoHost;
 		this.mongoPort = mongoPort == -1 ? config.getMongoPort() : mongoPort;
 		init();
@@ -68,13 +65,10 @@ public class MongoDefaultStarterImpl implements DbStarter {
 	}
 
 	private void processMapping(Class<?> c) {
-		final Entity entity = c.getAnnotation(Entity.class);
-		//enitityManager.register(entity.value(), c);
 		morphia.map(c);
 		LOG.info("{} type has been registered to Morphia !", c);
 	}
 
-	//Thread Safety ?
 	@Override
 	public Datastore getDatabaseByName(final String name) {
 		if(dsMap.get(name) == null) {
