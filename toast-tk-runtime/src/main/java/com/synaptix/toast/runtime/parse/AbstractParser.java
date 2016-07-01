@@ -62,7 +62,14 @@ public class AbstractParser {
         }
         return commentBlock;
     }
-
+    
+    /**
+     * returns the block type
+     * 
+     * @param line
+     * @return
+     * @throws IllegalArgumentException if more than one block is found
+     */
     public BlockType getBlockType(final String line) throws IllegalArgumentException {
         final List<BlockType> blockTypes = blockParserProvider.getAllBlockParsers().stream()
                 .filter(iBlockParser -> iBlockParser.isFirstLineOfBlock(line))

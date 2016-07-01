@@ -70,5 +70,10 @@ public interface ICustomRequestHandler {
 	 */
 	boolean isInterestedIn(final Component component);
 
+	/**
+	 * The list of components managed by the request handler
+	 * 
+	 * @return
+	 */
 	Set<Class<?>> getComponentsWhiteList();
 }

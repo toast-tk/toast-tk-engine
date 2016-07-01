@@ -11,11 +11,23 @@ public interface IFeedableSwingPage {
 	 */
 	void initElement(final ISwingElementDescriptor locator);
 
+	/**
+	 * Add an element to the repository
+	 * 
+	 * @param elementName
+	 * @param type
+	 * @param locator
+	 */
 	public void addElement(
 		final String elementName,
 		final String type,
 		final String locator
 	);
 
+	/**
+	 * set the driver for current page
+	 * 
+	 * @param sDvr
+	 */
 	void setDriver(final IRemoteSwingAgentDriver sDvr);
 }
