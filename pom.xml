@@ -27,7 +27,6 @@
 	</modules>
 	<properties>
 		<root-directory>${project.basedir}</root-directory>
-		<project.version>0.1.2-SNAPSHOT</project.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -343,24 +342,6 @@
 		</repository>
 	</repositories>
 	<profiles>
-		<profile>
-			<id>DEPLOY_NEXUS_SNCF</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<distributionManagement>
-				<repository>
-					<id>sncf-releases</id>
-					<name>Inhouse Releases Repository</name>
-					<url>http://x64ertbidv3.si.fret.sncf.fr:8091/nexus/content/repositories/releases/</url>
-				</repository>
-				<snapshotRepository>
-					<id>sncf-snapshots</id>
-					<name>Inhouse Snapshots Repository</name>
-					<url>http://x64ertbidv3.si.fret.sncf.fr:8091/nexus/content/repositories/snapshots/</url>
-				</snapshotRepository>
-			</distributionManagement>
-		</profile>
 		<profile>
 			<id>DEPLOY_NEXUS_SYNAPTIX</id>
 			<activation>
