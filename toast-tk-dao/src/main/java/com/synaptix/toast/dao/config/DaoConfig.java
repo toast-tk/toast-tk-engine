@@ -14,10 +14,18 @@ public class DaoConfig {
 		this.mongoPort = mongoPort;
 	}
 
+	/**
+	 * The host of the mongo db server
+	 * @return
+	 */
 	public String getMongoServer() {
 		return mongoServer;
 	}
 
+	/**
+	 * the port of the mongo db server 
+	 * @return
+	 */
 	public int getMongoPort() {
 		return mongoPort;
 	}

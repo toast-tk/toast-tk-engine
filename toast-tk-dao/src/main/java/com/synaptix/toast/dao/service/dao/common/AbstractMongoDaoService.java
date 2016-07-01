@@ -35,6 +35,12 @@ implements
 		this.clazz = clazz;
 	}
 
+	/**
+	 * collect any element flagged with this tag
+	 * 
+	 * @param tag
+	 * @return
+	 */
 	public List<E> getByTag(final TagImpl tag) {
 		return commonService.getTaggedItems(getDatastore(), clazz, tag);
 	}
