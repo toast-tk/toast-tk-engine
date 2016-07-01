@@ -7,8 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 
+import java.util.Objects;
 import com.mongodb.WriteConcern;
-import com.sun.jersey.api.client.ClientHandlerException;
 import com.synaptix.toast.core.agent.interpret.WebEventRecord;
 import com.synaptix.toast.dao.RestMongoWrapper;
 import com.synaptix.toast.dao.domain.impl.repository.ElementImpl;
@@ -45,7 +45,7 @@ public class MongoRepositoryCacheWrapper {
 			this.service = service;
 			cache = service.find().asList();
 		}
-		catch(ClientHandlerException e) {
+		catch(Exception e) {
 			LOG.error(
 				String.format("WebApp not active at address %s:%s", host, port),
 				e);
@@ -58,7 +58,7 @@ public class MongoRepositoryCacheWrapper {
 			this.port = port;
 			cache = RestMongoWrapper.loadRepository(host, port);
 		}
-		catch(ClientHandlerException e) {
+		catch(Exception e) {
 			LOG.error(
 				String.format("WebApp not active at address %s:%s", host, port),
 				e);
@@ -70,12 +70,10 @@ public class MongoRepositoryCacheWrapper {
 		String type,
 		String locator) {
 		for(RepositoryImpl repImpl : cache) {
-			if(repImpl.getName().equals(container.getName())) {
-				if(repImpl.rows != null) {
-					for(ElementImpl element : repImpl.rows) {
-						if(element.locator.equalsIgnoreCase(locator.toLowerCase())) {
-							return "".equals(element.name) || element.name == null ? element.locator : element.name;
-						}
+			if(repImpl.getName().equals(container.getName()) && repImpl.rows != null) {
+				for(ElementImpl element : repImpl.rows) {
+					if(element.locator.equalsIgnoreCase(locator.toLowerCase())) {
+						return "".equals(element.name) || element.name == null ? element.locator : element.name;
 					}
 				}
 			}
@@ -95,7 +93,7 @@ public class MongoRepositoryCacheWrapper {
 			impl.name = locator.split(":")[1];
 		}
 		else {
-			impl.name = locator == null ? type + "-" + UUID.randomUUID().toString() : locator;
+			impl.name = Objects.isNull(locator)? type + "-" + UUID.randomUUID().toString() : locator;
 		}
 		impl.name = formatLabel(impl.name);
 		impl.type = type;
@@ -105,10 +103,10 @@ public class MongoRepositoryCacheWrapper {
 	public RepositoryImpl findContainer(
 		String lastKnownContainer, String type) {
 		
-		lastKnownContainer = formatLabel(lastKnownContainer);
+		String container = formatLabel(lastKnownContainer);
 		
 		for(RepositoryImpl page : cache) {
-			if(page.getName().equals(lastKnownContainer)) {
+			if(page.getName().equals(container)) {
 				if(this.container == null){
 					this.container = page;
 				}
@@ -117,7 +115,7 @@ public class MongoRepositoryCacheWrapper {
 		}
 	
 		RepositoryImpl page = new RepositoryImpl();
-		page.setName(lastKnownContainer);
+		page.setName(container);
 		page.type = type;
 		cache.add(page);
 		
@@ -146,31 +144,29 @@ public class MongoRepositoryCacheWrapper {
 		if(cache == null) {
 			initCache(host, port);
 		}
-		String res = "";
+		StringBuilder res = new StringBuilder();
 		for(RepositoryImpl page : cache) {
-			res += "#Page id:" + page.getId().toString() + "\n";
-			res += "|| auto setup ||\n";
-			res += "| " + page.type + " | " + page.name + " |\n";
-			res += "| name | type | locator |\n";
+			res.append("#Page id:" + page.getId().toString()).append("\n");
+			res.append("|| auto setup ||\n");
+			res.append("| " + page.type + " | " + page.name + " |\n");
+			res.append("| name | type | locator |\n");
 			if(page.rows != null) {
 				for(ElementImpl row : page.rows) {
-					res += "|" + row.name + "|" + row.type + "|" + row.locator + "|\n";
+					res.append("|" + row.name + "|" + row.type + "|" + row.locator + "|\n");
 				}
 			}
-			res += "\n";
+			res.append("\n");
 		}
-		return res;
+		return res.toString();
 	}
 
 	public ElementImpl find(RepositoryImpl container, WebEventRecord eventRecord) {
 		String locator = eventRecord.target;
 		for(RepositoryImpl repImpl : cache) {
-			if(repImpl.getName().equals(container.getName())) {
-				if(repImpl.rows != null) {
-					for(ElementImpl element : repImpl.rows) {
-						if(element.locator.equalsIgnoreCase(locator.toLowerCase())) {
-							return element;
-						}
+			if(repImpl.getName().equals(container.getName()) && repImpl.rows != null) {
+				for(ElementImpl element : repImpl.rows) {
+					if(element.locator.equalsIgnoreCase(locator.toLowerCase())) {
+						return element;
 					}
 				}
 			}
@@ -194,12 +190,12 @@ public class MongoRepositoryCacheWrapper {
 		impl.name = formatLabel(impl.name);
 		impl.type = getAdjustedType(type);
 		impl.method="CSS";
-		impl.setId(ObjectId.get());;
+		impl.setId(ObjectId.get());
 		return impl;
 	}
 	
 	public String getAdjustedType(String type){
-		if(type.equals("text")){
+		if("text".equals(type)){
 			return "input";
 		}
 		return type;
