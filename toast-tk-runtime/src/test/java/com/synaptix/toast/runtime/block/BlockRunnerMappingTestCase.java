@@ -131,14 +131,12 @@ public class BlockRunnerMappingTestCase {
 		block.setFixtureName("service");
 		block.setBlockLines(Collections.singletonList(line));
 
-		ActionAdaptaterLocator locator = injector.getInstance(
-				ActionAdaptaterLocators.class).getActionCommandDescriptor(
-				block, line);
+		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class)
+												 .getActionCommandDescriptor(block, line);
 		ITestResult result = blockRunner.invokeActionAdapterAction(locator);
 
 		Assert.assertEquals("foo", result.getMessage());
-		Assert.assertEquals(ITestResult.ResultKind.SUCCESS,
-				result.getResultKind());
+		Assert.assertEquals(ITestResult.ResultKind.SUCCESS, result.getResultKind());
 	}
 
 	@Test

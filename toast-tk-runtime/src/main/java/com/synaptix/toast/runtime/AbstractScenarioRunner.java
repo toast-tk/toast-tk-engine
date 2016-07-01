@@ -3,7 +3,10 @@ package com.synaptix.toast.runtime;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +107,12 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 
     private File readTestFile(
     		final String fileName
-    ) throws IOException {
+    ) throws IOException, URISyntaxException {
+    	File f = new File(fileName);
+		if(f.exists()){
+			return f;
+		}
+
     	final URL resource = this.getClass().getClassLoader().getResource(fileName);
         if (resource == null) {
             throw new FileNotFoundException(fileName);

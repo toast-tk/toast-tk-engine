@@ -13,22 +13,23 @@ public abstract class AbstractResultHandler<T> implements IResultHandler<T> {
     }
     
 	@Override
-    public ITestResult result(T value, String expected) {
+    public ITestResult result(T value, final String expected) {
+		ITestResult result = buildResult(value, expected);
 		if (shouldStoreResult(expected)) {
 			objectRepository.getUserVariables().put(expected, value);
+			return result;
 		}
-		ITestResult result = buildResult(value, expected);
+		
+		String expectedValue = isVar(expected) ? (String) objectRepository.getUserVariables().get(expected) : expected;
+		
 		if(value == null){
-			if(expected != null){
+			if(expectedValue != null){
 				markResultAsFailure(result);
 			}
 		}
-		else if(expected != null && !value.toString().equals(expected)){
+		else if(expectedValue != null && !value.toString().equals(expectedValue)){
 			markResultAsFailure(result);
 		}
-		/*else{
-			result.setResultKind(ResultKind.SUCCESS);
-		}*/
 		return result;
     }
 
