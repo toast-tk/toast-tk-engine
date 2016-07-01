@@ -208,23 +208,22 @@ public class BlockRunnerMappingTestCase {
 
 	@Test
 	public void saveStringTest() throws NoActionAdapterFound {
-		String actionSentence = "Say hello";
 		ActionCommandDescriptor actionDescriptor = blockRunner
-				.findMatchingAction(actionSentence, XmlAdapterExample.class);
+				.findMatchingAction("Say hello", XmlAdapterExample.class);
 
 		Assert.assertNotNull(actionDescriptor);
 
 		TestBlock block = new TestBlock();
 		block.setFixtureName("service");
 		TestLine line = new TestLine();
-		line.setTest(actionSentence);
+		line.setTest("Say hello");
 		block.setBlockLines(Collections.singletonList(line));
 
 		ActionAdaptaterLocator locator = injector.getInstance(ActionAdaptaterLocators.class)
 												 .getActionCommandDescriptor(block, line);
 
 		ITestResult testResult = blockRunner.invokeActionAdapterAction(locator);
-		Assert.assertEquals(ITestResult.ResultKind.SUCCESS, testResult.getResultKind());
+		Assert.assertEquals(true, testResult.isSuccess());
 		Assert.assertEquals("Hello", testResult.getMessage());
 	}
 
