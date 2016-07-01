@@ -13,7 +13,14 @@ public class StringValueHandler implements IValueHandler{
 
 	@Override
 	public Object handle(final String group, final String argValue) {
-		return objectRepository.getUserVariables().getOrDefault(group, argValue);
+		if(group != null && group.startsWith("$")){
+			 Object value = argValue == null || argValue == group ? 
+					 objectRepository.getUserVariables().get(group) : 
+						 	argValue;
+			 
+			 return value == null ? group : value;
+		}
+		return group;
 	}
 
 	@Override

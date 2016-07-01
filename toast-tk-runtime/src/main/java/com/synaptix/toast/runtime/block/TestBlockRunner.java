@@ -179,7 +179,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		final Object[] args = new Object[groupCount];
 		for (int i = 0; i < groupCount; ++i) {
 			final String group = matcher.group(i + 1);
-			args[i] = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
+			final Object argument = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
+			args[i] = argument;
 			if (isVariable(args, i, group)) {
 				outCommand = outCommand.replaceFirst("\\" + group + "\\b", (args[i].toString()).replace("$", "\\$"));
 			}

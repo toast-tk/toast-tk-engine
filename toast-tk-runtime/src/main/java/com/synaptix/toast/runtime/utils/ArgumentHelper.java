@@ -124,10 +124,11 @@ public class ArgumentHelper {
 			if(!(object instanceof String)) {
 				return object;
 			}
-			if(isInputVariable(group)) {
+			if(isInputVariable(object.toString())) {
 				final String value = (String) object;
 				return handleValueWithNestedVars(repoSetup, value);
 			}
+			return object;
 		}
 		return group;
 	}
@@ -153,9 +154,7 @@ public class ArgumentHelper {
 	private static boolean isInputVariable(
 		final String group
 	) {
-		return 	group.startsWith("$")
-				&& 
-				!group.substring(1).contains("$")
+		return 	group.contains("$")
 				&& 
 				!group.substring(1).contains(Property.DEFAULT_PARAM_SEPARATOR);
 	}
