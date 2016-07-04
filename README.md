@@ -41,7 +41,7 @@ Add Toast Runtime dependency
 <dependency>
   <groupId>com.synaptix.toast</groupId>
   <artifactId>toast-tk-runtime</artifactId>
-  <version>0.1.2-SNAPSHOT</version>
+  <version>0.1.2</version>
 </dependency>
 ```
 
