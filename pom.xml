@@ -37,6 +37,8 @@
 		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
 		<maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
 		<maven-eclipse-plugin.version>2.8</maven-eclipse-plugin.version>
+		<maven-source-plugin.version>2.0.4</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>2.3</maven-javadoc-plugin.version>
 		<maven-release-plugin.version>2.4</maven-release-plugin.version>
 		<build-helper-maven-plugin>1.7</build-helper-maven-plugin>
 		<maven-processor-plugin.version>2.2.1</maven-processor-plugin.version>
@@ -63,7 +65,12 @@
 		<javassist.version>3.12.1.GA</javassist.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 	</properties>
-
+	<licenses>
+	  <license>
+	    <name>The Apache License, Version 2.0</name>
+	    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	  </license>
+	</licenses>
 	<dependencies>
 		<dependency>
 			<groupId>javassist</groupId>
@@ -198,6 +205,32 @@
 					<proc>none</proc>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin> 
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -335,12 +368,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<repositories>
-		<repository>
-			<id>mongodb-morphia</id>
-			<url>http://morphia.googlecode.com/svn/mavenrepo/</url>
-		</repository>
-	</repositories>
 	<profiles>
 		<profile>
 			<id>DEPLOY_NEXUS_SYNAPTIX</id>

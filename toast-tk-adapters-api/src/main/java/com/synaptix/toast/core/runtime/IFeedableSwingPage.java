@@ -7,16 +7,16 @@ public interface IFeedableSwingPage {
 	/**
 	 * provide a locator object to init the web element
 	 * 
-	 * @param locator
+	 * @param locator the element descriptor
 	 */
 	void initElement(final ISwingElementDescriptor locator);
 
 	/**
 	 * Add an element to the repository
 	 * 
-	 * @param elementName
-	 * @param type
-	 * @param locator
+	 * @param elementName element name
+	 * @param type element type (button, link,..)
+	 * @param locator html locator
 	 */
 	public void addElement(
 		final String elementName,
@@ -27,7 +27,7 @@ public interface IFeedableSwingPage {
 	/**
 	 * set the driver for current page
 	 * 
-	 * @param sDvr
+	 * @param driver the driver
 	 */
-	void setDriver(final IRemoteSwingAgentDriver sDvr);
+	void setDriver(final IRemoteSwingAgentDriver driver);
 }

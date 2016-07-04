@@ -118,8 +118,7 @@ public class ActionAdapterHelper {
 	}
 
 	public static boolean isNumeric(final String str) {
-		return str.matches("\\d+"); // match a number with optional '-' and
-// decimal.
+		return str.matches("\\d+"); // match a number with optional '-' and decimal.
 	}
 
 	public static BigDecimal parseBigDecimal(final String str) {
@@ -151,8 +150,8 @@ public class ActionAdapterHelper {
 	}
 
 	/**
-	 * @param propertyValue
-	 * @return
+	 * @param str
+	 * @return long
 	 */
 	public static Long parseLong(final String str) {
 		return isNotEmptyOrNull(str) ? Long.valueOf(Long.parseLong(str)) : null;

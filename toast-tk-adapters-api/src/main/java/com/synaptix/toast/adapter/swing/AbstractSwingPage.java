@@ -39,34 +39,24 @@ public abstract class AbstractSwingPage implements IFeedableSwingPage {
 	
 	private String pageName;
 
-	private String beanClassName; // the bean class name
+	private String beanClassName; 
 	
 	public AbstractSwingPage() {
 		this.elements = new HashMap<>();
 		this.autoElements = new HashMap<>();
 	}
 	
-	/**
-	 * 
-	 * @param elementDefinition
-	 */
+
 	@Override
 	public void initElement(final ISwingElementDescriptor e) {
 		initElement(e.getName(), e.getType().name(), e.getLocator());
 	}
 
-	/**
-	 * Done for each page element based on a feeder
-	 * 
-	 */
-	protected void initElement(
+	public void initElement(
 		final String name,
 		final String type,
 		final String locator
 	) {
-		/**
-		 * used to locate an element
-		 */
 		final DefaultSwingElement defaultWebElement = new DefaultSwingElement(name, AutoSwingType.valueOf(type), locator);
 		elements.put(name, defaultWebElement);
 		try {
@@ -123,16 +113,22 @@ public abstract class AbstractSwingPage implements IFeedableSwingPage {
 
 	/**
 	 * Convenient method to call an element based on the page enclosed fields' enum
+	 * 
+	 * @param name the element name
+	 * @return the element descriptor
 	 */
-	public ISwingElementDescriptor getElement(final String token) {
-		return elements.get(token);
+	public ISwingElementDescriptor getElement(final String name) {
+		return elements.get(name);
 	}
 
 	/**
 	 * Convenient method to call an element based on the page enclosed fields' enum
+	 * 
+	 * @param name the element name
+	 * @return the swing auto element
 	 */
-	public ISwingAutoElement getAutoElement(final String token) {
-		return autoElements.get(token);
+	public ISwingAutoElement getAutoElement(final String name) {
+		return autoElements.get(name);
 	}
 
 	public String getBeanClassName() {
@@ -157,9 +153,11 @@ public abstract class AbstractSwingPage implements IFeedableSwingPage {
 
 	/**
 	 * set the driver that will be used by the automation elements
+	 * 
+	 * @param driver automation driver 
 	 */
 	@Override
-	public void setDriver(final IRemoteSwingAgentDriver sDvr) {
-		autoElements.values().stream().forEach(swingAutoElement -> swingAutoElement.setFrontEndDriver(sDvr));
+	public void setDriver(final IRemoteSwingAgentDriver driver) {
+		autoElements.values().stream().forEach(swingAutoElement -> swingAutoElement.setFrontEndDriver(driver));
 	}
 }

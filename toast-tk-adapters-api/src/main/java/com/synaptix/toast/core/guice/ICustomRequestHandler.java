@@ -43,15 +43,14 @@ public interface ICustomRequestHandler {
 	 * Handle a custom request not covered by the framework standard commands
 	 * At this point, the plugin is expected to know how to handle this Custom Command Request
 	 * 
-	 * @param command -> Custom Command Request
+	 * @param command Custom Command Request
 	 */
 	String processCustomCall(final IIdRequest command);
 
 	/**
 	 * Check the handler is interested in handling the command request
 	 * 
-	 * @param command
-	 * @return
+	 * @return list of supported requests
 	 */
 	List<String> getCommandRequestWhiteList();
 

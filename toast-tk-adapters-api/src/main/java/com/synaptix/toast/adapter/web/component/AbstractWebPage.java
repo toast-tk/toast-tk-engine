@@ -28,9 +28,6 @@ import com.synaptix.toast.core.runtime.IWebElementDescriptor.LocationMethod;
  * based on provided markdown definitions
  */
 public abstract class AbstractWebPage implements IFeedableWebPage {
-
-	//ca a un air de deja vu
-	//a abstraire
 	
 	private static final Logger LOG;
 
@@ -41,7 +38,7 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 		factoryLoader = ServiceLoader.load(IWebComponentFactory.class);
 	}
 	
-	public String beanClassName; // the bean class name
+	public String beanClassName;
 
 	protected final Map<String, IWebElementDescriptor> elements;
 
@@ -58,10 +55,6 @@ public abstract class AbstractWebPage implements IFeedableWebPage {
 		this.autoElements = new HashMap<>();
 	}
 	
-	/**
-	 * 
-	 * @param elementDefinition
-	 */
 	@Override
 	public void initElement(final IWebElementDescriptor e) {
 		initElement(e.getName(), e.getType().name(), e.getMethod().name(), e.getLocator(), e.getPosition());
