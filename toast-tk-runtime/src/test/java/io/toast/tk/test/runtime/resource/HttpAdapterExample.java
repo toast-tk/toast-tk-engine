@@ -13,7 +13,7 @@ import io.toast.tk.test.bean.User;
 @ActionAdapter(value = ActionAdapterKind.service, name ="http-service-adapter")
 public class HttpAdapterExample {
 	
-	@Action(action = "POST {{com.synaptix.toast.test.bean.User:value:json}} to {{value}}", description = "Post json")
+	@Action(action = "POST {{io.toast.tk.test.bean.User:value:json}} to {{value}}", description = "Post json")
 	public ITestResult postUrl(User user, String url){
 		try {
 			String json = new Gson().toJson(user);

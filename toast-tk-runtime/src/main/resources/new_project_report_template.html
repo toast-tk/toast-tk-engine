@@ -81,7 +81,7 @@ footer {
 				 google.load("visualization", "1", {packages:["corechart"]});
 			  google.setOnLoadCallback(drawChart);
 			  function drawChart() {
-				var historyData = /*[[${@com.synaptix.toast.runtime.report.TemplateReportHelper@getResultTrendData(project, projectsHistory)}]]*/
+				var historyData = /*[[${@io.toast.tk.runtime.report.TemplateReportHelper@getResultTrendData(project, projectsHistory)}]]*/
 				var dataTable = [['Iteration', 'OK', 'KO', 'Not Completed', 'Not Run']];
 				dataTable.push.apply(dataTable, historyData)
 				var data = google.visualization.arrayToDataTable(dataTable);
@@ -102,7 +102,7 @@ footer {
 			    };
 			    
 			  function drawPerfChart() {
-				var historyData = /*[[${@com.synaptix.toast.runtime.report.TemplateReportHelper@getExecTrendData(project, projectsHistory)}]]*/
+				var historyData = /*[[${@io.toast.tk.runtime.report.TemplateReportHelper@getExecTrendData(project, projectsHistory)}]]*/
 				var dataTable = [['Iteration', 'Total Execution Time (ms)']];
 				dataTable.push.apply(dataTable, historyData)
 				var data = google.visualization.arrayToDataTable(dataTable);

@@ -11,7 +11,7 @@ import io.toast.tk.dao.domain.api.test.ITestResult;
 @ActionAdapter(value = ActionAdapterKind.service, name = "xml-service-adapter")
 public class XmlAdapterExample {
 
-	@Action(action = "Intégrer {{com.synaptix.toast.test.runtime.resource.ProjetFlux:value:xml}}", description =
+	@Action(action = "Intégrer {{io.toast.tk.test.runtime.resource.ProjetFlux:value:xml}}", description =
 			"Intégrer xml")
 	public ITestResult integrerXml(ProjetFlux fluxFromXml) {
 		return new SuccessResult();
