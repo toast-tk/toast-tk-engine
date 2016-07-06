@@ -10,7 +10,7 @@
 	<name>Toast Toolkit - Interpretation module</name>
 	<dependencies>
 		<dependency>
-			<groupId>io.toast.tk</groupId>
+			<groupId>io.toast-tk</groupId>
 			<artifactId>toast-tk-adapters</artifactId>
 			<version>${project.version}</version>
 		</dependency>
