@@ -6,10 +6,12 @@ jdk:
 - oraclejdk8
 script: ./build.sh
 after_success:
-- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/pubring.gpg.enc -out $GPG_DIR/pubring.gpg -d
-- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/secring.gpg.enc -out $GPG_DIR/secring.gpg -d
-- "$GPG_DIR/publish.sh"
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/pubring.gpg.enc
+  -out $GPG_DIR/pubring.gpg -d
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/secring.gpg.enc
+  -out $GPG_DIR/secring.gpg -d
+- $GPG_DIR/publish.sh
 env:
   global:
-    - secure: Juk6WWP6e+UGCJhilenMmmAEpXbAhiOILE4YsgmMRcU+5jVlbZI+XkFMsFpNJKouSd1msdXx7LwzU7eZLbpXWrACKCIl38ATOLvkrTEoNln5ums6/2gOKqSVf1MbAGjt5B2SZXafWztz9Grbt0DS0E1B6YIkcOdg+iHtH6pbveRJKoAMeqttoFqMaCjEBV2hRLWxhLcZscDSPlzVt8wrJv3337M7An4M+Ao9fOdwrkF33VAAbgd3UioyaatAOBYgQdY539o8ajVWvIORslv/MfeCtk+NkQVwjpAf/gPISKIE/WNksyW2rLGnOocfJpe/qHhdTaFwJf92UzAfb5xQZ33kOV6bcSVX6222+uKYyVnL6PVTndNsfXH/M8awvkEFFKxZYbPnnQQVqanAttqa8P1q+CL5LzpHHWuk3BUBP5RKteqo8BYDZZksYZJLBTf6MorTmJR/LW6o3brcwQaXJjKNF0d8MFGybOyIzztfsYN0R9+1Iz0Ov3cQ1+WtJ2xqtCE7GcfNKnmEkQMDS8Mbog2Urw04SCB+lGhGntojulTzspWFU+wmJuw3uzTtSoWVbvQXfRwIM4yvmqcCRDDK0XplwreFWtT7PmAu0sQC41ndNL37cvBIXYuy2JSs0qOUIz4qGoje0u4PgXu/pUYaucVfkwm9X4iqKAYFi+7UHbI=
-    - GPG_DIR="`pwd`/deploy"
+  - secure: Juk6WWP6e+UGCJhilenMmmAEpXbAhiOILE4YsgmMRcU+5jVlbZI+XkFMsFpNJKouSd1msdXx7LwzU7eZLbpXWrACKCIl38ATOLvkrTEoNln5ums6/2gOKqSVf1MbAGjt5B2SZXafWztz9Grbt0DS0E1B6YIkcOdg+iHtH6pbveRJKoAMeqttoFqMaCjEBV2hRLWxhLcZscDSPlzVt8wrJv3337M7An4M+Ao9fOdwrkF33VAAbgd3UioyaatAOBYgQdY539o8ajVWvIORslv/MfeCtk+NkQVwjpAf/gPISKIE/WNksyW2rLGnOocfJpe/qHhdTaFwJf92UzAfb5xQZ33kOV6bcSVX6222+uKYyVnL6PVTndNsfXH/M8awvkEFFKxZYbPnnQQVqanAttqa8P1q+CL5LzpHHWuk3BUBP5RKteqo8BYDZZksYZJLBTf6MorTmJR/LW6o3brcwQaXJjKNF0d8MFGybOyIzztfsYN0R9+1Iz0Ov3cQ1+WtJ2xqtCE7GcfNKnmEkQMDS8Mbog2Urw04SCB+lGhGntojulTzspWFU+wmJuw3uzTtSoWVbvQXfRwIM4yvmqcCRDDK0XplwreFWtT7PmAu0sQC41ndNL37cvBIXYuy2JSs0qOUIz4qGoje0u4PgXu/pUYaucVfkwm9X4iqKAYFi+7UHbI=
+  - GPG_DIR="`pwd`/deploy"
