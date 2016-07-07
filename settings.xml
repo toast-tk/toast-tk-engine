@@ -1,17 +1,7 @@
 <settings>
 	<servers>
 		<server>
-			<id>talanlabs-releases-repository</id>
-			<username>${env.NEXUS_USER}</username>
-			<password>${env.NEXUS_PASSWORD}</password>
-		</server>
-		<server>
-			<id>talanlabs-snapshots-repository</id>
-			<username>${env.NEXUS_USER}</username>
-			<password>${env.NEXUS_PASSWORD}</password>
-		</server>
-		<server>
-			<id>ossrh</id>
+			<id>ossrh-snapshot</id>
 			<username>${env.OSSRH_USER}</username>
 			<password>${env.OSSRH_PASSWORD}</password>
 		</server>
