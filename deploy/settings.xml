@@ -3,7 +3,7 @@
 		<server>
 			<id>ossrh</id>
 			<username>${env.OSSRH_USER}</username>
-			<password>kokaina$allah0</password>
+			<password>${env.OSSRH_PWD}</password>
 		</server>
 	</servers>
 	<profiles>
