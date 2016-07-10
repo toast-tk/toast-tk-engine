@@ -1,7 +1,7 @@
 <settings>
 	<servers>
 		<server>
-			<id>ossrh-snapshot</id>
+			<id>ossrh</id>
 			<username>${env.OSSRH_USER}</username>
 			<password>${env.OSSRH_PASSWORD}</password>
 		</server>
