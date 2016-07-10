@@ -6,10 +6,12 @@ jdk:
 - oraclejdk8
 script: ./build.sh
 after_success:
-- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/pubring.gpg.enc -out $GPG_DIR/pubring.gpg -d
-- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/secring.gpg.enc -out $GPG_DIR/secring.gpg -d
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/pubring.gpg.enc
+  -out $GPG_DIR/pubring.gpg -d
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/secring.gpg.enc
+  -out $GPG_DIR/secring.gpg -d
 - $GPG_DIR/publish.sh
 env:
   global:
   - GPG_DIR="`pwd`/deploy"
-  - secure: m8lLBPDnAlaYo7KbfJynRMZ5qbBh38rmEBX/NHLNXl8OveqDo0/C7lYvICKnRjbncP4lIYl3I/l5O2RdScyW83qAmhffI05b4mawTIyq4RegowkWSprr53OMy8yvPo8u0UheH2188rH6fkROroS/L1yTod22jBHC1IgEiSinsgR+YRzu5pg1mrV9R4bV5mWHBpX5opQJteMXA0ved8CNwkOmf61F2s3IL3Q+yLuDynui4LH3AyMW5XpksgiTy+5evmOCc9h9uWrIlIyr95kjmLUz4HQviCo3tuqXUyB2QNEViQY8I7WN3l6qsxXlQW8DdXqUgu+SMzN08uzw5kTlA9ZSkyIw0cu6DKpRkmH/ILaW2syxsECkK/YZZ26gicwj/kfUB1C5kR9pXHpFRlfJvw5IowlHeQaL5ob5CLtiyQFKJOLj03OWmQepU8jOz1WuCruKVsyeNg3NvbGzuMXQSB4ETgwzYlwqOhfY0tBa5cEoV9V265vxxNLHoFGXmNJn3ioRug8fxJAxjXQaeVGqNbSvmmOV2f0hns9daL6UyAQS5OvuXArzQmxAzRTa2W3AX25j8ka+FY/rbSzPrAda1XCKNdZGqyG85ikpw/gwKByiA3/kaWp0kfJV6u4ylFb8R31HHTvdH3mSYZ68RF8HE+wL13Zt+nWI6HuAgmK7M/8=
+  - secure: RS53gitI3IHerLUlh4cS2Jq3GeqEGFEOuv+SPI7AUaecTt96Ved4lX+TFuTUaxve9gp2Dii2tiXAIZI78Rv17BGwcFk6rTBGHOvYz28wv6lVqr8B1+bDdSVNqU0xYz1pZGZyEvnvH3KhaaxFFfv7+FkBER80EiAFivV+LcXePyryXzL41rvkSQnBKcZIVRbJRBPFZjh4rrIS+VaWVVe+SGHArNk4dHEdnhmMO1o1h+z+wUOFuvzsr5a88WHzeOYdFd8R/R9KlihmhxOgxP4WGL0MgQysIf8qxbUSPjjzZ4FO7QQ+SJY2ue6yssYCLDoAjJKJFRFArFRSdmDKhIsHiaWVnrtgnYXfGso/e3FJVxuf0tRZNcbDFdUe1xPOPqk8LEs5uUSry/aSKKtjxj/Ww4JfwdZJyJHH7DtGyrPzYVZUN1AAsRPaiAkP65O8gWj5pusRIYhH9PdPrqlENU/rJKIeUL8IH1GflMwOmp61Uii9i3y6p/Qlq2slvzHccOqGgr9FsbW5+PA5Adn82+hrToVVTMAB6psiM53wHUX6IR4JkQNUpQg3RUUP/BKQ0F4IxGnooyglHMKdmI2/Wt6qs5Ibt+j1Ws9IIydl0d88m0cX91xC/2FWgqnck3XzJOlP76pPCa9lhEUV/aqw6sL8DcYZMeJN3PzDBp6jV1n6AAs=
