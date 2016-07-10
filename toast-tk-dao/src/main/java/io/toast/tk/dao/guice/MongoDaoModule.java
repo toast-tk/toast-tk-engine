@@ -12,7 +12,6 @@ import io.toast.tk.dao.service.dao.access.team.GroupDaoService;
 import io.toast.tk.dao.service.dao.access.team.UserDaoService;
 import io.toast.tk.dao.service.dao.access.test.CommentBlockDaoService;
 import io.toast.tk.dao.service.dao.access.test.ConfigBlockDaoService;
-import io.toast.tk.dao.service.dao.access.test.InsertBlockDaoService;
 import io.toast.tk.dao.service.dao.access.test.SetupBlockDaoService;
 import io.toast.tk.dao.service.dao.access.test.TestBlockDaoService;
 import io.toast.tk.dao.service.dao.access.test.TestPageDaoService;
@@ -32,7 +31,6 @@ public class MongoDaoModule extends AbstractModule {
 		install(new FactoryModuleBuilder().build(UserDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(CommentBlockDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(ConfigBlockDaoService.Factory.class));
-		install(new FactoryModuleBuilder().build(InsertBlockDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(SetupBlockDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(TestBlockDaoService.Factory.class));
 	}
