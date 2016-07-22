@@ -42,7 +42,7 @@ public class SwingPageSetupBlockParser implements IBlockParser {
                 return swingPageBlock;
             }
             final String[] split = StringUtils.split(string, "|");
-            assertHasElementNameTypeAndLocator(firstLine, split);
+            assertHasElementNameTypeAndLocator(string, split);
             swingPageBlock.addLine(new SwingPageConfigLine(split[0].trim(), split[1].trim(), split[2].trim()));
         }
         return swingPageBlock;

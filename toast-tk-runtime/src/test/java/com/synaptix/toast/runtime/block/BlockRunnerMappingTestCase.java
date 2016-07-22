@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.google.common.eventbus.EventBus;
 import com.synaptix.toast.core.annotation.EngineEventBus;
+import com.synaptix.toast.core.driver.IRemoteSwingAgentDriver;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,6 +32,7 @@ import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocator;
 import com.synaptix.toast.runtime.block.locator.ActionAdaptaterLocators;
 import com.synaptix.toast.runtime.block.locator.NoActionAdapterFound;
 import com.synaptix.toast.runtime.module.RunnerModule;
+import com.synaptix.toast.test.runtime.mock.DummyRemoteEngineSwingDriver;
 import com.synaptix.toast.test.runtime.resource.XmlAdapterExample;
 
 public class BlockRunnerMappingTestCase {
@@ -51,6 +53,9 @@ public class BlockRunnerMappingTestCase {
 						.to(ActionItemRepository.class).in(Singleton.class);
 				bind(ActionItemValueProvider.class).in(Singleton.class);
 				bind(XmlAdapterExample.class).in(Singleton.class);
+				
+				//hack tps pour le rerun
+				bind(IRemoteSwingAgentDriver.class).to(DummyRemoteEngineSwingDriver.class).in(Singleton.class);
 			}
 		};
 		injector = Guice.createInjector(module, new RunnerModule());
