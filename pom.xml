@@ -12,7 +12,7 @@
 	    This module is the parent module for our engine, featuring:
 	    	- Action Adapters Module
 	    	- Rest Utils
-	    	- Dao Module (Mongo data storage management)
+	    	- Dao Module (Mongo data: storage management)
 	    	- Runtime Module
 	    	- Drivers Module
 	</description>
@@ -87,8 +87,14 @@
 		<developer>
 			<name>Sallah Kokaina</name>
 			<email>sallah.kokaina@gmail.com</email>
-			<organization>TalanLabs</organization>
-			<organizationUrl>http://labs.talan.com</organizationUrl>
+			<organization>Toast TK</organization>
+			<organizationUrl>http://toast-tk.io</organizationUrl>
+		</developer>
+		<developer>
+			<name>Nicolas Sauvage</name>
+			<email>noki.sauvage@gmail.com</email>
+			<organization>Toast TK</organization>
+			<organizationUrl>http://toast-tk.io</organizationUrl>
 		</developer>
 	</developers>
 	<dependencies>
@@ -373,6 +379,10 @@
 					<id>ossrh</id>
 					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 				</snapshotRepository>
+				<repository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+				</repository>
 			</distributionManagement>
 			<build>
 				<plugins>
@@ -395,7 +405,7 @@
 							<execution>
 								<id>attach-sources</id>
 								<goals>
-									<goal>jar</goal>
+									<goal>jar-no-fork</goal>
 								</goals>
 							</execution>
 						</executions>

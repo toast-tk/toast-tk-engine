@@ -166,10 +166,12 @@ public class RestUtils {
 		return response.getStatus() == 200;
 	}
 
-	public static boolean postWebEventRecord(final String url, final String record) {
+	public static boolean postWebEventRecord(final String apiKey, final String url, final String record) {
 		try {
 			final Client httpClient = Client.create();
+			
 			final WebResource webResource = httpClient.resource(url);
+			webResource.header("Authorization", apiKey);
 			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
 														.accept(MediaType.APPLICATION_JSON)
 														.post(ClientResponse.class, record);
