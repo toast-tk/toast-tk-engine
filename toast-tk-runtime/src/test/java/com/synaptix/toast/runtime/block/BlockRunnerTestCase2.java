@@ -24,38 +24,23 @@ import com.synaptix.toast.runtime.ActionItemRepository;
 import com.synaptix.toast.runtime.IActionItemRepository;
 import com.synaptix.toast.runtime.action.item.ActionItemValueProvider;
 import com.synaptix.toast.runtime.bean.TestLineDescriptor;
+import com.synaptix.toast.runtime.parse.ScriptHelper;
 import com.synaptix.toast.runtime.parse.TestParser;
 import com.synaptix.toast.test.runtime.resource.XmlAdapterExample;
 
 public class BlockRunnerTestCase2 {
 
 	private static final String scenario = "./fatal.scenario.md";
-	static Injector injector;
-	TestBlockRunner blockRunner;
-	ITestPage testPage;
+	private ITestPage testPage;
 	
 	@BeforeClass
 	public static void init() {
 		ToastCache.getInstance().addActionAdapter(XmlAdapterExample.class);
-		Module module = new AbstractModule() {
-			@Override
-			protected void configure() {
-				bind(EventBus.class).annotatedWith(EngineEventBus.class).to(EventBus.class).in(Singleton.class);
-				bind(IActionItemRepository.class).to(ActionItemRepository.class).in(Singleton.class);
-				bind(ActionItemValueProvider.class).in(Singleton.class);
-				bind(TestBlockRunner.class);
-			}
-		};
-		injector = Guice.createInjector(module);
 	}
 	
 	@Before
 	public void initRunner() throws IllegalArgumentException, IOException{
-		this.blockRunner = injector.getInstance(TestBlockRunner.class);
-		ClassLoader classLoader = getClass().getClassLoader();
-        URL testFileUrl = classLoader.getResource(scenario);
-        String path = testFileUrl.getPath();
-        this.testPage = new TestParser().parse(path);
+        this.testPage = new TestParser().parse(ScriptHelper.getScript(scenario), scenario);
 	}
 
 	@Test
