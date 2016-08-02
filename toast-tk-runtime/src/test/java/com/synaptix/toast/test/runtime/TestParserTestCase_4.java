@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
+import com.synaptix.toast.runtime.parse.ScriptHelper;
 import com.synaptix.toast.runtime.parse.TestParser;
 
 /**
@@ -15,21 +16,19 @@ public class TestParserTestCase_4 {
 
     @Test
     public void test() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL testFileUrl = classLoader.getResource("test_file_1.txt");
-        Assert.assertNotNull(testFileUrl);
-        String path = testFileUrl.getPath();
-        System.out.println("path = " + path);
+        String filename = "test_file_1.txt";
         ITestPage testPage = null;
+
         try {
-            testPage = new TestParser().parse(path);
+            testPage = new TestParser().parse(ScriptHelper.getScript(filename), filename);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         System.out.println("testPage = " + testPage);
 
         Assert.assertNotNull(testPage);
-        Assert.assertEquals("test_file_1.txt", testPage.getName());
+        Assert.assertEquals(filename, testPage.getName());
 
     }
 

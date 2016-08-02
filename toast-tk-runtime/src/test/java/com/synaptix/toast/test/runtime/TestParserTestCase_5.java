@@ -2,11 +2,13 @@ package com.synaptix.toast.test.runtime;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
+import com.synaptix.toast.runtime.parse.ScriptHelper;
 import com.synaptix.toast.runtime.parse.TestParser;
 
 /**
@@ -16,14 +18,12 @@ public class TestParserTestCase_5 {
 
     @Test
     public void test() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL testFileUrl = classLoader.getResource("test_file_3.txt");
-        Assert.assertNotNull(testFileUrl);
-        String path = testFileUrl.getPath();
-        System.out.println("path = " + path);
+        String filename = "test_file_3.txt";
         ITestPage testPage = null;
+
         try {
-            testPage = new TestParser().parse(path);
+            List<String> lines = ScriptHelper.getScript(filename);
+            testPage = new TestParser().parse(lines, filename);
         } catch (IOException e) {
             e.printStackTrace();
         }

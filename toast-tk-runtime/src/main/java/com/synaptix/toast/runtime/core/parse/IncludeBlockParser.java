@@ -13,6 +13,7 @@ import com.synaptix.toast.dao.domain.BlockType;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
 import com.synaptix.toast.runtime.parse.IBlockParser;
+import com.synaptix.toast.runtime.parse.ScriptHelper;
 import com.synaptix.toast.runtime.parse.TestParser;
 
 public class IncludeBlockParser implements IBlockParser {
@@ -24,11 +25,12 @@ public class IncludeBlockParser implements IBlockParser {
 			final List<String> strings
 	) {
 		final String string = strings.remove(0);
-		final String pathName = StringUtils.removeStart(string, "#include").trim();
-		final Path newPath = Paths.get(input).resolveSibling(pathName);
+		final String filename = StringUtils.removeStart(string, "#include").trim();
+		List<String> script = ScriptHelper.getScript(filename);
+
 		ITestPage testPage = null;
 		try {
-			testPage = new TestParser().parse(newPath.toString());
+			testPage = new TestParser().parse(script, filename);
 		}
 		catch(final IOException e) {
 			LOG.error(e.getMessage(), e);

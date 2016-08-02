@@ -5,7 +5,6 @@ import com.synaptix.toast.runtime.report.HTMLReporter;
 
 public class TestParserTestCase_7 {
 
-	
 	public static void main(String[] args) {
 		try {
 			DAOManager.getInstance("10.23.252.131", 27017);

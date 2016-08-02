@@ -18,11 +18,12 @@ public class AbstractParser {
         this.blockParserProvider = new BlockParserProvider();
     }
 
-    protected static void removeBom(final List<String> list) {
+    protected static List<String> removeBom(final List<String> list) {
     	final String firstLine = list.get(0);
         if(firstLine.startsWith("\uFEFF")) {
             list.set(0, firstLine.substring(1));
         }
+        return list;
     }
 
     protected IBlock readBlock(

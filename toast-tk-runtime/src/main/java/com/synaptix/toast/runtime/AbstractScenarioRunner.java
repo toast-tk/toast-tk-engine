@@ -3,8 +3,12 @@ package com.synaptix.toast.runtime;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,10 +20,14 @@ import com.google.inject.Module;
 import com.synaptix.toast.core.annotation.EngineEventBus;
 import com.synaptix.toast.core.rest.RestUtils;
 import com.synaptix.toast.dao.domain.impl.test.block.ITestPage;
+import com.synaptix.toast.dao.domain.impl.test.block.TestPage;
+import com.synaptix.toast.runtime.parse.ScriptHelper;
 import com.synaptix.toast.runtime.parse.TestParser;
 import com.synaptix.toast.runtime.report.DefaultTestProgressReporter;
 import com.synaptix.toast.runtime.report.IHTMLReportGenerator;
 import com.synaptix.toast.runtime.utils.RunUtils;
+
+import sun.font.Script;
 
 public abstract class AbstractScenarioRunner extends AbstractRunner {
 
@@ -67,11 +75,14 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		initEnvironment();
 		for (final String fileName : scenarios) {
 			LOG.info("Start main test parser: {}", fileName);
-			InputStream inputStream = readTestFile(fileName);
-			final ITestPage result = runScript(inputStream, fileName);
+
+			List<String> lines = ScriptHelper.getScript(fileName);
+			final ITestPage result = runTestPage(new TestParser().parse(lines, fileName));
 			testPages.add(result);
 		}
+
 		tearDownEnvironment();
+
 		LOG.info("{}file(s) processed", scenarios.length);
 		RunUtils.printResult(testPages);
 	}
@@ -87,7 +98,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 			final String script
 	) throws Exception {
 		this.presetRepoFromWebApp = true;
-		runScript(null, script);
+		runScript(script);
 	}
 
 	public void runLocalScript(
@@ -98,7 +109,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		this.progressReporter.setReportCallBack(callback);
 		final TestParser parser = new TestParser();
 		this.localRepositoryTestPage = parser.readString(repoWiki, null);
-		runScript(null, wikiScenario);
+		runScript(wikiScenario);
 	}
 
 	private InputStream readTestFile(final String fileName) throws IOException, URISyntaxException {
@@ -107,7 +118,11 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 
 	private ITestPage runScript(final String script) throws IOException {
 		final TestParser testParser = new TestParser();
-		ITestPage result = testParser.readString(script, null) ;
+		ITestPage result = testParser.readString(script, null);
+		return runTestPage(result);
+	}
+
+	private ITestPage runTestPage(ITestPage result) throws IOException {
 		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (this.presetRepoFromWebApp) {
 			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
