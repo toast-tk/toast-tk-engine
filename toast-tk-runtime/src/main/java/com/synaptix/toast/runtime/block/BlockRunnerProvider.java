@@ -7,8 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.multibindings.MapBinder;
 import com.synaptix.toast.dao.domain.impl.test.block.IBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.SwingPageBlock;
 import com.synaptix.toast.dao.domain.impl.test.block.TestBlock;

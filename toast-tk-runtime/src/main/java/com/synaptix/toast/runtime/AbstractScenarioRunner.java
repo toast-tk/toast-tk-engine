@@ -105,10 +105,10 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		return this.getClass().getClassLoader().getResourceAsStream(fileName);
 	}
 
-	private ITestPage runScript(final InputStream scriptInputStream, final String script) throws IOException {
+	private ITestPage runScript(final String script) throws IOException {
 		final TestParser testParser = new TestParser();
-		ITestPage result = file == null ? testParser.readString(script, null) : testParser.parse(scriptInputStream);
-		final TestRunner runner = new TestRunner(injector);
+		ITestPage result = testParser.readString(script, null) ;
+		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (this.presetRepoFromWebApp) {
 			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
 			final TestParser parser = new TestParser();

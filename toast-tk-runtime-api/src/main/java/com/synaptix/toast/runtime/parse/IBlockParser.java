@@ -1,7 +1,6 @@
 package com.synaptix.toast.runtime.parse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import com.synaptix.toast.dao.domain.BlockType;
@@ -18,10 +17,9 @@ public interface IBlockParser {
     /**
      * Create a block from the list of strings.
      *
-     * @param input Path of the test text file.
      * @throws IOException
      */
-    IBlock digest(final List<String> strings, final InputStream input) throws IOException;
+    IBlock digest(final List<String> strings) throws IOException;
 
     /**
      * Return true if this string should be parsed with this parser.

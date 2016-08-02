@@ -53,7 +53,7 @@ public class ProjectParser extends AbstractParser {
 		LOG.info("Starting project parsing: {}", pageName);
 		final Project project = initProject(pageName);
 		while(CollectionUtils.isNotEmpty(lines)) {
-			final IBlock block = readBlock(lines, filePath);
+			final IBlock block = readBlock(lines);
 			if(block instanceof CampaignBlock) {
 				project.getCampaigns().add(readCampaignBlock((CampaignBlock) block));
 			}

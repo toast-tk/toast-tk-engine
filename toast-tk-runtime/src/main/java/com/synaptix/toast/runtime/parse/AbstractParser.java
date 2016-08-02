@@ -1,7 +1,6 @@
 package com.synaptix.toast.runtime.parse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +26,7 @@ public class AbstractParser {
     }
 
     protected IBlock readBlock(
-    	final List<String> list, 
-    	final InputStream input
+            final List<String> list
     ) throws IllegalArgumentException, IOException {
     	final String firstLine = list.get(0);
     	final BlockType blockType = getBlockType(firstLine);
@@ -39,7 +37,7 @@ public class AbstractParser {
         if (blockParser == null) {
         	throw new IllegalArgumentException("Could not parse line: " + firstLine);
         }
-        return blockParser.digest(list, input);
+        return blockParser.digest(list);
     }
 
     private IBlock digestCommentBlock(final List<String> lines) {

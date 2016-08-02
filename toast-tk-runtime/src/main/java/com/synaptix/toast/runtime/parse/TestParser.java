@@ -27,28 +27,31 @@ public class TestParser extends AbstractParser {
 		LOG.info("Parser intializing..");
 	}
 
-	public ITestPage parse(InputStream inputStream, String filename) throws IOException, IllegalArgumentException {
+	public ITestPage parse(List<String> lines, String filename) throws IOException, IllegalArgumentException {
+		if (lines.isEmpty()) {
+			throw new IllegalArgumentException("File " + filename + " is empty");
+		}
+		return buildTestPage(lines, filename);
+	}
+
+	private List<String> getStrings(InputStream inputStream) throws IOException {
 		List<String> list;
 		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream))) {
 			list = buffer.lines().collect(Collectors.toList());
 		}
-		if (list.isEmpty()) {
-			throw new IllegalArgumentException("File " + filename + " is empty");
-		}
 		removeBom(list);
-		return buildTestPage(list, filename, inputStream);
+		return list;
 	}
 
 	private ITestPage buildTestPage(
 			List<String> lines,
-			final String pageName,
-			final InputStream input
+			final String pageName
 	) throws IllegalArgumentException, IOException {
 		LOG.info("Starting test page parsing: {}", pageName);
 		final ITestPage testPage = DaoBeanFactory.getBean(ITestPage.class);
 		testPage.setName(pageName);
 		while (CollectionUtils.isNotEmpty(lines)) {
-			final IBlock block = readBlock(lines, input);
+			final IBlock block = readBlock(lines);
 			testPage.addBlock(block);
 			final int numberOfLines = TestParserHelper.getNumberOfBlockLines(block);
 			final int numberOfLineIncludingHeaderSize = numberOfLines + block.getHeaderSize();
@@ -60,6 +63,6 @@ public class TestParser extends AbstractParser {
 	public ITestPage readString(String scenarioAsString, String scenarioName) throws IllegalArgumentException, IOException {
 		String[] split = StringUtils.split(scenarioAsString, "\n");
 		ArrayList<String> list = new ArrayList<>(Arrays.asList(split));
-		return buildTestPage(list, scenarioName, null);
+		return buildTestPage(list, scenarioName);
 	}
 }

@@ -1,7 +1,6 @@
 package com.synaptix.toast.runtime.core.parse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -22,8 +21,7 @@ public class IncludeBlockParser implements IBlockParser {
 	
 	@Override
 	public IBlock digest(
-		final List<String> strings, 
-		final InputStream input
+			final List<String> strings
 	) {
 		final String string = strings.remove(0);
 		final String pathName = StringUtils.removeStart(string, "#include").trim();
