@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo 'working on branch $TRAVIS_BRANCH'
-echo 'Preparing deploy for tag: $TRAVIS_TAG'
+echo "working on branch $TRAVIS_BRANCH"
+echo "Preparing deploy for tag: $TRAVIS_TAG"
 
 if [ $TRAVIS_PULL_REQUEST == "false" ] && [ ${TRAVIS_BRANCH} = 'snapshot' ]; then
     echo 'Deploying snapshot to OSS'
