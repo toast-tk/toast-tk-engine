@@ -29,19 +29,12 @@ It makes test scripts easier to share between technical team members (i.e: Devel
 # Installation
 ### Using MAVEN
 
-Add Nexus Repository
-```
-<repository>
-  <id>talanlabs-releases-repository</id>
-  <url>http://nexus.talanlabs.com/content/repositories/releases/</url>
-</repository>
-```
 Add Toast Runtime dependency
 ```
 <dependency>
   <groupId>com.synaptix.toast</groupId>
   <artifactId>toast-tk-runtime</artifactId>
-  <version>0.1.2</version>
+  <version>0.1.3.RC1</version>
 </dependency>
 ```
 
