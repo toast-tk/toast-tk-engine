@@ -21,14 +21,6 @@ public class DaoConfigProvider implements Provider<DaoConfig> {
 	}
 
 	private void initConfig() {
-		final Properties p = new Properties();
-		final URL resource = DaoConfigProvider.class.getClassLoader().getResource("config.properties");
-		try(final FileReader fileReader = new FileReader(resource.getFile());) {
-			p.load(fileReader);
-		}
-		catch(final IOException e) {
-			LOG.error(e.getMessage(), e);
-		}
 		this.config = new DaoConfig("localhost", 27017);
 	}
 
