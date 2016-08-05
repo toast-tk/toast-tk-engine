@@ -3,12 +3,13 @@ cache:
   - $HOME/.m2
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 script: ./build.sh
-#deploy:
-# provider: script
-# script: mvn deploy --settings ./settings.xml -PDEPLOY_NEXUS_SYNAPTIX
-# on:
-#  branch: master
-#after_success:
-#  - mvn --batch-mode verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.0.1:sonar -Dsonar.host.url=${SONAR_URL} -Dsonar.login=${SONAR_LOGIN}
+after_success:
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/pubring.gpg.enc -out $GPG_DIR/pubring.gpg -d
+- openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/secring.gpg.enc -out $GPG_DIR/secring.gpg -d
+- $GPG_DIR/publish.sh
+env:
+  global:
+  - GPG_DIR="`pwd`/deploy"
+  - secure: RW4bwx9KE6Kr6NlRe0MBckhy94Bkq7UjkBrqSGReXW09XkyhRWW44f2T3FbgZYbgbdtBz/4CcP6AS5tftM4z0yBVHI97spCxmxex3o7sbe0ahDM8lWVguAofcM/yMIevhuSFKKVukpDH5JklB/3RJ+Wat98jvI+y5DC8ktcIOxbJUSFHJjNqhNBWU9KLdEWbGsn/24pQgVHfccsNpqnjb+en7CWDsW3b8oAEA4lhZsIBrlPGJfTUrXKTmgvqFfp3tleiNJsa2aMhO6jSvVZHfxtoG01ysNsl8j9OuHBVtQ0WeEtpAlmayYDbJ2VsCQ+9UT+Q/dbDJkSvCVTEICqqwKOSpPUx6RGG8aYOJ4a7yH9zQEHyEkeQanHaKymwVSD9NKLE9tmWEiOj4TzcVypOxp8/YYDCP7b/jkilIFOYEBMb65rjrxLGGnBRdY5rFv+M4DLV+oXMOq3vbgfuJeVhkGIEeAMKKPx/DgcpI6M2EbMPARICxo4uSww4FCwUM3bSMtrmTGEzR6iS7dZrNmsCMR5/+ospGjdZUfVAwEh2n8KOW45jJQICAwHUpai5CVcTSWl3sXj2xMCqRk4NhRt3Zap4Gt8yc5hKn+j1jjzShezcQvaLLOzYM7eNZ31RiU+JemeBrabWESbMiRrVgytgLOcUewGa0g42ckRgJ8qRo1E=

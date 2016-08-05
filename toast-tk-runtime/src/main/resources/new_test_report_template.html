@@ -223,22 +223,22 @@
 													<td>Time</td>
 												</tr>
 												<tr
-													th:class="${line.testResult}? ${@com.synaptix.toast.runtime.report.TemplateHelper@getResultKindAsString(line.testResult)}"
+													th:class="${line.testResult}? ${@io.toast.tk.runtime.report.TemplateHelper@getResultKindAsString(line.testResult)}"
 													th:each="line : ${block.blockLines}">
 													<td
-														th:text="${@com.synaptix.toast.runtime.report.TemplateHelper@getStepSentence(line)}">
+														th:text="${@io.toast.tk.runtime.report.TemplateHelper@getStepSentence(line)}">
 														Click on *Connexion.Connexion*</td>
 													<td
 														th:text="${line.expected} == null ? '&nbsp;' : ${line.expected}">
 														&nbsp;</td>
 													<td
-														th:text="${@com.synaptix.toast.runtime.report.TemplateHelper@formatStringToHtml(line)}">
+														th:text="${@io.toast.tk.runtime.report.TemplateHelper@formatStringToHtml(line)}">
 														true</td>
 													<td><span
 														th:text="${line.comment} == null ? '&nbsp;' : ${line.comment}">&nbsp;</span>
 														<span class="btn btn-link btn-xs"
-														th:if="${@com.synaptix.toast.runtime.report.TemplateHelper@hasScreenShot(line.testResult)} == true"
-														th:onclick="'javascript:displayImage(\''+${@com.synaptix.toast.runtime.report.TemplateHelper@getResultScreenshotAsBase64(line.testResult)}+'\');'">
+														th:if="${@io.toast.tk.runtime.report.TemplateHelper@hasScreenShot(line.testResult)} == true"
+														th:onclick="'javascript:displayImage(\''+${@io.toast.tk.runtime.report.TemplateHelper@getResultScreenshotAsBase64(line.testResult)}+'\');'">
 															détails </span></td>
 													<td><span th:text="${line.executionTime}"> 0 </span>
 														ms</td>
@@ -275,7 +275,7 @@
 
 	<script th:inline="javascript">
 		/*<![CDATA[*/
-		    var data = /*[[${@com.synaptix.toast.runtime.report.TemplateHelper@getPieChartJson(test.getTestSuccessNumber(), test.getTechnicalErrorNumber(), test.getTestFailureNumber())}]]*/
+		    var data = /*[[${@io.toast.tk.runtime.report.TemplateHelper@getPieChartJson(test.getTestSuccessNumber(), test.getTechnicalErrorNumber(), test.getTestFailureNumber())}]]*/
 			var objData =  JSON.parse(data);
 			window.onload = function() {
 				new Chart(document.getElementById("canvas").getContext("2d"))

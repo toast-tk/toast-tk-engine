@@ -1,17 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.synaptix.toast</groupId>
+	<groupId>io.toast-tk</groupId>
 	<artifactId>toast-tk-engine</artifactId>
 	<version>0.1.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Toast Toolkit - Engine</name>
+	<url>http://toast-tk.io</url>
 	<description>
 	    Toast TK Engine Parent Module.
 	    This module is the parent module for our engine, featuring:
 	    	- Action Adapters Module
 	    	- Rest Utils
-	    	- Dao Module (Mongo data storage management)
+	    	- Dao Module (Mongo data: storage management)
 	    	- Runtime Module
 	    	- Drivers Module
 	</description>
@@ -35,8 +36,12 @@
 		<maven-dependency-plugin.version>2.4</maven-dependency-plugin.version>
 		<maven-war-plugin.version>2.2</maven-war-plugin.version>
 		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
+		<maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+		<maven-release-plugin.version>2.4</maven-release-plugin.version>
 		<maven-surefire-plugin.version>2.12.4</maven-surefire-plugin.version>
 		<maven-eclipse-plugin.version>2.8</maven-eclipse-plugin.version>
+		<maven-source-plugin.version>2.0.4</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>2.3</maven-javadoc-plugin.version>
 		<maven-release-plugin.version>2.4</maven-release-plugin.version>
 		<build-helper-maven-plugin>1.7</build-helper-maven-plugin>
 		<maven-processor-plugin.version>2.2.1</maven-processor-plugin.version>
@@ -63,7 +68,35 @@
 		<javassist.version>3.12.1.GA</javassist.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 	</properties>
-
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<issueManagement>
+		<url>https://github.com/toast-tk/toast-tk-engine/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+	<scm>
+		<url>https://github.com/toast-tk/toast-tk-engine</url>
+		<connection>scm:git:git://github.com/kevinsawicki/toast-tk-engine.git</connection>
+		<developerConnection>scm:git:git@github.com:toast-tk/toast-tk-engine.git</developerConnection>
+	</scm>
+	<developers>
+		<developer>
+			<name>Sallah Kokaina</name>
+			<email>sallah.kokaina@gmail.com</email>
+			<organization>Toast TK</organization>
+			<organizationUrl>http://toast-tk.io</organizationUrl>
+		</developer>
+		<developer>
+			<name>Nicolas Sauvage</name>
+			<email>noki.sauvage@gmail.com</email>
+			<organization>Toast TK</organization>
+			<organizationUrl>http://toast-tk.io</organizationUrl>
+		</developer>
+	</developers>
 	<dependencies>
 		<dependency>
 			<groupId>javassist</groupId>
@@ -335,28 +368,77 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<repositories>
-		<repository>
-			<id>mongodb-morphia</id>
-			<url>http://morphia.googlecode.com/svn/mavenrepo/</url>
-		</repository>
-	</repositories>
 	<profiles>
 		<profile>
-			<id>DEPLOY_NEXUS_SYNAPTIX</id>
+			<id>deploy</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<distributionManagement>
-				<repository>
-					<id>talanlabs-releases-repository</id>
-					<url>http://nexus.talanlabs.com/content/repositories/releases/</url>
-				</repository>
 				<snapshotRepository>
-					<id>talanlabs-snapshots-repository</id>
-					<url>http://nexus.talanlabs.com/content/repositories/snapshots/</url>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 				</snapshotRepository>
+				<repository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+				</repository>
 			</distributionManagement>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>${maven-release-plugin.version}</version>
+						<configuration>
+							<autoVersionSubmodules>true</autoVersionSubmodules>
+							<useReleaseProfile>false</useReleaseProfile>
+							<releaseProfiles>release</releaseProfiles>
+							<goals>deploy</goals>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${maven-source-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${maven-javadoc-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${maven-gpg-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>

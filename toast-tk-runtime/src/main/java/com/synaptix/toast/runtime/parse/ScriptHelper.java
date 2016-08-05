@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 
+import io.toast.tk.runtime.parse.AbstractParser;
+
 /**
  * Created by Nicolas Sauvage on 02/08/2016.
  */
@@ -26,7 +28,15 @@ public class ScriptHelper {
 		List<String> list = new BufferedReader(new InputStreamReader(resourceAsStream,
 				StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
 
-		return AbstractParser.removeBom(list);
+		return removeBom(list);
+	}
+
+	public static List<String> removeBom(final List<String> list) {
+		final String firstLine = list.get(0);
+		if(firstLine.startsWith("\uFEFF")) {
+			list.set(0, firstLine.substring(1));
+		}
+		return list;
 	}
 
 }

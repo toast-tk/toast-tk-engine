@@ -27,10 +27,24 @@ Provide specific examples to demonstrate the steps.
 
 # Suggesting enhancements
 
+You can request a new feature by submitting an issue to our GitHub Repository.
+
+If you would like to implement a new feature then consider what kind of change it is:
+- Major Changes that you wish to contribute to the project should be discussed first on Gitter https://gitter.im/toast-tk/toast-tk-engine so that we can better coordinate our efforts, prevent duplication of work, and help you to craft the change so that it is successfully accepted into the project.
+- Small Changes can be crafted and submitted to the GitHub Repository as a Pull Request.
+
+## Submit an issue
+
+Before you submit your issue search the archive, maybe your question was already answered.
+
 # Contribute to code
 
 ## Getting Started
 
 If you want to contribute but do not know where to start, filter issues with the label `up-for-grabs`. These issues are easy enough to do for someone discovering the project.
 
+## Working on an issue
 
+- Assign yourself to the issue.
+- Create a branch from the branch `snapshots` starting by the number of the issue, followed by a few words that describe the issue. For instance `77-scenario-replay`.
+- When the development is finished, create a merge request from your branch to the branch `snapshots`
