@@ -27,7 +27,6 @@ public class TestParserTestCase_5 {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("testPage = " + testPage);
 
         Assert.assertNotNull(testPage);
         Assert.assertEquals(testPage.getBlocks().size(), 5);

@@ -22,7 +22,7 @@ public class AdaptersConfigProvider implements Provider<AdaptersConfig> {
 	}
 
 	private void initConfig() {
-		System.out.println("Initialize configuration from toast.properties");
+		LOG.info("Initialize configuration from /toast.properties");
 
 		final Properties p = new Properties();
 
