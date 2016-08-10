@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.synaptix.toast.runtime.parse.ScriptHelper;
+import io.toast.tk.runtime.parse.FileHelper;
 
 import io.toast.tk.dao.domain.BlockType;
 import io.toast.tk.dao.domain.impl.test.block.CampaignBlock;
@@ -66,7 +66,7 @@ public class CampaignBlockParser implements IBlockParser {
 			final String filename = StringUtils.trim(testPagePath);
 			ITestPage testPage = null;
 			try {
-				List<String> script = ScriptHelper.getScript(filename);
+				List<String> script = FileHelper.getScript(filename);
 				testPage = new TestParser().parse(script, filename);
 			} catch (final IOException e) {
 				LOG.error(e.getMessage(), e);

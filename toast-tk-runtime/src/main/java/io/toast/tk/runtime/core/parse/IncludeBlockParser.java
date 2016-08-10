@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.synaptix.toast.runtime.parse.ScriptHelper;
+import io.toast.tk.runtime.parse.FileHelper;
 
 import io.toast.tk.dao.domain.BlockType;
 import io.toast.tk.dao.domain.impl.test.block.IBlock;
@@ -25,7 +25,7 @@ public class IncludeBlockParser implements IBlockParser {
 	) {
 		final String string = strings.remove(0);
 		final String filename = StringUtils.removeStart(string, "#include").trim();
-		List<String> script = ScriptHelper.getScript(filename);
+		List<String> script = FileHelper.getScript(filename);
 
 		ITestPage testPage = null;
 		try {

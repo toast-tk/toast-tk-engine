@@ -1,11 +1,9 @@
 package io.toast.tk.test.runtime;
 
-import java.net.URL;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.synaptix.toast.runtime.parse.ScriptHelper;
+import io.toast.tk.runtime.parse.FileHelper;
 
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.runtime.parse.TestParser;
@@ -21,7 +19,7 @@ public class TestParserTestCase_4 {
         ITestPage testPage = null;
 
         try {
-            testPage = new TestParser().parse(ScriptHelper.getScript(filename), filename);
+            testPage = new TestParser().parse(FileHelper.getScript(filename), filename);
         } catch (Exception e) {
             e.printStackTrace();
         }

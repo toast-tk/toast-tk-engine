@@ -13,7 +13,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
-import com.synaptix.toast.runtime.parse.ScriptHelper;
+import io.toast.tk.runtime.parse.FileHelper;
 
 import io.toast.tk.core.annotation.EngineEventBus;
 import io.toast.tk.core.rest.RestUtils;
@@ -70,7 +70,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		for (final String fileName : scenarios) {
 			LOG.info("Start main test parser: {}", fileName);
 
-			List<String> lines = ScriptHelper.getScript(fileName);
+			List<String> lines = FileHelper.getScript(fileName);
 			final ITestPage result = runTestPage(new TestParser().parse(lines, fileName));
 			testPages.add(result);
 		}

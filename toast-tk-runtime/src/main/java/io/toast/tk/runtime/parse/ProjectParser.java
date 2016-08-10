@@ -1,19 +1,12 @@
 package io.toast.tk.runtime.parse;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.synaptix.toast.runtime.parse.ScriptHelper;
 
 import io.toast.tk.dao.domain.impl.report.Campaign;
 import io.toast.tk.dao.domain.impl.report.Project;
@@ -33,7 +26,7 @@ public class ProjectParser extends AbstractParser {
 	}
 
 	public IProject parse(String filename) throws IOException, IllegalArgumentException {
-		return buildProject(ScriptHelper.getScript(filename), filename);
+		return buildProject(FileHelper.getScript(filename), filename);
 	}
 
 	private IProject buildProject(List<String> lines, final String pageName) throws IllegalArgumentException, IOException {

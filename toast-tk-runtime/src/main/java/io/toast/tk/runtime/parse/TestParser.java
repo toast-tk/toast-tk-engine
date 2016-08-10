@@ -14,8 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.synaptix.toast.runtime.parse.ScriptHelper;
-
 import io.toast.tk.dao.domain.DaoBeanFactory;
 import io.toast.tk.dao.domain.impl.test.block.IBlock;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
@@ -41,7 +39,7 @@ public class TestParser extends AbstractParser {
 		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream))) {
 			list = buffer.lines().collect(Collectors.toList());
 		}
-		ScriptHelper.removeBom(list);
+		FileHelper.removeBom(list);
 		return list;
 	}
 

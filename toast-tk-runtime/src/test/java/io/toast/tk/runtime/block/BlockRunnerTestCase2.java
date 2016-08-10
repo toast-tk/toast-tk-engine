@@ -1,32 +1,20 @@
 package io.toast.tk.runtime.block;
 
 import java.io.IOException;
-import java.net.URL;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.common.eventbus.EventBus;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
-import com.synaptix.toast.runtime.parse.ScriptHelper;
+import io.toast.tk.runtime.parse.FileHelper;
 
 import io.toast.tk.adapter.cache.ToastCache;
-import io.toast.tk.core.annotation.EngineEventBus;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.dao.domain.impl.test.block.TestBlock;
 import io.toast.tk.dao.domain.impl.test.block.line.TestLine;
 import io.toast.tk.runtime.AbstractScenarioRunner;
-import io.toast.tk.runtime.ActionItemRepository;
-import io.toast.tk.runtime.IActionItemRepository;
-import io.toast.tk.runtime.action.item.ActionItemValueProvider;
 import io.toast.tk.runtime.bean.TestLineDescriptor;
-import io.toast.tk.runtime.block.TestBlockRunner;
 import io.toast.tk.runtime.parse.TestParser;
 import io.toast.tk.test.runtime.resource.XmlAdapterExample;
 
@@ -42,7 +30,7 @@ public class BlockRunnerTestCase2 {
 	
 	@Before
 	public void initRunner() throws IllegalArgumentException, IOException{
-        this.testPage = new TestParser().parse(ScriptHelper.getScript(scenario), scenario);
+        this.testPage = new TestParser().parse(FileHelper.getScript(scenario), scenario);
 	}
 
 	@Test
