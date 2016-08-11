@@ -2,6 +2,7 @@ package io.toast.tk.action.interpret.web;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.toast.tk.core.agent.interpret.WebEventRecord;
 import io.toast.tk.dao.domain.impl.repository.ElementImpl;
@@ -20,7 +21,7 @@ public abstract class AbstractInterpretationProvider implements IActionInterpret
 	
 	public String getLabel(WebEventRecord eventRecord) {
 		RepositoryImpl container = mongoRepoManager.findContainer(eventRecord.getParent(), "web page");
-		ElementImpl element = mongoRepoManager.find(container, eventRecord);
+		ElementImpl element = mongoRepoManager.findElement(container, eventRecord);
 		elements.add(element);
 		return container.name + "." + getElementLabel(element);
 	}
@@ -36,7 +37,7 @@ public abstract class AbstractInterpretationProvider implements IActionInterpret
 	}
 	
 	public String getElementLabel(ElementImpl element){
-		return "".equals(element.name) || element.name == null ? element.locator : element.name;
+		return "".equals(element.name) || Objects.isNull(element.name) ? element.locator : element.name;
 	}
 
 	public abstract String convertToKnowType(String type);

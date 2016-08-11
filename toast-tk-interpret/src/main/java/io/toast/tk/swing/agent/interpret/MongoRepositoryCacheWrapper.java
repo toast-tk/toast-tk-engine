@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 
 import java.util.Objects;
+
+import com.google.common.base.Strings;
 import com.mongodb.WriteConcern;
 
 import io.toast.tk.core.agent.interpret.WebEventRecord;
@@ -66,41 +68,6 @@ public class MongoRepositoryCacheWrapper {
 		}
 	}
 
-	public String find(
-		RepositoryImpl container,
-		String type,
-		String locator) {
-		for(RepositoryImpl repImpl : cache) {
-			if(repImpl.getName().equals(container.getName()) && repImpl.rows != null) {
-				for(ElementImpl element : repImpl.rows) {
-					if(element.locator.equalsIgnoreCase(locator.toLowerCase())) {
-						return "".equals(element.name) || element.name == null ? element.locator : element.name;
-					}
-				}
-			}
-		}
-		ElementImpl impl = extractElement(type, locator);
-		container.rows.add(impl);
-		return impl.name;
-	}
-	
-
-	private ElementImpl extractElement(
-		String type,
-		String locator) {
-		ElementImpl impl = new ElementImpl();
-		impl.locator = locator;
-		if(locator.contains(":")) {
-			impl.name = locator.split(":")[1];
-		}
-		else {
-			impl.name = Objects.isNull(locator)? type + "-" + UUID.randomUUID().toString() : locator;
-		}
-		impl.name = formatLabel(impl.name);
-		impl.type = type;
-		return impl;
-	}
-
 	public RepositoryImpl findContainer(
 		String lastKnownContainer, String type) {
 		
@@ -141,30 +108,11 @@ public class MongoRepositoryCacheWrapper {
 		return saveRepository;
 	}
 
-	public String getWikiFiedRepo(String host, String port) {
-		if(cache == null) {
-			initCache(host, port);
-		}
-		StringBuilder res = new StringBuilder();
-		for(RepositoryImpl page : cache) {
-			res.append("#Page id:" + page.getId().toString()).append("\n");
-			res.append("|| auto setup ||\n");
-			res.append("| " + page.type + " | " + page.name + " |\n");
-			res.append("| name | type | locator |\n");
-			if(page.rows != null) {
-				for(ElementImpl row : page.rows) {
-					res.append("|" + row.name + "|" + row.type + "|" + row.locator + "|\n");
-				}
-			}
-			res.append("\n");
-		}
-		return res.toString();
-	}
-
-	public ElementImpl find(RepositoryImpl container, WebEventRecord eventRecord) {
+	public ElementImpl findElement(RepositoryImpl container, WebEventRecord eventRecord) {
 		String locator = eventRecord.getTarget();
 		for(RepositoryImpl repImpl : cache) {
-			if(repImpl.getName().equals(container.getName()) && repImpl.rows != null) {
+			if(repImpl.getName().equals(container.getName()) 
+					&& Objects.nonNull(repImpl.rows)) {
 				for(ElementImpl element : repImpl.rows) {
 					if(element.locator.equalsIgnoreCase(locator.toLowerCase())) {
 						return element;
@@ -174,7 +122,6 @@ public class MongoRepositoryCacheWrapper {
 		}
 		ElementImpl element = buildElement(eventRecord, locator);
 		container.rows.add(element);
-		//save
 		return element;
 	}
 
@@ -190,11 +137,18 @@ public class MongoRepositoryCacheWrapper {
 		}
 		impl.name = formatLabel(impl.name);
 		impl.type = getAdjustedType(type);
-		impl.method="CSS";
+		impl.method= getMethod(eventRecord);
 		impl.setId(ObjectId.get());
 		return impl;
 	}
 	
+	private String getMethod(WebEventRecord eventRecord) {
+		if (!Strings.isNullOrEmpty(eventRecord.getPath())){
+			return "XPATH";
+		}
+		return "CSS";
+	}
+
 	public String getAdjustedType(String type){
 		if("text".equals(type)){
 			return "input";

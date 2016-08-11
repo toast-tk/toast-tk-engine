@@ -1,7 +1,6 @@
 package io.toast.tk.action.interpret.web;
 
 import io.toast.tk.core.agent.interpret.WebEventRecord;
-import io.toast.tk.dao.domain.impl.repository.RepositoryImpl;
 import io.toast.tk.swing.agent.interpret.MongoRepositoryCacheWrapper;
 
 
