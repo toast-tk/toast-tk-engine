@@ -4,8 +4,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 
-import io.toast.tk.dao.service.dao.access.project.CampaignDaoService;
-import io.toast.tk.dao.service.dao.access.project.ProjectDaoService;
+import io.toast.tk.dao.service.dao.access.plan.CampaignDaoService;
+import io.toast.tk.dao.service.dao.access.plan.TestPlanDaoService;
 import io.toast.tk.dao.service.dao.access.repository.ElementDaoService;
 import io.toast.tk.dao.service.dao.access.repository.RepositoryDaoService;
 import io.toast.tk.dao.service.dao.access.team.GroupDaoService;
@@ -26,7 +26,7 @@ public class MongoDaoModule extends AbstractModule {
 		install(new FactoryModuleBuilder().build(ElementDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(TestPageDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(CampaignDaoService.Factory.class));
-		install(new FactoryModuleBuilder().build(ProjectDaoService.Factory.class));
+		install(new FactoryModuleBuilder().build(TestPlanDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(GroupDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(UserDaoService.Factory.class));
 		install(new FactoryModuleBuilder().build(CommentBlockDaoService.Factory.class));

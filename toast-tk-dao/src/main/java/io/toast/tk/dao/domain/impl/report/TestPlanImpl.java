@@ -14,13 +14,13 @@ import com.github.jmkgreen.morphia.annotations.Reference;
 
 import io.toast.tk.dao.domain.impl.common.BasicTaggableMongoBean;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
-import io.toast.tk.dao.domain.impl.test.block.IProject;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 
-@Entity(value = "report.projects")
+@Entity(value = "report.testplans")
 @Indexes({
 		@Index(value = "name"), @Index("version")
 })
-public class Project extends BasicTaggableMongoBean implements IProject {
+public class TestPlanImpl extends BasicTaggableMongoBean implements ITestPlan {
 
 	@Id
 	private ObjectId id;

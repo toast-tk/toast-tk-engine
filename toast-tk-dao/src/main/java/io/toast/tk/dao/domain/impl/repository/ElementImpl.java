@@ -2,10 +2,11 @@ package io.toast.tk.dao.domain.impl.repository;
 
 import com.github.jmkgreen.morphia.annotations.Entity;
 
+import io.toast.tk.dao.domain.api.repository.IElement;
 import io.toast.tk.dao.domain.impl.common.BasicEntityBean;
 
 @Entity(value = "elements", noClassnameStored = true)
-public class ElementImpl extends BasicEntityBean {
+public class ElementImpl extends BasicEntityBean implements IElement{
 
 	public String type;
 

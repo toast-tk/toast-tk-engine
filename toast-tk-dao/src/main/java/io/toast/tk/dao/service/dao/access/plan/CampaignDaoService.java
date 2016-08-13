@@ -1,4 +1,4 @@
-package io.toast.tk.dao.service.dao.access.project;
+package io.toast.tk.dao.service.dao.access.plan;
 
 import java.util.ArrayList;
 import java.util.List;

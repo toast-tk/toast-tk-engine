@@ -6,9 +6,9 @@ import org.apache.logging.log4j.Logger;
 import com.google.inject.Module;
 
 import io.toast.tk.core.rest.RestUtils;
-import io.toast.tk.dao.domain.impl.report.Project;
+import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
-import io.toast.tk.dao.domain.impl.test.block.IProject;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.runtime.dao.DAOManager;
 import io.toast.tk.runtime.parse.TestParser;
@@ -58,7 +58,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
         this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
     }
     
-	public final void test(IProject project,
+	public final void test(ITestPlan project,
             boolean overrideRepoFromWebApp)
             throws Exception {
         execute(project, overrideRepoFromWebApp);
@@ -70,46 +70,46 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		final boolean overrideRepoFromWebApp
 	) throws Exception {
 		final DAOManager daoManager = DAOManager.getInstance(this.mongoDbHost, this.mongoDbPort);
-		final Project lastProject = daoManager.getLastProjectByName(projectName);
-		final Project referenceProject = daoManager.getReferenceProjectByName(projectName);
+		final TestPlanImpl lastProject = daoManager.getLastProjectByName(projectName);
+		final TestPlanImpl referenceProject = daoManager.getReferenceProjectByName(projectName);
         if (referenceProject == null) {
             throw new IllegalAccessException("No reference project name found for: " + projectName);
         }
-        final Project newIterationProject = mergeToNewIteration(lastProject, referenceProject);
+        final TestPlanImpl newIterationProject = mergeToNewIteration(lastProject, referenceProject);
         execute(newIterationProject, overrideRepoFromWebApp);
         daoManager.saveProject(newIterationProject);
     }
 
-	public final void testAndStore(final IProject project) throws Exception {
+	public final void testAndStore(final ITestPlan project) throws Exception {
     	testAndStore(project, false);
     }
     
     public final void testAndStore(
-    	final IProject project,
+    	final ITestPlan project,
     	final boolean overrideRepoFromWebApp
     ) throws Exception {
     	final DAOManager daoManager = DAOManager.getInstance(this.mongoDbHost, this.mongoDbPort);
-    	final Project lastProject = daoManager.getLastProjectByName(project.getName());
-    	final Project referenceProject = daoManager.getReferenceProjectByName(project.getName());
+    	final TestPlanImpl lastProject = daoManager.getLastProjectByName(project.getName());
+    	final TestPlanImpl referenceProject = daoManager.getReferenceProjectByName(project.getName());
         if (referenceProject == null) {
-        	daoManager.saveProject((Project)project);
+        	daoManager.saveProject((TestPlanImpl)project);
         }
         
-        final Project newIterationProject;
+        final TestPlanImpl newIterationProject;
         if(lastProject != null){
         	newIterationProject = mergeToNewIteration(lastProject, referenceProject);
         }
         else{
         	newIterationProject = daoManager.getReferenceProjectByName(project.getName());
         }
-        final Project projectToRun = mergeToRunIteration(newIterationProject,(Project)project);
+        final TestPlanImpl projectToRun = mergeToRunIteration(newIterationProject,(TestPlanImpl)project);
         execute(projectToRun, overrideRepoFromWebApp); //TODO: merge newIterationProject with
         daoManager.saveProject(projectToRun);
     }
     
-    private static Project mergeToRunIteration(
-    	final Project lastIterationProject,
-    	final Project newIterationProject
+    private static TestPlanImpl mergeToRunIteration(
+    	final TestPlanImpl lastIterationProject,
+    	final TestPlanImpl newIterationProject
     ) {
         if (lastIterationProject.getIteration() == newIterationProject.getIteration()) {
             return newIterationProject;
@@ -137,9 +137,9 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
         return newIterationProject;
     }
 
-    private static Project mergeToNewIteration(
-    	final Project lastIterationProject,
-    	final Project newIterationProject
+    private static TestPlanImpl mergeToNewIteration(
+    	final TestPlanImpl lastIterationProject,
+    	final TestPlanImpl newIterationProject
     ) {
     	if (lastIterationProject.getIteration() == newIterationProject.getIteration()) {
     		return newIterationProject;
@@ -167,7 +167,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
     }
 
     public void execute(
-    	final IProject project,
+    	final ITestPlan project,
     	final boolean presetRepoFromWebApp
     )	throws Exception {
     	final TestRunner runner = injector.getInstance(TestRunner.class);
@@ -182,7 +182,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
     }
 
     private void execute(
-    	final IProject project,
+    	final ITestPlan project,
     	final TestRunner runner
     ) {
         initEnvironment();
@@ -202,7 +202,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
         tearDownEnvironment();
     }
 
-    protected void createAndOpenReport(final IProject project) {
+    protected void createAndOpenReport(final ITestPlan project) {
     	final String path = getReportsFolderPath();
         final String pageName = "Project_report";
 
