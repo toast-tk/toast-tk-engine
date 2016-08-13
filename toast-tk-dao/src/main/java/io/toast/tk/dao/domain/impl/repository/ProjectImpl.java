@@ -6,6 +6,8 @@ import org.bson.types.ObjectId;
 
 import com.github.jmkgreen.morphia.annotations.Entity;
 import com.github.jmkgreen.morphia.annotations.Id;
+import com.github.jmkgreen.morphia.annotations.Index;
+import com.github.jmkgreen.morphia.annotations.Indexes;
 import com.github.jmkgreen.morphia.annotations.Reference;
 
 import io.toast.tk.dao.domain.api.repository.IElement;
@@ -14,7 +16,10 @@ import io.toast.tk.dao.domain.impl.common.BasicTaggableMongoBean;
 import io.toast.tk.dao.domain.impl.test.block.IProject;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 
-@Entity(value = "projects", noClassnameStored = true)
+@Entity(value = "projects")
+@Indexes({
+	@Index(value = "name")
+})
 public class ProjectImpl extends BasicTaggableMongoBean implements IProject {
 
 	@Id
@@ -28,6 +33,13 @@ public class ProjectImpl extends BasicTaggableMongoBean implements IProject {
 	
 	@Reference(ignoreMissing=true)
 	List<ITestPlan> testPlans;
+	
+	/**
+	 * serialization
+	 */
+	public ProjectImpl(){
+		
+	}
 
 	@Override
 	public List<IRepository> getRepositories() {
@@ -55,6 +67,5 @@ public class ProjectImpl extends BasicTaggableMongoBean implements IProject {
 	public void setTestPlans(List<ITestPlan> testPlans) {
 		this.testPlans = testPlans;
 	}
-	
 	
 }

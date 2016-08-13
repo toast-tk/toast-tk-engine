@@ -6,14 +6,15 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 
+import io.toast.tk.dao.domain.impl.common.IServiceFactory;
 import io.toast.tk.dao.domain.impl.repository.ElementImpl;
 import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
 import io.toast.tk.dao.service.dao.common.CommonMongoDaoService;
 import io.toast.tk.dao.service.init.DbStarter;
 
 public class ElementDaoService extends AbstractMongoDaoService<ElementImpl> {
-	public interface Factory {
-		ElementDaoService create(final @Nullable @Assisted String dbName);
+	
+	public interface Factory extends IServiceFactory<ElementDaoService>{
 	}
 
 	@Inject

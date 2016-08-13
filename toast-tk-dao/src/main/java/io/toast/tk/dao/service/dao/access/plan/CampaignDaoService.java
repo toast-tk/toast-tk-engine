@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 
+import io.toast.tk.dao.domain.impl.common.IServiceFactory;
 import io.toast.tk.dao.domain.impl.report.Campaign;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
@@ -18,9 +19,7 @@ import io.toast.tk.dao.service.init.DbStarter;
 
 public class CampaignDaoService extends AbstractMongoDaoService<Campaign> {
 
-	public interface Factory {
-
-		CampaignDaoService create(final @Assisted String dbName);
+	public interface Factory extends IServiceFactory<CampaignDaoService>{
 	}
 
 	TestPageDaoService tService;

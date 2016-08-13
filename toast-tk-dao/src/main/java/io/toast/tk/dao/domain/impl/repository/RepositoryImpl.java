@@ -9,7 +9,7 @@ import com.github.jmkgreen.morphia.annotations.Reference;
 import io.toast.tk.dao.domain.api.repository.IRepository;
 import io.toast.tk.dao.domain.impl.common.BasicEntityBean;
 
-@Entity(value = "repository", noClassnameStored = true)
+@Entity(value = "repository")
 public class RepositoryImpl extends BasicEntityBean implements IRepository{
 
 	public String type;

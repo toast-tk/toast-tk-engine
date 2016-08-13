@@ -4,7 +4,7 @@ import java.util.List;
 
 import io.toast.tk.dao.domain.impl.test.block.IProject;
 
-public interface IGroup {
+public interface ITeam {
 
 	List<IProject> getProjects();
 

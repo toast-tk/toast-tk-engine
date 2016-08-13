@@ -13,4 +13,6 @@ public interface IProject {
 
 	List<IRepository> getRepositories();
 
+	String getName();
+
 }
