@@ -1,15 +1,45 @@
 package io.toast.tk.dao.domain.impl.team;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
 
 import com.github.jmkgreen.morphia.annotations.Entity;
 import com.github.jmkgreen.morphia.annotations.Id;
+import com.github.jmkgreen.morphia.annotations.Reference;
 
+import io.toast.tk.dao.domain.api.team.IGroup;
+import io.toast.tk.dao.domain.api.team.IUser;
 import io.toast.tk.dao.domain.impl.common.BasicTaggableMongoBean;
+import io.toast.tk.dao.domain.impl.test.block.IProject;
 
 @Entity(value = "teams.groups", noClassnameStored = true)
-public class GroupImpl extends BasicTaggableMongoBean {
+public class GroupImpl extends BasicTaggableMongoBean implements IGroup {
 
 	@Id
 	ObjectId id = new ObjectId();
+	
+	@Reference(ignoreMissing=true)
+	List<IProject> projects;
+
+	@Reference(ignoreMissing=true)
+	List<IUser> users;
+	
+	@Override
+	public List<IProject> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(final List<IProject> projects) {
+		this.projects = projects;
+	}
+	
+	@Override
+	public List<IUser> getUsers() {
+		return users;
+	}
+
+	public void setUsers(final List<IUser> users) {
+		this.users = users;
+	}
 }

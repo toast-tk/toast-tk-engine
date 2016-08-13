@@ -1,27 +1,30 @@
-package io.toast.tk.dao.service.dao.access.team;
+package io.toast.tk.dao.service.dao.access.repository;
+
+import javax.annotation.Nullable;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 
-import io.toast.tk.dao.domain.impl.team.UserImpl;
+import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
 import io.toast.tk.dao.service.dao.common.CommonMongoDaoService;
 import io.toast.tk.dao.service.init.DbStarter;
 
-public class UserDaoService extends AbstractMongoDaoService<UserImpl> {
-
+public class ProjectDaoService extends AbstractMongoDaoService<ProjectImpl> {
+	
 	public interface Factory {
-		UserDaoService create(final @Assisted String dbName);
+		ProjectDaoService create(final @Nullable @Assisted String dbName);
 	}
 
 	@Inject
-	public UserDaoService(
+	public ProjectDaoService(
 		final DbStarter starter,
 		final CommonMongoDaoService cService,
 		final @Named("default_db") String default_db,
-		final @Assisted String dbName
+		final @Nullable @Assisted String dbName
 	) {
-		super(UserImpl.class, starter.getDatabaseByName(dbName != null ? dbName : default_db), cService);
+		super(ProjectImpl.class, starter.getDatabaseByName(dbName != null ? dbName : default_db), cService);
 	}
+
 }

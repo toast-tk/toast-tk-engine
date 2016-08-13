@@ -27,7 +27,7 @@ public class TestPlanImpl extends BasicTaggableMongoBean implements ITestPlan {
 
 	private short iteration;
 
-	@Reference
+	@Reference(ignoreMissing=true)
 	private List<ICampaign> campaigns;
 
 	public String version;
