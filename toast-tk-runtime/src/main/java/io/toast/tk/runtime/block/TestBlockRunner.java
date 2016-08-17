@@ -32,8 +32,6 @@ import io.toast.tk.runtime.action.item.ActionItemValueProvider;
 import io.toast.tk.runtime.bean.ActionCommandDescriptor;
 import io.toast.tk.runtime.bean.ArgumentDescriptor;
 import io.toast.tk.runtime.bean.CommandArgumentDescriptor;
-import io.toast.tk.runtime.block.FatalExcecutionError;
-import io.toast.tk.runtime.block.IBlockRunner;
 import io.toast.tk.runtime.block.locator.ActionAdaptaterLocator;
 import io.toast.tk.runtime.block.locator.ActionAdaptaterLocators;
 import io.toast.tk.runtime.block.locator.ArgumentsBuilder;
@@ -62,10 +60,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	private ActionAdaptaterLocators actionAdaptaterLocators;
 
 	private EventBus eventBus;
-	
+
 	@Override
 	public void run(final TestBlock block) {
-		block.getBlockLines().stream().forEach(line -> invokeTestAndAddResult(block, line));
+		block.getBlockLines().forEach(line -> invokeTestAndAddResult(block, line));
 	}
 
 	private void invokeTestAndAddResult(
@@ -95,8 +93,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	}
 
 	/**
-	 * invoke the method matching the test line descriptor
-	 * @throws NoActionAdapterFound 
+	 * Invoke the method matching the test line descriptor
 	 */
 	protected ITestResult invokeActionAdapterAction(final ActionAdaptaterLocator actionAdaptaterLocator) throws NoActionAdapterFound {
 		if (!hasFoundActionAdapter(actionAdaptaterLocator)) {
@@ -174,7 +171,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		return argumentsBuilder.buildArgumentList();
 	}
 
-	protected String updateCommandWithVarValues(final ActionAdaptaterLocator actionAdaptaterLocator) {
+	private String updateCommandWithVarValues(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		final Matcher matcher = actionAdaptaterLocator.getActionCommandDescriptor().matcher;
 		matcher.matches();
 		String outCommand = actionAdaptaterLocator.getTestLineDescriptor().getActionImpl();
@@ -260,7 +257,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 	}
 
-	class ActionIndex {
+	private class ActionIndex {
 
 		String item;
 
@@ -279,7 +276,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 	}
 
-	protected String buildSustituteAction(
+	private String buildSustituteAction(
 			final Action mainAction,
 			String mapping
 	) {

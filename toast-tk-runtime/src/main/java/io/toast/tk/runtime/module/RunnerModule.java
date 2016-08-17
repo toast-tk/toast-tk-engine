@@ -4,7 +4,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.MapBinder;
 
-import io.toast.tk.dao.domain.impl.test.block.IBlock;
 import io.toast.tk.dao.domain.impl.test.block.SwingPageBlock;
 import io.toast.tk.dao.domain.impl.test.block.TestBlock;
 import io.toast.tk.dao.domain.impl.test.block.VariableBlock;
@@ -34,8 +33,6 @@ public class RunnerModule extends AbstractModule {
 		runnerMapBinder.addBinding(TestBlock.class).to(TestBlockRunner.class);
 		runnerMapBinder.addBinding(SwingPageBlock.class).to(SwingPageBlockBuilder.class);
 		runnerMapBinder.addBinding(VariableBlock.class).to(VariableBlockBuilder.class);
-
-
 
 	}
 

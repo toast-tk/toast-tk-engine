@@ -10,7 +10,6 @@ import com.google.inject.Inject;
 import io.toast.tk.dao.domain.api.test.ITestResult;
 import io.toast.tk.dao.domain.impl.test.block.IBlock;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
-import io.toast.tk.dao.domain.impl.test.block.SwingPageBlock;
 import io.toast.tk.dao.domain.impl.test.block.TestBlock;
 import io.toast.tk.dao.domain.impl.test.block.line.TestLine;
 import io.toast.tk.runtime.block.FatalExcecutionError;
@@ -22,7 +21,6 @@ class TestRunner {
 	
 	@Inject
 	private Map<Class, IBlockRunner> blockRunnerMap;
-
 
 	/**
 	 * Execute the different blocks within the test page

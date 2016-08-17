@@ -202,7 +202,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
         tearDownEnvironment();
     }
 
-    protected void createAndOpenReport(final IProject project) {
+    private void createAndOpenReport(final IProject project) {
     	final String path = getReportsFolderPath();
         final String pageName = "Project_report";
 
