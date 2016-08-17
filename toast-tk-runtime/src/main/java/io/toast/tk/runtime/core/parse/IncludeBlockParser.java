@@ -16,13 +16,11 @@ import io.toast.tk.runtime.parse.IBlockParser;
 import io.toast.tk.runtime.parse.TestParser;
 
 public class IncludeBlockParser implements IBlockParser {
-	
+
 	private static final Logger LOG = LogManager.getLogger(IncludeBlockParser.class);
-	
+
 	@Override
-	public IBlock digest(
-			final List<String> strings
-	) {
+	public IBlock digest(final List<String> strings) throws IOException {
 		final String string = strings.remove(0);
 		final String filename = StringUtils.removeStart(string, "#include").trim();
 		List<String> script = FileHelper.getScript(filename);
@@ -30,8 +28,7 @@ public class IncludeBlockParser implements IBlockParser {
 		ITestPage testPage = null;
 		try {
 			testPage = new TestParser().parse(script, filename);
-		}
-		catch(final IOException e) {
+		} catch (final IOException e) {
 			LOG.error(e.getMessage(), e);
 		}
 		return testPage;
@@ -41,7 +38,7 @@ public class IncludeBlockParser implements IBlockParser {
 	public BlockType getBlockType() {
 		return BlockType.INCLUDE;
 	}
-	
+
 	@Override
 	public boolean isFirstLineOfBlock(String line) {
 		return line != null && line.startsWith("#include");
