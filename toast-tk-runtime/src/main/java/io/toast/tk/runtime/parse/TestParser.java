@@ -1,13 +1,9 @@
 package io.toast.tk.runtime.parse;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,15 +28,6 @@ public class TestParser extends AbstractParser {
 			throw new IllegalArgumentException("File " + filename + " is empty");
 		}
 		return buildTestPage(lines, filename);
-	}
-
-	private List<String> getStrings(InputStream inputStream) throws IOException {
-		List<String> list;
-		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream))) {
-			list = buffer.lines().collect(Collectors.toList());
-		}
-		FileHelper.removeBom(list);
-		return list;
 	}
 
 	private ITestPage buildTestPage(

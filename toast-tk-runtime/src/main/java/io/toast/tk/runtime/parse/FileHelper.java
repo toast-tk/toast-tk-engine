@@ -19,6 +19,10 @@ public class FileHelper {
 
 	private static final org.apache.logging.log4j.Logger LOG = LogManager.getLogger(FileHelper.class);
 
+	private FileHelper() {
+
+	}
+
 	public static List<String> getScript(String filename) throws IOException {
 		InputStream resourceAsStream = getInputStream(filename);
 

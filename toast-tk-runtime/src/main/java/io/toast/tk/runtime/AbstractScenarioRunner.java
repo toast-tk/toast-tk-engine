@@ -1,8 +1,6 @@
 package io.toast.tk.runtime;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +11,11 @@ import com.google.common.eventbus.EventBus;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
-import io.toast.tk.runtime.parse.FileHelper;
 
 import io.toast.tk.core.annotation.EngineEventBus;
 import io.toast.tk.core.rest.RestUtils;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
+import io.toast.tk.runtime.parse.FileHelper;
 import io.toast.tk.runtime.parse.TestParser;
 import io.toast.tk.runtime.report.DefaultTestProgressReporter;
 import io.toast.tk.runtime.report.IHTMLReportGenerator;
@@ -106,17 +104,13 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		runScript(wikiScenario);
 	}
 
-	private InputStream readTestFile(final String fileName) throws IOException, URISyntaxException {
-		return this.getClass().getClassLoader().getResourceAsStream(fileName);
-	}
-
 	private ITestPage runScript(final String script) throws IOException {
 		final TestParser testParser = new TestParser();
-		ITestPage result = testParser.readString(script, null);
-		return runTestPage(result);
+		ITestPage testPage = testParser.readString(script, null);
+		return runTestPage(testPage);
 	}
 
-	private ITestPage runTestPage(ITestPage result) throws IOException {
+	private ITestPage runTestPage(final ITestPage testPage) throws IOException {
 		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (this.presetRepoFromWebApp) {
 			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
@@ -127,7 +121,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 			runner.run(this.localRepositoryTestPage);
 		}
 		beginTest();
-		result = runner.run(result);
+		ITestPage result = runner.run(testPage);
 		createAndOpenReport(result);
 		endTest();
 		return result;
