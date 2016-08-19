@@ -21,7 +21,7 @@ public class ProjectImpl extends BasicTaggableMongoBean implements IProject {
 	 * serialization
 	 */
 	public ProjectImpl(){
-		
+		//NO-OP
 	}
 	
 }

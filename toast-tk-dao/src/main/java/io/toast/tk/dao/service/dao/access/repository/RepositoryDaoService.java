@@ -36,7 +36,6 @@ public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl
 
 	private static final Logger LOG = LogManager.getLogger(RepositoryDaoService.class);
 
-	@Deprecated
 	static final String CONTAINER_TYPE = "swing page";
 
 	private ElementDaoService eDaoService;
@@ -53,7 +52,6 @@ public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl
 		this.eDaoService = eDaoServiceFactory.create(dbName);
 	}
 
-	@Deprecated
 	public String getRepoAsJson() {
 		final Gson gSon = new Gson();//Gson is immutable
 		final Query<RepositoryImpl> query = createQuery();
@@ -63,13 +61,13 @@ public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl
 	}
 
 	@SuppressWarnings("unchecked")
-	@Deprecated
 	public boolean saveRepoAsJson(
 		final String jsonRepo
 	) {
 		final GsonBuilder gson = new GsonBuilder();
 		final Type typeOfT = new TypeToken<Collection<RepositoryImpl>>() {
-									private static final long serialVersionUID = 1L;}
+										private static final long serialVersionUID = 1L;
+									}
 									.getType();
 		try {
 			gson.registerTypeHierarchyAdapter(ObjectId.class, new com.google.gson.JsonDeserializer<ObjectId>() {

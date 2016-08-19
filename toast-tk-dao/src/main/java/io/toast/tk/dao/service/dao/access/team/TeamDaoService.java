@@ -17,17 +17,17 @@ import io.toast.tk.dao.service.init.DbStarter;
 
 public class TeamDaoService extends AbstractMongoDaoService<TeamImpl> {
 
-	public interface Factory extends IServiceFactory<TeamDaoService>{
+	public interface Factory extends IServiceFactory<TeamDaoService> {
 	}
 
 	@Inject
-	public TeamDaoService(
-		final DbStarter starter,
-		final CommonMongoDaoService cService,
-		final @Named("default_db") String default_db,
-		final @Assisted String dbName
-	) {
-		super(TeamImpl.class, starter.getDatabaseByName(dbName != null ? dbName : default_db), cService);
+	public TeamDaoService(final DbStarter starter, 
+			final CommonMongoDaoService commonService,
+			@Named("default_db") final String defaultDb, 
+			@Assisted final String databaseName,
+			final TeamDaoService.Factory tDaoServiceFactory) {
+		super(TeamImpl.class, starter.getDatabaseByName(databaseName != null ? databaseName : defaultDb),
+				commonService);
 	}
 
 	public List<TeamImpl> getUserTeams(UserImpl user) {

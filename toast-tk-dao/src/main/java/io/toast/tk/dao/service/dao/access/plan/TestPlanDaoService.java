@@ -32,15 +32,15 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 	@Inject
 	public TestPlanDaoService(
 		final DbStarter starter,
-		final CommonMongoDaoService cService,
-		final @Assisted String dbName,
-		final @Named("default_db") String default_db,
+		final CommonMongoDaoService commonService,
+		@Assisted final String databaseName,
+		@Named("default_db") final String defaultDb,
 		final CampaignDaoService.Factory cDaoServiceFactory,
 		final ProjectDaoService.Factory pDaoServiceFactory
 	) {
-		super(TestPlanImpl.class, starter.getDatabaseByName((dbName == null ? default_db : dbName)), cService);
-		this.cDaoService = cDaoServiceFactory.create(dbName);
-		this.pDaoService = pDaoServiceFactory.create(dbName);
+		super(TestPlanImpl.class, starter.getDatabaseByName(databaseName == null ? defaultDb : databaseName), commonService);
+		this.cDaoService = cDaoServiceFactory.create(databaseName);
+		this.pDaoService = pDaoServiceFactory.create(databaseName);
 	}
 
 	public TestPlanImpl getByName(final String name) {

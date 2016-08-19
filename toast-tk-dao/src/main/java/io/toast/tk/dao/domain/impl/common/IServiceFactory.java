@@ -6,6 +6,6 @@ import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
 
 public interface IServiceFactory<E extends AbstractMongoDaoService<?>> {
 	
-	E create(final @Assisted String dbName);
+	E create(@Assisted final String dbName);
 
 }

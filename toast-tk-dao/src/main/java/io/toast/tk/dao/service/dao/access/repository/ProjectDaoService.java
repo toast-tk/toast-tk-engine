@@ -1,7 +1,5 @@
 package io.toast.tk.dao.service.dao.access.repository;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import org.bson.types.ObjectId;
@@ -12,7 +10,6 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 
 import io.toast.tk.dao.domain.impl.common.IServiceFactory;
-import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
 import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
 import io.toast.tk.dao.service.dao.common.CommonMongoDaoService;
@@ -26,11 +23,11 @@ public class ProjectDaoService extends AbstractMongoDaoService<ProjectImpl> {
 	@Inject
 	public ProjectDaoService(
 		final DbStarter starter,
-		final CommonMongoDaoService cService,
-		final @Named("default_db") String default_db,
-		final @Nullable @Assisted String dbName
+		final CommonMongoDaoService commonService,
+		@Named("default_db") final String defaultDb,
+		@Nullable @Assisted final String databaseName
 	) {
-		super(ProjectImpl.class, starter.getDatabaseByName(dbName != null ? dbName : default_db), cService);
+		super(ProjectImpl.class, starter.getDatabaseByName(databaseName != null ? databaseName : defaultDb), commonService);
 	}
 
 	public ProjectImpl findProject(String idProject) {
