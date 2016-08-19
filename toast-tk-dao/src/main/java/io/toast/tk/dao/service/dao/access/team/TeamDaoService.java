@@ -24,8 +24,7 @@ public class TeamDaoService extends AbstractMongoDaoService<TeamImpl> {
 	public TeamDaoService(final DbStarter starter, 
 			final CommonMongoDaoService commonService,
 			@Named("default_db") final String defaultDb, 
-			@Assisted final String databaseName,
-			final TeamDaoService.Factory tDaoServiceFactory) {
+			@Assisted final String databaseName) {
 		super(TeamImpl.class, starter.getDatabaseByName(databaseName != null ? databaseName : defaultDb),
 				commonService);
 	}

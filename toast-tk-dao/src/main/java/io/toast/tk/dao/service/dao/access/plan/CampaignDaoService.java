@@ -28,12 +28,12 @@ public class CampaignDaoService extends AbstractMongoDaoService<Campaign> {
 	public CampaignDaoService(
 		final DbStarter starter,
 		final CommonMongoDaoService cService,
-		final @Assisted String dbName,
-		final @Named("default_db") String default_db,
+		@Assisted final String databaseName,
+		@Named("default_db") final String defaultDb,
 		final TestPageDaoService.Factory tDaoServiceFactory)
 	{
-		super(Campaign.class, starter.getDatabaseByName(dbName == null ? default_db : dbName), cService);
-		this.tService = tDaoServiceFactory.create(dbName);
+		super(Campaign.class, starter.getDatabaseByName(databaseName == null ? defaultDb : databaseName), cService);
+		this.tService = tDaoServiceFactory.create(databaseName);
 	}
 
 	public ICampaign getByName(final String name) {
