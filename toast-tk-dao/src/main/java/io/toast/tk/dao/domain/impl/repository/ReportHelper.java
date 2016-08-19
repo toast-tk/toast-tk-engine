@@ -1,7 +1,7 @@
 package io.toast.tk.dao.domain.impl.repository;
 
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
-import io.toast.tk.dao.domain.impl.test.block.IProject;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 
 public class ReportHelper {
@@ -10,7 +10,7 @@ public class ReportHelper {
 		return (testPage.getTechnicalErrorNumber() + testPage.getTestFailureNumber()) == 0;
 	}
 	
-	public static int getTotalOk(final IProject project) {
+	public static int getTotalOk(final ITestPlan project) {
 		int total = 0;
 		for(ICampaign campaign : project.getCampaigns()) {
 			for(ITestPage testPage : campaign.getTestCases()) {
@@ -22,7 +22,7 @@ public class ReportHelper {
 		return total;
 	}
 	
-	public static int getTotalKo(final IProject project) {
+	public static int getTotalKo(final ITestPlan project) {
 		int total = 0;
 		for(ICampaign campaign : project.getCampaigns()) {
 			for(ITestPage testPage : campaign.getTestCases()) {

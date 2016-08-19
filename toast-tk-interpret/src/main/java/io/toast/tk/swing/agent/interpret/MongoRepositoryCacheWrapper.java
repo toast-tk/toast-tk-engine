@@ -84,7 +84,7 @@ public class MongoRepositoryCacheWrapper {
 	
 		RepositoryImpl page = new RepositoryImpl();
 		page.setName(container);
-		page.type = type;
+		page.cType = type;
 		cache.add(page);
 		
 		this.container = page;
@@ -131,11 +131,12 @@ public class MongoRepositoryCacheWrapper {
 		String type = eventRecord.getComponent();
 		impl.locator = locator;
 		if(locator.contains(":")) {
-			impl.name = locator.split(":")[1];
+			impl.setName(locator.split(":")[1]);
 		} else {
-			impl.name = name == null ? type + "-" + UUID.randomUUID().toString() : name;
+			String elementName = name == null ? type + "-" + UUID.randomUUID().toString() : name;
+			impl.setName(elementName);
 		}
-		impl.name = formatLabel(impl.name);
+		impl.setName(formatLabel(impl.getName()));
 		impl.type = getAdjustedType(type);
 		impl.method= getMethod(eventRecord);
 		impl.setId(ObjectId.get());

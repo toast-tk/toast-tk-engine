@@ -33,7 +33,7 @@ public class Campaign extends BasicTaggableMongoBean implements ICampaign {
 
 	private Date execDay;
 
-	@Reference
+	@Reference(ignoreMissing=true)
 	private List<ITestPage> testCases;
 
 	@Override
