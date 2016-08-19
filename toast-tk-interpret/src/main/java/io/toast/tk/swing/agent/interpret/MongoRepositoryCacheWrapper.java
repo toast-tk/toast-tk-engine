@@ -84,7 +84,7 @@ public class MongoRepositoryCacheWrapper {
 	
 		RepositoryImpl page = new RepositoryImpl();
 		page.setName(container);
-		page.type = type;
+		page.cType = type;
 		cache.add(page);
 		
 		this.container = page;

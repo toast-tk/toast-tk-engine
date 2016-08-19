@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
+import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.github.jmkgreen.morphia.annotations.Entity;
 import com.github.jmkgreen.morphia.annotations.Id;
 import com.github.jmkgreen.morphia.annotations.Index;
@@ -13,6 +14,7 @@ import com.github.jmkgreen.morphia.annotations.Indexes;
 import com.github.jmkgreen.morphia.annotations.Reference;
 
 import io.toast.tk.dao.domain.impl.common.BasicTaggableMongoBean;
+import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 
@@ -39,6 +41,18 @@ public class TestPlanImpl extends BasicTaggableMongoBean implements ITestPlan {
 	private Date prodDate;
 
 	private boolean last;
+	
+	@Embedded
+	public ProjectImpl project;
+
+	@Override
+	public ProjectImpl getProject() {
+		return project;
+	}
+
+	public void setProject(ProjectImpl project) {
+		this.project = project;
+	}
 
 	public ObjectId getId() {
 		return id;

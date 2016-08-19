@@ -15,6 +15,8 @@ import com.google.inject.name.Named;
 import io.toast.tk.dao.domain.impl.common.IServiceFactory;
 import io.toast.tk.dao.domain.impl.report.Campaign;
 import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
+import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
+import io.toast.tk.dao.service.dao.access.repository.ProjectDaoService;
 import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
 import io.toast.tk.dao.service.dao.common.CommonMongoDaoService;
 import io.toast.tk.dao.service.init.DbStarter;
@@ -25,6 +27,7 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 	}
 
 	private final CampaignDaoService cDaoService;
+	private final ProjectDaoService pDaoService;
 
 	@Inject
 	public TestPlanDaoService(
@@ -32,10 +35,12 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 		final CommonMongoDaoService cService,
 		final @Assisted String dbName,
 		final @Named("default_db") String default_db,
-		final CampaignDaoService.Factory cDaoServiceFactory
+		final CampaignDaoService.Factory cDaoServiceFactory,
+		final ProjectDaoService.Factory pDaoServiceFactory
 	) {
 		super(TestPlanImpl.class, starter.getDatabaseByName((dbName == null ? default_db : dbName)), cService);
 		this.cDaoService = cDaoServiceFactory.create(dbName);
+		this.pDaoService = pDaoServiceFactory.create(dbName);
 	}
 
 	public TestPlanImpl getByName(final String name) {
@@ -90,6 +95,14 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 		newEntry.getCampaigns().stream().forEach(c -> cDaoService.saveAsNewIteration((Campaign) c));
 		return save(newEntry);
 	}
+	
+	public List<TestPlanImpl> findAllReferenceProjects(String idProject) {
+		ProjectImpl p = pDaoService.findProject(idProject);
+		final Query<TestPlanImpl> query = createQuery();
+		query.criteria("project").equal(p);
+		return query.asList();
+	}
+
 
 	public List<TestPlanImpl> findAllReferenceProjects() {
 		final Query<TestPlanImpl> query = createQuery();
