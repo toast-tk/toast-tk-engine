@@ -25,13 +25,13 @@ public class UserDaoService extends AbstractMongoDaoService<UserImpl> {
 	@Inject
 	public UserDaoService(
 		final DbStarter starter,
-		final CommonMongoDaoService cService,
-		final @Named("default_db") String default_db,
-		final @Assisted String dbName,
+		final CommonMongoDaoService commonService,
+		@Named("default_db") final String defaultDb,
+		@Assisted final String databaseName,
 		final TeamDaoService.Factory tDaoServiceFactory
 	) {
-		super(UserImpl.class, starter.getDatabaseByName(dbName != null ? dbName : default_db), cService);
-		teamService = tDaoServiceFactory.create(dbName);
+		super(UserImpl.class, starter.getDatabaseByName(databaseName != null ? databaseName : defaultDb), commonService);
+		teamService = tDaoServiceFactory.create(databaseName);
 	}
 
 	public List<IProject> getUserProjects(UserImpl user) {
