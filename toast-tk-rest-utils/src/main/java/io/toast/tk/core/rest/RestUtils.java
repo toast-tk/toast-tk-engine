@@ -1,5 +1,6 @@
 package io.toast.tk.core.rest;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,6 +9,12 @@ import javax.naming.AuthenticationException;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -20,12 +27,14 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 public class RestUtils {
-
+	
 	private static final Logger LOG = LogManager.getLogger(RestUtils.class);
 
 	public static final String WEBAPP_ADDR = "toast.webapp.addr";
 
 	public static final String WEBAPP_PORT = "toast.webapp.port";
+	
+	private static CloseableHttpResponse response;
 
 	public static void get(final String url) {
 		final Client httpClient = Client.create();
@@ -187,20 +196,26 @@ public class RestUtils {
 
 	public static boolean registerAgent(final String url) {
 		try {
-			final Client httpClient = Client.create();
-			final WebResource webResource = httpClient.resource(url);
-			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
-														.accept(MediaType.APPLICATION_JSON)
-														.get(ClientResponse.class);
-			return response.getStatus() == 200;
+			final CloseableHttpClient httpClient = HttpClients.createDefault();
+			HttpGet httpget = new HttpGet(url);
+			httpget.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			
+			response = httpClient.execute(httpget);
+			
+			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
+		} finally {
+			try {
+				response.close();
+			} catch (IOException e) {
+				LOG.error(e.getMessage(), e);
+			}
 		}
 		return false;
 	}
 
 	public static void unRegisterAgent(String hostName) {
-		// TODO Auto-generated method stub
 		
 	}
 }
