@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
+import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.github.jmkgreen.morphia.annotations.Entity;
 import com.github.jmkgreen.morphia.annotations.Id;
 import com.github.jmkgreen.morphia.annotations.Index;
@@ -13,21 +14,22 @@ import com.github.jmkgreen.morphia.annotations.Indexes;
 import com.github.jmkgreen.morphia.annotations.Reference;
 
 import io.toast.tk.dao.domain.impl.common.BasicTaggableMongoBean;
+import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
-import io.toast.tk.dao.domain.impl.test.block.IProject;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 
-@Entity(value = "report.projects")
+@Entity(value = "report.testplans")
 @Indexes({
 		@Index(value = "name"), @Index("version")
 })
-public class Project extends BasicTaggableMongoBean implements IProject {
+public class TestPlanImpl extends BasicTaggableMongoBean implements ITestPlan {
 
 	@Id
 	private ObjectId id;
 
 	private short iteration;
 
-	@Reference
+	@Reference(ignoreMissing=true)
 	private List<ICampaign> campaigns;
 
 	public String version;
@@ -39,6 +41,18 @@ public class Project extends BasicTaggableMongoBean implements IProject {
 	private Date prodDate;
 
 	private boolean last;
+	
+	@Embedded
+	public ProjectImpl project;
+
+	@Override
+	public ProjectImpl getProject() {
+		return project;
+	}
+
+	public void setProject(ProjectImpl project) {
+		this.project = project;
+	}
 
 	public ObjectId getId() {
 		return id;

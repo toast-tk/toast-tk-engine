@@ -14,11 +14,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.toast.tk.dao.domain.impl.report.Campaign;
-import io.toast.tk.dao.domain.impl.report.Project;
+import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
 import io.toast.tk.dao.domain.impl.test.block.CampaignBlock;
 import io.toast.tk.dao.domain.impl.test.block.IBlock;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
-import io.toast.tk.dao.domain.impl.test.block.IProject;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.line.CampaignLine;
 
 public class ProjectParser extends AbstractParser {
@@ -30,7 +30,7 @@ public class ProjectParser extends AbstractParser {
 		this.blockParserProvider = new BlockParserProvider();
 	}
 
-	public IProject parse(String path) throws IOException, IllegalArgumentException {
+	public ITestPlan parse(String path) throws IOException, IllegalArgumentException {
 		path = cleanPath(path);
 		final Path p = Paths.get(path);
 		List<String> list;
@@ -45,13 +45,13 @@ public class ProjectParser extends AbstractParser {
 		return buildProject(list, p.getFileName().toString(), path);
 	}
 
-	private IProject buildProject(
+	private ITestPlan buildProject(
 		List<String> lines, 
 		final String pageName, 
 		final String filePath
 	) throws IllegalArgumentException, IOException {
 		LOG.info("Starting project parsing: {}", pageName);
-		final Project project = initProject(pageName);
+		final TestPlanImpl project = initProject(pageName);
 		while(CollectionUtils.isNotEmpty(lines)) {
 			final IBlock block = readBlock(lines, filePath);
 			if(block instanceof CampaignBlock) {
@@ -64,8 +64,8 @@ public class ProjectParser extends AbstractParser {
 		return project;
 	}
 
-	private static Project initProject(final String pageName) {
-		final Project project = new Project();
+	private static TestPlanImpl initProject(final String pageName) {
+		final TestPlanImpl project = new TestPlanImpl();
 		project.setName(pageName);
 		project.setCampaigns(new ArrayList<>());
 		return project;

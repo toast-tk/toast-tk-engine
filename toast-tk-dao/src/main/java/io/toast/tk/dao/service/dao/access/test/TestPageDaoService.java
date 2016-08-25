@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 
+import io.toast.tk.dao.domain.impl.common.IServiceFactory;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.dao.domain.impl.test.block.TestPage;
 import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
@@ -17,9 +18,7 @@ import java.util.List;
 
 public class TestPageDaoService extends AbstractMongoDaoService<TestPage> {
 
-	public interface Factory {
-
-		TestPageDaoService create(final @Nullable @Assisted String dbName);
+	public interface Factory extends IServiceFactory<TestPageDaoService>{
 	}
 
 	@Inject

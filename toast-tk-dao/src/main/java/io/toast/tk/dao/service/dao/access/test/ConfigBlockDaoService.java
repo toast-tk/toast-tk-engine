@@ -8,6 +8,7 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 import com.mongodb.WriteConcern;
 
+import io.toast.tk.dao.domain.impl.common.IServiceFactory;
 import io.toast.tk.dao.domain.impl.test.block.ConfigBlock;
 import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
 import io.toast.tk.dao.service.dao.common.CommonMongoDaoService;
@@ -15,8 +16,8 @@ import io.toast.tk.dao.service.init.DbStarter;
 
 public class ConfigBlockDaoService extends AbstractMongoDaoService<ConfigBlock> {
 
-	public interface Factory {
-		ConfigBlockDaoService create(final @Nullable @Assisted String dbName);
+	
+	public interface Factory extends IServiceFactory<ConfigBlockDaoService>{
 	}
 
 	ConfigBlock configBlock;

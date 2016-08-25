@@ -23,6 +23,7 @@ import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 import com.mongodb.WriteConcern;
 
+import io.toast.tk.dao.domain.impl.common.IServiceFactory;
 import io.toast.tk.dao.domain.impl.repository.RepositoryImpl;
 import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
 import io.toast.tk.dao.service.dao.common.CommonMongoDaoService;
@@ -30,9 +31,7 @@ import io.toast.tk.dao.service.init.DbStarter;
 
 public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl> {
 
-	public interface Factory {
-
-		RepositoryDaoService create(final @Nullable @Assisted String dbName);
+	public interface Factory extends IServiceFactory<RepositoryDaoService>{
 	}
 
 	private static final Logger LOG = LogManager.getLogger(RepositoryDaoService.class);
@@ -62,12 +61,14 @@ public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl
 	}
 
 	@SuppressWarnings("unchecked")
-	@Deprecated
 	public boolean saveRepoAsJson(
 		final String jsonRepo
 	) {
 		final GsonBuilder gson = new GsonBuilder();
-		final Type typeOfT = new TypeToken<Collection<RepositoryImpl>>() {private static final long serialVersionUID = 1L;}.getType();
+		final Type typeOfT = new TypeToken<Collection<RepositoryImpl>>() {
+										private static final long serialVersionUID = 1L;
+									}
+									.getType();
 		try {
 			gson.registerTypeHierarchyAdapter(ObjectId.class, new com.google.gson.JsonDeserializer<ObjectId>() {
 
