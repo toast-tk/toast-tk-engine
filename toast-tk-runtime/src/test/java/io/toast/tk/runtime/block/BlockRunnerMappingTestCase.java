@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.eventbus.EventBus;
+import io.toast.tk.core.annotation.EngineEventBus;
+import io.toast.tk.core.driver.IRemoteSwingAgentDriver;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,9 +18,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
-
 import io.toast.tk.adapter.cache.ToastCache;
-import io.toast.tk.core.annotation.EngineEventBus;
 import io.toast.tk.dao.core.report.FailureResult;
 import io.toast.tk.dao.core.report.SuccessResult;
 import io.toast.tk.dao.domain.api.test.ITestResult;
@@ -28,11 +28,11 @@ import io.toast.tk.runtime.ActionItemRepository;
 import io.toast.tk.runtime.IActionItemRepository;
 import io.toast.tk.runtime.action.item.ActionItemValueProvider;
 import io.toast.tk.runtime.bean.ActionCommandDescriptor;
-import io.toast.tk.runtime.block.TestBlockRunner;
 import io.toast.tk.runtime.block.locator.ActionAdaptaterLocator;
 import io.toast.tk.runtime.block.locator.ActionAdaptaterLocators;
 import io.toast.tk.runtime.block.locator.NoActionAdapterFound;
 import io.toast.tk.runtime.module.RunnerModule;
+import io.toast.tk.test.runtime.mock.DummyRemoteEngineSwingDriver;
 import io.toast.tk.test.runtime.resource.XmlAdapterExample;
 
 public class BlockRunnerMappingTestCase {
@@ -53,6 +53,9 @@ public class BlockRunnerMappingTestCase {
 						.to(ActionItemRepository.class).in(Singleton.class);
 				bind(ActionItemValueProvider.class).in(Singleton.class);
 				bind(XmlAdapterExample.class).in(Singleton.class);
+				
+				//hack tps pour le rerun
+				bind(IRemoteSwingAgentDriver.class).to(DummyRemoteEngineSwingDriver.class).in(Singleton.class);
 			}
 		};
 		injector = Guice.createInjector(module, new RunnerModule());

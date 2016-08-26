@@ -34,8 +34,12 @@ public class SentenceBuilder {
 	}
 
 	public SentenceBuilder withValue(final String value) {
-		final String newValue = new StringBuilder(value.length() + 2).append('*').append(value).append('*').toString();
-		replaceInTemplate("@Value", newValue);
+		if(value==null){
+			replaceInTemplate("@Value", "**");
+		} else {
+			final String newValue = new StringBuilder(value.length() + 2).append('*').append(value).append('*').toString();
+			replaceInTemplate("@Value", newValue);
+		}
 		return this;
 	}
 
