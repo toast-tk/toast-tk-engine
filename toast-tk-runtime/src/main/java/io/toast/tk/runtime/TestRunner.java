@@ -22,7 +22,6 @@ class TestRunner {
 	@Inject
 	private Map<Class, IBlockRunner> blockRunnerMap;
 
-
 	/**
 	 * Execute the different blocks within the test page
 	 * 
@@ -96,6 +95,8 @@ class TestRunner {
 				final IBlockRunner blockRunner = blockRunnerMap.get(block.getClass());
 				if (blockRunner != null) {
 					blockRunner.run(block);
+				}else{
+					LOG.warn("No runner found for block of type " + block.getClass().getSimpleName());
 				}
 			}
 		}

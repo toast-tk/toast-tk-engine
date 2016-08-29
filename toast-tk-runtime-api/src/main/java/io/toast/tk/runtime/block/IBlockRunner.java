@@ -5,7 +5,7 @@ import io.toast.tk.runtime.IActionItemRepository;
 
 public interface IBlockRunner<E extends IBlock> {
 	
-	public void run(E block) throws FatalExcecutionError;
+	void run(E block) throws FatalExcecutionError;
 	
 	void setRepository(final IActionItemRepository repository);
 
