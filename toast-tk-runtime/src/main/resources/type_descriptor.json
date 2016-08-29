@@ -23,7 +23,7 @@
 		"regex" : "\\*([\\$?\\w\\W][^\\*]+)\\*",
 		"replacement" : "@[[1:value:string]]"
 	},
-			{
+	{
 		"id": "13",
 		"name" : "Value",
 		"kind": "json",	

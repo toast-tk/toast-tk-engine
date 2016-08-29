@@ -46,5 +46,5 @@ If you want to contribute but do not know where to start, filter issues with the
 ## Working on an issue
 
 - Assign yourself to the issue.
-- Create a branch from the branch `snapshots` starting by the number of the issue, followed by a few words that describe the issue. For instance `77-scenario-replay`.
+- Create a branch from the branch `snapshot` starting by the number of the issue, followed by a few words that describe the issue. For instance `77-scenario-replay`.
 - When the development is finished, create a merge request from your branch to the branch `snapshots`

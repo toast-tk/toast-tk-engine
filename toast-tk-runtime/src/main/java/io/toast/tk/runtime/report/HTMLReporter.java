@@ -1,6 +1,6 @@
 package io.toast.tk.runtime.report;
 
-import io.toast.tk.dao.domain.impl.report.Project;
+import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.runtime.report.IProjectHtmlReportGenerator;
 
@@ -11,7 +11,7 @@ public class HTMLReporter {
 		return projectHtmlReportGenerator.generateProjectReportHtml(name);
 	}
 	
-	public static final String getProjectHTMLReport(final Project project) {
+	public static final String getProjectHTMLReport(final TestPlanImpl project) {
 		final IProjectHtmlReportGenerator projectHtmlReportGenerator = new ThymeLeafProjectHTMLReporter();
 		return projectHtmlReportGenerator.generateProjectReportHtml(project);
 	}

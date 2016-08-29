@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
-import io.toast.tk.dao.domain.impl.test.block.IProject;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.runtime.parse.ProjectParser;
 
@@ -20,7 +20,7 @@ public class TestParserTestCase_6 {
     @Test
     public void test() {
         String filename = "test_file_4_project.txt";
-        IProject project = null;
+	    ITestPlan project = null;
 
         try {
             project = new ProjectParser().parse(filename);

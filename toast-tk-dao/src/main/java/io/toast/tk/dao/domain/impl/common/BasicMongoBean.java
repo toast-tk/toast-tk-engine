@@ -8,9 +8,11 @@ public abstract class BasicMongoBean {
 
 	protected Date lastUpdated = new Date();
 
-	public String name;
+	protected String name;
 
 	protected Date creationDate;
+
+	protected String description;
 
 	public String getName() {
 		return name;
@@ -20,6 +22,14 @@ public abstract class BasicMongoBean {
 		this.name = name;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 	@PrePersist
 	public void prePersist() {
 		if(creationDate == null) { //in constructor ?
