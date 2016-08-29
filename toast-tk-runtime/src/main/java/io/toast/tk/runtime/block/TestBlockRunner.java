@@ -43,7 +43,7 @@ import io.toast.tk.runtime.utils.ArgumentHelper;
 
 public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
-	private static final Logger LOG = LogManager.getLogger(BlockRunnerProvider.class);
+	private static final Logger LOG = LogManager.getLogger(TestBlockRunner.class);
 
 	private static final Pattern REGEX_PATTERN = Pattern.compile("\\$(\\d)");
 
@@ -99,8 +99,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		if (!hasFoundActionAdapter(actionAdaptaterLocator)) {
 			throw new NoActionAdapterFound(actionAdaptaterLocator.getTestLineDescriptor().testLine.getTest());
 		}
-		final ITestResult result = doLocalActionCall(actionAdaptaterLocator);
-		return result;
+		return doLocalActionCall(actionAdaptaterLocator);
 	}
 
 	private static boolean hasFoundActionAdapter(final ActionAdaptaterLocator actionAdaptaterLocator) {
