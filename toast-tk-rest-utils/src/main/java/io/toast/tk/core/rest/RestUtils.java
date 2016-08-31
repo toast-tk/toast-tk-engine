@@ -2,19 +2,26 @@ package io.toast.tk.core.rest;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.naming.AuthenticationException;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -168,26 +175,69 @@ public class RestUtils {
 	}
 
 	public static boolean post(final String url, final String jsonFixtureDescriptor) {
-		final Client httpClient = Client.create();
-		final WebResource webResource = httpClient.resource(url);
-		final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-				.post(ClientResponse.class, jsonFixtureDescriptor);
-		return response.getStatus() == 200;
+		return post(url, jsonFixtureDescriptor, null);
+	}
+	public static boolean post(final String url, final String jsonFixtureDescriptor, final String ApiKey) {
+		try {
+			final CloseableHttpClient httpClient = HttpClients.createDefault();
+			HttpPost httpget = new HttpPost(url);
+			httpget.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			if(ApiKey != null) {
+				httpget.setHeader("Token" , ApiKey);
+			}
+			
+			List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+			urlParameters.add(new BasicNameValuePair(jsonFixtureDescriptor, null));
+			
+			HttpEntity postParams = new UrlEncodedFormEntity(urlParameters);
+			httpget.setEntity(postParams);
+
+			response = httpClient.execute(httpget);
+			
+			return response.getStatusLine().getStatusCode() == 200;
+		} catch (final Exception e) {
+			LOG.error(e.getMessage(), e);
+		} finally {
+			try {
+				response.close();
+			} catch (IOException e) {
+				LOG.error(e.getMessage(), e);
+			}
+		}
+		return false;
 	}
 
 	public static boolean postWebEventRecord(final String url, final String record) {
+		return postWebEventRecord(url, record, null);
+	}
+	public static boolean postWebEventRecord(final String url, final String record, final String ApiKey) {	
 		try {
-			final Client httpClient = Client.create();
+			final CloseableHttpClient httpClient = HttpClients.createDefault();
+			HttpPost httpget = new HttpPost(url);
+			httpget.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			if(ApiKey != null) {
+				httpget.setHeader("Token" , ApiKey);
+			}
 			
-			final WebResource webResource = httpClient.resource(url);
-			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
-														.accept(MediaType.APPLICATION_JSON)
-														.post(ClientResponse.class, record);
-			return response.getStatus() == 200;
+			List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+			urlParameters.add(new BasicNameValuePair(record, null));
+			
+			HttpEntity postParams = new UrlEncodedFormEntity(urlParameters);
+			httpget.setEntity(postParams);
+
+			response = httpClient.execute(httpget);
+			
+			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
-			return false;
+		} finally {
+			try {
+				response.close();
+			} catch (IOException e) {
+				LOG.error(e.getMessage(), e);
+			}
 		}
+		return false;
 	}
 
 	public static void main(final String[] args) {
@@ -195,11 +245,17 @@ public class RestUtils {
 	}
 
 	public static boolean registerAgent(final String url) {
+		return registerAgent(url, null);
+	}
+	public static boolean registerAgent(final String url, final String ApiKey) {
 		try {
 			final CloseableHttpClient httpClient = HttpClients.createDefault();
 			HttpGet httpget = new HttpGet(url);
 			httpget.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-			
+			if(ApiKey != null) {
+				httpget.setHeader("Token" , ApiKey);
+			}
+
 			response = httpClient.execute(httpget);
 			
 			return response.getStatusLine().getStatusCode() == 200;
