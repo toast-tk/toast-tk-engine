@@ -244,15 +244,14 @@ public class RestUtils {
 		RestUtils.postScenario("newtest", "localhost", "9000", "a step");
 	}
 
-<<<<<<< HEAD
-	public static boolean registerAgent(final String url) {
-		return registerAgent(url, null);
+	public static boolean registerAgent(final String url, String information) {
+		return registerAgent(url, information, null);
 	}
-	public static boolean registerAgent(final String url, final String ApiKey) {
+	public static boolean registerAgent(final String url, String information, final String ApiKey) {
 		try {
 			final CloseableHttpClient httpClient = HttpClients.createDefault();
 			HttpGet httpget = new HttpGet(url);
-			httpget.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			httpget.setHeader(HttpHeaders.CONTENT_TYPE, information);
 			if(ApiKey != null) {
 				httpget.setHeader("Token" , ApiKey);
 			}
@@ -260,16 +259,6 @@ public class RestUtils {
 			response = httpClient.execute(httpget);
 			
 			return response.getStatusLine().getStatusCode() == 200;
-=======
-	public static boolean registerAgent(final String url, String information) {
-		try {
-			final Client httpClient = Client.create();
-			final WebResource webResource = httpClient.resource(url);
-			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
-														.accept(MediaType.APPLICATION_JSON)
-														.post(ClientResponse.class, information);
-			return response.getStatus() == 200;
->>>>>>> refs/remotes/origin/snapshot
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
 		} finally {
