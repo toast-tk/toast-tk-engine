@@ -6,17 +6,16 @@ import io.toast.tk.adapter.web.component.DefaultWebPage;
 import io.toast.tk.dao.domain.impl.test.block.WebPageBlock;
 import io.toast.tk.dao.domain.impl.test.block.line.WebPageConfigLine;
 import io.toast.tk.runtime.IActionItemRepository;
-import io.toast.tk.runtime.block.IBlockRunner;
 
 public  class WebPageBlockBuilder implements IBlockRunner<WebPageBlock>{
 	
 	@Inject
-	IActionItemRepository objectRepository;
+	private	IActionItemRepository objectRepository;
 	
 	@Override
 	public void run(final WebPageBlock block) {
 		final DefaultWebPage webPage = new DefaultWebPage();
-		block.getBlockLines().stream().forEach(line -> addElement(webPage, line));
+		block.getBlockLines().forEach(line -> addElement(webPage, line));
 		objectRepository.addWebPage(block.getFixtureName(), webPage);
 	}
 

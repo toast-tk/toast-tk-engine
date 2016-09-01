@@ -4,13 +4,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.MapBinder;
 
-import io.toast.tk.dao.domain.impl.test.block.IBlock;
 import io.toast.tk.dao.domain.impl.test.block.SwingPageBlock;
 import io.toast.tk.dao.domain.impl.test.block.TestBlock;
 import io.toast.tk.dao.domain.impl.test.block.VariableBlock;
 import io.toast.tk.dao.domain.impl.test.block.WebPageBlock;
 import io.toast.tk.runtime.action.item.ActionItemValueProvider;
-import io.toast.tk.runtime.block.BlockRunnerProvider;
 import io.toast.tk.runtime.block.IBlockRunner;
 import io.toast.tk.runtime.block.SwingPageBlockBuilder;
 import io.toast.tk.runtime.block.TestBlockRunner;
@@ -22,7 +20,6 @@ public class RunnerModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(BlockRunnerProvider.class).in(Singleton.class);
 		bind(ActionItemValueProvider.class).in(Singleton.class);
 		bind(SwingPageBlockBuilder.class).in(Singleton.class);
 		bind(WebPageBlockBuilder.class).in(Singleton.class);
@@ -34,8 +31,6 @@ public class RunnerModule extends AbstractModule {
 		runnerMapBinder.addBinding(TestBlock.class).to(TestBlockRunner.class);
 		runnerMapBinder.addBinding(SwingPageBlock.class).to(SwingPageBlockBuilder.class);
 		runnerMapBinder.addBinding(VariableBlock.class).to(VariableBlockBuilder.class);
-
-
 
 	}
 
