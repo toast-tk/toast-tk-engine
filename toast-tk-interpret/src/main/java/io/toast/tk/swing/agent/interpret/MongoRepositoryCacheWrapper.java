@@ -1,20 +1,19 @@
 package io.toast.tk.swing.agent.interpret;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 
-import java.util.Objects;
-
 import com.google.common.base.Strings;
 import com.mongodb.WriteConcern;
 
 import io.toast.tk.core.agent.interpret.WebEventRecord;
-import io.toast.tk.dao.RestMongoWrapper;
 import io.toast.tk.dao.domain.impl.repository.ElementImpl;
+import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.domain.impl.repository.RepositoryImpl;
 import io.toast.tk.dao.service.dao.access.repository.RepositoryDaoService;
 
@@ -30,22 +29,13 @@ public class MongoRepositoryCacheWrapper {
 
 	private RepositoryDaoService service;
 	
-	private RepositoryImpl container;
-
-	
-	public RepositoryImpl getLastKnownContainer(){
-		return container;
+	public MongoRepositoryCacheWrapper(RepositoryDaoService service){
+		this.service = service;
+		initCache();
 	}
 	
-	public RepositoryImpl saveLastKnownContainer(){
-		service.save(container, WriteConcern.ACKNOWLEDGED);
-		return container;
-	}
-	
-	
-	public void initCache(RepositoryDaoService service) {
+	private void initCache() {
 		try {
-			this.service = service;
 			cache = service.find().asList();
 		}
 		catch(Exception e) {
@@ -55,59 +45,11 @@ public class MongoRepositoryCacheWrapper {
 		}
 	}
 	
-	public void initCache(String host, String port) {
-		try {
-			this.host = host;
-			this.port = port;
-			cache = RestMongoWrapper.loadRepository(host, port);
-		}
-		catch(Exception e) {
-			LOG.error(
-				String.format("WebApp not active at address %s:%s", host, port),
-				e);
-		}
-	}
-
-	public RepositoryImpl findContainer(
-		String lastKnownContainer, String type) {
-		
-		String container = formatLabel(lastKnownContainer);
-		
-		for(RepositoryImpl page : cache) {
-			if(page.getName().equals(container)) {
-				if(this.container == null){
-					this.container = page;
-				}
-				return page;
-			}
-		}
-	
-		RepositoryImpl page = new RepositoryImpl();
-		page.setName(container);
-		page.cType = type;
-		cache.add(page);
-		
-		this.container = page;
-	
-		return page;
-	}
-
-	private String formatLabel(
-		String name) {
-		return name.trim().replace(" ", "_").replace("'", "_").replace("°", "_");
-	}
-
-	public void saveRepository(RepositoryImpl repo) {
+	public synchronized void saveRepository(RepositoryImpl repo) {
 		service.save(repo, WriteConcern.ACKNOWLEDGED);
-		initCache(service);
+		initCache();
 	}
 	
-	public boolean saveCache(String host, String port) {
-		boolean saveRepository = RestMongoWrapper.saveRepository(cache, host, port);
-		initCache(host, port);
-		return saveRepository;
-	}
-
 	public ElementImpl findElement(RepositoryImpl container, WebEventRecord eventRecord) {
 		String locator = eventRecord.getTarget();
 		for(RepositoryImpl repImpl : cache) {
@@ -142,6 +84,37 @@ public class MongoRepositoryCacheWrapper {
 		impl.setId(ObjectId.get());
 		return impl;
 	}
+	
+
+	public RepositoryImpl findContainer(
+		String lastKnownContainer, String type, ProjectImpl project) {
+		
+		String container = formatLabel(lastKnownContainer);
+		
+		for(RepositoryImpl page : cache) {
+			if(page.getName().equals(container)) {
+				if(Objects.nonNull(page.project)){
+					if(project.getId().toString().equals(project.getId().toString())){
+						return page;
+					}
+				}
+			}
+		}
+	
+		RepositoryImpl page = new RepositoryImpl();
+		page.setName(container);
+		page.project = project;
+		page.type = type;
+		cache.add(page);
+		
+		return page;
+	}
+
+	private String formatLabel(
+		String name) {
+		return name.trim().replace(" ", "_").replace("'", "_").replace("°", "_");
+	}
+
 	
 	private String getMethod(WebEventRecord eventRecord) {
 		if (!Strings.isNullOrEmpty(eventRecord.getPath())){
