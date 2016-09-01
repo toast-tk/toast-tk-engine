@@ -12,7 +12,10 @@ import io.toast.tk.dao.domain.impl.common.BasicEntityBean;
 @Entity(value = "repository")
 public class RepositoryImpl extends BasicEntityBean implements IRepository{
 
-	public String cType;
+	public String type;
+	
+	@Reference(ignoreMissing = true)
+	public ProjectImpl project;
 
 	@Reference(ignoreMissing = true)
 	public List<ElementImpl> rows = new ArrayList<>();
