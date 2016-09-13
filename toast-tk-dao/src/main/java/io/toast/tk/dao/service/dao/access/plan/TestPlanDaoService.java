@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 import com.github.jmkgreen.morphia.Key;
 import com.github.jmkgreen.morphia.query.Criteria;
 import com.github.jmkgreen.morphia.query.CriteriaContainerImpl;
@@ -15,7 +17,6 @@ import com.google.inject.name.Named;
 import io.toast.tk.dao.domain.impl.common.IServiceFactory;
 import io.toast.tk.dao.domain.impl.report.Campaign;
 import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
-import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.service.dao.access.repository.ProjectDaoService;
 import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
 import io.toast.tk.dao.service.dao.common.CommonMongoDaoService;
@@ -27,7 +28,6 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 	}
 
 	private final CampaignDaoService cDaoService;
-	private final ProjectDaoService pDaoService;
 
 	@Inject
 	public TestPlanDaoService(
@@ -35,12 +35,10 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 		final CommonMongoDaoService commonService,
 		@Assisted final String databaseName,
 		@Named("default_db") final String defaultDb,
-		final CampaignDaoService.Factory cDaoServiceFactory,
-		final ProjectDaoService.Factory pDaoServiceFactory
+		final CampaignDaoService.Factory cDaoServiceFactory
 	) {
 		super(TestPlanImpl.class, starter.getDatabaseByName(databaseName == null ? defaultDb : databaseName), commonService);
 		this.cDaoService = cDaoServiceFactory.create(databaseName);
-		this.pDaoService = pDaoServiceFactory.create(databaseName);
 	}
 
 	public TestPlanImpl getByName(final String name) {
@@ -97,9 +95,8 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 	}
 	
 	public List<TestPlanImpl> findAllReferenceProjects(String idProject) {
-		ProjectImpl p = pDaoService.findProject(idProject);
 		final Query<TestPlanImpl> query = createQuery();
-		query.criteria("project._id").equal(p.getId());
+		query.criteria("project._id").equal(new ObjectId(idProject));
 		return query.asList();
 	}
 
