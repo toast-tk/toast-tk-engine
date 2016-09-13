@@ -17,10 +17,9 @@ public interface IBlockParser {
     /**
      * Create a block from the list of strings.
      *
-     * @param path Path of the test text file.
-     * @throws IOException 
+     * @throws IOException
      */
-    IBlock digest(final List<String> strings, final String path) throws IOException;
+    IBlock digest(final List<String> strings) throws IOException;
 
     /**
      * Return true if this string should be parsed with this parser.

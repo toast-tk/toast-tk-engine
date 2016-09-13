@@ -1,13 +1,8 @@
 package io.toast.tk.runtime.parse;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -30,31 +25,16 @@ public class ProjectParser extends AbstractParser {
 		this.blockParserProvider = new BlockParserProvider();
 	}
 
-	public ITestPlan parse(String path) throws IOException, IllegalArgumentException {
-		path = cleanPath(path);
-		final Path p = Paths.get(path);
-		List<String> list;
-		try (Stream<String> lines = Files.lines(p)) {
-			list = lines.collect(Collectors.toList());
-		}
-
-		if (list.isEmpty()) {
-			throw new IllegalArgumentException("File empty at path: " + path);
-		}
-		removeBom(list);
-		return buildProject(list, p.getFileName().toString(), path);
+	public ITestPlan parse(String filename) throws IOException, IllegalArgumentException {
+		return buildProject(FileHelper.getScript(filename), filename);
 	}
 
-	private ITestPlan buildProject(
-		List<String> lines, 
-		final String pageName, 
-		final String filePath
-	) throws IllegalArgumentException, IOException {
+	private ITestPlan buildProject(List<String> lines, final String pageName) throws IllegalArgumentException, IOException {
 		LOG.info("Starting project parsing: {}", pageName);
 		final TestPlanImpl project = initProject(pageName);
-		while(CollectionUtils.isNotEmpty(lines)) {
-			final IBlock block = readBlock(lines, filePath);
-			if(block instanceof CampaignBlock) {
+		while (CollectionUtils.isNotEmpty(lines)) {
+			final IBlock block = readBlock(lines);
+			if (block instanceof CampaignBlock) {
 				project.getCampaigns().add(readCampaignBlock((CampaignBlock) block));
 			}
 			final int numberOfLines = TestParserHelper.getNumberOfBlockLines(block);
@@ -73,13 +53,13 @@ public class ProjectParser extends AbstractParser {
 
 	private static ICampaign readCampaignBlock(final CampaignBlock block) {
 		final Campaign campaign = initCampaign(block);
-		block.getTestCases().stream().forEach(testCase -> addTestCaseToCampaign(campaign, testCase));
+		block.getTestCases().forEach(testCase -> addTestCaseToCampaign(campaign, testCase));
 		return campaign;
 	}
 
 	private static void addTestCaseToCampaign(
-		final Campaign campaign,
-		final CampaignLine testCase
+			final Campaign campaign,
+			final CampaignLine testCase
 	) {
 		testCase.getFile().setName(testCase.getName());
 		campaign.getTestCases().add(testCase.getFile());
