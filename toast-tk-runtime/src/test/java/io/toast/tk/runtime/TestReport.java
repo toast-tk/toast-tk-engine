@@ -13,30 +13,39 @@ import io.toast.tk.runtime.report.ThymeLeafHTMLReporter;
  */
 public class TestReport {
 
-    @Test
-    public void test() {
-        String texteInSubPage = "Do something in included page";
-        String texteInPage = "Do something";
+	@Test
+	public void test() {
+		String textInSecondSubPage = "Do something in second included page";
+		String textInSubPage = "Do something in included page";
+		String textInPage = "Do something";
 
-        ITestPage subTestPage = DaoBeanFactory.getBean(ITestPage.class);
-        assert subTestPage != null;
-        TestBlock subTestBlock = new TestBlock();
-        subTestBlock.addLine(texteInSubPage, "expected", "comment");
-        subTestPage.addBlock(subTestBlock);
+		ITestPage secondSubTestPage = DaoBeanFactory.getBean(ITestPage.class);
+		assert secondSubTestPage != null;
+		TestBlock secondSubTestBlock = new TestBlock();
+		secondSubTestBlock.addLine(textInSecondSubPage, "expected", "comment");
+		secondSubTestPage.addBlock(secondSubTestBlock);
 
-        ITestPage testPage = DaoBeanFactory.getBean(ITestPage.class);
-        assert testPage != null;
-        TestBlock testBlock = new TestBlock();
-        testBlock.addLine(texteInPage, "expected", "comment");
-        testPage.addBlock(testBlock);
-        testPage.addBlock(subTestPage);
+		ITestPage subTestPage = DaoBeanFactory.getBean(ITestPage.class);
+		assert subTestPage != null;
+		TestBlock subTestBlock = new TestBlock();
+		subTestBlock.addLine(textInSubPage, "expected", "comment");
+		subTestPage.addBlock(subTestBlock);
+		subTestPage.addBlock(secondSubTestPage);
 
-        ThymeLeafHTMLReporter thymeLeafHTMLReporter = new ThymeLeafHTMLReporter();
-        String s = thymeLeafHTMLReporter.generatePageHtml(testPage);
+		ITestPage testPage = DaoBeanFactory.getBean(ITestPage.class);
+		assert testPage != null;
+		TestBlock testBlock = new TestBlock();
+		testBlock.addLine(textInPage, "expected", "comment");
+		testPage.addBlock(testBlock);
+		testPage.addBlock(subTestPage);
 
-        Assert.assertTrue(s.contains(texteInPage));
+		ThymeLeafHTMLReporter thymeLeafHTMLReporter = new ThymeLeafHTMLReporter();
+		String s = thymeLeafHTMLReporter.generatePageHtml(testPage);
 
-        Assert.assertTrue(s.contains(texteInSubPage));
-    }
+		Assert.assertTrue(s.contains(textInPage));
 
+		Assert.assertTrue(s.contains(textInSubPage));
+
+		Assert.assertTrue(s.contains(textInSecondSubPage));
+	}
 }
