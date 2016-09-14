@@ -1,5 +1,7 @@
 package io.toast.tk.runtime;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,11 +19,11 @@ import io.toast.tk.runtime.report.IProjectHtmlReportGenerator;
 
 public abstract class AbstractProjectRunner extends AbstractRunner {
 
-    private static final Logger LOG = LogManager.getLogger(AbstractProjectRunner.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractProjectRunner.class);
 
-    private final IHTMLReportGenerator htmlReportGenerator;
+	private final IHTMLReportGenerator htmlReportGenerator;
 
-    private final IProjectHtmlReportGenerator projectHtmlReportGenerator;
+	private final IProjectHtmlReportGenerator projectHtmlReportGenerator;
 
 	private String mongoDbHost;
 
@@ -33,188 +35,125 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	}
 
-    protected AbstractProjectRunner(
-    	final Module extraModule, 
-    	final String host,
-    	final int port
-    ) {
-    	this(extraModule);
-    	this.mongoDbHost = host;
-    	this.mongoDbPort = port;
-    }
-    
-    protected AbstractProjectRunner(
-    	final String host,
-    	final int port
-    ) {
-    	this();
-    	this.mongoDbHost = host;
-    	this.mongoDbPort = port;
-    }
+	protected AbstractProjectRunner(final Module extraModule, final String host, final int port) {
+		this(extraModule);
+		this.mongoDbHost = host;
+		this.mongoDbPort = port;
+	}
 
-    public AbstractProjectRunner(final Module extraModule) {
-    	super(extraModule);
-    	this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
-        this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
-    }
-    
-	public final void test(ITestPlan project,
-            boolean overrideRepoFromWebApp)
-            throws Exception {
-        execute(project, overrideRepoFromWebApp);
-    }
-    
+	protected AbstractProjectRunner(final String host, final int port) {
+		this();
+		this.mongoDbHost = host;
+		this.mongoDbPort = port;
+	}
 
-	public final void test(
-		final String projectName,
-		final boolean overrideRepoFromWebApp
-	) throws Exception {
-		final DAOManager daoManager = DAOManager.getInstance(this.mongoDbHost, this.mongoDbPort);
-		final TestPlanImpl lastProject = daoManager.getLastProjectByName(projectName);
-		final TestPlanImpl referenceProject = daoManager.getReferenceProjectByName(projectName);
-        if (referenceProject == null) {
-            throw new IllegalAccessException("No reference project name found for: " + projectName);
-        }
-        final TestPlanImpl newIterationProject = mergeToNewIteration(lastProject, referenceProject);
-        execute(newIterationProject, overrideRepoFromWebApp);
-        daoManager.saveProject(newIterationProject);
-    }
+	public AbstractProjectRunner(final Module extraModule) {
+		super(extraModule);
+		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
+		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
+	}
+
+	public final void test(ITestPlan project, boolean useRemoteRepository) throws Exception {
+		execute(project, useRemoteRepository);
+	}
+
+	public final void test(final String name, final boolean useRemoteRepository) throws Exception {
+		DAOManager.init(this.mongoDbHost, this.mongoDbPort);
+		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(name);
+		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(name);
+		if (testPlanTemplate == null) {
+			throw new IllegalAccessException("No reference test plan template found for: " + name);
+		}
+		updateTestPlanFromPreviousRun((ITestPlan)testPlanTemplate, lastExecution);
+		execute(testPlanTemplate, useRemoteRepository);
+		DAOManager.saveTestPlan(testPlanTemplate);
+	}
 
 	public final void testAndStore(final ITestPlan project) throws Exception {
-    	testAndStore(project, false);
-    }
-    
-    public final void testAndStore(
-    	final ITestPlan project,
-    	final boolean overrideRepoFromWebApp
-    ) throws Exception {
-    	final DAOManager daoManager = DAOManager.getInstance(this.mongoDbHost, this.mongoDbPort);
-    	final TestPlanImpl lastProject = daoManager.getLastProjectByName(project.getName());
-    	final TestPlanImpl referenceProject = daoManager.getReferenceProjectByName(project.getName());
-        if (referenceProject == null) {
-        	daoManager.saveProject((TestPlanImpl)project);
-        }
-        
-        final TestPlanImpl newIterationProject;
-        if(lastProject != null){
-        	newIterationProject = mergeToNewIteration(lastProject, referenceProject);
-        }
-        else{
-        	newIterationProject = daoManager.getReferenceProjectByName(project.getName());
-        }
-        final TestPlanImpl projectToRun = mergeToRunIteration(newIterationProject,(TestPlanImpl)project);
-        execute(projectToRun, overrideRepoFromWebApp); //TODO: merge newIterationProject with
-        daoManager.saveProject(projectToRun);
-    }
-    
-    private static TestPlanImpl mergeToRunIteration(
-    	final TestPlanImpl lastIterationProject,
-    	final TestPlanImpl newIterationProject
-    ) {
-        if (lastIterationProject.getIteration() == newIterationProject.getIteration()) {
-            return newIterationProject;
-        }
+		testAndStore(project, false);
+	}
 
-        //creating a new iteration from history
-        newIterationProject.setId(null);
-        newIterationProject.setIteration(lastIterationProject.getIteration());
-        
-        //TO LINEARIZE
-        for(final ICampaign newCampaign : newIterationProject.getCampaigns()) {
-            for(final ICampaign lastCampaign : lastIterationProject.getCampaigns()) {
-                if (newCampaign.getName().equals(lastCampaign.getName())) {
-                    for(final ITestPage newPage : newCampaign.getTestCases()) {
-                        for(final ITestPage lastPage : lastCampaign.getTestCases()) {
-                            if (newPage.getName().equals(lastPage.getName())) {
-                                newPage.setPreviousIsSuccess(lastPage.isPreviousIsSuccess());
-                                newPage.setPreviousExecutionTime(lastPage.getPreviousExecutionTime());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return newIterationProject;
-    }
+	public final void testAndStore(final ITestPlan testPlan, final boolean useRemoteRepository) throws Exception {
+		DAOManager.init(this.mongoDbHost, this.mongoDbPort);
+		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(testPlan.getName());
+		if(Objects.nonNull(testPlanTemplate)){
+			DAOManager.updateTemplateFromTestPlan(testPlan);
+		}else{
+			DAOManager.saveTemplate((TestPlanImpl) testPlan);
+		}
+		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(testPlan.getName());
+		updateTestPlanFromPreviousRun(testPlan, lastExecution);
+		execute(testPlan, useRemoteRepository); 
+		DAOManager.saveTestPlan((TestPlanImpl)testPlan);
+	}
 
-    private static TestPlanImpl mergeToNewIteration(
-    	final TestPlanImpl lastIterationProject,
-    	final TestPlanImpl newIterationProject
-    ) {
-    	if (lastIterationProject.getIteration() == newIterationProject.getIteration()) {
-    		return newIterationProject;
-    	}
+	/**
+	 * Update testPlan campaign test pages' previous execution status with previousRun execution time and success value
+	 * 
+	 * @param testPlan
+	 * @param previousRun
+	 */
+	private void updateTestPlanFromPreviousRun(final ITestPlan testPlan, final TestPlanImpl previousRun) {
+		testPlan.setId(null);
+		testPlan.setIteration(previousRun.getIteration());
+		for (final ICampaign newCampaign : testPlan.getCampaigns()) {
+			for (final ICampaign previousCampaign : previousRun.getCampaigns()) {
+				if (newCampaign.getName().equals(previousCampaign.getName())) {
+					for (final ITestPage newExecPage : newCampaign.getTestCases()) {
+						for (ITestPage previousExecPage : previousCampaign.getTestCases()) {
+							if (newExecPage.getName().equals(previousExecPage.getName())) {
+								newExecPage.setPreviousIsSuccess(previousExecPage.isSuccess());
+								newExecPage.setPreviousExecutionTime(previousExecPage.getExecutionTime());
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-    	//creating a new iteration from history
-    	newIterationProject.setId(null);
-    	newIterationProject.setIteration(lastIterationProject.getIteration());
-    	//TO LINEARIZE
-    	for(final ICampaign newCampaign : newIterationProject.getCampaigns()) {
-    		for(final ICampaign lastCampaign : lastIterationProject.getCampaigns()) {
-    			if (newCampaign.getName().equals(lastCampaign.getName())) {
-    				for(final ITestPage newPage : newCampaign.getTestCases()) {
-    					for(ITestPage lastPage : lastCampaign.getTestCases()) {
-    						if(newPage.getName().equals(lastPage.getName())) {
-    							newPage.setPreviousIsSuccess(lastPage.isSuccess());
-    							newPage.setPreviousExecutionTime(lastPage.getExecutionTime());
-    						}
-    					}
-    				}
-    			}
-    		}
-    	}
-    	return newIterationProject;
-    }
+	public void execute(final ITestPlan project, final boolean presetRepoFromWebApp) throws Exception {
+		final TestRunner runner = injector.getInstance(TestRunner.class);
+		if (presetRepoFromWebApp) {
+			LOG.debug("Preset repository from webapp rest api...");
+			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
+			final TestParser parser = new TestParser();
+			final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
+			runner.run(repoAsTestPageForConvenience);
+		}
+		execute(project, runner);
+	}
 
-    public void execute(
-    	final ITestPlan project,
-    	final boolean presetRepoFromWebApp
-    )	throws Exception {
-    	final TestRunner runner = injector.getInstance(TestRunner.class);
-        if(presetRepoFromWebApp) {
-        	LOG.debug("Preset repository from webapp rest api...");
-        	final String repoWiki = RestUtils.downloadRepositoryAsWiki();
-        	final TestParser parser = new TestParser();
-        	final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
-            runner.run(repoAsTestPageForConvenience);
-        }
-        execute(project, runner);
-    }
+	private void execute(final ITestPlan project, final TestRunner runner) {
+		initEnvironment();
+		for (final ICampaign campaign : project.getCampaigns()) {
+			for (ITestPage testPage : campaign.getTestCases()) {
+				try {
+					beginTest();
+					testPage = runner.run(testPage);
+					endTest();
+				} catch (final Exception e) {
+					LOG.error(e.getMessage(), e);
+				}
+			}
+		}
+		createAndOpenReport(project);
+		tearDownEnvironment();
+	}
 
-    private void execute(
-    	final ITestPlan project,
-    	final TestRunner runner
-    ) {
-        initEnvironment();
-        for(final ICampaign campaign : project.getCampaigns()) {
-            for(ITestPage testPage : campaign.getTestCases()) {
-                try {
-                    beginTest();
-                    testPage = runner.run(testPage);
-                    endTest();
-                } 
-                catch(final Exception e) {
-                    LOG.error(e.getMessage(), e);
-                }
-            }
-        }
-        createAndOpenReport(project);
-        tearDownEnvironment();
-    }
+	protected void createAndOpenReport(final ITestPlan project) {
+		final String path = getReportsFolderPath();
+		final String pageName = "Project_report";
 
-    protected void createAndOpenReport(final ITestPlan project) {
-    	final String path = getReportsFolderPath();
-        final String pageName = "Project_report";
+		for (final ICampaign campaign : project.getCampaigns()) {
+			for (final ITestPage testPage : campaign.getTestCases()) {
+				String testPageHtmlReport = htmlReportGenerator.generatePageHtml(testPage);
+				htmlReportGenerator.writeFile(testPageHtmlReport, testPage.getName(), path);
+			}
+		}
 
-        for(final ICampaign campaign : project.getCampaigns()) {
-            for(final ITestPage testPage : campaign.getTestCases()) {
-                String testPageHtmlReport = htmlReportGenerator.generatePageHtml(testPage);
-                htmlReportGenerator.writeFile(testPageHtmlReport, testPage.getName(), path);
-            }
-        }
-
-        final String generatePageHtml = projectHtmlReportGenerator.generateProjectReportHtml(project);
-        this.projectHtmlReportGenerator.writeFile(generatePageHtml, pageName, path);
-        openReport(path, pageName);
-    }
+		final String generatePageHtml = projectHtmlReportGenerator.generateProjectReportHtml(project);
+		this.projectHtmlReportGenerator.writeFile(generatePageHtml, pageName, path);
+		openReport(path, pageName);
+	}
 }

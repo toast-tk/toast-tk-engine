@@ -201,4 +201,6 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
 	public boolean isFatal() {
 		return this.isFatal;
 	}
+	
+	
 }

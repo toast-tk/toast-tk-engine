@@ -10,4 +10,8 @@ public interface ITestPlan {
 	String getName();
 
 	IProject getProject();
+
+	void setId(String id);
+
+	void setIteration(short iteration);
 }

@@ -6,6 +6,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.guice.MongoModule;
 import io.toast.tk.dao.service.dao.access.plan.TestPlanDaoService;
 
@@ -28,7 +29,7 @@ public class DAOManager {
 		this.projectService = projectFactory.create("test_project_db");
 	}
 	
-	public static synchronized DAOManager getInstance(
+	public static synchronized DAOManager init(
 		final String mongoHost, 
 		final int mongoPort
 	) {
@@ -38,7 +39,7 @@ public class DAOManager {
 		return INSTANCE;
 	}
 	
-	public static synchronized DAOManager getInstance() {
+	private static synchronized DAOManager getInstance() {
 		if(INSTANCE == null) {
 			throw new RuntimeException("Mongo Host not provided !");
 		}
@@ -49,19 +50,27 @@ public class DAOManager {
 		return projectService;
 	}
 	
-	public static TestPlanImpl getLastProjectByName(final String projectName) {
+	public static TestPlanImpl getLastTestPlanExecution(final String projectName) {
 		return getInstance().getProjectDaoService().getLastByName(projectName);
 	}
 
-	public static TestPlanImpl getReferenceProjectByName(final String projectName) {
+	public static TestPlanImpl getTestPlanTemplate(final String projectName) {
 		return getInstance().getProjectDaoService().getReferenceProjectByName(projectName);
 	}
 	
-	public static void saveProject(final TestPlanImpl project) {
+	public static void saveTestPlan(final TestPlanImpl project) throws IllegalAccessException {
 		getInstance().getProjectDaoService().saveNewIteration(project);
 	}
 
 	public static List<TestPlanImpl> getProjectHistory(final TestPlanImpl project) {
 		return getInstance().getProjectDaoService().getProjectHistory(project);
+	}
+
+	public static void updateTemplateFromTestPlan(ITestPlan testPlan) throws IllegalAccessException {
+		getInstance().getProjectDaoService().updateTemplateFromTestPlan(testPlan);
+	}
+
+	public static void saveTemplate(TestPlanImpl testPlan) throws IllegalAccessException {
+		getInstance().getProjectDaoService().saveTemplate(testPlan);		
 	}
 }
