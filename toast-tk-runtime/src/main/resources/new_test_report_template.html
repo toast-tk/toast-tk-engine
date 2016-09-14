@@ -25,11 +25,11 @@
 			cursive;
 		color: #fed136;
 	}
-	
+
 	.testName {
-		
+
 	}
-	
+
 	footer {
 		position: fixed;
 		background-color: #D2D2D2;
@@ -44,35 +44,35 @@
 		right: 0;
 		width: 100%;
 	}
-	
+
 	.panel-toast {
 		border-color: #B4B4B4;
 	}
-	
+
 	.panel-toast>.panel-heading {
 		border-color: #B4B4B4;
 		background-color: #D2D2D2;
 	}
-	
+
 	.jumbotron {
 		background-color: #D2D2D2;
 		border: #B4B4B4 solid 1px;
 		padding-top: 23px;
 		padding-bottom: 23px;
 	}
-	
+
 	.title {
 		font-weight: bold;
 		padding: 20px;
 		color: white;
 	}
-	
+
 	#img1 {
 		width: 800px;
 		height: 600px;
 		margin-left: -110px;
 	}
-	
+
 	#myModal {
 		position: fixed;
 		left: 0;
@@ -80,11 +80,11 @@
 		width: 100%;
 		height: 100%;
 	}
-	
+
 	.my-modal-body {
-		
+
 	}
-	
+
 	.my-modal-dialog {
 		padding: 20px;
 	}
@@ -97,17 +97,17 @@
 	crossorigin="anonymous"></script>
 <script type="text/javascript"
 	src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-<script language="javascript"> 
+<script language="javascript">
 	function displayImage(base64Image){
 		var src = "data:image/png;base64," + base64Image;
 		//display the dialog
 		$("#img1").attr("src",src);
 		$('#myModal').modal('show');
 	}
-	
-	function toggle(text) { 
+
+	function toggle(text) {
 		var ele = document.getElementById(text);
-		if(ele.style.display == "block") { 
+		if(ele.style.display == "block") {
 			ele.style.display = "none";
 		}else {
 			ele.style.display = "block";
@@ -188,6 +188,75 @@
 			</div>
 			<div th:each="block : ${test.getBlocks()}">
 				<div th:switch="${block.getBlockType()}">
+					<div class="test" th:case="'testPageBlock'">
+                        <!-- FIX HERE -->
+                        <div th:each="testPageBlock : ${block.getBlocks()}">
+                            <div th:switch="${testPageBlock.getBlockType()}">
+                                <div class="test" th:case="'test'">
+                                    <div class="panel-body">
+                                        <div class="panel-group" id="accordion" role="tablist"
+                                             aria-multiselectable="true">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading" role="tab" id="headingOne">
+                                                    <h4 class="panel-title">
+                                                        <a role="button" data-toggle="collapse"
+                                                           data-parent="#accordion" href="#collapseOne"
+                                                           aria-expanded="true" aria-controls="collapseOne">
+                                                            Scénario of type <span th:text="${testPageBlock.fixtureName}">swing</span>
+                                                        </a>
+                                                        <div style="float: right;">
+												<span class="badge" style="background-color: #5cb85c;">
+													<span th:text="${testPageBlock.getTestSuccessNumber()}">swing</span>
+													OK
+												</span> <span class="badge" style="background-color: #d9534f;">
+													<span th:text="${testPageBlock.getTestFailureNumber()}">swing</span>
+													KO
+												</span>
+                                                        </div>
+                                                    </h4>
+                                                </div>
+                                                <div class="panel-collapse collapse in" role="tabpanel"
+                                                     aria-labelledby="headingOne">
+                                                    <div class="panel-body">
+                                                        <table class="table table-bordered table-hover">
+                                                            <tr>
+                                                                <td>Step</td>
+                                                                <td>Expected</td>
+                                                                <td>Result</td>
+                                                                <td>Comment</td>
+                                                                <td>Time</td>
+                                                            </tr>
+                                                            <tr
+                                                                    th:class="${line.testResult}? ${@io.toast.tk.runtime.report.TemplateHelper@getResultKindAsString(line.testResult)}"
+                                                                    th:each="line : ${testPageBlock.blockLines}">
+                                                                <td
+                                                                        th:text="${@io.toast.tk.runtime.report.TemplateHelper@getStepSentence(line)}">
+                                                                    Click on *Connexion.Connexion*</td>
+                                                                <td
+                                                                        th:text="${line.expected} == null ? '&nbsp;' : ${line.expected}">
+                                                                    &nbsp;</td>
+                                                                <td
+                                                                        th:text="${@io.toast.tk.runtime.report.TemplateHelper@formatStringToHtml(line)}">
+                                                                    true</td>
+                                                                <td><span
+                                                                        th:text="${line.comment} == null ? '&nbsp;' : ${line.comment}">&nbsp;</span>
+                                                                    <span class="btn btn-link btn-xs"
+                                                                          th:if="${@io.toast.tk.runtime.report.TemplateHelper@hasScreenShot(line.testResult)} == true"
+                                                                          th:onclick="'javascript:displayImage(\''+${@io.toast.tk.runtime.report.TemplateHelper@getResultScreenshotAsBase64(line.testResult)}+'\');'">
+															détails </span></td>
+                                                                <td><span th:text="${line.executionTime}"> 0 </span>
+                                                                    ms</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 					<div class="test" th:case="'test'">
 						<div class="panel-body">
 							<div class="panel-group" id="accordion" role="tablist"
@@ -198,6 +267,7 @@
 											<a role="button" data-toggle="collapse"
 												data-parent="#accordion" href="#collapseOne"
 												aria-expanded="true" aria-controls="collapseOne">
+												Scénario of type <span th:text="${block.fixtureName}">swing</span>
 											</a>
 											<div style="float: right;">
 												<span class="badge" style="background-color: #5cb85c;">

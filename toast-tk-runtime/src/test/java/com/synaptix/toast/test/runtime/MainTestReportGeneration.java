@@ -22,7 +22,7 @@ public class MainTestReportGeneration extends AbstractScenarioRunner {
 
 	public static void main(String[] args) throws Exception {
 		MainTestReportGeneration testRunner = new MainTestReportGeneration();
-		testRunner.runScenario("test.report.md");
+		testRunner.runScenario("test_report.md");
 	}
 	
 }

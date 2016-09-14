@@ -1,11 +1,12 @@
-package io.toast.tk.runtime.report;
+package io.toast.tk.runtime;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 import io.toast.tk.dao.domain.DaoBeanFactory;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.dao.domain.impl.test.block.TestBlock;
 import io.toast.tk.runtime.report.ThymeLeafHTMLReporter;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Test see included files in generated report
