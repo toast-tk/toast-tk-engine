@@ -17,6 +17,7 @@ import com.github.jmkgreen.morphia.annotations.Reference;
 import io.toast.tk.dao.domain.impl.common.BasicTaggableMongoBean;
 import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
+import io.toast.tk.dao.domain.impl.test.block.IProject;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 
 @Entity(value = "report.testplans")
@@ -123,5 +124,10 @@ public class TestPlanImpl extends BasicTaggableMongoBean implements ITestPlan {
 	@Override
 	public void setId(String id) {
 		this.id = Strings.isBlank(id) || Strings.isEmpty(id) ? null : new ObjectId(id);
+	}
+
+	@Override
+	public void setProject(IProject project) {
+		this.project = (ProjectImpl)project;
 	}
 }

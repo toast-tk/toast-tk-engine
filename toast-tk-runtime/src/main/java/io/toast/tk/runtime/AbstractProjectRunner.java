@@ -10,6 +10,7 @@ import com.google.inject.Module;
 import io.toast.tk.core.rest.RestUtils;
 import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
+import io.toast.tk.dao.domain.impl.test.block.IProject;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.runtime.dao.DAOManager;
@@ -69,12 +70,14 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		DAOManager.saveTestPlan(testPlanTemplate);
 	}
 
-	public final void testAndStore(final ITestPlan project) throws Exception {
-		testAndStore(project, false);
+	public final void testAndStore(String apiKey, final ITestPlan project) throws Exception {
+		testAndStore(apiKey, project, false);
 	}
 
-	public final void testAndStore(final ITestPlan testPlan, final boolean useRemoteRepository) throws Exception {
+	public final void testAndStore(String apiKey, final ITestPlan testPlan, final boolean useRemoteRepository) throws Exception {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort);
+		IProject project = DAOManager.getProjectByApiKey(apiKey);
+		testPlan.setProject(project);
 		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(testPlan.getName());
 		if(Objects.nonNull(testPlanTemplate)){
 			DAOManager.updateTemplateFromTestPlan(testPlan);

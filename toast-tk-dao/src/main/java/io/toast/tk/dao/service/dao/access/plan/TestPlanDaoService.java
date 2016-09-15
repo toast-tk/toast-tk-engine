@@ -111,6 +111,7 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 	public List<TestPlanImpl> findAllReferenceProjects(String idProject) {
 		final Query<TestPlanImpl> query = createQuery();
 		query.criteria("project._id").equal(new ObjectId(idProject));
+		query.criteria("iteration").equal((short) 0);
 		return query.asList();
 	}
 

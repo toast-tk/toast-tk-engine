@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
+import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.github.jmkgreen.morphia.annotations.Entity;
 import com.github.jmkgreen.morphia.annotations.Id;
 import com.github.jmkgreen.morphia.annotations.Index;
@@ -15,7 +16,7 @@ import io.toast.tk.dao.domain.api.team.IUser;
 import io.toast.tk.dao.domain.impl.common.BasicTaggableMongoBean;
 import io.toast.tk.dao.domain.impl.test.block.IProject;
 
-@Entity(value = "teams.groups")
+@Entity(value = "teams")
 @Indexes({
 	@Index(value = "name")
 })
@@ -24,7 +25,7 @@ public class TeamImpl extends BasicTaggableMongoBean implements ITeam {
 	@Id
 	ObjectId id = new ObjectId();
 	
-	@Reference(ignoreMissing=true)
+	@Embedded
 	List<IProject> projects;
 
 	@Reference(ignoreMissing=true)

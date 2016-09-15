@@ -14,4 +14,6 @@ public interface ITestPlan {
 	void setId(String id);
 
 	void setIteration(short iteration);
+
+	void setProject(IProject project);
 }
