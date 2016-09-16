@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 
 import com.github.jmkgreen.morphia.Key;
@@ -23,6 +25,7 @@ import io.toast.tk.dao.domain.impl.test.block.ICampaign;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.TestPage;
+import io.toast.tk.dao.service.dao.access.repository.RepositoryDaoService;
 import io.toast.tk.dao.service.dao.access.test.TestPageDaoService;
 import io.toast.tk.dao.service.dao.access.test.TestPageFromProxy;
 import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
@@ -33,6 +36,8 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 
 	public interface Factory extends IServiceFactory<TestPlanDaoService> {
 	}
+
+	private static final Logger LOG = LogManager.getLogger(TestPlanDaoService.class);
 
 	private final CampaignDaoService cDaoService;
 	private final TestPageDaoService tDaoService;
@@ -55,8 +60,10 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 
 	private static class TestPlanComparator implements Comparator<TestPlanImpl> {
 		static final Comparator<TestPlanImpl> INSTANCE = new TestPlanComparator();
+
 		private TestPlanComparator() {
 		}
+
 		@Override
 		public int compare(final TestPlanImpl testPlan1, final TestPlanImpl testPlan2) {
 			return testPlan1.getIteration() - testPlan2.getIteration();
@@ -81,12 +88,11 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 		short iteration = 0;
 		testPlan.setLast(false);
 		testPlan.setIteration(iteration);
-		if(Objects.nonNull(testPlan.getCampaigns())){
+		if (Objects.nonNull(testPlan.getCampaigns())) {
 			testPlan.getCampaigns().stream().forEach(c -> cDaoService.saveReference((Campaign) c));
 		}
 		return save(testPlan, WriteConcern.ACKNOWLEDGED);
 	}
-	
 
 	public Key<TestPlanImpl> saveNewIteration(final TestPlanImpl testPlan) throws IllegalAccessException {
 		// update previous entry
@@ -100,11 +106,11 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 			save(previousEntry);
 		}
 		testPlan.setId(null);
-		testPlan.setLast(true); 
-		if(Objects.nonNull(testPlan.getCampaigns())){
+		testPlan.setLast(true);
+		if (Objects.nonNull(testPlan.getCampaigns())) {
 			testPlan.getCampaigns().stream().forEach(c -> cDaoService.saveAsNewIteration((Campaign) c));
 		}
-		
+
 		return save(testPlan);
 	}
 
@@ -171,30 +177,35 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 
 	private void update(ITestPlan testPlan, TestPlanImpl template) {
 		testPlan.setId(template.getId().toString());
-		if(Objects.nonNull(testPlan.getCampaigns())){
+		if (Objects.nonNull(testPlan.getCampaigns())) {
 			for (ICampaign testPlanCampaign : testPlan.getCampaigns()) {
 				ICampaign campaignWithId = campaignWithId(template, testPlanCampaign.getName());
 				if (Objects.nonNull(campaignWithId)) {
 					testPlanCampaign.setId(new ObjectId(campaignWithId.getIdAsString()));
-					if(Objects.nonNull(testPlanCampaign.getTestCases())){
+					if (Objects.nonNull(testPlanCampaign.getTestCases())) {
 						for (ITestPage testPlanPage : testPlanCampaign.getTestCases()) {
+							LOG.info("Looking for test page id -> " + testPlanPage.getIdAsString());
+							LOG.info("Looking for test page name -> " + testPlanPage.getName());
 							ITestPage testPageWithId = testPageWithId(campaignWithId, testPlanPage.getName());
 							if (Objects.nonNull(testPageWithId)) {
+								LOG.info("Found for test page id -> " + testPageWithId.getIdAsString());
 								testPlanPage.setId(testPageWithId.getIdAsString());
-								TestPage testPage = TestPageFromProxy.from(testPlanPage);
-								tDaoService.save(testPage);
-							}else{
-								//FIME: need to be added as a scenario in the scenario collection ?
-								tDaoService.saveReference(testPlanPage);
 							}
+							// FIME: need to be added as a scenario in the
+							// scenario collection ?
+							try{
+								tDaoService.saveReference(testPlanPage);
+							}catch(Exception e){
+								LOG.error("error while saving page with id -> " + testPlanPage.getIdAsString(),e);
+								
+							}
+							
 						}
 					}
-				}else{
-					cDaoService.saveReference((Campaign)testPlanCampaign);
 				}
+				cDaoService.saveReference((Campaign) testPlanCampaign);
 			}
 		}
-		
 	}
 
 	private ICampaign campaignWithId(ITestPlan testPlan, String campaignName) {

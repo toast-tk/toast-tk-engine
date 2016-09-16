@@ -15,18 +15,22 @@ import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.TestPage;
 import io.toast.tk.dao.service.dao.access.plan.TestPlanDaoService;
 import io.toast.tk.dao.service.dao.access.repository.ProjectDaoService;
+import io.toast.tk.dao.service.dao.access.test.TestPageDaoService;
 
 public class TestPlanExecutionTest extends EmbeddedMongoDBTestCase{
 
 	static TestPlanDaoService tService;
 	static ProjectDaoService pService;
+	static TestPageDaoService testService;
 	
 	@Before
 	public void before(){
 		tService = getService(TestPlanDaoService.Factory.class);
 		pService = getService(ProjectDaoService.Factory.class);
+		testService = getService(TestPageDaoService.Factory.class);
 		tService.find().asList().forEach(t -> tService.delete(t));
 		pService.find().asList().forEach(t -> pService.delete(t));
+		
 	}
 	
 
@@ -191,6 +195,53 @@ public class TestPlanExecutionTest extends EmbeddedMongoDBTestCase{
 		Assert.assertNotEquals(page.getIdAsString(), updatedPage.getIdAsString());
 		Assert.assertEquals(resultTestPlan.getCampaigns().size(), 1);
 		Assert.assertEquals(resultTestPlan.getCampaigns().get(0).getTestCases().size(), 1);
+		Assert.assertEquals(resultTestPlan.getCampaigns().get(0).getTestCases().get(0).getName(), "scenario1");
+	}
+	
+	@Test
+	public void shouldZaddAnExistingTest() throws IllegalAccessException {	
+		ProjectImpl defaultProject = createDefaultProject();
+		
+		TestPlanImpl plan = new TestPlanImpl();
+		plan.setName("test plan");
+		plan.setProject(defaultProject);
+		Campaign cp1 = new Campaign();
+		cp1.setName("campaign1");
+		Campaign cp2 = new Campaign();
+		cp2.setName("campaign2");
+		TestPage page = new TestPage();
+		page.addBlock(new CommentBlock());
+		page.setName("scenario");
+		cp2.setTestCases(Arrays.asList(page));
+		plan.setCampaigns(Arrays.asList((ICampaign)cp1,(ICampaign) cp2));
+		tService.saveTemplate(plan);
+		
+		TestPage savedPage = new TestPage();
+		savedPage.addBlock(new CommentBlock());
+		savedPage.setName("scenarioSaved");
+		testService.save(savedPage);
+		
+		Assert.assertEquals(2, plan.getCampaigns().size());
+		
+		TestPlanImpl queriedTemplate = tService.getReferenceProjectByName(plan.getName());
+		Assert.assertEquals(plan.getCampaigns().size(), queriedTemplate.getCampaigns().size());
+		
+		TestPlanImpl newPlanWithSameName = new TestPlanImpl();
+		newPlanWithSameName.setName("test plan");
+		newPlanWithSameName.setProject(defaultProject);
+		Campaign updatedCp = new Campaign();
+		updatedCp.setName("campaign2");
+		TestPage updatedPage = new TestPage();
+		updatedPage.addBlock(new CommentBlock());
+		updatedPage.addBlock(new CommentBlock());
+		updatedPage.setName("scenario1");
+		updatedCp.setTestCases(Arrays.asList(updatedPage, savedPage));
+		newPlanWithSameName.setCampaigns(Arrays.asList(updatedCp));
+		
+		ITestPlan resultTestPlan = tService.updateTemplateFromTestPlan(newPlanWithSameName);
+		Assert.assertNotEquals(page.getIdAsString(), updatedPage.getIdAsString());
+		Assert.assertEquals(resultTestPlan.getCampaigns().size(), 1);
+		Assert.assertEquals(resultTestPlan.getCampaigns().get(0).getTestCases().size(), 2);
 		Assert.assertEquals(resultTestPlan.getCampaigns().get(0).getTestCases().get(0).getName(), "scenario1");
 	}
 
