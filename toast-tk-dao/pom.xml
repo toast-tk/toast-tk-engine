@@ -35,6 +35,11 @@
 			<version>${morphia.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.github.jmkgreen.morphia</groupId>
+			<artifactId>morphia-logging-slf4j</artifactId>
+			<version>${morphia.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>${org.reflection.version}</version>

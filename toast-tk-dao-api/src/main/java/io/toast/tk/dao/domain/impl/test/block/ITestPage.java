@@ -57,4 +57,8 @@ public interface ITestPage extends IBlock {
 	void setIsFatal(boolean isFatal);
 
 	boolean isFatal();
+	
+	public void setIdScenario(String idScenario);
+	
+	public String getIdScenario();
 }

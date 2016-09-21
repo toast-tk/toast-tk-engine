@@ -185,13 +185,13 @@ public class RestUtils {
 		RestUtils.postScenario("newtest", "localhost", "9000", "a step");
 	}
 
-	public static boolean registerAgent(final String url) {
+	public static boolean registerAgent(final String url, String information) {
 		try {
 			final Client httpClient = Client.create();
 			final WebResource webResource = httpClient.resource(url);
 			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
 														.accept(MediaType.APPLICATION_JSON)
-														.get(ClientResponse.class);
+														.post(ClientResponse.class, information);
 			return response.getStatus() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);

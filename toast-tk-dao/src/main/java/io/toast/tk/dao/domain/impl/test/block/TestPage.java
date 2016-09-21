@@ -28,6 +28,8 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
 
     @Embedded
     private List<IBlock> blocks;
+    
+    private String idScenario;
 
     private int technicalErrorNumber;
 
@@ -201,4 +203,16 @@ public class TestPage extends BasicEntityBean implements IRunnableTest, ITestPag
 	public boolean isFatal() {
 		return this.isFatal;
 	}
+
+	@Override
+	public String getIdScenario() {
+		return idScenario;
+	}
+
+	@Override
+	public void setIdScenario(String idScenario) {
+		this.idScenario = idScenario;
+	}
+	
+	
 }

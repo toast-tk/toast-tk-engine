@@ -1,6 +1,7 @@
 package io.toast.tk.action.interpret.web;
 
 import io.toast.tk.core.agent.interpret.WebEventRecord;
+import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.swing.agent.interpret.MongoRepositoryCacheWrapper;
 
 
@@ -12,8 +13,8 @@ public class WebClickInterpret extends AbstractInterpretationProvider{
 
 	@Override
 	public String getSentence(
-		WebEventRecord event) {
-		return "Click on *" + getLabel(event) + "*";
+		WebEventRecord event, ProjectImpl project) {
+		return "Click on *" + getLabel(event, project) + "*";
 	}
 
 	@Override

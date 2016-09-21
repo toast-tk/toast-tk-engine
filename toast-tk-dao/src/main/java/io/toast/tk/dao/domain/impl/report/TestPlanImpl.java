@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.util.Strings;
 import org.bson.types.ObjectId;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
@@ -16,11 +17,12 @@ import com.github.jmkgreen.morphia.annotations.Reference;
 import io.toast.tk.dao.domain.impl.common.BasicTaggableMongoBean;
 import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
+import io.toast.tk.dao.domain.impl.test.block.IProject;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 
 @Entity(value = "report.testplans")
 @Indexes({
-		@Index(value = "name"), @Index("version")
+		@Index("name"), @Index("version"), @Index("project")
 })
 public class TestPlanImpl extends BasicTaggableMongoBean implements ITestPlan {
 
@@ -56,10 +58,6 @@ public class TestPlanImpl extends BasicTaggableMongoBean implements ITestPlan {
 
 	public ObjectId getId() {
 		return id;
-	}
-
-	public void setId(final ObjectId id) {
-		this.id = id;
 	}
 
 	@Override
@@ -121,5 +119,15 @@ public class TestPlanImpl extends BasicTaggableMongoBean implements ITestPlan {
 
 	public void setLast(final boolean last) {
 		this.last = last;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = Strings.isBlank(id) || Strings.isEmpty(id) ? null : new ObjectId(id);
+	}
+
+	@Override
+	public void setProject(IProject project) {
+		this.project = (ProjectImpl)project;
 	}
 }

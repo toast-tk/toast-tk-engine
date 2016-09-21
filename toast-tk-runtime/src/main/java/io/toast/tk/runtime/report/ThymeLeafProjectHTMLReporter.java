@@ -80,7 +80,7 @@ public class ThymeLeafProjectHTMLReporter implements IProjectHtmlReportGenerator
 
     @Override
     public String generateProjectReportHtml(final String name) throws IllegalAccessException {
-    	final TestPlanImpl project = DAOManager.getLastProjectByName(name);
+    	final TestPlanImpl project = DAOManager.getLastTestPlanExecution(name);
         List<TestPlanImpl> projectHistory = DAOManager.getProjectHistory(project);
         return generateHtmlReport(project, projectHistory);
     }

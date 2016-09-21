@@ -2,11 +2,14 @@ package io.toast.tk.dao.service.dao.access.plan;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import com.github.jmkgreen.morphia.Key;
 import com.github.jmkgreen.morphia.query.Query;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
+import com.mongodb.WriteConcern;
 
 import io.toast.tk.dao.domain.impl.common.IServiceFactory;
 import io.toast.tk.dao.domain.impl.report.Campaign;
@@ -52,10 +55,17 @@ public class CampaignDaoService extends AbstractMongoDaoService<Campaign> {
 	}
 
 	public ICampaign saveReference(final Campaign c) {
-		final List<ITestPage> savedTestCases = new ArrayList<>(c.getTestCases().size());
-		c.getTestCases().stream().forEach(t -> savedTestCases.add(tService.saveReference(t)));
-		c.setTestCases(savedTestCases);
+		if(Objects.nonNull(c.getTestCases())){
+			final List<ITestPage> savedTestCases = new ArrayList<>(c.getTestCases().size());
+			c.getTestCases().stream().forEach(t -> savedTestCases.add(tService.saveReference(t)));
+			c.setTestCases(savedTestCases);
+		}
 		save(c);
 		return c;
+	}
+	
+	public Key<Campaign> save(Campaign campaign){
+		return super.save(campaign, WriteConcern.ACKNOWLEDGED);
+		
 	}
 }

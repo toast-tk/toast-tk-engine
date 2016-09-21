@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.github.jmkgreen.morphia.query.Query;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
@@ -34,6 +35,11 @@ public class UserDaoService extends AbstractMongoDaoService<UserImpl> {
 		teamService = tDaoServiceFactory.create(databaseName);
 	}
 
+	public UserImpl findUserByToken(String token){
+		Query<UserImpl> query = createQuery();
+		return query.field("token").equal(token).get();
+	}
+	
 	public List<IProject> getUserProjects(UserImpl user) {
 		List<TeamImpl> teams = teamService.getUserTeams(user);
 		List<IProject> result = new ArrayList<>();
