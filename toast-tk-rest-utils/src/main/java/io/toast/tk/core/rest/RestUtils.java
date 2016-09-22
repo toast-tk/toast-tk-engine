@@ -19,6 +19,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -182,9 +183,6 @@ public class RestUtils {
 			final CloseableHttpClient httpClient = HttpClients.createDefault();
 			HttpPost httpget = new HttpPost(url);
 			httpget.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-			if(ApiKey != null) {
-				httpget.setHeader("Token" , ApiKey);
-			}
 			
 			List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 			urlParameters.add(new BasicNameValuePair(jsonFixtureDescriptor, null));
@@ -206,26 +204,36 @@ public class RestUtils {
 		}
 		return false;
 	}
-
-	public static boolean postWebEventRecord(final String url, final String record) {
+	
+	/*public static boolean postWebEventRecord(final String url, final String record) {	
 		return postWebEventRecord(url, record, null);
-	}
+	}*/
 	public static boolean postWebEventRecord(final String url, final String record, final String ApiKey) {	
 		try {
-			final CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpPost httpget = new HttpPost(url);
-			httpget.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-			if(ApiKey != null) {
-				httpget.setHeader("Token" , ApiKey);
+			if (ApiKey == null) {
+				throw new RuntimeException("Failed to get the ApiKey : it is valued 'null'");
 			}
+			
+			final CloseableHttpClient httpClient = HttpClients.createDefault();
+			HttpPost httppost = new HttpPost(url);
+			httppost.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+
+			httppost.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			httppost.setHeader("Token" , ApiKey);
+			
 			
 			List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 			urlParameters.add(new BasicNameValuePair(record, null));
 			
 			HttpEntity postParams = new UrlEncodedFormEntity(urlParameters);
-			httpget.setEntity(postParams);
+			httppost.setEntity(postParams);
 
-			response = httpClient.execute(httpget);
+			response = httpClient.execute(httppost);
+
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : "
+				   + response.getStatusLine().getStatusCode());
+			}
 			
 			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
@@ -243,21 +251,32 @@ public class RestUtils {
 	public static void main(final String[] args) {
 		RestUtils.postScenario("newtest", "localhost", "9000", "a step");
 	}
-
-	public static boolean registerAgent(final String url, String information) {
-		return registerAgent(url, information, null);
-	}
+	
+	/*public static boolean registerAgent(final String url, String information) {
+		return registerAgent(url,information,null);
+	}*/
 	public static boolean registerAgent(final String url, String information, final String ApiKey) {
 		try {
-			final CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpGet httpget = new HttpGet(url);
-			httpget.setHeader(HttpHeaders.CONTENT_TYPE, information);
-			if(ApiKey != null) {
-				httpget.setHeader("Token" , ApiKey);
+			if (ApiKey == null) {
+				throw new RuntimeException("Failed to get the ApiKey : it is valued 'null'");
 			}
-
-			response = httpClient.execute(httpget);
 			
+			final CloseableHttpClient httpClient = HttpClients.createDefault();
+			HttpPost httppost = new HttpPost(url);
+			
+			httppost.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			httppost.setHeader("Token" , ApiKey);
+
+			StringEntity input = new StringEntity(information);
+			input.setContentType("application/json");
+			httppost.setEntity(input);
+			
+			response = httpClient.execute(httppost);
+			
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : "
+				   + response.getStatusLine().getStatusCode());
+			}
 			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
