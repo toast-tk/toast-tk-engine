@@ -22,8 +22,7 @@ public class WebPageSetupBlockParser implements IBlockParser {
 
     @Override
     public IBlock digest(
-    	final List<String> strings, 
-    	final String path
+		    final List<String> strings
     ) {
         final String firstLine = strings.get(0);
         assertIsTitle(firstLine);

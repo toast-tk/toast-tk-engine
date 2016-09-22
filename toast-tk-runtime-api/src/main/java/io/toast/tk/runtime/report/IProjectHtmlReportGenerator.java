@@ -1,6 +1,6 @@
 package io.toast.tk.runtime.report;
 
-import io.toast.tk.dao.domain.impl.test.block.IProject;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 
 public interface IProjectHtmlReportGenerator {
 
@@ -8,7 +8,7 @@ public interface IProjectHtmlReportGenerator {
 
     String generateProjectReportHtml(final String name) throws IllegalAccessException;
 
-    String generateProjectReportHtml(final IProject project);
+    String generateProjectReportHtml(final ITestPlan project);
 
-    String generateProjectReportHtml(final IProject iProject, final String reportFolderPath) throws IllegalAccessException;
+    String generateProjectReportHtml(final ITestPlan iProject, final String reportFolderPath) throws IllegalAccessException;
 }

@@ -1,5 +1,5 @@
 package io.toast.tk.dao.domain.api.repository;
 
-public interface IWebElement {
+public interface IElement {
 	/*NOOP*/
 }

@@ -33,13 +33,17 @@ public class Campaign extends BasicTaggableMongoBean implements ICampaign {
 
 	private Date execDay;
 
-	@Reference
+	@Reference(ignoreMissing=true)
 	private List<ITestPage> testCases;
 
 	@Override
 	public void setId(final Object object) {
 		if(object == null) {
 			this.id = null;
+		}else if(object instanceof String){
+			setId(new ObjectId((String)object));
+		}else if(object instanceof ObjectId){
+			setId((ObjectId) object);
 		}
 	}
 	
@@ -99,4 +103,6 @@ public class Campaign extends BasicTaggableMongoBean implements ICampaign {
 	public boolean isHasINTDb() {
 		return hasINTDb;
 	}
+	
+	
 }

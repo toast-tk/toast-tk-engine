@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
-import io.toast.tk.dao.domain.impl.test.block.IProject;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.runtime.parse.ProjectParser;
 
@@ -19,14 +19,11 @@ public class TestParserTestCase_6 {
 
     @Test
     public void test() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL testFileUrl = classLoader.getResource("test_file_4_project.txt");
-        Assert.assertNotNull(testFileUrl);
-        String path = testFileUrl.getPath();
-        System.out.println("path = " + path);
-        IProject project = null;
+        String filename = "test_file_4_project.txt";
+	    ITestPlan project = null;
+
         try {
-            project = new ProjectParser().parse(path);
+            project = new ProjectParser().parse(filename);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +40,6 @@ public class TestParserTestCase_6 {
         }
         Assert.assertEquals("Test case 1", testCases.get(0).getName());
         Assert.assertEquals("Test case 2", testCases.get(1).getName());
-
     }
 
 }

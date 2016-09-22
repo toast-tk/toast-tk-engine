@@ -1,18 +1,19 @@
 package io.toast.tk.swing.agent.interpret;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.types.ObjectId;
 
-import java.util.Objects;
+import com.google.common.base.Strings;
 import com.mongodb.WriteConcern;
 
 import io.toast.tk.core.agent.interpret.WebEventRecord;
-import io.toast.tk.dao.RestMongoWrapper;
 import io.toast.tk.dao.domain.impl.repository.ElementImpl;
+import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.domain.impl.repository.RepositoryImpl;
 import io.toast.tk.dao.service.dao.access.repository.RepositoryDaoService;
 
@@ -28,22 +29,13 @@ public class MongoRepositoryCacheWrapper {
 
 	private RepositoryDaoService service;
 	
-	private RepositoryImpl container;
-
-	
-	public RepositoryImpl getLastKnownContainer(){
-		return container;
+	public MongoRepositoryCacheWrapper(RepositoryDaoService service){
+		this.service = service;
+		initCache();
 	}
 	
-	public RepositoryImpl saveLastKnownContainer(){
-		service.save(container, WriteConcern.ACKNOWLEDGED);
-		return container;
-	}
-	
-	
-	public void initCache(RepositoryDaoService service) {
+	private void initCache() {
 		try {
-			this.service = service;
 			cache = service.find().asList();
 		}
 		catch(Exception e) {
@@ -53,118 +45,16 @@ public class MongoRepositoryCacheWrapper {
 		}
 	}
 	
-	public void initCache(String host, String port) {
-		try {
-			this.host = host;
-			this.port = port;
-			cache = RestMongoWrapper.loadRepository(host, port);
-		}
-		catch(Exception e) {
-			LOG.error(
-				String.format("WebApp not active at address %s:%s", host, port),
-				e);
-		}
-	}
-
-	public String find(
-		RepositoryImpl container,
-		String type,
-		String locator) {
-		for(RepositoryImpl repImpl : cache) {
-			if(repImpl.getName().equals(container.getName()) && repImpl.rows != null) {
-				for(ElementImpl element : repImpl.rows) {
-					if(element.locator.equalsIgnoreCase(locator.toLowerCase())) {
-						return "".equals(element.name) || element.name == null ? element.locator : element.name;
-					}
-				}
-			}
-		}
-		ElementImpl impl = extractElement(type, locator);
-		container.rows.add(impl);
-		return impl.name;
-	}
-	
-
-	private ElementImpl extractElement(
-		String type,
-		String locator) {
-		ElementImpl impl = new ElementImpl();
-		impl.locator = locator;
-		if(locator.contains(":")) {
-			impl.name = locator.split(":")[1];
-		}
-		else {
-			impl.name = Objects.isNull(locator)? type + "-" + UUID.randomUUID().toString() : locator;
-		}
-		impl.name = formatLabel(impl.name);
-		impl.type = type;
-		return impl;
-	}
-
-	public RepositoryImpl findContainer(
-		String lastKnownContainer, String type) {
-		
-		String container = formatLabel(lastKnownContainer);
-		
-		for(RepositoryImpl page : cache) {
-			if(page.getName().equals(container)) {
-				if(this.container == null){
-					this.container = page;
-				}
-				return page;
-			}
-		}
-	
-		RepositoryImpl page = new RepositoryImpl();
-		page.setName(container);
-		page.type = type;
-		cache.add(page);
-		
-		this.container = page;
-	
-		return page;
-	}
-
-	private String formatLabel(
-		String name) {
-		return name.trim().replace(" ", "_").replace("'", "_").replace("°", "_");
-	}
-
-	public void saveRepository(RepositoryImpl repo) {
+	public synchronized void saveRepository(RepositoryImpl repo) {
 		service.save(repo, WriteConcern.ACKNOWLEDGED);
-		initCache(service);
+		initCache();
 	}
 	
-	public boolean saveCache(String host, String port) {
-		boolean saveRepository = RestMongoWrapper.saveRepository(cache, host, port);
-		initCache(host, port);
-		return saveRepository;
-	}
-
-	public String getWikiFiedRepo(String host, String port) {
-		if(cache == null) {
-			initCache(host, port);
-		}
-		StringBuilder res = new StringBuilder();
-		for(RepositoryImpl page : cache) {
-			res.append("#Page id:" + page.getId().toString()).append("\n");
-			res.append("|| auto setup ||\n");
-			res.append("| " + page.type + " | " + page.name + " |\n");
-			res.append("| name | type | locator |\n");
-			if(page.rows != null) {
-				for(ElementImpl row : page.rows) {
-					res.append("|" + row.name + "|" + row.type + "|" + row.locator + "|\n");
-				}
-			}
-			res.append("\n");
-		}
-		return res.toString();
-	}
-
-	public ElementImpl find(RepositoryImpl container, WebEventRecord eventRecord) {
+	public ElementImpl findElement(RepositoryImpl container, WebEventRecord eventRecord) {
 		String locator = eventRecord.getTarget();
 		for(RepositoryImpl repImpl : cache) {
-			if(repImpl.getName().equals(container.getName()) && repImpl.rows != null) {
+			if(repImpl.getName().equals(container.getName()) 
+					&& Objects.nonNull(repImpl.rows)) {
 				for(ElementImpl element : repImpl.rows) {
 					if(element.locator.equalsIgnoreCase(locator.toLowerCase())) {
 						return element;
@@ -174,7 +64,6 @@ public class MongoRepositoryCacheWrapper {
 		}
 		ElementImpl element = buildElement(eventRecord, locator);
 		container.rows.add(element);
-		//save
 		return element;
 	}
 
@@ -184,17 +73,56 @@ public class MongoRepositoryCacheWrapper {
 		String type = eventRecord.getComponent();
 		impl.locator = locator;
 		if(locator.contains(":")) {
-			impl.name = locator.split(":")[1];
+			impl.setName(locator.split(":")[1]);
 		} else {
-			impl.name = name == null ? type + "-" + UUID.randomUUID().toString() : name;
+			String elementName = name == null ? type + "-" + UUID.randomUUID().toString() : name;
+			impl.setName(elementName);
 		}
-		impl.name = formatLabel(impl.name);
+		impl.setName(formatLabel(impl.getName()));
 		impl.type = getAdjustedType(type);
-		impl.method="CSS";
+		impl.method= getMethod(eventRecord);
 		impl.setId(ObjectId.get());
 		return impl;
 	}
 	
+
+	public RepositoryImpl findContainer(
+		String lastKnownContainer, String type, ProjectImpl project) {
+		
+		String container = formatLabel(lastKnownContainer);
+		
+		for(RepositoryImpl page : cache) {
+			if(page.getName().equals(container)) {
+				if(Objects.nonNull(page.project)){
+					if(project.getId().toString().equals(project.getId().toString())){
+						return page;
+					}
+				}
+			}
+		}
+	
+		RepositoryImpl page = new RepositoryImpl();
+		page.setName(container);
+		page.project = project;
+		page.type = type;
+		cache.add(page);
+		
+		return page;
+	}
+
+	private String formatLabel(
+		String name) {
+		return name.trim().replace(" ", "_").replace("'", "_").replace("°", "_");
+	}
+
+	
+	private String getMethod(WebEventRecord eventRecord) {
+		if (!Strings.isNullOrEmpty(eventRecord.getPath())){
+			return "XPATH";
+		}
+		return "CSS";
+	}
+
 	public String getAdjustedType(String type){
 		if("text".equals(type)){
 			return "input";

@@ -1,10 +1,5 @@
 package io.toast.tk.dao.config;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Properties;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +14,7 @@ public class DaoConfigProvider implements Provider<DaoConfig> {
 	public DaoConfigProvider() {
 		initConfig();
 	}
-
+	
 	private void initConfig() {
 		this.config = new DaoConfig("localhost", 27017);
 	}

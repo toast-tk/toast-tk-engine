@@ -13,6 +13,8 @@
 		<morphia.version>1.2.3</morphia.version>
 		<findbugs.version>3.0.0</findbugs.version>
 		<thymeleaf.version>2.1.4.RELEASE</thymeleaf.version>
+		<embed.mongo.version>1.50.5</embed.mongo.version>
+		<gson.version>1.7.1</gson.version>
 	</properties>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -33,6 +35,11 @@
 			<version>${morphia.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.github.jmkgreen.morphia</groupId>
+			<artifactId>morphia-logging-slf4j</artifactId>
+			<version>${morphia.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>${org.reflection.version}</version>
@@ -46,18 +53,23 @@
 			<groupId>com.google.inject</groupId>
 			<artifactId>guice</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+			<version>${embed.mongo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+		</dependency>
 		<!-- Toast Dependencies -->
 		<dependency>
 			<groupId>io.toast-tk</groupId>
 			<artifactId>toast-tk-dao-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>1.7.1</version>
-		</dependency>
+		
 	</dependencies>
 	<profiles>
 		<profile>

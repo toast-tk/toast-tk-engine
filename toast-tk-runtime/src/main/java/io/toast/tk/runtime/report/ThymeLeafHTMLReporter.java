@@ -18,22 +18,20 @@ import io.toast.tk.runtime.report.IHTMLReportGenerator;
 
 /**
  * http://www.thymeleaf.org/doc/tutorials/2.1/usingthymeleaf.html
- * 
  */
 public class ThymeLeafHTMLReporter implements IHTMLReportGenerator {
 
 	private static final Logger LOG = LogManager.getLogger(ThymeLeafHTMLReporter.class);
-	
+
 	@Override
 	public void writeFile(
-		final String report,
-		final String pageName,
-		final String reportFolderPath
-	) {
-		try(final BufferedWriter out = new BufferedWriter(new FileWriter(reportFolderPath + File.separatorChar + pageName + ".html"));) {
+			final String report,
+			final String pageName,
+			final String reportFolderPath
+	){
+		try (final BufferedWriter out = new BufferedWriter(new FileWriter(reportFolderPath + File.separatorChar + pageName + ".html"))) {
 			out.write(report);
-		}
-		catch(final Exception e) {
+		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
 	}

@@ -15,8 +15,8 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 
-import io.toast.tk.dao.domain.impl.report.Project;
-import io.toast.tk.dao.domain.impl.test.block.IProject;
+import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.runtime.dao.DAOManager;
 import io.toast.tk.runtime.report.IProjectHtmlReportGenerator;
 
@@ -42,8 +42,8 @@ public class ThymeLeafProjectHTMLReporter implements IProjectHtmlReportGenerator
     }
 
     public static String generateHtmlReport(
-    	final Project project,
-    	final List<Project> projectHistory
+    	final TestPlanImpl project,
+    	final List<TestPlanImpl> projectHistory
     ) {
         final TemplateResolver templateResolver = buildTemplateResolver();
         final TemplateEngine templateEngine = buildTemplateEngine(templateResolver);
@@ -53,8 +53,8 @@ public class ThymeLeafProjectHTMLReporter implements IProjectHtmlReportGenerator
     }
 
 	private static Context buildContext(
-		final Project project,
-		final List<Project> projectHistory, 
+		final TestPlanImpl project,
+		final List<TestPlanImpl> projectHistory, 
 		final Locale locale
 	) {
 		final Context ctx = new Context(locale);
@@ -80,15 +80,15 @@ public class ThymeLeafProjectHTMLReporter implements IProjectHtmlReportGenerator
 
     @Override
     public String generateProjectReportHtml(final String name) throws IllegalAccessException {
-    	final Project project = DAOManager.getLastProjectByName(name);
-        List<Project> projectHistory = DAOManager.getProjectHistory(project);
+    	final TestPlanImpl project = DAOManager.getLastTestPlanExecution(name);
+        List<TestPlanImpl> projectHistory = DAOManager.getProjectHistory(project);
         return generateHtmlReport(project, projectHistory);
     }
 
     @Override
-    public String generateProjectReportHtml(final IProject iProject) {
-    	final Project project = (Project) iProject;
-    	List<Project> projectHistory = null;
+    public String generateProjectReportHtml(final ITestPlan iProject) {
+    	final TestPlanImpl project = (TestPlanImpl) iProject;
+    	List<TestPlanImpl> projectHistory = null;
         try{
         	projectHistory = DAOManager.getProjectHistory(project);
         }
@@ -100,12 +100,12 @@ public class ThymeLeafProjectHTMLReporter implements IProjectHtmlReportGenerator
 
     @Override
     public String generateProjectReportHtml(
-    	final IProject iProject, 
+    	final ITestPlan iProject, 
     	final String reportFolderPath
     ) throws IllegalAccessException {
         final ThymeLeafProjectHTMLReporter reporter = new ThymeLeafProjectHTMLReporter();
-        final Project project = (Project) iProject;
-        final List<Project> projectHistory = DAOManager.getProjectHistory(project);
+        final TestPlanImpl project = (TestPlanImpl) iProject;
+        final List<TestPlanImpl> projectHistory = DAOManager.getProjectHistory(project);
         final String generateHtmlReport = ThymeLeafProjectHTMLReporter.generateHtmlReport(project, projectHistory);
         reporter.writeFile(generateHtmlReport, project.getName(), reportFolderPath);
         return generateHtmlReport;
