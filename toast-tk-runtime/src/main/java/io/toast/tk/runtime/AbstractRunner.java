@@ -72,7 +72,7 @@ public abstract class AbstractRunner {
 	 *
 	 * @return Path as a string
 	 */
-	protected static String getReportsFolderPath() {
+	protected String getReportsFolderPath() {
 		AdaptersConfigProvider configProvider = new AdaptersConfigProvider();
 		AdaptersConfig config = configProvider.get();
 		String reportsFolderPath = config.getReportsFolderPath();
