@@ -19,6 +19,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -216,17 +217,12 @@ public class RestUtils {
 			
 			final CloseableHttpClient httpClient = HttpClients.createDefault();
 			HttpPost httppost = new HttpPost(url);
+			
 			httppost.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-
-			httppost.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
 			httppost.setHeader("Token" , ApiKey);
 			
-			
-			List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-			urlParameters.add(new BasicNameValuePair(record, null));
-			
-			HttpEntity postParams = new UrlEncodedFormEntity(urlParameters);
-			httppost.setEntity(postParams);
+			StringEntity  input = new StringEntity (record);
+		    httppost.setEntity(input);
 
 			response = httpClient.execute(httppost);
 
@@ -252,9 +248,6 @@ public class RestUtils {
 		RestUtils.postScenario("newtest", "localhost", "9000", "a step");
 	}
 	
-	/*public static boolean registerAgent(final String url, String information) {
-		return registerAgent(url,information,null);
-	}*/
 	public static boolean registerAgent(final String url, String information, final String ApiKey) {
 		try {
 			if (ApiKey == null) {
