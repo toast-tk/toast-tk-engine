@@ -86,11 +86,11 @@ public class RestUtils {
 	}
 
 	public static boolean postScenario(final String scenarioName, final String webAppHost, final String webAppPort,
-			final String scenarioSteps) {
+			final String scenarioSteps, final String projectId) {
 		try {
 			final Client httpClient = Client.create();
 			final String webappURL = getWebAppURI(webAppHost, webAppPort);
-			final WebResource webResource = httpClient.resource(webappURL + "/saveNewInspectedScenario");
+			final WebResource webResource = httpClient.resource(webappURL + "/saveNewInspectedScenario/"+projectId);
 			final Gson gson = new Gson();
 			final InspectScenario scenario = new InspectScenario(scenarioName, scenarioSteps);
 			final String json = gson.toJson(scenario);
@@ -106,8 +106,8 @@ public class RestUtils {
 		}
 	}
 
-	public static boolean postScenario(final String scenarioName, final String scenarioSteps) {
-		return postScenario(scenarioName, scenarioSteps, "one", "two");
+	public static boolean postScenario(final String scenarioName, final String scenarioSteps, final String projectId) {
+		return postScenario(scenarioName, scenarioSteps, "one", "two", projectId);
 	}
 
 	public static String getWebAppURI(final String host, final String port) {
@@ -182,7 +182,7 @@ public class RestUtils {
 	}
 
 	public static void main(final String[] args) {
-		RestUtils.postScenario("newtest", "localhost", "9000", "a step");
+		RestUtils.postScenario("newtest", "localhost", "9000", "a step", "default");
 	}
 
 	public static boolean registerAgent(final String url, String information) {
