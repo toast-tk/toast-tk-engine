@@ -35,7 +35,6 @@ public class UserImpl extends BasicTaggableMongoBean implements IUser {
 	
 	String idProject;
 
-
 	public String getLogin() {
 		return login;
 	}

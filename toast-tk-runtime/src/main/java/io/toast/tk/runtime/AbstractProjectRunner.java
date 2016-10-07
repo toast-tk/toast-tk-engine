@@ -1,5 +1,6 @@
 package io.toast.tk.runtime;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
@@ -88,6 +89,28 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		updateTestPlanFromPreviousRun(testPlan, lastExecution);
 		execute(testPlan, useRemoteRepository, apiKey); 
 		DAOManager.saveTestPlan((TestPlanImpl)testPlan);
+	}
+	
+	public final void testAndStoreByProject(final String apiKey, final String projectName, final boolean useRemoteRepository) throws Exception {
+		DAOManager.init(this.mongoDbHost, this.mongoDbPort);
+		IProject project = DAOManager.getProjectByApiKeyAndProjectName(apiKey, projectName);
+		
+		List<TestPlanImpl> listCampagneProject = DAOManager.getAllTestPlanByProjectName(project.getName());
+		
+		for (TestPlanImpl mytestPlan : listCampagneProject) {
+			mytestPlan.setProject(project);
+
+			final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(mytestPlan.getName());
+			if (Objects.nonNull(testPlanTemplate)) {
+				DAOManager.updateTemplateFromTestPlan(mytestPlan);
+			} else {
+				DAOManager.saveTemplate((TestPlanImpl) mytestPlan);
+			}
+			final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(mytestPlan.getName());
+			updateTestPlanFromPreviousRun(mytestPlan, lastExecution);
+			execute(mytestPlan, useRemoteRepository, apiKey);
+			DAOManager.saveTestPlan((TestPlanImpl) mytestPlan);
+		}
 	}
 
 	/**

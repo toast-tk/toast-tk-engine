@@ -8,6 +8,7 @@ import com.google.inject.Injector;
 import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
 import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.domain.impl.team.UserImpl;
+import io.toast.tk.dao.domain.impl.test.block.IProject;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.guice.MongoModule;
 import io.toast.tk.dao.service.dao.access.plan.TestPlanDaoService;
@@ -103,5 +104,18 @@ public class DAOManager {
 		UserImpl user = getInstance().getUserDaoService().findUserByToken(apiKey);
 		ProjectImpl project = getInstance().getProjectDaoService().findProject(user.getIdProject());
 		return project;
+	}
+	
+	public static ProjectImpl getProjectByApiKeyAndProjectName(String apiKey, String projectName) {
+		ProjectImpl projectImpl = getInstance().getProjectDaoService().findProjectByProjectName(projectName);
+		return projectImpl;
+	}
+	
+	public static List<TestPlanImpl> getAllTestPlan(final String idProject){
+        return getInstance().getTestPlanDaoService().findAllReferenceProjects(idProject);
+	}
+	
+	public static List<TestPlanImpl> getAllTestPlanByProjectName(final String projectName){
+        return getInstance().getTestPlanDaoService().findAllReferenceByProjectName(projectName);
 	}
 }

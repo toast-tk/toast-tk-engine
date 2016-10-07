@@ -35,4 +35,10 @@ public class ProjectDaoService extends AbstractMongoDaoService<ProjectImpl> {
 		query.field("_id").equal(new ObjectId(idProject));
 		return findOne(query);
 	}
+	
+	public ProjectImpl findProjectByProjectName(String projectName) {
+		final Query<ProjectImpl> query = createQuery();
+		query.field("name").equal(projectName);
+		return findOne(query);
+	}
 }
