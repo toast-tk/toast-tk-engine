@@ -49,9 +49,11 @@ public class FileHelper {
 	}
 
 	static List<String> removeBom(final List<String> list) {
-		final String firstLine = list.get(0);
-		if (firstLine.startsWith("\uFEFF")) {
-			list.set(0, firstLine.substring(1));
+		if(list!=null&&!list.isEmpty()){
+			final String firstLine = list.get(0);
+			if (firstLine.startsWith("\uFEFF")) {
+				list.set(0, firstLine.substring(1));
+			}
 		}
 		return list;
 	}

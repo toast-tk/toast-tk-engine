@@ -54,11 +54,11 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	}
 
-	public final void test(ITestPlan project, boolean useRemoteRepository) throws Exception {
-		execute(project, useRemoteRepository);
+	public final void test(ITestPlan project, boolean useRemoteRepository, String apiKey) throws Exception {
+		execute(project, useRemoteRepository, apiKey);
 	}
 
-	public final void test(final String name, final boolean useRemoteRepository) throws Exception {
+	public final void test(final String name, final boolean useRemoteRepository, String apiKey) throws Exception {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort);
 		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(name);
 		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(name);
@@ -66,7 +66,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 			throw new IllegalAccessException("No reference test plan template found for: " + name);
 		}
 		updateTestPlanFromPreviousRun((ITestPlan)testPlanTemplate, lastExecution);
-		execute(testPlanTemplate, useRemoteRepository);
+		execute(testPlanTemplate, useRemoteRepository, apiKey);
 		DAOManager.saveTestPlan(testPlanTemplate);
 	}
 
@@ -86,7 +86,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		}
 		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(testPlan.getName());
 		updateTestPlanFromPreviousRun(testPlan, lastExecution);
-		execute(testPlan, useRemoteRepository); 
+		execute(testPlan, useRemoteRepository, apiKey); 
 		DAOManager.saveTestPlan((TestPlanImpl)testPlan);
 	}
 
@@ -115,11 +115,11 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		}
 	}
 
-	public void execute(final ITestPlan project, final boolean presetRepoFromWebApp) throws Exception {
+	public void execute(final ITestPlan project, final boolean presetRepoFromWebApp, String apiKey) throws Exception {
 		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (presetRepoFromWebApp) {
 			LOG.debug("Preset repository from webapp rest api...");
-			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
+			final String repoWiki = RestUtils.downloadRepositoryAsWiki(apiKey);
 			final TestParser parser = new TestParser();
 			final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
 			runner.run(repoAsTestPageForConvenience);

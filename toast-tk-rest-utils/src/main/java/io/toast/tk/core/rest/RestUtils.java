@@ -48,14 +48,15 @@ public class RestUtils {
 		LOG.info("Client response code: {}", statusCode);
 	}
 
-	public static String downloadRepositoryAsWiki() {
+	public static String downloadRepositoryAsWiki(String apiKey) {
 		final String webappURL = getWebAppURI();
-		return downloadRepository(webappURL + "/loadWikifiedRepository");
+		return downloadRepository(webappURL + "/loadWikifiedRepository/"+apiKey);
 	}
 
 	public static String downloadRepository(final String uri) {
 		final Client httpClient = Client.create();
 		final String jsonResponse = getJsonResponseAsString(uri, httpClient);
+		LOG.error("jsonResponse: {}",jsonResponse);
 		JSONArray jsonResult;
 		try {
 			jsonResult = new JSONArray(jsonResponse);

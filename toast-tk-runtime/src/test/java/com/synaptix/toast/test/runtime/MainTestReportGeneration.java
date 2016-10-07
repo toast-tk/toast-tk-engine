@@ -4,6 +4,7 @@ import io.toast.tk.runtime.AbstractScenarioRunner;
 
 public class MainTestReportGeneration extends AbstractScenarioRunner { 
 
+	public static final String API_KEY= "replacemewith user token";
 
 	public void tearDownEnvironment() {
 	}
@@ -22,7 +23,7 @@ public class MainTestReportGeneration extends AbstractScenarioRunner {
 
 	public static void main(String[] args) throws Exception {
 		MainTestReportGeneration testRunner = new MainTestReportGeneration();
-		testRunner.runScenario("test_report.md");
+		testRunner.runScenario(API_KEY, false, "test_report.md");
 	}
 	
 }

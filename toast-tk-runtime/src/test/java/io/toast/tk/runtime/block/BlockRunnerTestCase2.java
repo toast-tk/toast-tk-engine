@@ -65,7 +65,7 @@ public class BlockRunnerTestCase2 {
 	@Test
 	public void testScenarioExecution() throws Exception{
 		TestScenarioRunner runner = new TestScenarioRunner();
-		runner.run(scenario);
+		runner.run("apikey_here", false, scenario);
 	}
 	
 	private class TestScenarioRunner extends AbstractScenarioRunner{

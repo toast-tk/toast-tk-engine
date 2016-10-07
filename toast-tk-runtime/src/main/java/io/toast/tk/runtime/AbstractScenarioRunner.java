@@ -54,13 +54,13 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		this.progressReporter = new DefaultTestProgressReporter(eventBus);
 	}
 
-	public final void run(
+	public final void run(String apiKey, boolean doNothing,
 			final String... scenarios
 	) throws Exception {
-		runScenario(scenarios);
+		runScenario(apiKey, doNothing, scenarios);
 	}
 
-	public void runScenario(
+	public void runScenario(final String apiKey, boolean doNothing,
 			final String... scenarios
 	) throws Exception {
 		final List<ITestPage> testPages = new ArrayList<>();
@@ -69,7 +69,8 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 			LOG.info("Start main test parser: {}", fileName);
 
 			List<String> lines = FileHelper.getScript(fileName);
-			final ITestPage result = runTestPage(new TestParser().parse(lines, fileName));
+			ITestPage parse = new TestParser().parse(lines, fileName);
+			final ITestPage result = runTestPage(parse, apiKey);
 			testPages.add(result);
 		}
 
@@ -79,41 +80,42 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		RunUtils.printResult(testPages);
 	}
 
-	public final void runRemote(
+	public final void runRemote(final String apiKey, boolean doNothing,
 			final String... scenarios
 	) throws Exception {
 		this.presetRepoFromWebApp = true;
-		run(scenarios);
+		run(apiKey, doNothing, scenarios);
 	}
 
 	public final void runRemoteScript(
-			final String script
+			final String script, String apiKey
 	) throws Exception {
 		this.presetRepoFromWebApp = true;
-		runScript(script);
+		runScript(script, apiKey);
 	}
 
 	public void runLocalScript(
 			final String wikiScenario,
 			final String repoWiki,
-			final IReportUpdateCallBack callback
+			final IReportUpdateCallBack callback,
+			final String apiKey
 	) throws IOException {
 		this.progressReporter.setReportCallBack(callback);
 		final TestParser parser = new TestParser();
 		this.localRepositoryTestPage = parser.readString(repoWiki, null);
-		runScript(wikiScenario);
+		runScript(wikiScenario, apiKey);
 	}
 
-	private ITestPage runScript(final String script) throws IOException {
+	private ITestPage runScript(final String script, String apiKey) throws IOException {
 		final TestParser testParser = new TestParser();
 		ITestPage testPage = testParser.readString(script, null);
-		return runTestPage(testPage);
+		return runTestPage(testPage, apiKey);
 	}
 
-	private ITestPage runTestPage(final ITestPage testPage) throws IOException {
+	private ITestPage runTestPage(final ITestPage testPage, String apiKey) throws IOException {
 		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (this.presetRepoFromWebApp) {
-			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
+			final String repoWiki = RestUtils.downloadRepositoryAsWiki(apiKey);
 			final TestParser parser = new TestParser();
 			final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
 			runner.run(repoAsTestPageForConvenience);

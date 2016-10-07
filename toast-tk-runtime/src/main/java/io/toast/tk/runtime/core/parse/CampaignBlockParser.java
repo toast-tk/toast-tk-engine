@@ -56,7 +56,8 @@ public class CampaignBlockParser implements IBlockParser {
 		}
 
 		// Add test lines to block
-		for (final String string : strings.subList(1, strings.size())) {
+		List<String> subList = strings.subList(1, strings.size());
+		for (final String string : subList) {
 			if (!string.startsWith("|")) {
 				return campaignBlock;
 			}
