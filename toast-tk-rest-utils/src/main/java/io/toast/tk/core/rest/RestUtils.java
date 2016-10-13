@@ -66,7 +66,7 @@ public class RestUtils {
 			}
 			return builder.toString();
 		} catch (final JSONException e) {
-			LOG.error(e.getMessage(), e);
+			LOG.error(jsonResponse + "\n Exception catched: " + e.getMessage(), e);
 		}
 		return null;
 	}
