@@ -60,7 +60,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		runScenario(scenarios);
 	}
 
-	private void runScenario(
+	public void runScenario(
 			final String... scenarios
 	) throws Exception {
 		final List<ITestPage> testPages = new ArrayList<>();
