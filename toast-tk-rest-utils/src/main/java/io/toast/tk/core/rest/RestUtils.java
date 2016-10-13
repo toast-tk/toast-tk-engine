@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.jersey.api.client.Client;
@@ -176,87 +177,57 @@ public class RestUtils {
 		}
 	}
 
-	public static boolean post(final String url, final String jsonFixtureDescriptor) {
-		return post(url, jsonFixtureDescriptor, null);
-	}
-	public static boolean post(final String url, final String jsonFixtureDescriptor, final String ApiKey) {
-		try {
-			final CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpPost httpget = new HttpPost(url);
-			httpget.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+	public static boolean post(final String url, final String jsonFixtureDescriptor, final String ApiKey) {		
+		try(final CloseableHttpClient httpClient = HttpClients.createDefault()) {
+			if(Strings.isNullOrEmpty(ApiKey)) {
+				throw new IllegalAccessException("No Api Key provided !");
+			}
+			HttpPost httppost = new HttpPost(url);			
+			httppost.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			httppost.setHeader("Token" , ApiKey);
 			
-			List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-			urlParameters.add(new BasicNameValuePair(jsonFixtureDescriptor, null));
-			
-			HttpEntity postParams = new UrlEncodedFormEntity(urlParameters);
-			httpget.setEntity(postParams);
-
-			response = httpClient.execute(httpget);
-			
+			StringEntity  input = new StringEntity (jsonFixtureDescriptor);
+		    httppost.setEntity(input);
+			response = httpClient.execute(httppost);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new IllegalStateException("Failed to post connectors - HTTP reply code : "  + response.getStatusLine().getStatusCode());
+			}	
 			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
-		} finally {
-			try {
-				response.close();
-			} catch (IOException e) {
-				LOG.error(e.getMessage(), e);
-			}
-		}
+		} 
 		return false;
 	}
 	
-	/*public static boolean postWebEventRecord(final String url, final String record) {	
-		return postWebEventRecord(url, record, null);
-	}*/
 	public static boolean postWebEventRecord(final String url, final String record, final String ApiKey) {	
-		try {
-			if (ApiKey == null) {
-				throw new RuntimeException("Failed to get the ApiKey : it is valued 'null'");
+		try(final CloseableHttpClient httpClient = HttpClients.createDefault()) {
+			if(Strings.isNullOrEmpty(ApiKey)) {
+				throw new IllegalAccessException("No Api Key provided !");
 			}
-			
-			final CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpPost httppost = new HttpPost(url);
-			
+			HttpPost httppost = new HttpPost(url);			
 			httppost.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 			httppost.setHeader("Token" , ApiKey);
 			
 			StringEntity  input = new StringEntity (record);
 		    httppost.setEntity(input);
-
 			response = httpClient.execute(httppost);
-
 			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-				   + response.getStatusLine().getStatusCode());
-			}
-			
+				throw new IllegalStateException("Failed to publish web record - HTTP reply code : "  + response.getStatusLine().getStatusCode());
+			}	
 			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
-		} finally {
-			try {
-				response.close();
-			} catch (IOException e) {
-				LOG.error(e.getMessage(), e);
-			}
-		}
+		} 
 		return false;
-	}
-
-	public static void main(final String[] args) {
-		RestUtils.postScenario("newtest", "localhost", "9000", "a step");
 	}
 	
 	public static boolean registerAgent(final String url, String information, final String ApiKey) {
-		try {
-			if (ApiKey == null) {
-				throw new RuntimeException("Failed to get the ApiKey : it is valued 'null'");
+		try(final CloseableHttpClient httpClient = HttpClients.createDefault()) {
+			if(Strings.isNullOrEmpty(ApiKey)) {
+				throw new IllegalAccessException("No Api Key provided !");
 			}
 			
-			final CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpPost httppost = new HttpPost(url);
-			
+			HttpPost httppost = new HttpPost(url);	
 			httppost.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
 			httppost.setHeader("Token" , ApiKey);
 
@@ -267,8 +238,7 @@ public class RestUtils {
 			response = httpClient.execute(httppost);
 			
 			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-				   + response.getStatusLine().getStatusCode());
+				throw new IllegalStateException("Agent registration error - HTTP reply code : "  + response.getStatusLine().getStatusCode());
 			}
 			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
@@ -284,6 +254,6 @@ public class RestUtils {
 	}
 
 	public static void unRegisterAgent(String hostName) {
-		
+		//NO-OP
 	}
 }
