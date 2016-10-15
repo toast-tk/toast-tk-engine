@@ -96,7 +96,7 @@ public class RestUtils {
 		final int statusCode = response.getStatus();
 		if (statusCode == 401) {
 			try {
-				throw new AuthenticationException("Invalid Username or Password");
+				throw new AuthenticationException("Invalid Api Key!");
 			} catch (final AuthenticationException e) {
 				LOG.error(e.getMessage(), e);
 			}
