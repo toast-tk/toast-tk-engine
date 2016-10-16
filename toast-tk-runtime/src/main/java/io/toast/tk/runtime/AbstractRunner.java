@@ -100,7 +100,12 @@ public abstract class AbstractRunner {
 	) {
 		try {
 			if (!Boolean.getBoolean("java.awt.headless")) {
-				final File htmlFile = new File(path + File.separatorChar + pageName + ".html");
+				String pageNameTemp = pageName;
+				// pageName can be "./scripts/web.dynamic2.script"
+				if(pageNameTemp.contains("/")) {
+					pageNameTemp = pageNameTemp.split("/")[pageNameTemp.split("/").length - 1];
+				}
+				final File htmlFile = new File(path + File.separatorChar + pageNameTemp + ".html");
 				Desktop.getDesktop().browse(htmlFile.toURI());
 			}
 		} catch (final IOException e) {
