@@ -183,34 +183,40 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 
 	private void update(ITestPlan testPlan, TestPlanImpl template) {
 		testPlan.setId(template.getId().toString());
-		if (Objects.nonNull(testPlan.getCampaigns())) {
-			for (ICampaign testPlanCampaign : testPlan.getCampaigns()) {
-				ICampaign campaignWithId = campaignWithId(template, testPlanCampaign.getName());
-				if (Objects.nonNull(campaignWithId)) {
-					testPlanCampaign.setId(new ObjectId(campaignWithId.getIdAsString()));
-					if (Objects.nonNull(testPlanCampaign.getTestCases())) {
-						for (ITestPage testPlanPage : testPlanCampaign.getTestCases()) {
-							LOG.info("Looking for test page id -> " + testPlanPage.getIdAsString());
-							LOG.info("Looking for test page name -> " + testPlanPage.getName());
-							ITestPage testPageWithId = testPageWithId(campaignWithId, testPlanPage.getName());
-							if (Objects.nonNull(testPageWithId)) {
-								LOG.info("Found for test page id -> " + testPageWithId.getIdAsString());
-								testPlanPage.setId(testPageWithId.getIdAsString());
-							}
-							// FIME: need to be added as a scenario in the
-							// scenario collection ?
-							try{
-								tDaoService.saveReference(testPlanPage);
-							}catch(Exception e){
-								LOG.error("error while saving page with id -> " + testPlanPage.getIdAsString(),e);
-								
-							}
-							
-						}
-					}
+		if (Objects.isNull(testPlan.getCampaigns())) {
+			return;
+		}
+		for (ICampaign testPlanCampaign : testPlan.getCampaigns()) {
+			ICampaign campaignWithId = campaignWithId(template, testPlanCampaign.getName());
+			if (Objects.nonNull(campaignWithId)) {
+				testPlanCampaign.setId(new ObjectId(campaignWithId.getIdAsString()));
+				if (Objects.nonNull(testPlanCampaign.getTestCases())) {
+					updateTestScripts(testPlanCampaign, campaignWithId);
 				}
-				cDaoService.saveReference((Campaign) testPlanCampaign);
 			}
+			cDaoService.saveReference((Campaign) testPlanCampaign);
+		}
+		
+	}
+
+	private void updateTestScripts(ICampaign testPlanCampaign, ICampaign campaignWithId) {
+		for (ITestPage testPlanPage : testPlanCampaign.getTestCases()) {
+			LOG.info("Looking for test page id -> " + testPlanPage.getIdAsString());
+			LOG.info("Looking for test page name -> " + testPlanPage.getName());
+			ITestPage testPageWithId = testPageWithId(campaignWithId, testPlanPage.getName());
+			if (Objects.nonNull(testPageWithId)) {
+				LOG.info("Found for test page id -> " + testPageWithId.getIdAsString());
+				testPlanPage.setId(testPageWithId.getIdAsString());
+			}
+			// FIME: need to be added as a scenario in the
+			// scenario collection ?
+			try{
+				tDaoService.saveReference(testPlanPage);
+			}catch(Exception e){
+				LOG.error("error while saving page with id -> " + testPlanPage.getIdAsString(),e);
+				
+			}
+			
 		}
 	}
 
