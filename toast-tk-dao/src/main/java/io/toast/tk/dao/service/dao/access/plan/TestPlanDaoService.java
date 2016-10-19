@@ -79,9 +79,7 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 	}
 
 	public Key<TestPlanImpl> saveTemplate(final TestPlanImpl testPlan) throws IllegalAccessException {
-		if (testPlan.getProject() == null) {
-			throw new IllegalAccessException("No project set in test plan, please assign one !");
-		}
+		checkIfHasProject(testPlan);
 		short iteration = 0;
 		testPlan.setLast(false);
 		testPlan.setIteration(iteration);
@@ -91,11 +89,14 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 		return save(testPlan, WriteConcern.ACKNOWLEDGED);
 	}
 
-	public Key<TestPlanImpl> saveNewIteration(final TestPlanImpl testPlan) throws IllegalAccessException {
-		// update previous entry
+	private void checkIfHasProject(final TestPlanImpl testPlan) throws IllegalAccessException {
 		if (testPlan.getProject() == null) {
 			throw new IllegalAccessException("No project set in test plan, please assign one !");
 		}
+	}
+
+	public Key<TestPlanImpl> saveNewIteration(final TestPlanImpl testPlan) throws IllegalAccessException {
+		checkIfHasProject(testPlan);
 		final TestPlanImpl previousEntry = getLastByName(testPlan.getName());
 		if (previousEntry != null) {
 			previousEntry.setLast(false);
