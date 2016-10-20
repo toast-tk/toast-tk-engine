@@ -116,7 +116,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	}
 
 	private ITestResult doLocalActionCall(final ActionAdaptaterLocator actionAdaptaterLocator) {
-		TestResult result;
+		ITestResult result;
 		try {
 			Method actionMethod = actionAdaptaterLocator.getActionCommandDescriptor().method;
 			Class<?> returnType = actionMethod.getReturnType();
@@ -124,13 +124,14 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 												buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
 			String expected = actionAdaptaterLocator.getTestLineDescriptor().testLine.getExpected();
 			if (ITestResult.class.isAssignableFrom(returnType)) {
-				return (ITestResult) output;
+				setContextualTestSentence(actionAdaptaterLocator, (ITestResult) output);
+				result = (ITestResult) output;
 			} else {
 				IResultHandler handler = resultProvider.getHandler(returnType);
 				if (handler == null) {
 					return new FailureResult("No handler found for result type " + returnType.toString());
 				}
-				return handler.result(output, expected);
+				result = handler.result(output, expected);
 			}
 		} catch (final Exception e) {
 			result = handleInvocationError(e);
@@ -143,7 +144,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private void setContextualTestSentence(
 			final ActionAdaptaterLocator actionAdaptaterLocator,
-			final TestResult result
+			final ITestResult result
 	) {
 		if (result != null) {
 			result.setContextualTestSentence(updateCommandWithVarValues(actionAdaptaterLocator));
