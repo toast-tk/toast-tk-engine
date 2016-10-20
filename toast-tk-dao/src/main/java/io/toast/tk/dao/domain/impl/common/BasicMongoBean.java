@@ -18,6 +18,10 @@ public abstract class BasicMongoBean {
 		return name;
 	}
 
+	public Date getCreationDate() {
+		return creationDate;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
