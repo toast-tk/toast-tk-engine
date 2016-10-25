@@ -75,19 +75,19 @@ public class DAOManager {
 		return userService;
 	}
 	
-	public static TestPlanImpl getLastTestPlanExecution(final String projectName) {
-		return getInstance().getTestPlanDaoService().getLastByName(projectName);
+	public static TestPlanImpl getLastTestPlanExecution(final String projectName, final String idProject) {
+		return getInstance().getTestPlanDaoService().getLastByName(projectName, idProject);
 	}
 
-	public static TestPlanImpl getTestPlanTemplate(final String projectName) {
-		return getInstance().getTestPlanDaoService().getReferenceProjectByName(projectName);
+	public static TestPlanImpl getTestPlanTemplate(final String projectName, final String idProject) {
+		return getInstance().getTestPlanDaoService().getReferenceProjectByName(projectName, idProject);
 	}
 	
 	public static void saveTestPlan(final TestPlanImpl project) throws IllegalAccessException {
 		getInstance().getTestPlanDaoService().saveNewIteration(project);
 	}
 
-	public static List<TestPlanImpl> getProjectHistory(final TestPlanImpl project) {
+	public static List<TestPlanImpl> getProjectHistory(final TestPlanImpl project) throws IllegalAccessException {
 		return getInstance().getTestPlanDaoService().getProjectHistory(project);
 	}
 

@@ -31,4 +31,9 @@ public class ProjectImpl extends BasicTaggableMongoBean implements IProject {
 	public void setId(String id){
 		this.id = new ObjectId(id);
 	}
+
+	@Override
+	public String getIdAsString() {
+		return getId().toString();
+	}
 }

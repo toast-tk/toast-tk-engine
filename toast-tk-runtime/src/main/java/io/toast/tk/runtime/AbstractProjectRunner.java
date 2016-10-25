@@ -58,10 +58,10 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		execute(project, useRemoteRepository);
 	}
 
-	public final void test(final String name, final boolean useRemoteRepository) throws Exception {
+	public final void test(final String name, final String idProject, final boolean useRemoteRepository) throws Exception {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort);
-		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(name);
-		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(name);
+		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(name, idProject);
+		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(name, idProject);
 		if (testPlanTemplate == null) {
 			throw new IllegalAccessException("No reference test plan template found for: " + name);
 		}
@@ -78,13 +78,13 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort);
 		IProject project = DAOManager.getProjectByApiKey(apiKey);
 		testPlan.setProject(project);
-		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(testPlan.getName());
+		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(testPlan.getName(), project.getIdAsString());
 		if(Objects.nonNull(testPlanTemplate)){
 			DAOManager.updateTemplateFromTestPlan(testPlan);
 		}else{
 			DAOManager.saveTemplate((TestPlanImpl) testPlan);
 		}
-		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(testPlan.getName());
+		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(testPlan.getName(), project.getIdAsString());
 		updateTestPlanFromPreviousRun(testPlan, lastExecution);
 		execute(testPlan, useRemoteRepository); 
 		DAOManager.saveTestPlan((TestPlanImpl)testPlan);
