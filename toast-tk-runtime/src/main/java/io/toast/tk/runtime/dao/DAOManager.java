@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.mongodb.MongoCredential;
 
 import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
 import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
@@ -13,7 +14,6 @@ import io.toast.tk.dao.guice.MongoModule;
 import io.toast.tk.dao.service.dao.access.plan.TestPlanDaoService;
 import io.toast.tk.dao.service.dao.access.repository.ProjectDaoService;
 import io.toast.tk.dao.service.dao.access.team.UserDaoService;
-import io.toast.tk.dao.service.dao.access.team.UserDaoService.Factory;
 
 public class DAOManager {
 
@@ -35,23 +35,33 @@ public class DAOManager {
 
 	private DAOManager(
 		final String mongoHost, 
-		final int mongoPort
+		final int mongoPort,
+		final String mongoDb,
+		final MongoCredential credential
 	) {
-		this.mongoServiceInjector = Guice.createInjector(new MongoModule(mongoHost, mongoPort));
+		this.mongoServiceInjector = Guice.createInjector(new MongoModule(mongoHost, mongoPort, mongoDb, credential));
 		this.testPlanFactory = mongoServiceInjector.getInstance(TestPlanDaoService.Factory.class);
-		this.testPlanService = testPlanFactory.create("test_project_db");
+		this.testPlanService = testPlanFactory.create(mongoDb);
 		this.userFactory = mongoServiceInjector.getInstance(UserDaoService.Factory.class);
-		this.userService = userFactory.create("play_db");
+		this.userService = userFactory.create(mongoDb);
 		this.projectFactory = mongoServiceInjector.getInstance(ProjectDaoService.Factory.class);
-		this.projectService = projectFactory.create("play_db");
+		this.projectService = projectFactory.create(mongoDb);
 	}
 	
 	public static synchronized DAOManager init(
 		final String mongoHost, 
 		final int mongoPort
 	) {
+		return init(mongoHost, mongoPort, null, null);
+	}
+	
+	public static synchronized DAOManager init(
+			final String mongoHost, 
+			final int mongoPort,
+			final String mongoDb,
+			final MongoCredential credential) {
 		if(INSTANCE == null) {
-			INSTANCE = new DAOManager(mongoHost, mongoPort);
+			INSTANCE = new DAOManager(mongoHost, mongoPort, mongoDb, credential);
 		}
 		return INSTANCE;
 	}
