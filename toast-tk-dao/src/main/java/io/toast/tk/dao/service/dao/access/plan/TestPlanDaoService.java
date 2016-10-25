@@ -82,6 +82,11 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 		Collections.sort(projectHistory, TestPlanComparator.INSTANCE);
 		return projectHistory;
 	}
+	
+	public Key<TestPlanImpl> detachTemplate(final TestPlanImpl testPlan) throws IllegalAccessException {
+		testPlan.setProject(null);
+		return save(testPlan, WriteConcern.ACKNOWLEDGED);
+	}
 
 	public Key<TestPlanImpl> saveTemplate(final TestPlanImpl testPlan) throws IllegalAccessException {
 		checkIfHasProject(testPlan);
