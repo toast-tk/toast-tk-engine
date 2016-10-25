@@ -6,7 +6,7 @@ public interface IProjectHtmlReportGenerator {
 
     void writeFile(final String report, final String pageName, final String reportFolderPath);
 
-    String generateProjectReportHtml(final String name) throws IllegalAccessException;
+    String generateProjectReportHtml(final String name, String idProject) throws IllegalAccessException;
 
     String generateProjectReportHtml(final ITestPlan project);
 
