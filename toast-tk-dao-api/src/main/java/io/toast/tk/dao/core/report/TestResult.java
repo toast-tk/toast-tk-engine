@@ -28,7 +28,8 @@ public class TestResult implements ITestResult{
 	}
 
 	/**
-	 * This constructor will create a TestResult of kind FAILURE (i.e. a test has failed, but it is not a technical error).
+	 * This constructor will create a TestResult of kind FAILURE 
+	 * (i.e. a test has failed, but it is not a technical error)
 	 * 
 	 * @param message: the result value
 	 */
