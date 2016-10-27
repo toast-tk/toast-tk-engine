@@ -1,18 +1,35 @@
 package io.toast.tk.core.rest;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import javax.naming.AuthenticationException;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.jersey.api.client.Client;
@@ -20,12 +37,14 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 public class RestUtils {
-
+	
 	private static final Logger LOG = LogManager.getLogger(RestUtils.class);
 
 	public static final String WEBAPP_ADDR = "toast.webapp.addr";
 
 	public static final String WEBAPP_PORT = "toast.webapp.port";
+	
+	private static CloseableHttpResponse response;
 
 	public static void get(final String url) {
 		final Client httpClient = Client.create();
@@ -66,7 +85,7 @@ public class RestUtils {
 			}
 			return builder.toString();
 		} catch (final JSONException e) {
-			LOG.error(e.getMessage(), e);
+			LOG.error(jsonResponse + "\n Exception catched: " + e.getMessage(), e);
 		}
 		return null;
 	}
@@ -77,7 +96,7 @@ public class RestUtils {
 		final int statusCode = response.getStatus();
 		if (statusCode == 401) {
 			try {
-				throw new AuthenticationException("Invalid Username or Password");
+				throw new AuthenticationException("Invalid Api Key!");
 			} catch (final AuthenticationException e) {
 				LOG.error(e.getMessage(), e);
 			}
@@ -158,49 +177,83 @@ public class RestUtils {
 		}
 	}
 
-	public static boolean post(final String url, final String jsonFixtureDescriptor) {
-		final Client httpClient = Client.create();
-		final WebResource webResource = httpClient.resource(url);
-		final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-				.post(ClientResponse.class, jsonFixtureDescriptor);
-		return response.getStatus() == 200;
-	}
-
-	public static boolean postWebEventRecord(final String url, final String record) {
-		try {
-			final Client httpClient = Client.create();
+	public static boolean post(final String url, final String jsonFixtureDescriptor, final String ApiKey) {		
+		try(final CloseableHttpClient httpClient = HttpClients.createDefault()) {
+			if(Strings.isNullOrEmpty(ApiKey)) {
+				throw new IllegalAccessException("No Api Key provided !");
+			}
+			HttpPost httppost = new HttpPost(url);			
+			httppost.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			httppost.setHeader("Token" , ApiKey);
 			
-			final WebResource webResource = httpClient.resource(url);
-			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
-														.accept(MediaType.APPLICATION_JSON)
-														.post(ClientResponse.class, record);
-			return response.getStatus() == 200;
+			StringEntity  input = new StringEntity (jsonFixtureDescriptor);
+		    httppost.setEntity(input);
+			response = httpClient.execute(httppost);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new IllegalStateException("Failed to post connectors - HTTP reply code : "  + response.getStatusLine().getStatusCode());
+			}	
+			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
-			return false;
-		}
+		} 
+		return false;
 	}
-
-	public static void main(final String[] args) {
-		RestUtils.postScenario("newtest", "localhost", "9000", "a step");
-	}
-
-	public static boolean registerAgent(final String url, String information) {
-		try {
-			final Client httpClient = Client.create();
-			final WebResource webResource = httpClient.resource(url);
-			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
-														.accept(MediaType.APPLICATION_JSON)
-														.post(ClientResponse.class, information);
-			return response.getStatus() == 200;
+	
+	public static boolean postWebEventRecord(final String url, final String record, final String ApiKey) {	
+		try(final CloseableHttpClient httpClient = HttpClients.createDefault()) {
+			if(Strings.isNullOrEmpty(ApiKey)) {
+				throw new IllegalAccessException("No Api Key provided !");
+			}
+			HttpPost httppost = new HttpPost(url);			
+			httppost.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+			httppost.setHeader("Token" , ApiKey);
+			
+			StringEntity  input = new StringEntity (record);
+		    httppost.setEntity(input);
+			response = httpClient.execute(httppost);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new IllegalStateException("Failed to publish web record - HTTP reply code : "  + response.getStatusLine().getStatusCode());
+			}	
+			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
+		} 
+		return false;
+	}
+	
+	public static boolean registerAgent(final String url, String information, final String ApiKey) {
+		try(final CloseableHttpClient httpClient = HttpClients.createDefault()) {
+			if(Strings.isNullOrEmpty(ApiKey)) {
+				throw new IllegalAccessException("No Api Key provided !");
+			}
+			
+			HttpPost httppost = new HttpPost(url);	
+			httppost.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+			httppost.setHeader("Token" , ApiKey);
+
+			StringEntity input = new StringEntity(information);
+			input.setContentType("application/json");
+			httppost.setEntity(input);
+			
+			response = httpClient.execute(httppost);
+			
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new IllegalStateException("Agent registration error - HTTP reply code : "  + response.getStatusLine().getStatusCode());
+			}
+			return response.getStatusLine().getStatusCode() == 200;
+		} catch (final Exception e) {
+			LOG.error(e.getMessage(), e);
+		} finally {
+			try {
+				response.close();
+			} catch (IOException e) {
+				LOG.error(e.getMessage(), e);
+			}
 		}
 		return false;
 	}
 
 	public static void unRegisterAgent(String hostName) {
-		// TODO Auto-generated method stub
-		
+		//NO-OP
 	}
 }

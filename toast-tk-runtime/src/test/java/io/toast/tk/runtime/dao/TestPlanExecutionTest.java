@@ -131,7 +131,7 @@ public class TestPlanExecutionTest extends EmbeddedMongoDBTestCase{
 		
 		Assert.assertEquals(2, plan.getCampaigns().size());
 		
-		TestPlanImpl queriedTemplate = tService.getReferenceProjectByName(plan.getName());
+		TestPlanImpl queriedTemplate = tService.getReferenceProjectByName(plan.getName(), defaultProject.getId().toString());
 		Assert.assertEquals(plan.getCampaigns().size(), queriedTemplate.getCampaigns().size());
 		
 		TestPlanImpl newPlanWithSameName = new TestPlanImpl();
@@ -176,7 +176,7 @@ public class TestPlanExecutionTest extends EmbeddedMongoDBTestCase{
 		
 		Assert.assertEquals(2, plan.getCampaigns().size());
 		
-		TestPlanImpl queriedTemplate = tService.getReferenceProjectByName(plan.getName());
+		TestPlanImpl queriedTemplate = tService.getReferenceProjectByName(plan.getName(), defaultProject.getId().toString());
 		Assert.assertEquals(plan.getCampaigns().size(), queriedTemplate.getCampaigns().size());
 		
 		TestPlanImpl newPlanWithSameName = new TestPlanImpl();
@@ -223,7 +223,7 @@ public class TestPlanExecutionTest extends EmbeddedMongoDBTestCase{
 		
 		Assert.assertEquals(2, plan.getCampaigns().size());
 		
-		TestPlanImpl queriedTemplate = tService.getReferenceProjectByName(plan.getName());
+		TestPlanImpl queriedTemplate = tService.getReferenceProjectByName(plan.getName(), defaultProject.getId().toString());
 		Assert.assertEquals(plan.getCampaigns().size(), queriedTemplate.getCampaigns().size());
 		
 		TestPlanImpl newPlanWithSameName = new TestPlanImpl();

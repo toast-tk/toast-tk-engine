@@ -3,6 +3,7 @@ package io.toast.tk.dao.domain.impl.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.github.jmkgreen.morphia.annotations.Entity;
 import com.github.jmkgreen.morphia.annotations.Reference;
 
@@ -14,7 +15,7 @@ public class RepositoryImpl extends BasicEntityBean implements IRepository{
 
 	public String type;
 	
-	@Reference(ignoreMissing = true)
+	@Embedded
 	public ProjectImpl project;
 
 	@Reference(ignoreMissing = true)

@@ -2,6 +2,7 @@ package com.mongo.test;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,7 +24,7 @@ public class TestPlanTestCase extends EmbeddedMongoDBTestCase {
 		service = repoFactory.create("play_db");				
 		ProjectDaoService.Factory projectFactory = injector.getInstance(ProjectDaoService.Factory.class);
 		pService = projectFactory.create("play_db");	
-		List<TestPlanImpl> testplans = service.findAllReferenceProjects();
+		List<TestPlanImpl> testplans = service.findAllReferenceProjects(new ObjectId().toString());
 		Assert.assertEquals(0, testplans.size());
 	}
 

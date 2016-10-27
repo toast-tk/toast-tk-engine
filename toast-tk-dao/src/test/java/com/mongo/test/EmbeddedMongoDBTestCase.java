@@ -36,7 +36,12 @@ public abstract class EmbeddedMongoDBTestCase {
 
 		mongodExe = starter.prepare(mongodConfig);
         mongod = mongodExe.start();
-        injector = Guice.createInjector(new MongoModule("localhost", port));
+        try{
+        	injector = Guice.createInjector(new MongoModule("localhost", port));
+        }catch (Exception e){
+        	e.printStackTrace();
+        }
+        
     }
 
     @AfterClass
