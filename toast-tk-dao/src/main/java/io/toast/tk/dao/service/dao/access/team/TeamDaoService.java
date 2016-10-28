@@ -34,4 +34,9 @@ public class TeamDaoService extends AbstractMongoDaoService<TeamImpl> {
 		query.field("users").hasAnyOf(Arrays.asList(user));
 		return query.asList();
 	}
+	
+	public List<TeamImpl> getAllTeams(){
+		Query<TeamImpl> query = createQuery();
+		return query.asList();
+	}
 }

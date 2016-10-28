@@ -127,11 +127,11 @@ public class RestUtils {
 		return getWebAppURI(webAppAddr, webAppPort);
 	}
 
-	public static Collection<ImportedScenario> getListOfScenario() {
+	public static Collection<ImportedScenario> getListOfScenario(String idProject) {
 		try {
 			final Client httpClient = Client.create();
 			final String webappURL = getWebAppURI();
-			final String response = getJsonResponseAsString(webappURL + "/loadScenariiList", httpClient);
+			final String response = getJsonResponseAsString(webappURL + "/loadScenariiList/"+idProject, httpClient);
 			final Gson g = new Gson();
 			final Type typeOfT = new TypeToken<Collection<ImportedScenario>>() {
 				/* NOOP */}.getType();
@@ -155,6 +155,7 @@ public class RestUtils {
 			return scenarioDescriptor;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
+			System.err.println("error while calling "+getWebAppURI()+"/loadScenarioSteps/"+scenarioRef.getId());
 			return null;
 		}
 	}

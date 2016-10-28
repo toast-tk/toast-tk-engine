@@ -1,5 +1,6 @@
 package io.toast.tk.dao.domain.impl.team;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -14,6 +15,7 @@ import com.github.jmkgreen.morphia.annotations.Reference;
 import io.toast.tk.dao.domain.api.team.ITeam;
 import io.toast.tk.dao.domain.api.team.IUser;
 import io.toast.tk.dao.domain.impl.common.BasicTaggableMongoBean;
+import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
 import io.toast.tk.dao.domain.impl.test.block.IProject;
 
 @Entity(value = "teams")
@@ -26,26 +28,28 @@ public class TeamImpl extends BasicTaggableMongoBean implements ITeam {
 	ObjectId id = new ObjectId();
 	
 	@Embedded
-	List<IProject> projects;
+	List<ProjectImpl> projects;
 
 	@Reference(ignoreMissing=true)
-	List<IUser> users;
+	List<UserImpl> users;
 	
 	@Override
 	public List<IProject> getProjects() {
-		return projects;
+		return (List)projects;
 	}
 
 	public void setProjects(final List<IProject> projects) {
-		this.projects = projects;
+		List theProjects = (List)projects;
+		this.projects = theProjects;
 	}
 	
 	@Override
 	public List<IUser> getUsers() {
-		return users;
+		return (List)users;
 	}
 
 	public void setUsers(final List<IUser> users) {
-		this.users = users;
+		List theUsers = (List) users;
+		this.users = theUsers;
 	}
 }

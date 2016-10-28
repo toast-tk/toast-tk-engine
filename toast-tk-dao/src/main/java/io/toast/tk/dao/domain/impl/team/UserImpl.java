@@ -1,11 +1,15 @@
 package io.toast.tk.dao.domain.impl.team;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
 
+import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.github.jmkgreen.morphia.annotations.Entity;
 import com.github.jmkgreen.morphia.annotations.Id;
 import com.github.jmkgreen.morphia.annotations.Index;
 import com.github.jmkgreen.morphia.annotations.Indexes;
+import com.github.jmkgreen.morphia.annotations.Reference;
 
 import io.toast.tk.dao.domain.api.team.IUser;
 import io.toast.tk.dao.domain.impl.common.BasicTaggableMongoBean;
@@ -34,7 +38,10 @@ public class UserImpl extends BasicTaggableMongoBean implements IUser {
 	Boolean isActive;
 	
 	String idProject;
-
+	
+	@Embedded
+	List<TeamImpl> teams;
+	
 	public String getLogin() {
 		return login;
 	}
@@ -91,6 +98,11 @@ public class UserImpl extends BasicTaggableMongoBean implements IUser {
 		this.isActive = isActive;
 	}
 
+	public List<TeamImpl> getTeams() {
+		return teams;
+	}
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
