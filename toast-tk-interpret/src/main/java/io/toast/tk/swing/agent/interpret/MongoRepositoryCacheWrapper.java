@@ -29,9 +29,13 @@ public class MongoRepositoryCacheWrapper {
 
 	private RepositoryDaoService service;
 	
-	public MongoRepositoryCacheWrapper(RepositoryDaoService service){
-		this.service = service;
+	public MongoRepositoryCacheWrapper(){
 		initCache();
+	}
+	
+	public MongoRepositoryCacheWrapper(RepositoryDaoService service){
+		this();
+		this.service = service;
 	}
 	
 	private void initCache() {

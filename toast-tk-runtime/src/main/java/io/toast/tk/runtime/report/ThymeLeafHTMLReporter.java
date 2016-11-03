@@ -29,7 +29,13 @@ public class ThymeLeafHTMLReporter implements IHTMLReportGenerator {
 			final String pageName,
 			final String reportFolderPath
 	){
-		try (final BufferedWriter out = new BufferedWriter(new FileWriter(reportFolderPath + File.separatorChar + pageName + ".html"))) {
+		final String fileFullPath = reportFolderPath + File.separatorChar + pageName + ".html";
+		final File file = new File(fileFullPath);
+		final File parent_directory = file.getParentFile();
+		if (null != parent_directory){
+		    parent_directory.mkdirs();
+		}
+		try (final BufferedWriter out = new BufferedWriter(new FileWriter(fileFullPath))) {
 			out.write(report);
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
