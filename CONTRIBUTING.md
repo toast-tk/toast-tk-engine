@@ -1,11 +1,6 @@
-[Work In Progress]
-
 # How to contribute
 
-Toast TK is a young open source project.
-We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: from the website through the documentation to the very core of the application.
-
-So, if you like ![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.svg?v=103) projects and would like to give back some help, we'd like to see your contributions!
+If you like ![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.svg?v=103) projects and would like to give back some help, we'd like to see your contributions!
 
 It doesn't matter how familiar you are with test automation applications, or whether you know how to write programs for Java. There are plenty of ways to be helpful! One of the first things you should do is actually use Toast TK, and get to know it - read about it, evangelise it, and engage with the wider community.
 
