@@ -47,17 +47,13 @@ The [toast-tk-example](https://github.com/toast-tk/toast-tk-examples) project ho
 - JSON and XML value management as a variable
 - Test report generation
 
-# How to contribute
+# Contribution
 
-Toast TK is a young open source project.  
-We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: from the website through the documentation to the very core of the application.  
-So, if you like open-source projects and would like to give back some help, we'd like to see your contributions!  
-It doesn't matter how familiar you are with test automation applications, or whether you know how to write programs for Java. There are plenty of ways to be helpful! One of the first things you should do is actually use Toast TK, and get to know it - read about it, evangelise it, and engage with the wider community.  
-If you'd like to help, [get in touch](mailto:sallah.kokaina@gmail.com) and let us know how you'd like to help. We love contributors!! 
+Toast TK is a young ![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.svg?v=103) project.  
 
-# Development workflow
-The main development happens on [Github](https://github.com/toast-tk/toast-tk-engine). To contribute, [fork](http://help.github.com/fork-a-repo/) the [main repo](https://github.com/toast-tk/toast-tk-engine), branch off a [feature branch](https://www.google.com/search?q=git+feature+branches) from master, make your changes and [commit](http://git-scm.com/docs/git-commit) them, [push](http://git-scm.com/docs/git-push) to your fork and submit a [pull request](http://help.github.com/send-pull-requests/).
-For the time being and once in a while, we merge pull requests into master, which results in a new snapshot update. 
+For contribution rules and guidelines, See [CONTRIBUTING.md](https://github.com/toast-tk/toast-tk-engine/blob/snapshot/CONTRIBUTING.md)
+
+If you'd like to help, [get in touch](https://gitter.im/toast-tk/toast-tk-engine) and let us know how you'd like to help. We love contributors!! 
 
 # Licence
 
