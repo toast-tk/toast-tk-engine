@@ -1,6 +1,6 @@
 Toast Toolkit (Toast TK)
 
-Copyright 2012-2105 - Talan-Labs - http://labs.talanlabs.com 
+Copyright 2012-2016 - Toast TK - http://toast-tk.io/
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
