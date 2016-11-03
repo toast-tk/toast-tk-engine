@@ -1,48 +1,93 @@
 package io.toast.tk.adapter.constant;
 
+import java.util.List;
+
 public class AdaptersConfig {
 
-	private final String webDriver;
+    private final String webDriver;
 
-	private final String webDriverPath;
+    private final String webDriverPath;
 
-	private final String browserPath;
+    private final String browserPath;
 
-	private String reportsFolderPath;
+    private String reportsFolderPath;
 
-	private final boolean isSSl;
+    private final boolean isSSl;
 
-	public AdaptersConfig(
-			final String webDriver,
-			final String webDriverPath,
-			final String browserPath,
-			final boolean isSSl,
-			final String reportsFolderPath
-	) {
-		this.webDriver = webDriver;
-		this.webDriverPath = webDriverPath;
-		this.browserPath = browserPath;
-		this.isSSl = isSSl;
-		this.reportsFolderPath = reportsFolderPath;
-	}
+    /**
+     * Report mail recipients
+     */
+    private List<String> mailTo;
 
-	public String getWebDriver() {
-		return webDriver;
-	}
+    /**
+     * Report mail sender
+     */
+    private String mailFrom;
 
-	public String getWebDriverPath() {
-		return webDriverPath;
-	}
+    /**
+     * Send mail report
+     */
+    private boolean mailSendReport;
 
-	public String getBrowserPath() {
-		return browserPath;
-	}
+    public AdaptersConfig(
+            final String webDriver,
+            final String webDriverPath,
+            final String browserPath,
+            final boolean isSSl,
+            final String reportsFolderPath
+    ) {
+        this.webDriver = webDriver;
+        this.webDriverPath = webDriverPath;
+        this.browserPath = browserPath;
+        this.isSSl = isSSl;
+        this.reportsFolderPath = reportsFolderPath;
+    }
 
-	public boolean getIsSSl() {
-		return isSSl;
-	}
+    public void setReportsFolderPath(String reportsFolderPath) {
+        this.reportsFolderPath = reportsFolderPath;
+    }
 
-	public String getReportsFolderPath() {
-		return reportsFolderPath;
-	}
+    public boolean isSSl() {
+        return isSSl;
+    }
+
+    public String getWebDriver() {
+        return webDriver;
+    }
+
+    public String getWebDriverPath() {
+        return webDriverPath;
+    }
+
+    public String getBrowserPath() {
+        return browserPath;
+    }
+
+    public String getReportsFolderPath() {
+        return reportsFolderPath;
+    }
+
+    public List<String> getMailTo() {
+        return mailTo;
+    }
+
+    public void setMailTo(List<String> mailTo) {
+        this.mailTo = mailTo;
+    }
+
+    public String getMailFrom() {
+        return mailFrom;
+    }
+
+    public void setMailFrom(String mailFrom) {
+        this.mailFrom = mailFrom;
+    }
+
+    public boolean isMailSendReport() {
+        return mailSendReport;
+    }
+
+    public void setMailSendReport(boolean mailSendReport) {
+        this.mailSendReport = mailSendReport;
+    }
 }
