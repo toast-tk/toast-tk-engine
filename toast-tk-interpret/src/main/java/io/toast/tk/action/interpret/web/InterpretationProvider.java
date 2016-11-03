@@ -1,8 +1,5 @@
 package io.toast.tk.action.interpret.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.inject.Inject;
@@ -17,7 +14,6 @@ public class InterpretationProvider {
 	@Inject
 	public InterpretationProvider(MongoRepositoryCacheWrapper mongoRepoManager){
 		this.mongoRepoManager = mongoRepoManager;
-
 	}
 
 	public IActionInterpret getSentenceBuilder(String type) {

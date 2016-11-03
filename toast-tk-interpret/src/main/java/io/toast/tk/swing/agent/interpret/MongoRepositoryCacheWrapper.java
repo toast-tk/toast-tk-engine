@@ -29,13 +29,9 @@ public class MongoRepositoryCacheWrapper {
 
 	private RepositoryDaoService service;
 	
-	public MongoRepositoryCacheWrapper(){
-		initCache();
-	}
-	
 	public MongoRepositoryCacheWrapper(RepositoryDaoService service){
-		this();
 		this.service = service;
+		initCache();
 	}
 	
 	private void initCache() {
@@ -43,15 +39,15 @@ public class MongoRepositoryCacheWrapper {
 			cache = service.find().asList();
 		}
 		catch(Exception e) {
-			LOG.error(
-				String.format("WebApp not active at address %s:%s", host, port),
-				e);
+			LOG.error(String.format("WebApp not active at address %s:%s", host, port), e);
 		}
 	}
 	
-	public synchronized void saveRepository(RepositoryImpl repo) {
-		service.save(repo, WriteConcern.ACKNOWLEDGED);
-		initCache();
+	public void saveRepository(RepositoryImpl repo) {
+		synchronized (service) {
+			service.save(repo, WriteConcern.ACKNOWLEDGED);
+			initCache();
+		}
 	}
 	
 	public ElementImpl findElement(RepositoryImpl container, WebEventRecord eventRecord) {
