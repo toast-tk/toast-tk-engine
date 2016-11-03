@@ -30,22 +30,26 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 
 	private int mongoDbPort;
 
+	private String db;
+
 	protected AbstractProjectRunner() {
 		super();
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	}
 
-	protected AbstractProjectRunner(final Module extraModule, final String host, final int port) {
+	protected AbstractProjectRunner(final Module extraModule, final String host, final int port, final String db) {
 		this(extraModule);
 		this.mongoDbHost = host;
 		this.mongoDbPort = port;
+		this.db = db;
 	}
 
-	protected AbstractProjectRunner(final String host, final int port) {
+	protected AbstractProjectRunner(final String host, final int port, final String db) {
 		this();
 		this.mongoDbHost = host;
 		this.mongoDbPort = port;
+		this.db = db;
 	}
 
 	public AbstractProjectRunner(final Module extraModule) {
@@ -59,7 +63,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 	}
 
 	public final void test(final String name, final String idProject, final boolean useRemoteRepository) throws Exception {
-		DAOManager.init(this.mongoDbHost, this.mongoDbPort);
+		DAOManager.init(this.mongoDbHost, this.mongoDbPort, this.db);
 		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(name, idProject);
 		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(name, idProject);
 		if (testPlanTemplate == null) {
@@ -75,7 +79,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 	}
 
 	public final void testAndStore(String apiKey, final ITestPlan testPlan, final boolean useRemoteRepository) throws Exception {
-		DAOManager.init(this.mongoDbHost, this.mongoDbPort);
+		DAOManager.init(this.mongoDbHost, this.mongoDbPort, this.db);
 		IProject project = DAOManager.getProjectByApiKey(apiKey);
 		testPlan.setProject(project);
 		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(testPlan.getName(), project.getIdAsString());

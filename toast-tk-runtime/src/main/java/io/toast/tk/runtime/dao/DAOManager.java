@@ -50,9 +50,10 @@ public class DAOManager {
 	
 	public static synchronized DAOManager init(
 		final String mongoHost, 
-		final int mongoPort
+		final int mongoPort,
+		final String db
 	) {
-		return init(mongoHost, mongoPort, null, null);
+		return init(mongoHost, mongoPort, db, null);
 	}
 	
 	public static synchronized DAOManager init(
