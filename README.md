@@ -32,9 +32,9 @@ It makes test scripts easier to share between technical team members (i.e: Devel
 Add Toast Runtime dependency
 ```
 <dependency>
-  <groupId>com.synaptix.toast</groupId>
+  <groupId>io.toast-tk</groupId>
   <artifactId>toast-tk-runtime</artifactId>
-  <version>0.1.3.RC1</version>
+  <version>0.1.4</version>
 </dependency>
 ```
 
