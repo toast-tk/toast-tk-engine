@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.toast-tk</groupId>
 		<artifactId>toast-tk-engine</artifactId>
-		<version>0.1.4-SNAPSHOT</version>
+		<version>0.1.5-SNAPSHOT</version>
 	</parent>
 	<artifactId>toast-tk-rest-utils</artifactId>
 	<name>Toast Toolkit - Rest Utils</name>
