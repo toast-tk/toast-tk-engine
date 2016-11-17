@@ -86,6 +86,27 @@ public class RestUtils {
 		return response.getEntity(String.class);
 	}
 
+	public static boolean saveScenario(final String scenarioId, final String scenarioName, final String webAppHost, final String webAppPort,
+			final String scenarioSteps, final String projectId) {
+		try {
+			final Client httpClient = Client.create();
+			final String webappURL = getWebAppURI(webAppHost, webAppPort);
+			final WebResource webResource = httpClient.resource(webappURL + "/saveNewInspectedScenario/"+projectId);
+			final Gson gson = new Gson();
+			final InspectScenario scenario = new InspectScenario(scenarioId, scenarioName, scenarioSteps);
+			final String json = gson.toJson(scenario);
+			LOG.debug(json);
+			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON).post(ClientResponse.class, json);
+			final int statusCode = response.getStatus();
+			LOG.info("Client response code: {}", statusCode);
+			return statusCode >= 200 && statusCode < 400;
+		} catch (final Exception e) {
+			LOG.error(e.getMessage(), e);
+			return false;
+		}
+	}
+	
 	public static boolean postScenario(final String scenarioName, final String webAppHost, final String webAppPort,
 			final String scenarioSteps, final String projectId) {
 		try {
@@ -93,7 +114,7 @@ public class RestUtils {
 			final String webappURL = getWebAppURI(webAppHost, webAppPort);
 			final WebResource webResource = httpClient.resource(webappURL + "/saveNewInspectedScenario/"+projectId);
 			final Gson gson = new Gson();
-			final InspectScenario scenario = new InspectScenario(scenarioName, scenarioSteps);
+			final InspectScenario scenario = new InspectScenario(null, scenarioName, scenarioSteps);
 			final String json = gson.toJson(scenario);
 			LOG.debug(json);
 			final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
