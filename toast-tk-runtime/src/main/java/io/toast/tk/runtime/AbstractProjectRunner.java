@@ -52,8 +52,8 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		this.db = db;
 	}
 
-	public AbstractProjectRunner(final Module extraModule) {
-		super(extraModule);
+	public AbstractProjectRunner(final Module... extraModules) {
+		super(extraModules);
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	}
@@ -119,7 +119,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		}
 	}
 
-	public void execute(final ITestPlan project, final boolean presetRepoFromWebApp) throws Exception {
+	public void execute(final ITestPlan testPlan, final boolean presetRepoFromWebApp) throws Exception {
 		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (presetRepoFromWebApp) {
 			LOG.debug("Preset repository from webapp rest api...");
@@ -128,12 +128,12 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 			final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
 			runner.run(repoAsTestPageForConvenience);
 		}
-		execute(project, runner);
+		execute(testPlan, runner);
 	}
 
-	private void execute(final ITestPlan project, final TestRunner runner) {
+	private void execute(final ITestPlan testPlan, final TestRunner runner) {
 		initEnvironment();
-		for (final ICampaign campaign : project.getCampaigns()) {
+		for (final ICampaign campaign : testPlan.getCampaigns()) {
 			for (ITestPage testPage : campaign.getTestCases()) {
 				try {
 					beginTest();
@@ -144,22 +144,22 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 				}
 			}
 		}
-		createAndOpenReport(project);
+		createAndOpenReport(testPlan);
 		tearDownEnvironment();
 	}
 
-	protected void createAndOpenReport(final ITestPlan project) {
+	protected void createAndOpenReport(final ITestPlan testPlan) {
 		final String path = getReportsFolderPath();
 		final String pageName = "Project_report";
 
-		for (final ICampaign campaign : project.getCampaigns()) {
+		for (final ICampaign campaign : testPlan.getCampaigns()) {
 			for (final ITestPage testPage : campaign.getTestCases()) {
 				String testPageHtmlReport = htmlReportGenerator.generatePageHtml(testPage);
 				htmlReportGenerator.writeFile(testPageHtmlReport, testPage.getName(), path);
 			}
 		}
 
-		final String generatePageHtml = projectHtmlReportGenerator.generateProjectReportHtml(project);
+		final String generatePageHtml = projectHtmlReportGenerator.generateProjectReportHtml(testPlan);
 		this.projectHtmlReportGenerator.writeFile(generatePageHtml, pageName, path);
 		openReport(path, pageName);
 	}

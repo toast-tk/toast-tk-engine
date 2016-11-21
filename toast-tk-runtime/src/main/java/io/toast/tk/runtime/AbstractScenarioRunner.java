@@ -40,7 +40,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		this.progressReporter = new DefaultTestProgressReporter(eventBus);
 	}
 
-	protected AbstractScenarioRunner(final Module m) {
+	protected AbstractScenarioRunner(final Module... m) {
 		super(m);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 		final EventBus eventBus = injector.getInstance(Key.get(EventBus.class, EngineEventBus.class));
@@ -110,7 +110,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		return runTestPage(testPage);
 	}
 
-	private ITestPage runTestPage(final ITestPage testPage) throws IOException {
+	public ITestPage runTestPage(final ITestPage testPage) throws IOException {
 		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (this.presetRepoFromWebApp) {
 			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
