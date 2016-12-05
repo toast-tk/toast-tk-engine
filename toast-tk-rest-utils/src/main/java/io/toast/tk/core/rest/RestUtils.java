@@ -1,29 +1,29 @@
 package io.toast.tk.core.rest;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import javax.naming.AuthenticationException;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -37,14 +37,13 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 public class RestUtils {
-	
+
 	private static final Logger LOG = LogManager.getLogger(RestUtils.class);
 
 	public static final String WEBAPP_ADDR = "toast.webapp.addr";
 
 	public static final String WEBAPP_PORT = "toast.webapp.port";
-	
-	private static CloseableHttpResponse response;
+
 
 	public static void get(final String url) {
 		final Client httpClient = Client.create();
@@ -177,75 +176,56 @@ public class RestUtils {
 		}
 	}
 
-	public static boolean post(final String url, final String jsonFixtureDescriptor, final String ApiKey) {		
-		try(final CloseableHttpClient httpClient = HttpClients.createDefault()) {
-			if(Strings.isNullOrEmpty(ApiKey)) {
-				throw new IllegalAccessException("No Api Key provided !");
-			}
-			HttpPost httppost = new HttpPost(url);			
-			httppost.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-			httppost.setHeader("Token" , ApiKey);
-			
-			StringEntity  input = new StringEntity (jsonFixtureDescriptor);
-		    httppost.setEntity(input);
+	public static boolean post(final HttpRequest requestInfo) {
+		CloseableHttpResponse response = null;
+		try (final CloseableHttpClient httpClient = buildClient(requestInfo)) {
+			HttpPost httppost = buildJsonHttpPost(requestInfo);
 			response = httpClient.execute(httppost);
 			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new IllegalStateException("Failed to post connectors - HTTP reply code : "  + response.getStatusLine().getStatusCode());
-			}	
+				throw new IllegalStateException(
+						"Failed to post connectors - HTTP reply code : " 
+				+ response.getStatusLine().getStatusCode());
+			}
 			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
-		} 
+		}
 		return false;
 	}
-	
-	public static boolean postWebEventRecord(final String url, final String record, final String ApiKey) {	
-		try(final CloseableHttpClient httpClient = HttpClients.createDefault()) {
-			if(Strings.isNullOrEmpty(ApiKey)) {
-				throw new IllegalAccessException("No Api Key provided !");
-			}
-			HttpPost httppost = new HttpPost(url);			
-			httppost.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-			httppost.setHeader("Token" , ApiKey);
-			
-			StringEntity  input = new StringEntity (record);
-		    httppost.setEntity(input);
-			response = httpClient.execute(httppost);
-			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new IllegalStateException("Failed to publish web record - HTTP reply code : "  + response.getStatusLine().getStatusCode());
-			}	
-			return response.getStatusLine().getStatusCode() == 200;
-		} catch (final Exception e) {
-			LOG.error(e.getMessage(), e);
-		} 
-		return false;
-	}
-	
-	public static boolean registerAgent(final String url, String information, final String ApiKey) {
-		try(final CloseableHttpClient httpClient = HttpClients.createDefault()) {
-			if(Strings.isNullOrEmpty(ApiKey)) {
-				throw new IllegalAccessException("No Api Key provided !");
-			}
-			
-			HttpPost httppost = new HttpPost(url);	
-			httppost.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-			httppost.setHeader("Token" , ApiKey);
 
-			StringEntity input = new StringEntity(information);
-			input.setContentType("application/json");
-			httppost.setEntity(input);
-			
+	public static boolean postWebEventRecord(final HttpRequest requestInfo) {
+		CloseableHttpResponse response = null;
+		try (final CloseableHttpClient httpClient = buildClient(requestInfo)) {
+			HttpPost httppost = buildJsonHttpPost(requestInfo);
 			response = httpClient.execute(httppost);
-			
 			if (response.getStatusLine().getStatusCode() != 200) {
-				throw new IllegalStateException("Agent registration error - HTTP reply code : "  + response.getStatusLine().getStatusCode());
+				throw new IllegalStateException(
+						"Failed to publish web record - HTTP reply code : " + response.getStatusLine().getStatusCode());
+			}
+			return response.getStatusLine().getStatusCode() == 200;
+		} catch (final Exception e) {
+			LOG.error(e.getMessage(), e);
+		}
+		return false;
+	}
+
+	public static boolean registerAgent(final HttpRequest requestInfo) {
+		CloseableHttpResponse response = null;
+		try (final CloseableHttpClient httpClient = buildClient(requestInfo)) {
+			HttpPost httppost = buildJsonHttpPost(requestInfo);
+			response = httpClient.execute(httppost);
+			if (response.getStatusLine().getStatusCode() != 200) {
+				throw new IllegalStateException(
+						"Agent registration error - HTTP reply code : " + response.getStatusLine().getStatusCode());
 			}
 			return response.getStatusLine().getStatusCode() == 200;
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
 		} finally {
 			try {
-				response.close();
+				if(response != null){
+					response.close();
+				}
 			} catch (IOException e) {
 				LOG.error(e.getMessage(), e);
 			}
@@ -253,7 +233,48 @@ public class RestUtils {
 		return false;
 	}
 
+	private static HttpPost buildJsonHttpPost(HttpRequest requestInfo) throws UnsupportedEncodingException, IllegalAccessException {
+		if (Strings.isNullOrEmpty(requestInfo.apiKey)) {
+			throw new IllegalAccessException("No Api Key provided !");
+		}
+		HttpPost httppost = new HttpPost(requestInfo.uri);
+		httppost.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+		httppost.setHeader("Token", requestInfo.apiKey);
+
+		StringEntity input = new StringEntity(requestInfo.json);
+		input.setContentType("application/json");
+		httppost.setEntity(input);
+		return httppost;
+	}
+
+	private static CloseableHttpClient buildClient(final HttpRequest requestInfo) {
+		HttpClientBuilder httpBuilder = HttpClients.custom();
+		if (isProxyDefined(requestInfo)) {
+			HttpHost proxy = new HttpHost(requestInfo.proxyAdress, requestInfo.proxyPort);
+			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
+			httpBuilder.setDefaultRequestConfig(config);
+		}
+		if (isCredentialDefined(requestInfo)) {
+			CredentialsProvider credsProvider = new BasicCredentialsProvider();
+			String user = requestInfo.proxyUser;
+			String passwd = requestInfo.proxyPassword;
+			credsProvider.setCredentials(
+					new AuthScope(requestInfo.proxyAdress, requestInfo.proxyPort),
+					new UsernamePasswordCredentials(user, passwd));
+			httpBuilder.setDefaultCredentialsProvider(credsProvider);
+		}
+		return httpBuilder.build();
+	}
+
+	private static boolean isCredentialDefined(final HttpRequest requestInfo) {
+		return StringUtils.isNotEmpty(requestInfo.proxyPassword) && StringUtils.isNotEmpty(requestInfo.proxyUser);
+	}
+
+	private static boolean isProxyDefined(final HttpRequest requestInfo) {
+		return StringUtils.isNotEmpty(requestInfo.proxyAdress);
+	}
+
 	public static void unRegisterAgent(String hostName) {
-		//NO-OP
+		// NO-OP
 	}
 }
