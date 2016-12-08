@@ -1,5 +1,7 @@
-[![Build Status](https://travis-ci.org/toast-tk/toast-tk-engine.svg?branch=master)](https://travis-ci.org/toast-tk/toast-tk-engine)  
-[![Stories in Ready](https://badge.waffle.io/toast-tk/toast-tk-engine.svg?label=ready&title=Ready)](http://waffle.io/toast-tk/toast-tk-engine)  
+[![Build Status](https://travis-ci.org/toast-tk/toast-tk-engine.svg?branch=master)](https://travis-ci.org/toast-tk/toast-tk-engine)
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=io.toast-tk%3Atoast-tk-engine)](https://sonarqube.com/api/badges/gate?key=io.toast-tk%3Atoast-tk-engine)
+
+[![Stories in Ready](https://badge.waffle.io/toast-tk/toast-tk-engine.svg?label=ready&title=Ready)](http://waffle.io/toast-tk/toast-tk-engine)
 [![Gitter](https://badges.gitter.im/toast-tk/toast-tk-engine.svg)](https://gitter.im/toast-tk/toast-tk-engine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 # Toast Tk - Engine
@@ -57,4 +59,4 @@ For contribution rules and guidelines, See [CONTRIBUTING.md](https://github.com/
 If you'd like to help, [get in touch](https://gitter.im/toast-tk/toast-tk-engine) and let us know how you'd like to help. We love contributors!! 
 
 # Licence
-See [Toast-tk Apache License 2.0](https://github.com/toast-tk/toast-tk-engine/blob/snapshot/LICENSE.md)
+[![License](http://img.shields.io/:license-Apache%202-red.svg)](https://github.com/toast-tk/toast-tk-engine/blob/snapshot/LICENSE.md)
