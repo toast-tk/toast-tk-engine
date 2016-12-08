@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/toast-tk/toast-tk-engine.svg?branch=master)](https://travis-ci.org/toast-tk/toast-tk-engine)
-[![Quality Gate](https://sonarqube.com/api/badges/gate?key=io.toast-tk%3Atoast-tk-engine)](https://sonarqube.com/api/badges/gate?key=io.toast-tk%3Atoast-tk-engine)
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=io.toast-tk%3Atoast-tk-engine)](https://sonarqube.com/dashboard/index?id=io.toast-tk%3Atoast-tk-engine) 
+[![Technical debt ratio](https://sonarqube.com/api/badges/measure?key=io.toast-tk%3Atoast-tk-engine&metric=sqale_debt_ratio)](https://sonarqube.com/dashboard/index?id=io.toast-tk%3Atoast-tk-engine)
 
 [![Stories in Ready](https://badge.waffle.io/toast-tk/toast-tk-engine.svg?label=ready&title=Ready)](http://waffle.io/toast-tk/toast-tk-engine)
 [![Gitter](https://badges.gitter.im/toast-tk/toast-tk-engine.svg)](https://gitter.im/toast-tk/toast-tk-engine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
