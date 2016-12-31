@@ -82,7 +82,7 @@ public abstract class AbstractRunner {
 			return reportsFolderPath;
 		}
 
-		final Path currentRelativePath = Paths.get("target/toast-test-results");
+		final Path currentRelativePath = Paths.get(System.getProperty("user.home") + "/.toast/target/toast-test-results");
 		final File file = new File(currentRelativePath.toUri());
 		if (!file.exists()) {
 			final boolean mkdirsResult = file.mkdirs();
