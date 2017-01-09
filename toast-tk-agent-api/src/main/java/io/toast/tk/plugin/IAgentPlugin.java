@@ -8,5 +8,5 @@ public interface IAgentPlugin {
 
 	public void boot();
 
-	public Collection<? extends Module> getModules();
+	public Collection<Module> getModules();
 }

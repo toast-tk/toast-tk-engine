@@ -234,14 +234,14 @@ public class RestUtils {
 	}
 
 	private static HttpPost buildJsonHttpPost(HttpRequest requestInfo) throws UnsupportedEncodingException, IllegalAccessException {
-		if (Strings.isNullOrEmpty(requestInfo.apiKey)) {
+		if (Strings.isNullOrEmpty(requestInfo.getApiKey())) {
 			throw new IllegalAccessException("No Api Key provided !");
 		}
-		HttpPost httppost = new HttpPost(requestInfo.uri);
+		HttpPost httppost = new HttpPost(requestInfo.getUri());
 		httppost.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-		httppost.setHeader("Token", requestInfo.apiKey);
+		httppost.setHeader("Token", requestInfo.getApiKey());
 
-		StringEntity input = new StringEntity(requestInfo.json);
+		StringEntity input = new StringEntity(requestInfo.getApiKey());
 		input.setContentType("application/json");
 		httppost.setEntity(input);
 		return httppost;
@@ -250,16 +250,16 @@ public class RestUtils {
 	private static CloseableHttpClient buildClient(final HttpRequest requestInfo) {
 		HttpClientBuilder httpBuilder = HttpClients.custom();
 		if (isProxyDefined(requestInfo)) {
-			HttpHost proxy = new HttpHost(requestInfo.proxyAdress, requestInfo.proxyPort);
+			HttpHost proxy = new HttpHost(requestInfo.getProxyAdress(), requestInfo.getProxyPort());
 			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
 			httpBuilder.setDefaultRequestConfig(config);
 		}
 		if (isCredentialDefined(requestInfo)) {
 			CredentialsProvider credsProvider = new BasicCredentialsProvider();
-			String user = requestInfo.proxyUser;
-			String passwd = requestInfo.proxyPassword;
+			String user = requestInfo.getProxyUser();
+			String passwd = requestInfo.getProxyPassword();
 			credsProvider.setCredentials(
-					new AuthScope(requestInfo.proxyAdress, requestInfo.proxyPort),
+					new AuthScope(requestInfo.getProxyAdress(), requestInfo.getProxyPort()),
 					new UsernamePasswordCredentials(user, passwd));
 			httpBuilder.setDefaultCredentialsProvider(credsProvider);
 		}
@@ -267,11 +267,11 @@ public class RestUtils {
 	}
 
 	private static boolean isCredentialDefined(final HttpRequest requestInfo) {
-		return StringUtils.isNotEmpty(requestInfo.proxyPassword) && StringUtils.isNotEmpty(requestInfo.proxyUser);
+		return StringUtils.isNotEmpty(requestInfo.getProxyPassword()) && StringUtils.isNotEmpty(requestInfo.getProxyUser());
 	}
 
 	private static boolean isProxyDefined(final HttpRequest requestInfo) {
-		return StringUtils.isNotEmpty(requestInfo.proxyAdress);
+		return StringUtils.isNotEmpty(requestInfo.getProxyAdress());
 	}
 
 	public static void unRegisterAgent(String hostName) {

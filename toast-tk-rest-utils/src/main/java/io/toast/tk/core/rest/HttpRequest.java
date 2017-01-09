@@ -2,13 +2,13 @@ package io.toast.tk.core.rest;
 
 public class HttpRequest {
 
-	public final String uri;
-	public String apiKey;
-	public String json;
-	public String proxyAdress;
-	public int proxyPort;
-	public String proxyUser;
-	public String proxyPassword;
+	private final String uri;
+	private String apiKey;
+	private String json;
+	private String proxyAdress;
+	private int proxyPort;
+	private String proxyUser;
+	private String proxyPassword;
 	
 	
 	public HttpRequest(String uri) {
@@ -33,5 +33,32 @@ public class HttpRequest {
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
+
+	public String getUri() {
+		return this.uri;
+	}
 	
+	public String getApiKey() {
+		return this.apiKey;
+	}
+	
+	public String getJson() {
+		return this.json;
+	}
+
+	public String getProxyAdress() {
+		return this.proxyAdress;
+	}
+
+	public int getProxyPort() {
+		return this.proxyPort;
+	}
+
+	public String getProxyUser() {
+		return this.proxyUser;
+	}
+
+	public String getProxyPassword() {
+		return this.proxyPassword;
+	}
 }

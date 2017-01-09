@@ -1,6 +1,5 @@
 package io.toast.tk.agent.config;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
@@ -33,17 +32,15 @@ public class WebConfigProvider implements Provider<WebConfig> {
 		super();
 	}
 
-	private void initConfig() {
+	private void initConfig() throws NullPointerException {
 		String userHomepath = WebConfig.getToastHome() + "/";
 		Properties p = null;
-		if(userHomepath != null) {
-			p = new Properties();
-			try {
-				p.load(new FileReader(userHomepath + "toast.web.properties"));
-			}
-			catch(IOException e) {
-				LOG.error(e.getMessage(), e);
-			}
+		p = new Properties();
+		try {
+			p.load(new FileReader(userHomepath + "toast.web.properties"));
+		}
+		catch(IOException e) {
+			LOG.error(e.getMessage(), e);
 		}
 		webConfig = new WebConfig();
 		webConfig.setWebInitRecordingUrl(p.getProperty(TOAST_TEST_WEB_INIT_RECORDING_URL, "URL to record"));
