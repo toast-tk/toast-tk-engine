@@ -104,20 +104,25 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		testPlan.setId(null);
 		testPlan.setIteration(previousRun.getIteration());
 		for (final ICampaign newCampaign : testPlan.getCampaigns()) {
-			for (final ICampaign previousCampaign : previousRun.getCampaigns()) {
-				if (newCampaign.getName().equals(previousCampaign.getName())) {
-					for (final ITestPage newExecPage : newCampaign.getTestCases()) {
-						for (ITestPage previousExecPage : previousCampaign.getTestCases()) {
-							if (newExecPage.getName().equals(previousExecPage.getName())) {
-								newExecPage.setPreviousIsSuccess(previousExecPage.isSuccess());
-								newExecPage.setPreviousExecutionTime(previousExecPage.getExecutionTime());
-							}
-						}
+			for (final ITestPage newExecPage : newCampaign.getTestCases()) {
+				updateTestPageFromPreviousRun( newCampaign, newExecPage, previousRun);
+			}
+		}
+	}
+	
+	private void updateTestPageFromPreviousRun(final ICampaign newCampaign, final ITestPage newExecPage, final TestPlanImpl previousRun) {
+		for (final ICampaign previousCampaign : previousRun.getCampaigns()) {
+			if (newCampaign.getName().equals(previousCampaign.getName())) {
+				for (ITestPage previousExecPage : previousCampaign.getTestCases()) {
+					if (newExecPage.getName().equals(previousExecPage.getName())) {
+						newExecPage.setPreviousIsSuccess(previousExecPage.isSuccess());
+						newExecPage.setPreviousExecutionTime(previousExecPage.getExecutionTime());
 					}
 				}
 			}
 		}
 	}
+	
 
 	public void execute(final ITestPlan testPlan, final boolean presetRepoFromWebApp) throws Exception {
 		final TestRunner runner = injector.getInstance(TestRunner.class);

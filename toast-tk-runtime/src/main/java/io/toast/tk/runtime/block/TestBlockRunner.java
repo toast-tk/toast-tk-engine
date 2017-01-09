@@ -261,8 +261,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 		String item;
 
+		@SuppressWarnings("unused")
 		Integer start;
 
+		@SuppressWarnings("unused")
 		Integer end;
 
 		public ActionIndex(
