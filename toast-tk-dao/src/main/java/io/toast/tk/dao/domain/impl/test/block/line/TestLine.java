@@ -1,6 +1,7 @@
 package io.toast.tk.dao.domain.impl.test.block.line;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import com.github.jmkgreen.morphia.annotations.Embedded;
 import com.github.jmkgreen.morphia.annotations.Entity;
@@ -12,6 +13,8 @@ import io.toast.tk.dao.domain.api.test.IRunnableTest;
 @Embedded
 public class TestLine implements IRunnableTest {
 
+	private String id;
+	
 	private String test;
 
 	private String expected;
@@ -34,6 +37,7 @@ public class TestLine implements IRunnableTest {
 		final String expected,
 		final String comment
 	) {
+		this.id = UUID.randomUUID().toString();
 		this.test = test;
 		this.expected = expected;
 		this.comment = comment;
@@ -71,6 +75,10 @@ public class TestLine implements IRunnableTest {
 
 	public void setComment(final String comment) {
 		this.comment = comment;
+	}
+
+	public String getId() {
+		return id;
 	}
 
 	@Override

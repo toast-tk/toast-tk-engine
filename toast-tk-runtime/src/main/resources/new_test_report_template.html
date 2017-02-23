@@ -19,6 +19,7 @@
           crossorigin="anonymous"></link>
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"></link>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"></link>
     <style type="text/css">
         .navbar-default .navbar-brand {
             font-family: "Kaushan Script", "Helvetica Neue", Helvetica, Arial,
@@ -77,9 +78,17 @@
             position: fixed;
             left: 0;
             top: 0;
-            width: 100%;
-            height: 100%;
+			width: 800px;
+            height: 600px;
+			overflow:auto;
         }
+		
+		p, pre {
+			width: 700px;
+			height: 400px;
+			max-width: 900px;
+			max-height: 500px;
+		}
 
         .my-modal-body {
 
@@ -97,6 +106,8 @@
             crossorigin="anonymous"></script>
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script language="javascript">
         function displayImage(base64Image) {
             var src = "data:image/png;base64," + base64Image;
@@ -151,11 +162,11 @@
             <div class="pull-right" style="padding-top: 10px;">
                 <div class="row-fluid">
                     <strong>Excution Date:</strong> <span
-                        th:text="${test.startDateTime}"> 2015-06-10T13:55:18.433 </span>
+                        th:text="${@io.toast.tk.runtime.report.TemplateHelper@getStartTimeFormat(test)}"> yyyy-MM-dd'T'HH:mm:ss </span>
                 </div>
                 <div class="row-fluid">
                     <strong>Total Execution Time: </strong> <span
-                        th:text="${test.executionTime}"> 0 </span> ms
+                        th:text="${@io.toast.tk.runtime.report.TemplateHelper@getExecutionTimeFormat(test)}"> HH:mm:ss:SSS </span>
                 </div>
             </div>
         </div>
@@ -229,16 +240,74 @@
                                                 <tr
                                                         th:class="${line.testResult}? ${@io.toast.tk.runtime.report.TemplateHelper@getResultKindAsString(line.testResult)}"
                                                         th:each="line : ${block.blockLines}">
-                                                    <td
-                                                            th:text="${@io.toast.tk.runtime.report.TemplateHelper@getStepSentence(line)}">
-                                                        Click on *Connexion.Connexion*
-                                                    </td>
-                                                    <td
-                                                            th:text="${line.expected} == null ? '&nbsp;' : ${line.expected}">
-                                                        &nbsp;</td>
-                                                    <td
-                                                            th:text="${@io.toast.tk.runtime.report.TemplateHelper@formatStringToHtml(line)}">
-                                                        true
+													<td>
+														<a th:text="${@io.toast.tk.runtime.report.TemplateHelper@getSmallStepSentence(line)}" data-toggle="modal" th:attr="data-target='#sentence' + ${@io.toast.tk.runtime.report.TemplateHelper@getLineId(line)}">My short sentence</a>
+														 <!-- Modal -->
+														 <div class="modal fade" th:id="'sentence' + ${@io.toast.tk.runtime.report.TemplateHelper@getLineId(line)}" role="dialog">
+															<div class="modal-dialog modal-lg">
+															<!-- Modal content-->
+																<div class="modal-content">
+																	<div class="modal-header">
+																		<button type="button" class="close" data-dismiss="modal">&times;</button>
+																		<h4 class="modal-title">Sentence</h4>
+																	</div>
+																	<div class="modal-body">
+																		<p th:text="${@io.toast.tk.runtime.report.TemplateHelper@getStepSentence(line)}">
+																			My long sentence
+																		</p>
+																	</div>
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+                                                    <td>
+														<a th:text="${@io.toast.tk.runtime.report.TemplateHelper@getSmallExpectedResult(line)}" data-toggle="modal" th:attr="data-target='#result' + ${@io.toast.tk.runtime.report.TemplateHelper@getLineId(line)}">My short expected result</a>
+														<!-- Modal -->
+														<div class="modal fade" th:id="'result' + ${@io.toast.tk.runtime.report.TemplateHelper@getLineId(line)}" role="dialog">
+															<div class="modal-dialog modal-lg">
+															<!-- Modal content-->
+																<div class="modal-content">
+																	<div class="modal-header">
+																		<button type="button" class="close" data-dismiss="modal">&times;</button>
+																		<h4 class="modal-title">Expected Result</h4>
+																	</div>
+																	<div class="modal-body">
+																		<pre th:text="${@io.toast.tk.runtime.report.TemplateHelper@getExpectedResult(line)}">
+																			My long expected result
+																		</pre>
+																	</div>
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</td>
+                                                    <td>
+														<a th:text="${@io.toast.tk.runtime.report.TemplateHelper@formatSmallStringToHtml(line)}" data-toggle="modal" th:attr="data-target='#expectedResult' + ${@io.toast.tk.runtime.report.TemplateHelper@getLineId(line)}">My short result</a>
+														<!-- Modal -->
+														<div class="modal fade" th:id="'expectedResult' + ${@io.toast.tk.runtime.report.TemplateHelper@getLineId(line)}" role="dialog">
+															<div class="modal-dialog modal-lg">
+															<!-- Modal content-->
+																<div class="modal-content">
+																	<div class="modal-header">
+																		<button type="button" class="close" data-dismiss="modal">&times;</button>
+																		<h4 class="modal-title">Result</h4>
+																	</div>
+																	<div class="modal-body">
+																		<pre th:text="${@io.toast.tk.runtime.report.TemplateHelper@formatStringToHtml(line)}">
+																			My long result
+																		</pre>
+																	</div>
+																	<div class="modal-footer">
+																		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+																	</div>
+																</div>
+															</div>
+														</div>
                                                     </td>
                                                     <td><span
                                                             th:text="${line.comment} == null ? '&nbsp;' : ${line.comment}">&nbsp;</span>
