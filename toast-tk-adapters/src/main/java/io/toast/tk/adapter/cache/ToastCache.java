@@ -15,12 +15,14 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 
 import io.toast.tk.adapter.FixtureDescriptor;
 import io.toast.tk.adapter.FixtureService;
 import io.toast.tk.core.annotation.Action;
 import io.toast.tk.core.annotation.ActionAdapter;
+import org.reflections.scanners.TypeElementsScanner;
 
 public final class ToastCache {
 
@@ -113,7 +115,7 @@ public final class ToastCache {
 	}
 
 	private static Reflections buildTypeAnnotationReflection() {
-		return new Reflections( new TypeAnnotationsScanner());
+		return new Reflections( new TypeAnnotationsScanner(), new SubTypesScanner(), new TypeElementsScanner());
 	}
 
 	public Set<Method> getActionMethods() {

@@ -62,11 +62,6 @@
 		</dependency>
 		<dependency>
 			<groupId>io.toast-tk</groupId>
-			<artifactId>toast-tk-dao-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.toast-tk</groupId>
 			<artifactId>toast-tk-runtime-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
