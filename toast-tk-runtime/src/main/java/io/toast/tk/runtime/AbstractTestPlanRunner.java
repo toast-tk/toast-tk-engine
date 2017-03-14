@@ -59,11 +59,11 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	}
 
-	public final void test(ITestPlan testplan, boolean useRemoteRepository) throws Exception {
+	public final void test(ITestPlan testplan, boolean useRemoteRepository) throws IOException {
 		execute(testplan, useRemoteRepository);
 	}
 
-	public final void test(final String name, final String idProject, final boolean useRemoteRepository) throws Exception {
+	public final void test(final String name, final String idProject, final boolean useRemoteRepository) throws IOException, IllegalAccessException {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort, this.db);
 		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(name, idProject);
 		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(name, idProject);
@@ -75,11 +75,11 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		DAOManager.saveTestPlan(testPlanTemplate);
 	}
 
-	public final void testAndStore(String apiKey, final ITestPlan testplan) throws Exception {
+	public final void testAndStore(String apiKey, final ITestPlan testplan) throws IOException, IllegalAccessException {
 		testAndStore(apiKey, testplan, false);
 	}
 
-	public final void testAndStore(String apiKey, final ITestPlan testPlan, final boolean useRemoteRepository) throws Exception {
+	public final void testAndStore(String apiKey, final ITestPlan testPlan, final boolean useRemoteRepository) throws IOException, IllegalAccessException {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort, this.db);
 		IProject project = DAOManager.getProjectByApiKey(apiKey);
 		testPlan.setProject(project);
@@ -106,18 +106,26 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		testPlan.setIteration(previousRun.getIteration());
 		for (final ICampaign newCampaign : testPlan.getCampaigns()) {
 			for (final ICampaign previousCampaign : previousRun.getCampaigns()) {
-				if (newCampaign.getName().equals(previousCampaign.getName())) {
-					for (final ITestPage newExecPage : newCampaign.getTestCases()) {
-						for (ITestPage previousExecPage : previousCampaign.getTestCases()) {
-							if (newExecPage.getName().equals(previousExecPage.getName())) {
-								newExecPage.setPreviousIsSuccess(previousExecPage.isSuccess());
-								newExecPage.setPreviousExecutionTime(previousExecPage.getExecutionTime());
-							}
-						}
-					}
-				}
+				compareAndUpdateCampain(newCampaign, previousCampaign);
 			}
 		}
+	}
+
+	private void compareAndUpdateCampain(ICampaign newCampaign, ICampaign previousCampaign) {
+		if (newCampaign.getName().equals(previousCampaign.getName())) {
+            for (final ITestPage newExecPage : newCampaign.getTestCases()) {
+                for (ITestPage previousExecPage : previousCampaign.getTestCases()) {
+					compareAndUpdateTestPage(newExecPage, previousExecPage);
+				}
+            }
+        }
+	}
+
+	private void compareAndUpdateTestPage(ITestPage newExecPage, ITestPage previousExecPage) {
+		if (newExecPage.getName().equals(previousExecPage.getName())) {
+            newExecPage.setPreviousIsSuccess(previousExecPage.isSuccess());
+            newExecPage.setPreviousExecutionTime(previousExecPage.getExecutionTime());
+        }
 	}
 
 	public void execute(final ITestPlan testPlan, final boolean presetRepoFromWebApp) throws IOException {
