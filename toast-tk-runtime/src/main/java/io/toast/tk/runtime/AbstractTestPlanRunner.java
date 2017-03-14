@@ -138,7 +138,7 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 			for (ITestPage testPage : campaign.getTestCases()) {
 				try {
 					beginTest();
-					testPage = runner.run(testPage);
+					runner.run(testPage);
 					endTest();
 				} catch (final Exception e) {
 					LOG.error(e.getMessage(), e);
