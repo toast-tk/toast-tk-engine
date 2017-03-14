@@ -68,6 +68,8 @@ public abstract class AbstractRunner {
 
 	public abstract void initEnvironment();
 
+	public abstract String getReportsOutputPath();
+
 	/**
 	 * Creates the test reports folder, if it does not exists, and returns its path.
 	 * The folder is created in the current execution location, under /target/toast-test-results

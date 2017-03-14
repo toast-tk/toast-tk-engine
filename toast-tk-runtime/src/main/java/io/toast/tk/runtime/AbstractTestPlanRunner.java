@@ -18,9 +18,9 @@ import io.toast.tk.runtime.parse.TestParser;
 import io.toast.tk.runtime.report.IHTMLReportGenerator;
 import io.toast.tk.runtime.report.IProjectHtmlReportGenerator;
 
-public abstract class AbstractProjectRunner extends AbstractRunner {
+public abstract class AbstractTestPlanRunner extends AbstractRunner {
 
-	private static final Logger LOG = LogManager.getLogger(AbstractProjectRunner.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractTestPlanRunner.class);
 
 	private final IHTMLReportGenerator htmlReportGenerator;
 
@@ -32,34 +32,34 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 
 	private String db;
 
-	protected AbstractProjectRunner() {
+	protected AbstractTestPlanRunner() {
 		super();
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	}
 
-	protected AbstractProjectRunner(final Module extraModule, final String host, final int port, final String db) {
+	protected AbstractTestPlanRunner(final Module extraModule, final String host, final int port, final String db) {
 		this(extraModule);
 		this.mongoDbHost = host;
 		this.mongoDbPort = port;
 		this.db = db;
 	}
 
-	protected AbstractProjectRunner(final String host, final int port, final String db) {
+	protected AbstractTestPlanRunner(final String host, final int port, final String db) {
 		this();
 		this.mongoDbHost = host;
 		this.mongoDbPort = port;
 		this.db = db;
 	}
 
-	public AbstractProjectRunner(final Module... extraModules) {
+	public AbstractTestPlanRunner(final Module... extraModules) {
 		super(extraModules);
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	}
 
-	public final void test(ITestPlan project, boolean useRemoteRepository) throws Exception {
-		execute(project, useRemoteRepository);
+	public final void test(ITestPlan testplan, boolean useRemoteRepository) throws Exception {
+		execute(testplan, useRemoteRepository);
 	}
 
 	public final void test(final String name, final String idProject, final boolean useRemoteRepository) throws Exception {
@@ -74,8 +74,8 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		DAOManager.saveTestPlan(testPlanTemplate);
 	}
 
-	public final void testAndStore(String apiKey, final ITestPlan project) throws Exception {
-		testAndStore(apiKey, project, false);
+	public final void testAndStore(String apiKey, final ITestPlan testplan) throws Exception {
+		testAndStore(apiKey, testplan, false);
 	}
 
 	public final void testAndStore(String apiKey, final ITestPlan testPlan, final boolean useRemoteRepository) throws Exception {
@@ -150,7 +150,7 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 
 	protected void createAndOpenReport(final ITestPlan testPlan) {
 		final String path = getReportsFolderPath();
-		final String pageName = "Project_report";
+		final String pageName = "testplan_report";
 
 		for (final ICampaign campaign : testPlan.getCampaigns()) {
 			for (final ITestPage testPage : campaign.getTestCases()) {
@@ -163,4 +163,10 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 		this.projectHtmlReportGenerator.writeFile(generatePageHtml, pageName, path);
 		openReport(path, pageName);
 	}
+
+	@Override
+	public String getReportsOutputPath(){
+		return null;
+	}
+
 }

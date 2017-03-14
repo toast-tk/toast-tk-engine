@@ -88,6 +88,7 @@ public final class ToastCache {
 					addMethod(m);
 				}
 			}
+			buildAndAddFixtureService(service);
 		}
 	}
 

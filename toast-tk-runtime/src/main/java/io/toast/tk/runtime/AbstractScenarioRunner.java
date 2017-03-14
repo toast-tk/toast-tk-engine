@@ -131,9 +131,15 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 			final ITestPage testPage
 	) {
 		final String generatePageHtml = htmlReportGenerator.generatePageHtml(testPage);
-		final String path = getReportsFolderPath();
+		final String path = getReportsOutputPath() == null ? getReportsFolderPath(): getReportsOutputPath();
 		final String pageName = testPage.getName();
 		htmlReportGenerator.writeFile(generatePageHtml, pageName, path);
 		openReport(path, pageName);
 	}
+
+	@Override
+	public String getReportsOutputPath(){
+		return null;
+	}
+
 }
