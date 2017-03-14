@@ -65,10 +65,11 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	) throws Exception {
 		final List<ITestPage> testPages = new ArrayList<>();
 		initEnvironment();
-		for (final String fileName : scenarios) {
-			LOG.info("Start main test parser: {}", fileName);
+		for (final String fullFileName : scenarios) {
+			LOG.info("Start main test parser: {}", fullFileName);
 
-			List<String> lines = FileHelper.getScript(fileName);
+			List<String> lines = FileHelper.getScript(fullFileName);
+			String fileName = fullFileName.startsWith("C:") ? fullFileName.split("\\\\")[fullFileName.split("\\\\").length - 1] : fullFileName;
 			final ITestPage result = runTestPage(new TestParser().parse(lines, fileName));
 			testPages.add(result);
 		}

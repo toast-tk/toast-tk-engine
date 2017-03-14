@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -24,7 +26,9 @@ import io.toast.tk.dao.domain.impl.test.block.line.TestLine;
 
 public class TemplateHelper {
 	
-	private static int HTML_LENGTH_MAX = 40;
+	private static int Html_Length_Max = 40;
+	private static final Logger LOG = LogManager.getLogger(TemplateHelper.class);
+
 	
 	public static String getBlockName(final IBlock block) {
 		if(block instanceof ITestPage) {
@@ -116,7 +120,7 @@ public class TemplateHelper {
 	}
 
 	public static String formatSmallStringToHtml(final TestLine line) {
-		return substringText(formatStringToHtml(line), HTML_LENGTH_MAX);
+		return substringText(formatStringToHtml(line), Html_Length_Max);
 	}
 	
 	public static String formatStringToHtml(final TestLine line) {
@@ -128,7 +132,7 @@ public class TemplateHelper {
 	}
 
 	public static String getSmallExpectedResult(final TestLine line) {
-		return substringText(getExpectedResult(line), HTML_LENGTH_MAX);
+		return substringText(getExpectedResult(line), Html_Length_Max);
 	}
 	
 	public static String getExpectedResult(final TestLine line) {
@@ -137,7 +141,7 @@ public class TemplateHelper {
 	}
 	
 	public static String getSmallStepSentence(final TestLine line) {
-		return substringText(getStepSentence(line), 2*HTML_LENGTH_MAX);
+		return substringText(getStepSentence(line), 2*Html_Length_Max);
 	}
 	
 	public static String getStepSentence(final TestLine line) {
@@ -158,23 +162,21 @@ public class TemplateHelper {
 	private static String prettyXmlText(String str) {
 		SAXBuilder builder = new SAXBuilder();
 		
-		//File fichierXML = new File("d:\\diagramme.xml");
 		InputStream stream;
 		try {
 			stream = new ByteArrayInputStream(str.getBytes("UTF-8"));
 			Document document;
 		
 			/* Parsing of the file */
-			//document = builder.build(fichierXML);
 			document = builder.build(stream);
 	
 			Element rootNode = document.getRootElement();
 
 			XMLOutputter output = new XMLOutputter();
 			output.setFormat(Format.getPrettyFormat());
-			String result = output.outputString(rootNode);
-			return result;
+			return output.outputString(rootNode);
 		} catch (JDOMException | IOException e) {
+			LOG.debug("The string to display does not have a Xml format !");
 			return str;
 		}
 	}
