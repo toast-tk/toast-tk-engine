@@ -1,5 +1,6 @@
 package io.toast.tk.runtime;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
@@ -119,7 +120,7 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		}
 	}
 
-	public void execute(final ITestPlan testPlan, final boolean presetRepoFromWebApp) throws Exception {
+	public void execute(final ITestPlan testPlan, final boolean presetRepoFromWebApp) throws IOException {
 		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (presetRepoFromWebApp) {
 			LOG.debug("Preset repository from webapp rest api...");

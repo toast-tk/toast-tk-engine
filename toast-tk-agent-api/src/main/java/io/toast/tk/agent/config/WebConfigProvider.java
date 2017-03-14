@@ -32,10 +32,9 @@ public class WebConfigProvider implements Provider<WebConfig> {
 		super();
 	}
 
-	private void initConfig() throws NullPointerException {
+	private void initConfig() {
 		String userHomepath = WebConfig.getToastHome() + "/";
-		Properties p = null;
-		p = new Properties();
+		Properties p = new Properties();
 		try {
 			p.load(new FileReader(userHomepath + "toast.web.properties"));
 		}
