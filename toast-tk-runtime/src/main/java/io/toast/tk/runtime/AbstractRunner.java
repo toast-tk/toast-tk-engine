@@ -44,15 +44,17 @@ public abstract class AbstractRunner {
 	public AbstractRunner(final Injector injector) {
 		this.injector = injector;
 	}
-
-	public AbstractRunner(final Module extraModule) {
+	
+	public AbstractRunner(final Module... extraModules) {
 		listAvailableServicesByReflection = ActionAdapterCollector.listAvailableServicesByReflection();
 		LOG.info("Found adapters: {}", listAvailableServicesByReflection.size());
 		this.injector = Guice.createInjector(new AbstractActionAdapterModule() {
 			@Override
 			protected void configure() {
 				install(new EngineModule());
-				install(extraModule);
+				for(Module module: extraModules){
+					install(module);
+				}
 				listAvailableServicesByReflection.forEach(f -> bindActionAdapter(f.clazz));
 			}
 		});
@@ -65,6 +67,8 @@ public abstract class AbstractRunner {
 	public abstract void endTest();
 
 	public abstract void initEnvironment();
+
+	public abstract String getReportsOutputPath();
 
 	/**
 	 * Creates the test reports folder, if it does not exists, and returns its path.
@@ -80,7 +84,7 @@ public abstract class AbstractRunner {
 			return reportsFolderPath;
 		}
 
-		final Path currentRelativePath = Paths.get("target/toast-test-results");
+		final Path currentRelativePath = Paths.get(System.getProperty("user.home") + "/.toast/target/toast-test-results");
 		final File file = new File(currentRelativePath.toUri());
 		if (!file.exists()) {
 			final boolean mkdirsResult = file.mkdirs();
