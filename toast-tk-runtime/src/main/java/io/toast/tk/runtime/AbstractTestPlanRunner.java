@@ -63,36 +63,59 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		execute(testplan, useRemoteRepository);
 	}
 
-	public final void test(final String name, final String idProject, final boolean useRemoteRepository) throws IOException, IllegalAccessException {
+	public final void test(final String name, final String idProject, final boolean useRemoteRepository) throws ToastRuntimeException {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort, this.db);
 		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(name, idProject);
 		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(name, idProject);
 		if (testPlanTemplate == null) {
-			throw new IllegalAccessException("No reference test plan template found for: " + name);
+			throw new ToastRuntimeException("No reference test plan template found for: " + name);
 		}
 		updateTestPlanFromPreviousRun((ITestPlan)testPlanTemplate, lastExecution);
-		execute(testPlanTemplate, useRemoteRepository);
-		DAOManager.saveTestPlan(testPlanTemplate);
+		runAndSave(testPlanTemplate, useRemoteRepository);
 	}
 
-	public final void testAndStore(String apiKey, final ITestPlan testplan) throws IOException, IllegalAccessException {
+	private void runAndSave(ITestPlan testPlan, boolean useRemoteRepository) throws ToastRuntimeException {
+		try {
+			execute(testPlan, useRemoteRepository);
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+			throw new ToastRuntimeException("Error: Saving TestPlan template failed.");
+		}
+		try {
+			DAOManager.saveTestPlan((TestPlanImpl)testPlan);
+		} catch (IllegalAccessException e) {
+			LOG.error(e.getMessage(), e);
+			throw new ToastRuntimeException("Error: Saving TestPlan execution report failed.");
+		}
+	}
+
+	public final void testAndStore(String apiKey, final ITestPlan testplan) throws ToastRuntimeException {
 		testAndStore(apiKey, testplan, false);
 	}
 
-	public final void testAndStore(String apiKey, final ITestPlan testPlan, final boolean useRemoteRepository) throws IOException, IllegalAccessException {
+	public final void testAndStore(String apiKey, final ITestPlan testPlan, final boolean useRemoteRepository) throws ToastRuntimeException {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort, this.db);
 		IProject project = DAOManager.getProjectByApiKey(apiKey);
 		testPlan.setProject(project);
 		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(testPlan.getName(), project.getIdAsString());
 		if(Objects.nonNull(testPlanTemplate)){
-			DAOManager.updateTemplateFromTestPlan(testPlan);
+			try {
+				DAOManager.updateTemplateFromTestPlan(testPlan);
+			} catch (IllegalAccessException e) {
+				LOG.error(e.getMessage(), e);
+				throw new ToastRuntimeException("Error: Updating Test Plan template failed.");
+			}
 		}else{
-			DAOManager.saveTemplate((TestPlanImpl) testPlan);
+			try {
+				DAOManager.saveTemplate((TestPlanImpl) testPlan);
+			} catch (IllegalAccessException e) {
+				LOG.error(e.getMessage(), e);
+				throw new ToastRuntimeException("Error: Saving TestPlan template failed.");
+			}
 		}
 		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(testPlan.getName(), project.getIdAsString());
 		updateTestPlanFromPreviousRun(testPlan, lastExecution);
-		execute(testPlan, useRemoteRepository); 
-		DAOManager.saveTestPlan((TestPlanImpl)testPlan);
+		runAndSave(testPlan, useRemoteRepository);
 	}
 
 	/**

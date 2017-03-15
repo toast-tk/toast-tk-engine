@@ -38,19 +38,23 @@ public class HttpRequest {
 		}
 
 		public HttpRequest build(){
-			HttpRequest request = new HttpRequest(uri, json);
-			request.setApiKey(apiKey);
+			HttpRequest request = new HttpRequest(uri, json, apiKey);
 			return request;
 		}
 	}
 
-	public HttpRequest(String uri) {
+	private HttpRequest(String uri) {
 		this.uri = uri;
 	}
 	
-	public HttpRequest(String uri, String json) {
+	private HttpRequest(String uri, String json) {
 		this(uri);
 		this.json = json;
+	}
+
+	private HttpRequest(String uri, String json, String key) {
+		this(uri, json);
+		this.apiKey = key;
 	}
 
 	public void setProxyInfo(String proxyHost, 
@@ -61,10 +65,6 @@ public class HttpRequest {
 		this.proxyPort = proxyPort2;
 		this.proxyUser = proxyUser2;
 		this.proxyPassword = proxyPassword2;
-	}
-
-	private void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
 	}
 
 	public String getUri() {
