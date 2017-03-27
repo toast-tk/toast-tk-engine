@@ -1,26 +1,23 @@
 package io.toast.tk.runtime;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-
 import io.toast.tk.adapter.ActionAdapterCollector;
 import io.toast.tk.adapter.FixtureService;
 import io.toast.tk.adapter.constant.AdaptersConfig;
 import io.toast.tk.adapter.constant.AdaptersConfigProvider;
 import io.toast.tk.core.guice.AbstractActionAdapterModule;
 import io.toast.tk.runtime.module.EngineModule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 public abstract class AbstractRunner {
 
