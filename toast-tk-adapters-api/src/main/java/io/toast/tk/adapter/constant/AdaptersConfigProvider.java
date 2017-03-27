@@ -18,31 +18,32 @@ import java.util.Properties;
 
 public class AdaptersConfigProvider implements Provider<AdaptersConfig> {
 
-    private static final Logger LOG = LogManager.getLogger(AdaptersConfigProvider.class);
+	private static final Logger LOG = LogManager.getLogger(AdaptersConfigProvider.class);
 
-    private AdaptersConfig config;
+	private AdaptersConfig config;
 
-    public AdaptersConfigProvider() {
-        initConfig();
-    }
+	public AdaptersConfigProvider() {
+		initConfig();
+	}
 
 	private void initConfig() {
 		LOG.info("Initialize configuration from /toast.properties");
 
 		final Properties p = new Properties();
 
-        InputStream resourceAsStream = this.getClass().getResourceAsStream("/toast.properties");
+		InputStream resourceAsStream = this.getClass().getResourceAsStream("/toast.properties");
 
-		if(resourceAsStream == null){
+		if (resourceAsStream == null) {
 			File translations = Paths.get(System.getProperty("user.home") + "/.toast/toast.properties").toFile();
-			if(translations.exists()){
+			if (translations.exists()) {
 				try {
 					resourceAsStream = new FileInputStream(translations);
 				} catch (FileNotFoundException e) {
 					LOG.error(e.getMessage(), e);
 				}
 			}
-		}try (final Reader resourceFileReader = new InputStreamReader(resourceAsStream)) {
+		}
+		try (final Reader resourceFileReader = new InputStreamReader(resourceAsStream)) {
 			p.load(resourceFileReader);
 		} catch (final IOException e) {
 			LOG.error(e.getMessage(), e);
@@ -53,16 +54,17 @@ public class AdaptersConfigProvider implements Provider<AdaptersConfig> {
 				p.getProperty("browser.path"),
 				Boolean.parseBoolean(p.getProperty("web.driver.ssl")),
 				p.getProperty("reports.folder.path"));
-	// Mail reports configuration
-        this.config.setMailFrom(p.getProperty("mail.from"));
-        String[] mailRecipients = StringUtils.split(p.getProperty("mail.to"), ",");
-        if (mailRecipients != null) {
-            this.config.setMailTo(Arrays.asList(mailRecipients));
-        }
-        this.config.setMailSendReport(Boolean.parseBoolean(p.getProperty("mail.send")));}
+		// Mail reports configuration
+		this.config.setMailFrom(p.getProperty("mail.from"));
+		String[] mailRecipients = StringUtils.split(p.getProperty("mail.to"), ",");
+		if (mailRecipients != null) {
+			this.config.setMailTo(Arrays.asList(mailRecipients));
+		}
+		this.config.setMailSendReport(Boolean.parseBoolean(p.getProperty("mail.send")));
+	}
 
-    @Override
-    public AdaptersConfig get() {
-        return config;
-    }
+	@Override
+	public AdaptersConfig get() {
+		return config;
+	}
 }

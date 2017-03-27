@@ -130,9 +130,7 @@ public class MailReportSender implements IMailReportSender {
 				}
 			}
 		}
-		String s = sb.toString();
-		System.out.println("s = " + s);
-		return s;
+		return sb.toString();
 	}
 
 	private long getFailureNumber(ICampaign campaign) {
