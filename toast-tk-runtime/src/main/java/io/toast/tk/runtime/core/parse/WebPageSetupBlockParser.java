@@ -67,7 +67,7 @@ public class WebPageSetupBlockParser implements IBlockParser {
 
 	private static void assertLineHasEnoughColumn(String firstLine, String[] split) {
 		if(split.length != 5) {
-		    throw new IllegalArgumentException("Web page setup line does not have enough columns: " + firstLine);
+		    throw new IllegalArgumentException("Web page setup line does not have enough columns: " + "|" + String.join("|", split) + "|");
 		}
 	}
 

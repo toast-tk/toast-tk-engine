@@ -25,8 +25,9 @@ import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.dao.domain.impl.test.block.line.TestLine;
 
 public class TemplateHelper {
-	
+
 	private static int Html_Length_Max = 40;
+	private static int Html_Length_Full = 100000;
 	private static final Logger LOG = LogManager.getLogger(TemplateHelper.class);
 
 	
@@ -119,14 +120,19 @@ public class TemplateHelper {
 		return line.getId();
 	}
 
+	public static String returnResult(String message) {
+		return message.length() > Html_Length_Full ? substringText(message, Html_Length_Full) : message;
+	}
+	
 	public static String formatSmallStringToHtml(final TestLine line) {
 		return substringText(formatStringToHtml(line), Html_Length_Max);
 	}
 	
 	public static String formatStringToHtml(final TestLine line) {
 		if(line.getTestResult() != null) {
-			final String message = line.getTestResult().getMessage();
-			return message != null ? prettyXmlText(message) : "";
+			String message = line.getTestResult().getMessage();
+			message = message != null ? prettyXmlText(message) : "";
+			return returnResult(message);
 		}
 		return "&nbsp;";
 	}
@@ -136,8 +142,9 @@ public class TemplateHelper {
 	}
 	
 	public static String getExpectedResult(final TestLine line) {
-		final String message = line.getExpected(); 
-		return message != null ? prettyXmlText(message) : "";		
+		String message = line.getExpected(); 
+		message = message != null ? prettyXmlText(message) : "";	
+		return returnResult(message);
 	}
 	
 	public static String getSmallStepSentence(final TestLine line) {
@@ -145,8 +152,9 @@ public class TemplateHelper {
 	}
 	
 	public static String getStepSentence(final TestLine line) {
-		final String contextualTestSentence = line.getTestResult() != null ? line.getTestResult().getContextualTestSentence() : null;
-		return contextualTestSentence != null ? contextualTestSentence : line.getTest();		
+		String contextualTestSentence = line.getTestResult() != null ? line.getTestResult().getContextualTestSentence() : null;
+		contextualTestSentence = contextualTestSentence != null ? contextualTestSentence : line.getTest();		
+		return returnResult(contextualTestSentence);
 	}
 
 	public static String substringText(String text, int maxLength) {

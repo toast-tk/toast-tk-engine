@@ -84,8 +84,8 @@
         }
 		
 		p, pre {
-			width: 700px;
-			height: 400px;
+			width: 800px;
+			height: 600px;
 			max-width: 900px;
 			max-height: 500px;
 		}
@@ -252,9 +252,9 @@
 																		<h4 class="modal-title">Sentence</h4>
 																	</div>
 																	<div class="modal-body">
-																		<p th:text="${@io.toast.tk.runtime.report.TemplateHelper@getStepSentence(line)}">
+																		<pre th:text="${@io.toast.tk.runtime.report.TemplateHelper@getStepSentence(line)}">
 																			My long sentence
-																		</p>
+																		</pre>
 																	</div>
 																	<div class="modal-footer">
 																		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
