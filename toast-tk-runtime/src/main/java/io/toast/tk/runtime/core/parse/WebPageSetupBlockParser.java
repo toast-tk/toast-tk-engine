@@ -3,6 +3,8 @@ package io.toast.tk.runtime.core.parse;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.toast.tk.dao.domain.BlockType;
 import io.toast.tk.dao.domain.impl.test.block.IBlock;
@@ -14,6 +16,8 @@ import io.toast.tk.runtime.parse.IBlockParser;
  * Created by Nicolas Sauvage on 10/09/2015.
  */
 public class WebPageSetupBlockParser implements IBlockParser {
+	
+	private static final Logger LOG = LogManager.getLogger(WebPageSetupBlockParser.class);
 
     @Override
     public BlockType getBlockType() {
@@ -36,16 +40,21 @@ public class WebPageSetupBlockParser implements IBlockParser {
                 return webPageBlock;
             }
             final String[] split = StringUtils.split(string, "|");
-            assertLineHasEnoughColumn(firstLine, split);
-            webPageBlock.addLine(
-            	new WebPageConfigLine(
-            		split[0].trim(), 
-            		split[1].trim(),
-            		split[2].trim(),
-            		split[3].trim(),
-            		new Integer(split[4].trim())
-            	)
-            );
+            
+            try {
+                assertLineHasEnoughColumn(firstLine, split);
+                webPageBlock.addLine(
+                	new WebPageConfigLine(
+                		split[0].trim(), 
+                		split[1].trim(),
+                		split[2].trim(),
+                		split[3].trim(),
+                		new Integer(split[4].trim())
+                	)
+                );
+            } catch(IllegalArgumentException e) {
+            	LOG.error(e.getMessage());
+            }
         }
         return webPageBlock;
     }
