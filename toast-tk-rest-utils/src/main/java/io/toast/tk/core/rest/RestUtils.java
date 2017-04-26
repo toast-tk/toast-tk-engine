@@ -250,7 +250,7 @@ public class RestUtils {
 	private static CloseableHttpClient buildClient(final HttpRequest requestInfo) {
 		HttpClientBuilder httpBuilder = HttpClients.custom();
 		if (isProxyDefined(requestInfo)) {
-			HttpHost proxy = new HttpHost(requestInfo.getProxyAdress(), requestInfo.getProxyPort());
+			HttpHost proxy = new HttpHost(requestInfo.getProxyAddress(), requestInfo.getProxyPort());
 			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
 			httpBuilder.setDefaultRequestConfig(config);
 		}
@@ -259,7 +259,7 @@ public class RestUtils {
 			String user = requestInfo.getProxyUser();
 			String passwd = requestInfo.getProxyPassword();
 			credsProvider.setCredentials(
-					new AuthScope(requestInfo.getProxyAdress(), requestInfo.getProxyPort()),
+					new AuthScope(requestInfo.getProxyAddress(), requestInfo.getProxyPort()),
 					new UsernamePasswordCredentials(user, passwd));
 			httpBuilder.setDefaultCredentialsProvider(credsProvider);
 		}
@@ -271,7 +271,7 @@ public class RestUtils {
 	}
 
 	private static boolean isProxyDefined(final HttpRequest requestInfo) {
-		return StringUtils.isNotEmpty(requestInfo.getProxyAdress());
+		return StringUtils.isNotEmpty(requestInfo.getProxyAddress());
 	}
 
 	public static void unRegisterAgent(String hostName) {
