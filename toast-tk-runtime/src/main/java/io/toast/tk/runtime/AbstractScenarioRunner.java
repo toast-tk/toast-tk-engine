@@ -1,17 +1,9 @@
 package io.toast.tk.runtime;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
-
 import io.toast.tk.core.annotation.EngineEventBus;
 import io.toast.tk.core.rest.RestUtils;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
@@ -20,6 +12,12 @@ import io.toast.tk.runtime.parse.TestParser;
 import io.toast.tk.runtime.report.DefaultTestProgressReporter;
 import io.toast.tk.runtime.report.IHTMLReportGenerator;
 import io.toast.tk.runtime.utils.RunUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractScenarioRunner extends AbstractRunner {
 
