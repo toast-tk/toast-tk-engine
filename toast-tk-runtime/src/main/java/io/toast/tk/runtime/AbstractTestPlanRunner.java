@@ -18,9 +18,9 @@ import io.toast.tk.runtime.parse.TestParser;
 import io.toast.tk.runtime.report.IHTMLReportGenerator;
 import io.toast.tk.runtime.report.IProjectHtmlReportGenerator;
 
-public abstract class AbstractProjectRunner extends AbstractRunner {
+public abstract class AbstractTestPlanRunner extends AbstractRunner {
 
-	private static final Logger LOG = LogManager.getLogger(AbstractProjectRunner.class);
+	private static final Logger LOG = LogManager.getLogger(AbstractTestPlanRunner.class);
 
 	private final IHTMLReportGenerator htmlReportGenerator;
 
@@ -32,27 +32,27 @@ public abstract class AbstractProjectRunner extends AbstractRunner {
 
 	private String db;
 
-	protected AbstractProjectRunner() {
+	protected AbstractTestPlanRunner() {
 		super();
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	}
 
-	protected AbstractProjectRunner(final Module extraModule, final String host, final int port, final String db) {
+	protected AbstractTestPlanRunner(final Module extraModule, final String host, final int port, final String db) {
 		this(extraModule);
 		this.mongoDbHost = host;
 		this.mongoDbPort = port;
 		this.db = db;
 	}
 
-	protected AbstractProjectRunner(final String host, final int port, final String db) {
+	protected AbstractTestPlanRunner(final String host, final int port, final String db) {
 		this();
 		this.mongoDbHost = host;
 		this.mongoDbPort = port;
 		this.db = db;
 	}
 
-	public AbstractProjectRunner(final Module extraModule) {
+	public AbstractTestPlanRunner(final Module extraModule) {
 		super(extraModule);
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
