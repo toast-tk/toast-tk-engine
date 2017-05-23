@@ -23,6 +23,7 @@
 		<module>toast-tk-runtime-api</module>
 		<module>toast-tk-runtime</module>
 		<module>toast-tk-dao-api</module>
+		<module>toast-tk-agent-api</module>
 		<module>toast-tk-rest-utils</module>
 		<module>toast-tk-interpret</module>
 	</modules>
@@ -46,8 +47,8 @@
 		<build-helper-maven-plugin>1.7</build-helper-maven-plugin>
 		<maven-processor-plugin.version>2.2.1</maven-processor-plugin.version>
 		<lifecycle-mapping-plugin.version>1.0.0</lifecycle-mapping-plugin.version>
-		<org.reflection.version>0.9.9-RC1</org.reflection.version>
-		<guice.version>3.0</guice.version>
+		<org.reflection.version>0.9.10</org.reflection.version>
+		<guice.version>4.1.0</guice.version>
 		<joda-time.version>2.1</joda-time.version>
 		<log4j.version>2.2</log4j.version>
 		<gson.version>1.7.1</gson.version>
@@ -98,6 +99,12 @@
 		</developer>
 	</developers>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>[4.4]</version>
+		</dependency>
 		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>

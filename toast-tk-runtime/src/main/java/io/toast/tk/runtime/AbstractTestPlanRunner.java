@@ -1,5 +1,6 @@
 package io.toast.tk.runtime;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
@@ -52,46 +53,69 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		this.db = db;
 	}
 
-	public AbstractTestPlanRunner(final Module extraModule) {
-		super(extraModule);
+	public AbstractTestPlanRunner(final Module... extraModules) {
+		super(extraModules);
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
 	}
 
-	public final void test(ITestPlan project, boolean useRemoteRepository) throws Exception {
-		execute(project, useRemoteRepository);
+	public final void test(ITestPlan testplan, boolean useRemoteRepository) throws IOException {
+		execute(testplan, useRemoteRepository);
 	}
 
-	public final void test(final String name, final String idProject, final boolean useRemoteRepository) throws Exception {
+	public final void test(final String name, final String idProject, final boolean useRemoteRepository) throws ToastRuntimeException {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort, this.db);
 		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(name, idProject);
 		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(name, idProject);
 		if (testPlanTemplate == null) {
-			throw new IllegalAccessException("No reference test plan template found for: " + name);
+			throw new ToastRuntimeException("No reference test plan template found for: " + name);
 		}
 		updateTestPlanFromPreviousRun((ITestPlan)testPlanTemplate, lastExecution);
-		execute(testPlanTemplate, useRemoteRepository);
-		DAOManager.saveTestPlan(testPlanTemplate);
+		runAndSave(testPlanTemplate, useRemoteRepository);
 	}
 
-	public final void testAndStore(String apiKey, final ITestPlan project) throws Exception {
-		testAndStore(apiKey, project, false);
+	private void runAndSave(ITestPlan testPlan, boolean useRemoteRepository) throws ToastRuntimeException {
+		try {
+			execute(testPlan, useRemoteRepository);
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+			throw new ToastRuntimeException("Error: Saving TestPlan template failed.");
+		}
+		try {
+			DAOManager.saveTestPlan((TestPlanImpl)testPlan);
+		} catch (IllegalAccessException e) {
+			LOG.error(e.getMessage(), e);
+			throw new ToastRuntimeException("Error: Saving TestPlan execution report failed.");
+		}
 	}
 
-	public final void testAndStore(String apiKey, final ITestPlan testPlan, final boolean useRemoteRepository) throws Exception {
+	public final void testAndStore(String apiKey, final ITestPlan testplan) throws ToastRuntimeException {
+		testAndStore(apiKey, testplan, false);
+	}
+
+	public final void testAndStore(String apiKey, final ITestPlan testPlan, final boolean useRemoteRepository) throws ToastRuntimeException {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort, this.db);
 		IProject project = DAOManager.getProjectByApiKey(apiKey);
 		testPlan.setProject(project);
 		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(testPlan.getName(), project.getIdAsString());
 		if(Objects.nonNull(testPlanTemplate)){
-			DAOManager.updateTemplateFromTestPlan(testPlan);
+			try {
+				DAOManager.updateTemplateFromTestPlan(testPlan);
+			} catch (IllegalAccessException e) {
+				LOG.error(e.getMessage(), e);
+				throw new ToastRuntimeException("Error: Updating Test Plan template failed.");
+			}
 		}else{
-			DAOManager.saveTemplate((TestPlanImpl) testPlan);
+			try {
+				DAOManager.saveTemplate((TestPlanImpl) testPlan);
+			} catch (IllegalAccessException e) {
+				LOG.error(e.getMessage(), e);
+				throw new ToastRuntimeException("Error: Saving TestPlan template failed.");
+			}
 		}
 		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(testPlan.getName(), project.getIdAsString());
 		updateTestPlanFromPreviousRun(testPlan, lastExecution);
-		execute(testPlan, useRemoteRepository); 
-		DAOManager.saveTestPlan((TestPlanImpl)testPlan);
+		runAndSave(testPlan, useRemoteRepository);
 	}
 
 	/**
@@ -105,21 +129,29 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		testPlan.setIteration(previousRun.getIteration());
 		for (final ICampaign newCampaign : testPlan.getCampaigns()) {
 			for (final ICampaign previousCampaign : previousRun.getCampaigns()) {
-				if (newCampaign.getName().equals(previousCampaign.getName())) {
-					for (final ITestPage newExecPage : newCampaign.getTestCases()) {
-						for (ITestPage previousExecPage : previousCampaign.getTestCases()) {
-							if (newExecPage.getName().equals(previousExecPage.getName())) {
-								newExecPage.setPreviousIsSuccess(previousExecPage.isSuccess());
-								newExecPage.setPreviousExecutionTime(previousExecPage.getExecutionTime());
-							}
-						}
-					}
-				}
+				compareAndUpdateCampain(newCampaign, previousCampaign);
 			}
 		}
 	}
 
-	public void execute(final ITestPlan project, final boolean presetRepoFromWebApp) throws Exception {
+	private void compareAndUpdateCampain(ICampaign newCampaign, ICampaign previousCampaign) {
+		if (newCampaign.getName().equals(previousCampaign.getName())) {
+            for (final ITestPage newExecPage : newCampaign.getTestCases()) {
+                for (ITestPage previousExecPage : previousCampaign.getTestCases()) {
+					compareAndUpdateTestPage(newExecPage, previousExecPage);
+				}
+            }
+        }
+	}
+
+	private void compareAndUpdateTestPage(ITestPage newExecPage, ITestPage previousExecPage) {
+		if (newExecPage.getName().equals(previousExecPage.getName())) {
+            newExecPage.setPreviousIsSuccess(previousExecPage.isSuccess());
+            newExecPage.setPreviousExecutionTime(previousExecPage.getExecutionTime());
+        }
+	}
+
+	public void execute(final ITestPlan testPlan, final boolean presetRepoFromWebApp) throws IOException {
 		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (presetRepoFromWebApp) {
 			LOG.debug("Preset repository from webapp rest api...");
@@ -128,39 +160,45 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 			final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
 			runner.run(repoAsTestPageForConvenience);
 		}
-		execute(project, runner);
+		execute(testPlan, runner);
 	}
 
-	private void execute(final ITestPlan project, final TestRunner runner) {
+	private void execute(final ITestPlan testPlan, final TestRunner runner) {
 		initEnvironment();
-		for (final ICampaign campaign : project.getCampaigns()) {
+		for (final ICampaign campaign : testPlan.getCampaigns()) {
 			for (ITestPage testPage : campaign.getTestCases()) {
 				try {
 					beginTest();
-					testPage = runner.run(testPage);
+					runner.run(testPage);
 					endTest();
 				} catch (final Exception e) {
 					LOG.error(e.getMessage(), e);
 				}
 			}
 		}
-		createAndOpenReport(project);
+		createAndOpenReport(testPlan);
 		tearDownEnvironment();
 	}
 
-	protected void createAndOpenReport(final ITestPlan project) {
+	protected void createAndOpenReport(final ITestPlan testPlan) {
 		final String path = getReportsFolderPath();
-		final String pageName = "Project_report";
+		final String pageName = "testplan_report";
 
-		for (final ICampaign campaign : project.getCampaigns()) {
+		for (final ICampaign campaign : testPlan.getCampaigns()) {
 			for (final ITestPage testPage : campaign.getTestCases()) {
 				String testPageHtmlReport = htmlReportGenerator.generatePageHtml(testPage);
 				htmlReportGenerator.writeFile(testPageHtmlReport, testPage.getName(), path);
 			}
 		}
 
-		final String generatePageHtml = projectHtmlReportGenerator.generateProjectReportHtml(project);
+		final String generatePageHtml = projectHtmlReportGenerator.generateProjectReportHtml(testPlan);
 		this.projectHtmlReportGenerator.writeFile(generatePageHtml, pageName, path);
 		openReport(path, pageName);
 	}
+
+	@Override
+	public String getReportsOutputPath(){
+		return null;
+	}
+
 }
