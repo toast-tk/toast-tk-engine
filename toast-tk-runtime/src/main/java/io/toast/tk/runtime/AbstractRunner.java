@@ -1,25 +1,23 @@
 package io.toast.tk.runtime;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-
 import io.toast.tk.adapter.ActionAdapterCollector;
 import io.toast.tk.adapter.FixtureService;
 import io.toast.tk.adapter.constant.AdaptersConfig;
 import io.toast.tk.adapter.constant.AdaptersConfigProvider;
 import io.toast.tk.core.guice.AbstractActionAdapterModule;
 import io.toast.tk.runtime.module.EngineModule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 public abstract class AbstractRunner {
 
@@ -44,7 +42,7 @@ public abstract class AbstractRunner {
 	public AbstractRunner(final Injector injector) {
 		this.injector = injector;
 	}
-	
+
 	public AbstractRunner(final Module... extraModules) {
 		listAvailableServicesByReflection = ActionAdapterCollector.listAvailableServicesByReflection();
 		LOG.info("Found adapters: {}", listAvailableServicesByReflection.size());
@@ -84,10 +82,19 @@ public abstract class AbstractRunner {
 			return reportsFolderPath;
 		}
 
-		final Path currentRelativePath = Paths.get(System.getProperty("user.home") + "/.toast/target/toast-test-results");
+		final StringBuilder pathBuilder = new StringBuilder();
+		pathBuilder.append(System.getProperty("user.home"));
+		pathBuilder.append(File.pathSeparator);
+		pathBuilder.append(".toast");
+		pathBuilder.append(File.pathSeparator);
+		pathBuilder.append("target");
+		pathBuilder.append(File.pathSeparator);
+		pathBuilder.append("toast-test-results");
+		final Path currentRelativePath = Paths.get(pathBuilder.toString());
+
 		final File file = new File(currentRelativePath.toUri());
 		if (!file.exists()) {
-			final boolean mkdirsResult = file.mkdirs();
+			final boolean mkdirsResult = file.mkdir();
 			if (!mkdirsResult) {
 				LOG.info("Report folder creation failed");
 				return null;
