@@ -1,21 +1,14 @@
 package io.toast.tk.runtime.report;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 import org.joda.time.LocalDateTime;
 
 import io.toast.tk.dao.domain.api.test.ITestResult;
@@ -131,8 +124,8 @@ public class TemplateHelper {
 	public static String formatStringToHtml(final TestLine line) {
 		if(line.getTestResult() != null) {
 			String message = line.getTestResult().getMessage();
-			message = message != null ? prettyXmlText(message) : "";
-			return returnResult(message);
+			message = message != null ? returnResult(message) : "";
+			return prettyXmlText(message);
 		}
 		return "&nbsp;";
 	}
@@ -143,8 +136,8 @@ public class TemplateHelper {
 	
 	public static String getExpectedResult(final TestLine line) {
 		String message = line.getExpected(); 
-		message = message != null ? prettyXmlText(message) : "";	
-		return returnResult(message);
+		message = message != null ? returnResult(message) : "";
+		return prettyXmlText(message);
 	}
 	
 	public static String getSmallStepSentence(final TestLine line) {
@@ -168,25 +161,22 @@ public class TemplateHelper {
 	}
 	
 	private static String prettyXmlText(String str) {
-		SAXBuilder builder = new SAXBuilder();
-		
-		InputStream stream;
-		try {
-			stream = new ByteArrayInputStream(str.getBytes("UTF-8"));
-			Document document;
-		
-			/* Parsing of the file */
-			document = builder.build(stream);
-	
-			Element rootNode = document.getRootElement();
-
-			XMLOutputter output = new XMLOutputter();
-			output.setFormat(Format.getPrettyFormat());
-			return output.outputString(rootNode);
-		} catch (JDOMException | IOException e) {
-			LOG.debug("The string to display does not have a Xml format !");
-			return str;
+		String[] lines = str.split(System.lineSeparator());
+		List<String> res = new ArrayList<String>();
+		int tabNb = 0;
+		for(String line : lines) {
+			String lineTemp = line.trim();
+			if(lineTemp.startsWith("<([A-Z][A-Z0-9]*)\b[^>]*>")) {
+				tabNb = tabNb + 1;
+			} else if(lineTemp.startsWith("</([A-Z][A-Z0-9]*)\b[^>]*>")) {
+				tabNb = tabNb - 1;
+			}
+			for(int i = 1; i < tabNb; i++) {
+				lineTemp = "\t" + lineTemp;
+			}
+			res.add(lineTemp);
 		}
+		return String.join(System.lineSeparator(), res);
 	}
 
 

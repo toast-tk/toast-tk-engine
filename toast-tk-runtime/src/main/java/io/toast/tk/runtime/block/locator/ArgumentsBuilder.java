@@ -2,8 +2,6 @@ package io.toast.tk.runtime.block.locator;
 
 import javax.script.ScriptException;
 
-import com.google.inject.Injector;
-
 import io.toast.tk.runtime.IActionItemRepository;
 import io.toast.tk.runtime.action.item.ActionItemValueProvider;
 import io.toast.tk.runtime.action.item.IValueHandler;

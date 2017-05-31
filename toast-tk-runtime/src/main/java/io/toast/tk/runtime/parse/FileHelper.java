@@ -1,10 +1,14 @@
 package io.toast.tk.runtime.parse;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -61,9 +65,41 @@ public class FileHelper {
 			return lines;
 		} 
         catch(IOException ex) {
-            return "Error reading file '" + fileName + "'";       
+        	String exception = "Error reading file '" + fileName + "'";
+        	LOG.info(exception);
+            return exception;       
         }
     }
+	
+	public static void createDirectory(String arg) {
+		File theDir = new File(arg);
+
+		if (!theDir.exists()) {
+			System.out.println("creating directory: " + theDir.getName());
+	
+		    try{
+		        theDir.mkdir();
+		    } 
+		    catch(SecurityException se){
+		        throw se;
+		    }        
+		    
+		    System.out.println("DIR created"); 
+		}
+	}
+
+	public static void writeFile(String arg, String fileName) {
+		 try {
+			 FileOutputStream fileWriter =   new FileOutputStream(fileName);
+	            BufferedWriter bufferedWriter = new BufferedWriter(
+	            		new OutputStreamWriter(fileWriter, StandardCharsets.UTF_8));
+	            bufferedWriter.write(arg);
+	            bufferedWriter.close();
+	        }
+	        catch(IOException ex) {
+	            System.out.println("Error writing to file '" + fileName + "'");
+	        }
+	 }
 	
 	static List<String> removeBom(final List<String> list) {
 		final String firstLine = list.get(0);
@@ -73,4 +109,18 @@ public class FileHelper {
 		return list;
 	}
 
+	public static boolean existFile(String fileName) {
+		File file = new File(fileName);
+		return file.exists();
+    }
+	
+	public static boolean isFile(String fileName) {
+		File file = new File(fileName);
+		return file.isFile();
+    }
+	
+	public static boolean isDirectory(String fileName) {
+		File file = new File(fileName);
+		return file.isDirectory();
+    }
 }

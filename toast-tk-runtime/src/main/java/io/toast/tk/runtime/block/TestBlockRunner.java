@@ -120,6 +120,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		try {
 			Method actionMethod = actionAdaptaterLocator.getActionCommandDescriptor().method;
 			Class<?> returnType = actionMethod.getReturnType();
+			// WARNING : Can Create Memory Failure
 			Object output = actionMethod.invoke(actionAdaptaterLocator.getInstance(), 
 												buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
 			String expected = actionAdaptaterLocator.getTestLineDescriptor().testLine.getExpected();
@@ -177,14 +178,16 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		String outCommand = actionAdaptaterLocator.getTestLineDescriptor().getActionImpl();
 		final int groupCount = matcher.groupCount();
 		final Object[] args = new Object[groupCount];
+		final int maxSize = 10000;
 		for (int i = 0; i < groupCount; ++i) {
 			final String group = matcher.group(i + 1);
 			final Object argument = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
 			args[i] = argument;
 			if (isVariable(args, i, group)) {
 				String var = (args[i].toString()).replace("$", "\\$").replace("\\", "\\\\");
+				var = var.length() > maxSize ? var.substring(0,maxSize) : var;
 				try {
-					outCommand = outCommand.replaceFirst("\\" + group + "\\b", var);
+					outCommand = outCommand.replaceFirst("\\" + group + "\\b", Matcher.quoteReplacement(var));
 				}
 				catch(IllegalArgumentException e) {
 					LOG.info(e.getMessage());
