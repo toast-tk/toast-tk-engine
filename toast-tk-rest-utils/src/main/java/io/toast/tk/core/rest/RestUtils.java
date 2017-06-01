@@ -241,7 +241,7 @@ public class RestUtils {
 		httppost.setHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
 		httppost.setHeader("Token", requestInfo.getApiKey());
 
-		StringEntity input = new StringEntity(requestInfo.getApiKey());
+		StringEntity input = new StringEntity(requestInfo.getJson());
 		input.setContentType("application/json");
 		httppost.setEntity(input);
 		return httppost;
