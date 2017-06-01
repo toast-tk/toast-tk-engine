@@ -3,6 +3,11 @@ package io.toast.tk.core.rest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -11,19 +16,35 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.http.HeaderElement;
+import org.apache.http.HeaderElementIterator;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicHeaderElementIterator;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -39,7 +60,8 @@ import com.sun.jersey.api.client.WebResource;
 public class RestUtils {
 
 	private static final Logger LOG = LogManager.getLogger(RestUtils.class);
-
+	
+	private static final int HTTP_CLIENT_MAX_POOL_SIZE = 25;
 	public static final String WEBAPP_ADDR = "toast.webapp.addr";
 
 	public static final String WEBAPP_PORT = "toast.webapp.port";
@@ -249,6 +271,15 @@ public class RestUtils {
 
 	private static CloseableHttpClient buildClient(final HttpRequest requestInfo) {
 		HttpClientBuilder httpBuilder = HttpClients.custom();
+        try {
+			PoolingHttpClientConnectionManager cm = setHttpConnectionManager();
+			httpBuilder.setConnectionManager(cm);
+		} catch (KeyManagementException | NoSuchAlgorithmException
+				| KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		if (isProxyDefined(requestInfo)) {
 			HttpHost proxy = new HttpHost(requestInfo.getProxyAddress(), requestInfo.getProxyPort());
 			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
@@ -276,5 +307,59 @@ public class RestUtils {
 
 	public static void unRegisterAgent(String hostName) {
 		// NO-OP
+	}
+
+	private static PoolingHttpClientConnectionManager setHttpConnectionManager() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+		// This connection manager must be used if more than one thread will
+	       // be using the HttpClient.
+			SSLContextBuilder builder = SSLContexts.custom();
+			builder.loadTrustMaterial(null, new TrustStrategy() {
+			    @Override
+			    public boolean isTrusted(X509Certificate[] chain, String authType)
+			            throws CertificateException {
+			        return true;
+			    }
+			});
+			
+			@SuppressWarnings("deprecation")
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+	                builder.build(),SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+			@SuppressWarnings("unused")
+			PlainConnectionSocketFactory pcsf = new PlainConnectionSocketFactory();
+			
+			Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
+			        .<ConnectionSocketFactory> create().register("https", sslsf)
+			        .register("http", PlainConnectionSocketFactory.getSocketFactory())
+			        .build();
+
+	        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+	        cm.setMaxTotal(HTTP_CLIENT_MAX_POOL_SIZE);
+	        //cm.setDefaultSocketConfig( SocketConfig.custom().setSoKeepAlive( true ).setSoReuseAddress( true ).setSoTimeout( 3000 ).build() 
+	        //cm.setValidateAfterInactivity(1); // essai pour resoudre java.net.SocketException: Software caused connection abort: recv failed
+
+	        @SuppressWarnings("unused")
+			ConnectionKeepAliveStrategy myStrategy = new ConnectionKeepAliveStrategy() {
+
+	            public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
+	                // Honor 'keep-alive' header
+	                HeaderElementIterator it = new BasicHeaderElementIterator(
+	                        response.headerIterator(HTTP.CONN_KEEP_ALIVE));
+	                while (it.hasNext()) {
+	                    HeaderElement he = it.nextElement();
+	                    String param = he.getName();
+	                    String value = he.getValue();
+	                    if (value != null && param.equalsIgnoreCase("timeout")) {
+	                        try {
+	                            return Long.parseLong(value) * 1000;
+	                        } catch(NumberFormatException ignore) {
+	                        }
+	                    }
+	                }
+	                return 30 * 1000;
+	               
+	            }
+
+	        };
+	        return cm;
 	}
 }
