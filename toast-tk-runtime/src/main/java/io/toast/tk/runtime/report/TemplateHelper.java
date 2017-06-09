@@ -141,13 +141,15 @@ public class TemplateHelper {
 	}
 	
 	public static String getSmallStepSentence(final TestLine line) {
-		return substringText(getStepSentence(line), 2*Html_Length_Max);
+		String message = substringText(getStepSentence(line), 2*Html_Length_Max);
+		return prettyXmlText(message);
 	}
 	
 	public static String getStepSentence(final TestLine line) {
 		String contextualTestSentence = line.getTestResult() != null ? line.getTestResult().getContextualTestSentence() : null;
 		contextualTestSentence = contextualTestSentence != null ? contextualTestSentence : line.getTest();		
-		return returnResult(contextualTestSentence);
+		String message = returnResult(contextualTestSentence);
+		return prettyXmlText(message);
 	}
 
 	public static String substringText(String text, int maxLength) {
@@ -166,15 +168,42 @@ public class TemplateHelper {
 		int tabNb = 0;
 		for(String line : lines) {
 			String lineTemp = line.trim();
-			if(lineTemp.startsWith("<([A-Z][A-Z0-9]*)\b[^>]*>")) {
-				tabNb = tabNb + 1;
-			} else if(lineTemp.startsWith("</([A-Z][A-Z0-9]*)\b[^>]*>")) {
-				tabNb = tabNb - 1;
+			boolean isInside = true;
+			boolean lastIsInside = true;
+			if(lineTemp.contains("<") || lineTemp.contains(">")) {
+				int index = lineTemp.indexOf("<");
+				String firstPart = lineTemp.substring(0, index).trim();
+				if(!firstPart.equals("")) {
+					res.add(firstPart);
+				}
+				
+				String secondPart = lineTemp.substring(index);
+				for(String lineSplit : secondPart.split("<|>")) {
+					String lineResult = "";
+					if(lineSplit.equals("")) {
+						isInside = true;
+						lastIsInside = isInside;
+						continue;
+					} else {
+						isInside = lastIsInside ? false : true;
+					}
+					if(lineSplit.startsWith("/")) {
+						tabNb += -1;
+					}
+					for(int i = 1; i <= tabNb; i++) {
+						lineResult = "\t" + lineResult;
+					}
+					if(!lineSplit.startsWith("/") & lastIsInside) {
+						tabNb += +1;
+					}
+					lineResult += lastIsInside ? "<" + lineSplit + ">" : lineSplit;
+					res.add(lineResult);
+					lastIsInside = isInside;
+				} 
+			} else {
+					res.add(lineTemp);
 			}
-			for(int i = 1; i < tabNb; i++) {
-				lineTemp = "\t" + lineTemp;
-			}
-			res.add(lineTemp);
+			
 		}
 		return String.join(System.lineSeparator(), res);
 	}

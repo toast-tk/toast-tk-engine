@@ -88,7 +88,7 @@ public class FileHelper {
 		}
 	}
 
-	public static void writeFile(String arg, String fileName) {
+	public static void writeFile(String arg, String fileName) throws IOException {
 		 try {
 			 FileOutputStream fileWriter =   new FileOutputStream(fileName);
 	            BufferedWriter bufferedWriter = new BufferedWriter(
@@ -97,7 +97,7 @@ public class FileHelper {
 	            bufferedWriter.close();
 	        }
 	        catch(IOException ex) {
-	            System.out.println("Error writing to file '" + fileName + "'");
+	            throw new IOException("Error writing to file '" + fileName + "'");
 	        }
 	 }
 	
