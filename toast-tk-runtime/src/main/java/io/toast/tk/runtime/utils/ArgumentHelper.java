@@ -146,7 +146,6 @@ public class ArgumentHelper {
 			final String varName = m.group(pos + 1);
 			if(repoSetup.getUserVariables().containsKey(varName)) {
 				String varValue = repoSetup.getUserVariables().get(varName).toString();
-				varValue = varValue.substring(0, Math.min(100, varValue.length()));
 				if(!varName.equals(varValue)){
 					value = value.replaceFirst("\\" + varName + "\\b", varValue.replace("$", "\\$"));	
 				}

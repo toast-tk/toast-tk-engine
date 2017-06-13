@@ -167,10 +167,10 @@ public class TemplateHelper {
 		List<String> res = new ArrayList<String>();
 		int tabNb = 0;
 		for(String line : lines) {
-			String lineTemp = line.trim();
+			String lineTemp = line.trim().replace("\t", "").replace("\n", "").replace("\r", "");
 			boolean isInside = true;
 			boolean lastIsInside = true;
-			if(lineTemp.contains("<") || lineTemp.contains(">")) {
+			if(lineTemp.contains("<")) {
 				int index = lineTemp.indexOf("<");
 				String firstPart = lineTemp.substring(0, index).trim();
 				if(!firstPart.equals("")) {
@@ -180,6 +180,7 @@ public class TemplateHelper {
 				String secondPart = lineTemp.substring(index);
 				for(String lineSplit : secondPart.split("<|>")) {
 					String lineResult = "";
+					lineSplit = lineSplit.trim();
 					if(lineSplit.equals("")) {
 						isInside = true;
 						lastIsInside = isInside;
@@ -201,7 +202,9 @@ public class TemplateHelper {
 					lastIsInside = isInside;
 				} 
 			} else {
+				if(!lineTemp.equals("")) {
 					res.add(lineTemp);
+				}
 			}
 			
 		}
