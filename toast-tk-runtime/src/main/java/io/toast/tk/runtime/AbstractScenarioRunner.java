@@ -31,6 +31,8 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 
 	private DefaultTestProgressReporter progressReporter;
 
+	private String apiKey;
+
 	protected AbstractScenarioRunner(final Injector injector) {
 		super(injector);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
@@ -77,14 +79,14 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		RunUtils.printResult(testPages);
 	}
 
-	public final void runRemote(
+	public final void runRemote(String apiKey,
 			final String... scenarios
 	) throws Exception {
 		this.presetRepoFromWebApp = true;
 		run(scenarios);
 	}
 
-	public final void runRemoteScript(
+	public final void runRemoteScript(String apiKey,
 			final String script
 	) throws Exception {
 		this.presetRepoFromWebApp = true;
@@ -111,7 +113,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	public ITestPage runTestPage(final ITestPage testPage) throws IOException {
 		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (this.presetRepoFromWebApp) {
-			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
+			final String repoWiki = RestUtils.downloadRepositoryAsWiki(this.apiKey);
 			final TestParser parser = new TestParser();
 			final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
 			runner.run(repoAsTestPageForConvenience);

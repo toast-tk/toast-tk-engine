@@ -84,17 +84,17 @@ public abstract class AbstractRunner {
 
 		final StringBuilder pathBuilder = new StringBuilder();
 		pathBuilder.append(System.getProperty("user.home"));
-		pathBuilder.append(File.pathSeparator);
+		pathBuilder.append(File.separator);
 		pathBuilder.append(".toast");
-		pathBuilder.append(File.pathSeparator);
+		pathBuilder.append(File.separator);
 		pathBuilder.append("target");
-		pathBuilder.append(File.pathSeparator);
+		pathBuilder.append(File.separator);
 		pathBuilder.append("toast-test-results");
 		final Path currentRelativePath = Paths.get(pathBuilder.toString());
 
 		final File file = new File(currentRelativePath.toUri());
 		if (!file.exists()) {
-			final boolean mkdirsResult = file.mkdir();
+			final boolean mkdirsResult = file.mkdirs();
 			if (!mkdirsResult) {
 				LOG.info("Report folder creation failed");
 				return null;

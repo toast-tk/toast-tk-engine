@@ -2,7 +2,7 @@ package com.synaptix.toast.test.runtime;
 
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.runtime.AbstractTestPlanRunner;
-import io.toast.tk.runtime.parse.ProjectParser;
+import io.toast.tk.runtime.parse.TestPlanParser;
 
 import java.io.IOException;
 
@@ -29,9 +29,9 @@ public class MainTestMail extends AbstractTestPlanRunner {
         MainTestMail testRunner = new MainTestMail();
 
         try {
-            ProjectParser projectParser = new ProjectParser();
+            TestPlanParser projectParser = new TestPlanParser();
             ITestPlan testPlan = projectParser.parse("test_campaign.md");
-            testRunner.execute(testPlan, false);
+            testRunner.execute(testPlan, false, null);
         } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
         }
