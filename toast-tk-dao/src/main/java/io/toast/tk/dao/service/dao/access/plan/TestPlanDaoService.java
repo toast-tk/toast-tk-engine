@@ -191,6 +191,7 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 		final TestPlanImpl template;
 		if(testPlan.getIdAsString() != null){
 			TestPlanImpl tPlan = findTestPlanById(testPlan.getIdAsString());
+
 			if(tPlan!= null && tPlan.getIteration() != 0){
 				template = getReferenceProjectByName(tPlan.getName(), projectImpl.getId().toString());
 				if (template == null) {
@@ -199,7 +200,8 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 			}else {
 				template = tPlan;
 			}
-		}else{
+
+		}else {
 			template = getReferenceProjectByName(testPlan.getName(), projectImpl.getId().toString());
 			if (template == null) {
 				throw new IllegalAccessException("No template found for provided test plan: " + testPlan.getName());
