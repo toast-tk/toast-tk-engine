@@ -179,13 +179,33 @@ public class TestPlanDaoService extends AbstractMongoDaoService<TestPlanImpl> {
 			throw new IllegalAccessException("No project set in test plan, please assign one !");
 		}
 		ProjectImpl projectImpl = (ProjectImpl)testPlan.getProject();
-		final TestPlanImpl template = getReferenceProjectByName(testPlan.getName(), projectImpl.getId().toString());
-		if (template == null) {
-			throw new IllegalAccessException("No template found for provided test plan: " + testPlan.getName());
-		}
+		
+		final TestPlanImpl template = findTemplate(testPlan, projectImpl);
+		
 		update(testPlan, template);
 		save((TestPlanImpl) testPlan);
 		return testPlan;
+	}
+
+	private TestPlanImpl findTemplate(final ITestPlan testPlan, ProjectImpl projectImpl) throws IllegalAccessException {
+		final TestPlanImpl template;
+		if(testPlan.getIdAsString() != null){
+			TestPlanImpl tPlan = findTestPlanById(testPlan.getIdAsString());
+			if(tPlan.getIteration() != 0){
+				template = getReferenceProjectByName(testPlan.getName(), projectImpl.getId().toString());
+				if (template == null) {
+					throw new IllegalAccessException("No template found for provided test plan: " + testPlan.getName());
+				}
+			}else {
+				template = tPlan;
+			}
+		}else {
+			template = getReferenceProjectByName(testPlan.getName(), projectImpl.getId().toString());
+			if (template == null) {
+				throw new IllegalAccessException("No template found for provided test plan: " + testPlan.getName());
+			}			
+		}
+		return template;
 	}
 
 	private void update(ITestPlan testPlan, TestPlanImpl template) {

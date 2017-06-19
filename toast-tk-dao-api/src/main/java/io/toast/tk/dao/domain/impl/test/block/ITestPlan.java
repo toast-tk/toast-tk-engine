@@ -13,6 +13,8 @@ public interface ITestPlan {
 
 	IProject getProject();
 
+	String getIdAsString();
+	
 	void setId(String id);
 
 	void setIteration(short iteration);
