@@ -42,4 +42,25 @@ public class TestPlanTestCase extends EmbeddedMongoDBTestCase {
 		List<TestPlanImpl> testplans = service.findAllReferenceProjects(keyProject.getId().toString());
 		Assert.assertEquals(1, testplans.size());
 	}
+	
+	
+	@Test
+	public void shouldUpdateTestPlanBale() throws IllegalAccessException {	
+		ProjectImpl p = new ProjectImpl();
+		p.setName("default");
+		Key<ProjectImpl> keyProject = pService.save(p);
+		
+		TestPlanImpl plan = new TestPlanImpl();
+		plan.setName("Plan_1");
+		plan.setIteration(Short.parseShort("0"));
+		plan.setProject(p);
+		service.save(plan);
+		
+		plan.setName("Plan2");
+		service.updateTemplateFromTestPlan(plan);
+		
+		List<TestPlanImpl> testplans = service.findAllReferenceProjects(keyProject.getId().toString());
+		Assert.assertEquals(1, testplans.size());
+		Assert.assertEquals("Plan2", testplans.get(0).getName());
+	}
 }
