@@ -6,9 +6,9 @@ import io.toast.tk.runtime.report.IProjectHtmlReportGenerator;
 
 public class HTMLReporter {
 
-	public static final String getProjectHTMLReport(final String name) throws IllegalAccessException {
+	public static final String getProjectHTMLReport(final String name, final String idProject) throws IllegalAccessException {
 		final IProjectHtmlReportGenerator projectHtmlReportGenerator = new ThymeLeafProjectHTMLReporter();
-		return projectHtmlReportGenerator.generateProjectReportHtml(name);
+		return projectHtmlReportGenerator.generateProjectReportHtml(name, idProject);
 	}
 	
 	public static final String getProjectHTMLReport(final TestPlanImpl project) {

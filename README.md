@@ -1,10 +1,15 @@
-[![Build Status](https://travis-ci.org/toast-tk/toast-tk-engine.svg?branch=master)](https://travis-ci.org/talan-labs/toast-tk-engine)  
-[![Stories in Ready](https://badge.waffle.io/toast-tk/toast-tk-engine.svg?label=ready&title=Ready)](http://waffle.io/toast-tk/toast-tk-engine)  
+[![Build Status](https://travis-ci.org/toast-tk/toast-tk-engine.svg?branch=master)](https://travis-ci.org/toast-tk/toast-tk-engine)
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=io.toast-tk%3Atoast-tk-engine)](https://sonarqube.com/dashboard/index?id=io.toast-tk%3Atoast-tk-engine) 
+[![Technical debt ratio](https://sonarqube.com/api/badges/measure?key=io.toast-tk%3Atoast-tk-engine&metric=sqale_debt_ratio)](https://sonarqube.com/dashboard/index?id=io.toast-tk%3Atoast-tk-engine)
+[![License](http://img.shields.io/:license-Apache%202-red.svg)](https://github.com/toast-tk/toast-tk-engine/blob/snapshot/LICENSE.md)
+
+[![Stories in Ready](https://badge.waffle.io/toast-tk/toast-tk-engine.svg?label=ready&title=Ready)](http://waffle.io/toast-tk/toast-tk-engine)
 [![Gitter](https://badges.gitter.im/toast-tk/toast-tk-engine.svg)](https://gitter.im/toast-tk/toast-tk-engine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-# Toast Tk - Engine
+# Toast-tk-engine
 
-Toast TK Engine provides a concise, self-explanatory and type safe way for writing test cases. No more “REGEX HELL” :)
+<a href="http://toast-tk.io"><img src="https://github.com/toast-tk/toast-tk-webapp/blob/master/public/images/ToastLogo.png?raw=true" align="left" height="50"></a>
+**Toast-tk-engine** is the core automation framework  for your acceptance tests. It provides a concise, self-explanatory and type safe way for writing test cases. No more _“REGEX HELL”_ :bowtie:
 
 ## Example
 A scenario action: “Navigate to url *http://www.google.com*”  
@@ -32,9 +37,9 @@ It makes test scripts easier to share between technical team members (i.e: Devel
 Add Toast Runtime dependency
 ```
 <dependency>
-  <groupId>com.synaptix.toast</groupId>
+  <groupId>io.toast-tk</groupId>
   <artifactId>toast-tk-runtime</artifactId>
-  <version>0.1.3.RC1</version>
+  <version>0.1.4</version>
 </dependency>
 ```
 
@@ -46,33 +51,15 @@ The [toast-tk-example](https://github.com/toast-tk/toast-tk-examples) project ho
 - Rest API automation
 - JSON and XML value management as a variable
 - Test report generation
+- Toast Maven plugin
 
-# How to contribute
+# Contribution
 
-Toast TK is a young open source project.  
-We are looking for passionates, helpful individuals and volunteers to contribute in every single bit of this project: from the website through the documentation to the very core of the application.  
-So, if you like open-source projects and would like to give back some help, we'd like to see your contributions!  
-It doesn't matter how familiar you are with test automation applications, or whether you know how to write programs for Java. There are plenty of ways to be helpful! One of the first things you should do is actually use Toast TK, and get to know it - read about it, evangelise it, and engage with the wider community.  
-If you'd like to help, [get in touch](mailto:sallah.kokaina@gmail.com) and let us know how you'd like to help. We love contributors!! 
+Toast TK is a young ![Open Source Love](https://badges.frapsoft.com/os/v3/open-source.svg?v=103) project.  
 
-# Development workflow
-The main development happens on [Github](https://github.com/toast-tk/toast-tk-engine). To contribute, [fork](http://help.github.com/fork-a-repo/) the [main repo](https://github.com/toast-tk/toast-tk-engine), branch off a [feature branch](https://www.google.com/search?q=git+feature+branches) from master, make your changes and [commit](http://git-scm.com/docs/git-commit) them, [push](http://git-scm.com/docs/git-push) to your fork and submit a [pull request](http://help.github.com/send-pull-requests/).
-For the time being and once in a while, we merge pull requests into master, which results in a new snapshot update. 
+For contribution rules and guidelines, See [CONTRIBUTING.md](https://github.com/toast-tk/toast-tk-engine/blob/snapshot/CONTRIBUTING.md)
+
+If you'd like to help, [get in touch](https://gitter.im/toast-tk/toast-tk-engine) and let us know how you'd like to help. We love contributors!! 
 
 # Licence
-
-Toast Toolkit (Toast TK)
-
-Copyright 2012-2016 - Toast TK - http://toast-tk.io/
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+_Toast TK regroups multiple open source projects licensed under the Apache Software License 2._

@@ -1,9 +1,12 @@
 package io.toast.tk.dao.service.init;
 
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +18,8 @@ import com.github.jmkgreen.morphia.annotations.Entity;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 
 import io.toast.tk.dao.config.DaoConfig;
@@ -30,26 +35,34 @@ public class MongoDefaultStarterImpl implements DbStarter {
 
 	private Map<String, Datastore> dsMap;
 
-
 	private final String mongoHost;
 
 	private final int mongoPort;
+
+	private MongoCredential credential;
 
 	@Inject
 	public MongoDefaultStarterImpl(
 		final DaoConfig config,
 		final @Named("MongoHost") String mongoHost,
-		final @Named("MongoPort") int mongoPort
+		final @Named("MongoPort") int mongoPort,
+		final @Nullable MongoCredential credential
 	) {
 		this.mongoHost = mongoHost == null ? config.getMongoServer() : mongoHost;
 		this.mongoPort = mongoPort == -1 ? config.getMongoPort() : mongoPort;
+		this.credential = credential;
 		init();
 	}
 
 	private void init() {
 		try {
 			this.dsMap = new HashMap<>();
-			this.mClient = new MongoClient(this.mongoHost, this.mongoPort);
+			if(credential == null){
+				this.mClient = new MongoClient(this.mongoHost, this.mongoPort);
+			}else {
+				ServerAddress address = new ServerAddress(mongoHost, mongoPort);
+				this.mClient = new MongoClient(address,Arrays.asList(credential));
+			}
 			this.mClient.setWriteConcern(WriteConcern.JOURNALED);
 			this.morphia = new Morphia();
 			processMappings();

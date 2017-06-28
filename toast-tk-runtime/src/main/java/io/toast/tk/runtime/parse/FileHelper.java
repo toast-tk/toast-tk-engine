@@ -12,8 +12,6 @@ import org.apache.logging.log4j.LogManager;
 
 /**
  * Helper class for getting files content.
- * <p>
- * Created by Nicolas Sauvage on 02/08/2016.
  */
 public class FileHelper {
 
@@ -21,6 +19,13 @@ public class FileHelper {
 
 	private FileHelper() {
 
+	}
+	
+	public static List<String> getScript(InputStream resourceAsStream) throws IOException {
+		List<String> list = new BufferedReader(new InputStreamReader(resourceAsStream,
+				StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
+
+		return removeBom(list);
 	}
 
 	public static List<String> getScript(String filename) throws IOException {
@@ -30,10 +35,7 @@ public class FileHelper {
 			throw new IOException("Could not open file " + filename);
 		}
 
-		List<String> list = new BufferedReader(new InputStreamReader(resourceAsStream,
-				StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
-
-		return removeBom(list);
+		return getScript(resourceAsStream);
 	}
 
 	/**

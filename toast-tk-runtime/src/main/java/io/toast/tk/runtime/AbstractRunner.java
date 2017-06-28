@@ -1,25 +1,23 @@
 package io.toast.tk.runtime;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-
 import io.toast.tk.adapter.ActionAdapterCollector;
 import io.toast.tk.adapter.FixtureService;
 import io.toast.tk.adapter.constant.AdaptersConfig;
 import io.toast.tk.adapter.constant.AdaptersConfigProvider;
 import io.toast.tk.core.guice.AbstractActionAdapterModule;
 import io.toast.tk.runtime.module.EngineModule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 public abstract class AbstractRunner {
 
@@ -45,14 +43,16 @@ public abstract class AbstractRunner {
 		this.injector = injector;
 	}
 
-	public AbstractRunner(final Module extraModule) {
+	public AbstractRunner(final Module... extraModules) {
 		listAvailableServicesByReflection = ActionAdapterCollector.listAvailableServicesByReflection();
 		LOG.info("Found adapters: {}", listAvailableServicesByReflection.size());
 		this.injector = Guice.createInjector(new AbstractActionAdapterModule() {
 			@Override
 			protected void configure() {
 				install(new EngineModule());
-				install(extraModule);
+				for(Module module: extraModules){
+					install(module);
+				}
 				listAvailableServicesByReflection.forEach(f -> bindActionAdapter(f.clazz));
 			}
 		});
@@ -65,6 +65,8 @@ public abstract class AbstractRunner {
 	public abstract void endTest();
 
 	public abstract void initEnvironment();
+
+	public abstract String getReportsOutputPath();
 
 	/**
 	 * Creates the test reports folder, if it does not exists, and returns its path.
@@ -80,7 +82,16 @@ public abstract class AbstractRunner {
 			return reportsFolderPath;
 		}
 
-		final Path currentRelativePath = Paths.get("target/toast-test-results");
+		final StringBuilder pathBuilder = new StringBuilder();
+		pathBuilder.append(System.getProperty("user.home"));
+		pathBuilder.append(File.separator);
+		pathBuilder.append(".toast");
+		pathBuilder.append(File.separator);
+		pathBuilder.append("target");
+		pathBuilder.append(File.separator);
+		pathBuilder.append("toast-test-results");
+		final Path currentRelativePath = Paths.get(pathBuilder.toString());
+
 		final File file = new File(currentRelativePath.toUri());
 		if (!file.exists()) {
 			final boolean mkdirsResult = file.mkdirs();

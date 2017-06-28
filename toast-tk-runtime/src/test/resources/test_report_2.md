@@ -1,0 +1,2 @@
+|| scenario || web || 
+| Maximize window |

@@ -1,10 +1,13 @@
 package io.toast.tk.runtime.block;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.yaml.snakeyaml.Yaml;
 
@@ -16,9 +19,16 @@ public class ActionSentenceMappingProvider {
 	static final Map<String, List<Map<String, String>>> BEANS;
 
 	static {
-		try (final InputStream resourceAsStream = FileHelper.getInputStream("toast.yml")) {
+		try {
+			InputStream resourceAsStream = FileHelper.getInputStream("toast.yml");
+			if(resourceAsStream == null){
+				File translations = Paths.get(System.getProperty("user.home") + SystemUtils.FILE_SEPARATOR + ".toast/toast.yml").toFile();
+				if(translations.exists()){
+					resourceAsStream = new FileInputStream(translations);
+				}
+			}
 			BEANS = ((Map<String, List<Map<String, String>>>) new Yaml().load(resourceAsStream));
-		} catch (final IOException e) {
+		} catch (final Exception e) {
 			LogManager.getLogger(ActionSentenceMappingProvider.class).error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		}

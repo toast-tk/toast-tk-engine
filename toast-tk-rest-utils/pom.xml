@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.toast-tk</groupId>
 		<artifactId>toast-tk-engine</artifactId>
-		<version>0.1.4-SNAPSHOT</version>
+		<version>0.1.5-SNAPSHOT</version>
 	</parent>
 	<artifactId>toast-tk-rest-utils</artifactId>
 	<name>Toast Toolkit - Rest Utils</name>
@@ -23,6 +23,12 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20090211</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>[4.4]</version>
 		</dependency>
 	</dependencies>
 </project>
