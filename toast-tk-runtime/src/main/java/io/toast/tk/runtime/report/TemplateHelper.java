@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joda.time.LocalDateTime;
 
 import io.toast.tk.dao.domain.api.test.ITestResult;
@@ -21,7 +19,7 @@ public class TemplateHelper {
 
 	private static int Html_Length_Max = 40;
 	private static int Html_Length_Full = 100000;
-	private static final Logger LOG = LogManager.getLogger(TemplateHelper.class);
+	//private static final Logger LOG = LogManager.getLogger(TemplateHelper.class);
 
 	
 	public static String getBlockName(final IBlock block) {
@@ -167,10 +165,14 @@ public class TemplateHelper {
 		List<String> res = new ArrayList<String>();
 		int tabNb = 0;
 		for(String line : lines) {
-			String lineTemp = line.trim().replace("\t", "").replace("\n", "").replace("\r", "");
 			boolean isInside = true;
 			boolean lastIsInside = true;
-			if(lineTemp.contains("<")) {
+			boolean asToClose = false;
+			if(line.contains("<")) {
+				String lineTemp = line.trim()
+						.replace("\t", "")
+						.replace("\n", "")
+						.replace("\r", "");
 				int index = lineTemp.indexOf("<");
 				String firstPart = lineTemp.substring(0, index).trim();
 				if(!firstPart.equals("")) {
@@ -198,12 +200,18 @@ public class TemplateHelper {
 						tabNb += +1;
 					}
 					lineResult += lastIsInside ? "<" + lineSplit + ">" : lineSplit;
-					res.add(lineResult);
+					if(!lastIsInside || isInside || asToClose){
+						String lineResultTemp = res.get(res.size()-1) + lineResult.trim();
+						res.set(res.size()-1, lineResultTemp);
+						asToClose = asToClose ? false : true;
+					} else {
+						res.add(lineResult);
+					}
 					lastIsInside = isInside;
 				} 
 			} else {
-				if(!lineTemp.equals("")) {
-					res.add(lineTemp);
+				if(!line.equals("")) {
+					res.add(line);
 				}
 			}
 			

@@ -19,6 +19,8 @@ class TestRunner {
 
 	private static final Logger LOG = LogManager.getLogger(TestRunner.class);
 	
+	private boolean interupted = false;
+	
 	@Inject
 	private Map<Class, IBlockRunner> blockRunnerMap;
 
@@ -86,9 +88,15 @@ class TestRunner {
 		testBlock.setTestFailureNumber(nbBlockFailures);
 
 	}
+	
+	public void kill() {
+		this.interupted = true;
+	}
 
 	private void runTestPageBlocks(final ITestPage testPage) {
 		for (final IBlock block : testPage.getBlocks()) {
+			if(interupted) { break; }
+			
 			if (block instanceof ITestPage) {
 				run((ITestPage) block);
 			} else {
@@ -96,7 +104,7 @@ class TestRunner {
 				if (blockRunner != null) {
 					blockRunner.run(block);
 				}else{
-					LOG.warn("No runner found for block of type " + block.getClass().getSimpleName());
+					LOG.debug("No runner found for block of type " + block.getClass().getSimpleName());
 				}
 			}
 		}

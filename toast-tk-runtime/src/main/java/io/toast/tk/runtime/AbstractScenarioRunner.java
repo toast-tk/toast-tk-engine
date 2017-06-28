@@ -28,6 +28,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	private boolean presetRepoFromWebApp = false;
 
 	private ITestPage localRepositoryTestPage;
+	private TestRunner runner;
 
 	private IHTMLReportGenerator htmlReportGenerator;
 
@@ -112,7 +113,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	}
 
 	public ITestPage runTestPage(final ITestPage testPage) throws IOException {
-		final TestRunner runner = injector.getInstance(TestRunner.class);
+		runner = injector.getInstance(TestRunner.class);
 		if (this.presetRepoFromWebApp) {
 			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
 			final TestParser parser = new TestParser();
@@ -136,6 +137,10 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		final String pageName = testPage.getName();
 		htmlReportGenerator.writeFile(generatePageHtml, pageName, path);
 		openReport(path, pageName);
+	}
+
+	public void kill() {
+		this.runner.kill();
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 package io.toast.tk.runtime.block;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +49,9 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private static final Pattern REGEX_PATTERN = Pattern.compile("\\$(\\d)");
 
+	private static int successNumber = 0;
+	private static int failureNumber = 0;
+
 	@Inject
 	private IActionItemRepository objectRepository;
 
@@ -66,6 +71,24 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		block.getBlockLines().forEach(line -> invokeTestAndAddResult(block, line));
 	}
 
+	public static void initializeNumber() {
+		successNumber = 0;
+		failureNumber = 0;
+	}
+	public static int getSuccessNumber() {
+		return successNumber;
+	}
+	public static int getFailureNumber() {
+		return failureNumber;
+	}
+	private void setSuccessNumber(ITestResult result) {
+		if(result.isSuccess()) {
+			successNumber++;
+		} else {
+			failureNumber++;
+		}
+	}
+	
 	private void invokeTestAndAddResult(
 		final TestBlock block, 
 		final TestLine line
@@ -80,6 +103,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			line.setExcutionTime(System.currentTimeMillis() - startTime);
 			updateFatal(result, actionCommandDescriptor);
 			line.setTestResult((TestResult) result);
+			
+			setSuccessNumber(result);
 		} catch (NoActionAdapterFound e) {
 			result = new FailureResult("No Action Adapter found !");
 		}
@@ -117,12 +142,14 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private ITestResult doLocalActionCall(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		ITestResult result;
+		Method actionMethod = null;
 		try {
-			Method actionMethod = actionAdaptaterLocator.getActionCommandDescriptor().method;
+			actionMethod = actionAdaptaterLocator.getActionCommandDescriptor().method;
 			Class<?> returnType = actionMethod.getReturnType();
 			// WARNING : Can Create Memory Failure
 			Object output = actionMethod.invoke(actionAdaptaterLocator.getInstance(), 
 												buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
+			
 			String expected = actionAdaptaterLocator.getTestLineDescriptor().testLine.getExpected();
 			if (ITestResult.class.isAssignableFrom(returnType)) {
 				setContextualTestSentence(actionAdaptaterLocator, (ITestResult) output);
@@ -135,7 +162,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 				result = handler.result(output, expected);
 			}
 		} catch (final Exception e) {
-			result = handleInvocationError(e);
+			result = handleInvocationError(e, actionMethod, actionAdaptaterLocator);
 		} catch (final AssertionError er) {
 			result = handleInvocationError(er);
 		}
@@ -152,12 +179,68 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 	}
 
-	private static TestResult handleInvocationError(final Exception e) {
+	private TestResult handleInvocationError(final Exception e, 
+			final Method actionMethod, final ActionAdaptaterLocator actionAdaptaterLocator) {
 		LOG.error(e.getMessage(), e);
 		if (e instanceof ErrorResultReceivedException) {
 			return ((ErrorResultReceivedException) e).getResult();
+		} else if(("argument type mismatch".equals(e.getMessage())) || (e instanceof InvocationTargetException && e.getCause() instanceof ClassCastException)) {
+			return new FailureResult(getArgumentFailureMessage(actionMethod, actionAdaptaterLocator));
 		}
 		return new FailureResult(ExceptionUtils.getRootCauseMessage(e));
+	}
+	
+	private String getArgumentFailureMessage(final Method actionMethod, 
+			final ActionAdaptaterLocator actionAdaptaterLocator) {
+		String res = "Your inputs arguments are :" + System.lineSeparator();
+		try {
+			String inputArg = "";
+			for(Object input : buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor())) {
+				inputArg = writeMessage(inputArg, input);
+			}
+			res += inputArg;
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+		}
+		
+		res += System.lineSeparator() + "Instead of :" + System.lineSeparator();
+
+		String args = "";
+		for(Parameter param : actionMethod.getParameters()) {
+			args = writeMessage(args, param.getParameterizedType());
+		}
+		res += args;
+		
+		return res;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private String writeMessage(String args, Object input) {
+		String className = input.getClass().getName().trim();
+		if(input instanceof List) {
+			if(((List) input).size() != 0) {
+				String name = ((List) input).get(0).getClass().getName().trim();
+				name = getClassName(name);
+				className = "List of " + name;
+			}
+		}
+		return writeMessage(args, className);
+	}
+	private String writeMessage(String args, Type inputType) {
+		String className = inputType.getTypeName().trim();
+		if(className.startsWith("java.util.List")) {
+			className = className.substring("java.util.List<".length(), className.length() - ">".length());
+			className = "List of " + getClassName(className);
+		}
+		return writeMessage(args, className);
+	}
+	private String writeMessage(String args, String className) {
+		String name = "- " + getClassName(className);
+		String res = args.equals("") ? name : args + System.lineSeparator() + name;
+		return res;
+	}
+	private String getClassName(String className) {
+		return className.substring(className.lastIndexOf(".") + 1).trim();
 	}
 
 	private static TestResult handleInvocationError(final AssertionError er) {

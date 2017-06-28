@@ -19,7 +19,9 @@ public class ObjectResultHandler extends AbstractResultHandler<Object> {
 		String res = "";
 		
 		try {
-			res = (String) ((List)value).stream().map(Object::toString).collect(Collectors.joining(System.lineSeparator()));
+			res = (String) ((List)value).stream()
+					.map(Object::toString)
+					.collect(Collectors.joining(System.lineSeparator()));
 		}
 		catch(Exception e) {
 			res = value.toString();

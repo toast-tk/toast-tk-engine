@@ -97,7 +97,7 @@ public class FileHelper {
 	            bufferedWriter.close();
 	        }
 	        catch(IOException ex) {
-	            throw new IOException("Error writing to file '" + fileName + "'");
+	            throw new IOException("Error writing to file '" + fileName + "' cause by " + ex.getMessage());
 	        }
 	 }
 	
