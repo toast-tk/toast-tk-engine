@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>io.toast-tk</groupId>
 		<artifactId>toast-tk-engine</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>0.1.5-PLUGINS</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>toast-tk-agent-api</artifactId>

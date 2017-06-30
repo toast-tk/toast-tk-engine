@@ -20,9 +20,17 @@ public abstract class AbstractResultHandler<T> implements IResultHandler<T> {
 			return result;
 		}
 		
-		Object expectedValue = expected != null  && isVar(expected) ? 
-				objectRepository.getUserVariables().get(expected) : expected.trim();
-		
+		Object expectedValue = null;
+		if(expected != null  && isVar(expected)) {
+			objectRepository.getUserVariables().get(expected);
+		} else {
+			if(expected != null) {
+				expectedValue = expected.trim();
+			} else {
+				expectedValue = expected;
+			}
+		}
+
 		if(value == null){
 			if(expectedValue != null){
 				markResultAsFailure(result);
