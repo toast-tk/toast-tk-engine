@@ -184,10 +184,44 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		LOG.error(e.getMessage(), e);
 		if (e instanceof ErrorResultReceivedException) {
 			return ((ErrorResultReceivedException) e).getResult();
-		} else if(("argument type mismatch".equals(e.getMessage())) || (e instanceof InvocationTargetException && e.getCause() instanceof ClassCastException)) {
+		} else if(isArgumentFailureMessage(actionMethod, actionAdaptaterLocator)) {
 			return new FailureResult(getArgumentFailureMessage(actionMethod, actionAdaptaterLocator));
 		}
 		return new FailureResult(ExceptionUtils.getRootCauseMessage(e));
+	}
+
+	private boolean isArgumentFailureMessage(final Method actionMethod, 
+			final ActionAdaptaterLocator actionAdaptaterLocator) {
+		String inputArg = "";
+		try {
+			for(Object input : buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor())) {
+				inputArg = writeMessage(inputArg, input);
+			}
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+		}
+		
+		String arg = "";
+		for(Parameter param : actionMethod.getParameters()) {
+			arg = writeMessage(arg, param.getParameterizedType());
+		}
+
+		String[] inputArgs = inputArg.split(System.lineSeparator());
+		String[] args = arg.split(System.lineSeparator());
+		
+		if(inputArgs.length != args.length) {
+			return false;
+		}
+		
+		for(int i = 0; i < inputArgs.length; i ++) {
+			String inputTemp = inputArgs[i];
+			String argTemp = args[i];
+			if(!inputTemp.equals(argTemp)) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	private String getArgumentFailureMessage(final Method actionMethod, 
