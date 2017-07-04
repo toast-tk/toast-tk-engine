@@ -188,7 +188,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			try {
 				Parameter[] params = actionMethod.getParameters();
 				Object[] objs = buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor());
-				if(ArgumentBlockHelper.isArgumentFailureMessage(params, objs)) {
+				if(ArgumentBlockHelper.isArgumentFailureMessage(e, params, objs)) {
 					return new FailureResult(ArgumentBlockHelper.getArgumentFailureMessage(params, objs));
 				}
 			} catch (Exception e1) {

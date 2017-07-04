@@ -1,5 +1,6 @@
 package io.toast.tk.runtime.block;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -12,8 +13,12 @@ public class ArgumentBlockHelper {
 
 	private static final Logger LOG = LogManager.getLogger(ArgumentBlockHelper.class);
 
-	public static boolean isArgumentFailureMessage(Parameter[] params, 
-			Object[] inputArgList) {
+	public static boolean isArgumentFailureMessage(Exception error, Parameter[] params, Object[] inputArgList) {
+		if(!("argument type mismatch".equals(error.getMessage())) 
+				&& !(error instanceof InvocationTargetException && error.getCause() instanceof ClassCastException)) {
+			return false;
+		}
+		
 		String inputArg = "";
 		try {
 			for(Object input : inputArgList) {
