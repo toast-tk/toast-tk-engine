@@ -184,97 +184,18 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		LOG.error(e.getMessage(), e);
 		if (e instanceof ErrorResultReceivedException) {
 			return ((ErrorResultReceivedException) e).getResult();
-		} else if(isArgumentFailureMessage(actionMethod, actionAdaptaterLocator)) {
-			return new FailureResult(getArgumentFailureMessage(actionMethod, actionAdaptaterLocator));
+		} else {
+			try {
+				Parameter[] params = actionMethod.getParameters();
+				Object[] objs = buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor());
+				if(ArgumentBlockHelper.isArgumentFailureMessage(params, objs)) {
+					return new FailureResult(ArgumentBlockHelper.getArgumentFailureMessage(params, objs));
+				}
+			} catch (Exception e1) {
+				// Nothing to do
+			}
 		}
 		return new FailureResult(ExceptionUtils.getRootCauseMessage(e));
-	}
-
-	private boolean isArgumentFailureMessage(final Method actionMethod, 
-			final ActionAdaptaterLocator actionAdaptaterLocator) {
-		String inputArg = "";
-		try {
-			for(Object input : buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor())) {
-				inputArg = writeMessage(inputArg, input);
-			}
-		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
-		}
-		
-		String arg = "";
-		for(Parameter param : actionMethod.getParameters()) {
-			arg = writeMessage(arg, param.getParameterizedType());
-		}
-
-		String[] inputArgs = inputArg.split(System.lineSeparator());
-		String[] args = arg.split(System.lineSeparator());
-		
-		if(inputArgs.length != args.length) {
-			return false;
-		}
-		
-		for(int i = 0; i < inputArgs.length; i ++) {
-			String inputTemp = inputArgs[i];
-			String argTemp = args[i];
-			if(!inputTemp.equals(argTemp)) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	private String getArgumentFailureMessage(final Method actionMethod, 
-			final ActionAdaptaterLocator actionAdaptaterLocator) {
-		String res = "Your inputs arguments are :" + System.lineSeparator();
-		try {
-			String inputArg = "";
-			for(Object input : buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor())) {
-				inputArg = writeMessage(inputArg, input);
-			}
-			res += inputArg;
-		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
-		}
-		
-		res += System.lineSeparator() + "Instead of :" + System.lineSeparator();
-
-		String args = "";
-		for(Parameter param : actionMethod.getParameters()) {
-			args = writeMessage(args, param.getParameterizedType());
-		}
-		res += args;
-		
-		return res;
-	}
-	
-	@SuppressWarnings("rawtypes")
-	private String writeMessage(String args, Object input) {
-		String className = input.getClass().getName().trim();
-		if(input instanceof List) {
-			if(((List) input).size() != 0) {
-				String name = ((List) input).get(0).getClass().getName().trim();
-				name = getClassName(name);
-				className = "List of " + name;
-			}
-		}
-		return writeMessage(args, className);
-	}
-	private String writeMessage(String args, Type inputType) {
-		String className = inputType.getTypeName().trim();
-		if(className.startsWith("java.util.List")) {
-			className = className.substring("java.util.List<".length(), className.length() - ">".length());
-			className = "List of " + getClassName(className);
-		}
-		return writeMessage(args, className);
-	}
-	private String writeMessage(String args, String className) {
-		String name = "- " + getClassName(className);
-		String res = args.equals("") ? name : args + System.lineSeparator() + name;
-		return res;
-	}
-	private String getClassName(String className) {
-		return className.substring(className.lastIndexOf(".") + 1).trim();
 	}
 
 	private static TestResult handleInvocationError(final AssertionError er) {
