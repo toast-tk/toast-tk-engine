@@ -10,7 +10,7 @@ import org.junit.Test;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
-import io.toast.tk.runtime.parse.ProjectParser;
+import io.toast.tk.runtime.parse.TestPlanParser;
 
 /**
  * Test with a project definition
@@ -23,7 +23,7 @@ public class TestParserTestCase_6 {
 	    ITestPlan project = null;
 
         try {
-            project = new ProjectParser().parse(filename);
+            project = new TestPlanParser().parse(filename);
         } catch (IOException e) {
             e.printStackTrace();
         }

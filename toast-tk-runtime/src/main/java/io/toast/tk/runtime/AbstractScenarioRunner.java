@@ -1,17 +1,9 @@
 package io.toast.tk.runtime;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
-
 import io.toast.tk.core.annotation.EngineEventBus;
 import io.toast.tk.core.rest.RestUtils;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
@@ -20,6 +12,12 @@ import io.toast.tk.runtime.parse.TestParser;
 import io.toast.tk.runtime.report.DefaultTestProgressReporter;
 import io.toast.tk.runtime.report.IHTMLReportGenerator;
 import io.toast.tk.runtime.utils.RunUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractScenarioRunner extends AbstractRunner {
 
@@ -33,6 +31,8 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	private IHTMLReportGenerator htmlReportGenerator;
 
 	private DefaultTestProgressReporter progressReporter;
+
+	private String apiKey;
 
 	protected AbstractScenarioRunner(final Injector injector) {
 		super(injector);
@@ -81,14 +81,14 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		RunUtils.printResult(testPages);
 	}
 
-	public final void runRemote(
+	public final void runRemote(String apiKey,
 			final String... scenarios
 	) throws Exception {
 		this.presetRepoFromWebApp = true;
 		run(scenarios);
 	}
 
-	public final void runRemoteScript(
+	public final void runRemoteScript(String apiKey,
 			final String script
 	) throws Exception {
 		this.presetRepoFromWebApp = true;
@@ -115,7 +115,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	public ITestPage runTestPage(final ITestPage testPage) throws IOException {
 		runner = injector.getInstance(TestRunner.class);
 		if (this.presetRepoFromWebApp) {
-			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
+			final String repoWiki = RestUtils.downloadRepositoryAsWiki(this.apiKey);
 			final TestParser parser = new TestParser();
 			final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
 			runner.run(repoAsTestPageForConvenience);

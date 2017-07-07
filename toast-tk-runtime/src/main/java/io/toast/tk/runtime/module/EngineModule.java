@@ -7,10 +7,7 @@ import com.google.inject.Singleton;
 import io.toast.tk.core.annotation.EngineEventBus;
 import io.toast.tk.runtime.ActionItemRepository;
 import io.toast.tk.runtime.IActionItemRepository;
-import io.toast.tk.runtime.report.IHTMLReportGenerator;
-import io.toast.tk.runtime.report.IProjectHtmlReportGenerator;
-import io.toast.tk.runtime.report.ThymeLeafHTMLReporter;
-import io.toast.tk.runtime.report.ThymeLeafProjectHTMLReporter;
+import io.toast.tk.runtime.report.*;
 
 public class EngineModule extends AbstractModule {
 
@@ -20,6 +17,7 @@ public class EngineModule extends AbstractModule {
 		bind(IActionItemRepository.class).to(ActionItemRepository.class).in(Singleton.class);
 		bind(IHTMLReportGenerator.class).to(ThymeLeafHTMLReporter.class);
 		bind(IProjectHtmlReportGenerator.class).to(ThymeLeafProjectHTMLReporter.class);
+		bind(IMailReportSender.class).to(MailReportSender.class);
 		install(new RunnerModule());
 	}
 }

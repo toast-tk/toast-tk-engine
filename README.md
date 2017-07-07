@@ -39,7 +39,7 @@ Add Toast Runtime dependency
 <dependency>
   <groupId>io.toast-tk</groupId>
   <artifactId>toast-tk-runtime</artifactId>
-  <version>0.1.4</version>
+  <version>0.1.5</version>
 </dependency>
 ```
 

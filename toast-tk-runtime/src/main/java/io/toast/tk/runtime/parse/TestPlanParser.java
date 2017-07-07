@@ -16,20 +16,20 @@ import io.toast.tk.dao.domain.impl.test.block.ICampaign;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.line.CampaignLine;
 
-public class ProjectParser extends AbstractParser {
+public class TestPlanParser extends AbstractParser {
 
-	private static final Logger LOG = LogManager.getLogger(ProjectParser.class);
+	private static final Logger LOG = LogManager.getLogger(TestPlanParser.class);
 
-	public ProjectParser() {
+	public TestPlanParser() {
 		LOG.info("Parser initializing..");
 		this.blockParserProvider = new BlockParserProvider();
 	}
 
 	public ITestPlan parse(String filename) throws IOException, IllegalArgumentException {
-		return buildProject(FileHelper.getScript(filename), filename);
+		return parse(FileHelper.getScript(filename), filename);
 	}
 
-	private ITestPlan buildProject(List<String> lines, final String pageName) throws IllegalArgumentException, IOException {
+	public ITestPlan parse(List<String> lines, final String pageName) throws IllegalArgumentException, IOException {
 		LOG.info("Starting project parsing: {}", pageName);
 		final TestPlanImpl project = initProject(pageName);
 		while (CollectionUtils.isNotEmpty(lines)) {
