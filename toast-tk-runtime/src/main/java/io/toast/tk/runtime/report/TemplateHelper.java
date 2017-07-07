@@ -196,7 +196,9 @@ public class TemplateHelper {
 					for(int i = 1; i <= tabNb; i++) {
 						lineResult = "\t" + lineResult;
 					}
-					if(!lineSplit.startsWith("/") & lastIsInside) {
+					if(!lineSplit.startsWith("/") & !lineSplit.endsWith("/") 
+							& !lineSplit.startsWith("?") & !lineSplit.endsWith("?")
+							& lastIsInside) {
 						tabNb += +1;
 					}
 					lineResult += lastIsInside ? "<" + lineSplit + ">" : lineSplit;
