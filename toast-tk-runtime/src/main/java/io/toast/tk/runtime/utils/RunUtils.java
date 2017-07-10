@@ -19,7 +19,7 @@ public class RunUtils {
 		return new String(Files.readAllBytes(Paths.get(path)));
 	}
 	
-	public static void printResult(
+	public static ResultObject getResult(
 		final List<ITestPage> testPages
 	) {
 		int totalErrors = 0;
@@ -34,10 +34,10 @@ public class RunUtils {
 			}
 			totalSuccess += testPage.getTestSuccessNumber();
 		}
-		print(totalErrors, totalTechnical, totalSuccess, filesWithErrorsList);
+		return new ResultObject(totalErrors, totalTechnical, totalSuccess, filesWithErrorsList);
 	}
 
-	private static void print(
+	public static void print(
 		final int totalErrors,
 		final int totalTechnical,
 		final int totalSuccess,

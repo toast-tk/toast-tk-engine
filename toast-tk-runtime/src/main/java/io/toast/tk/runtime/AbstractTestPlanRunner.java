@@ -1,8 +1,6 @@
 package io.toast.tk.runtime;
 
 import com.google.inject.Module;
-import io.toast.tk.adapter.constant.AdaptersConfig;
-import io.toast.tk.adapter.constant.AdaptersConfigProvider;
 import io.toast.tk.core.rest.RestUtils;
 import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
@@ -12,7 +10,6 @@ import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.runtime.dao.DAOManager;
 import io.toast.tk.runtime.parse.TestParser;
 import io.toast.tk.runtime.report.IHTMLReportGenerator;
-import io.toast.tk.runtime.report.IMailReportSender;
 import io.toast.tk.runtime.report.IProjectHtmlReportGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,8 +25,6 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 
 	private final IProjectHtmlReportGenerator projectHtmlReportGenerator;
 
-	private final IMailReportSender mailReportSender;
-
 	private String mongoDbHost;
 
 	private int mongoDbPort;
@@ -40,7 +35,6 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		super();
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
-		this.mailReportSender = injector.getInstance(IMailReportSender.class);
 	}
 
 	protected AbstractTestPlanRunner(final String host, final int port, final String db, final Module... extraModule) {
@@ -61,7 +55,6 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		super(extraModules);
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
-		this.mailReportSender = injector.getInstance(IMailReportSender.class);
 	}
 
 	public final void test(ITestPlan testplan, boolean useRemoteRepository, String apiKey) throws IOException {
@@ -187,19 +180,6 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		}
 		createAndOpenReport(testPlan);
 		tearDownEnvironment();
-	}
-
-	/**
-	 * Checks if report must be sent by mail. See "mail.send" in toast.properties.
-	 *
-	 * @return True if the report must be sent by mail.
-	 */
-	private boolean shouldSendMail() {
-		return getConfig().isMailSendReport();
-	}
-
-	private AdaptersConfig getConfig() {
-		return new AdaptersConfigProvider().get();
 	}
 
 	private void createAndOpenReport(final ITestPlan testPlan) {

@@ -11,6 +11,7 @@ import io.toast.tk.runtime.parse.FileHelper;
 import io.toast.tk.runtime.parse.TestParser;
 import io.toast.tk.runtime.report.DefaultTestProgressReporter;
 import io.toast.tk.runtime.report.IHTMLReportGenerator;
+import io.toast.tk.runtime.utils.ResultObject;
 import io.toast.tk.runtime.utils.RunUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -78,7 +79,11 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		tearDownEnvironment();
 
 		LOG.info("{}file(s) processed", scenarios.length);
-		RunUtils.printResult(testPages);
+		ResultObject res = RunUtils.getResult(testPages);
+		RunUtils.print(res.getTotalErrors(), res.getTotalSuccess(), res.getTotalTechnical(), res.getFilesWithErrorsList());
+		if (shouldSendMail()) {
+			mailReportSender.sendMailReport(testPages, res);
+		}
 	}
 
 	public final void runRemote(String apiKey,
@@ -124,6 +129,15 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		}
 		beginTest();
 		ITestPage result = runner.run(testPage);
+		
+		List<ITestPage> testPages = new ArrayList<ITestPage>();
+		testPages.add(testPage);
+		ResultObject res = RunUtils.getResult(testPages);
+		RunUtils.print(res.getTotalErrors(), res.getTotalSuccess(), res.getTotalTechnical(), res.getFilesWithErrorsList());
+		if (shouldSendMail()) {
+			mailReportSender.sendMailReport(testPages, res);
+		}
+		
 		createAndOpenReport(result);
 		endTest();
 		return result;
