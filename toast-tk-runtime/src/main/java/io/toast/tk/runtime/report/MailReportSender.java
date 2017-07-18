@@ -10,6 +10,8 @@ import io.toast.tk.runtime.utils.ResultObject;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.text.StrBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -22,7 +24,9 @@ import java.util.List;
  * Send test reports by email
  */
 public class MailReportSender implements IMailReportSender {
-
+	
+	private static final Logger LOG = LogManager.getLogger(MailReportSender.class);
+	
 	@Override
 	public void sendMailReport(ITestPlan testPage) {
 		AdaptersConfig config = getConfig();
@@ -48,7 +52,12 @@ public class MailReportSender implements IMailReportSender {
 		String subject = getMailBody(campaign);
 		
 		MailSender sender = new MailSender();
-		sender.send(subject, body, mailTo, mailFrom);
+		try {
+			sender.send(subject, body, mailTo, mailFrom);
+		}
+		catch( Exception e) {
+			LOG.error(e.getMessage());
+		}
 	}
 
 	private void send(List<ITestPage> testPage, ResultObject res, List<String> mailTo, String mailFrom) {		
@@ -56,7 +65,12 @@ public class MailReportSender implements IMailReportSender {
 		String subject = getMailBody(testPage, res);
 		
 		MailSender sender = new MailSender();
-		sender.send(subject, body, mailTo, mailFrom);
+		try {
+			sender.send(subject, body, mailTo, mailFrom);
+		}
+		catch( Exception e) {
+			LOG.error(e.getMessage());
+		}
 	}
 
 	private String getSubject() {

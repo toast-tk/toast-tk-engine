@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration monitorInterval="60">
 	<Properties>
-		<Property name="filename">./toast-logs.log</Property>
+		<Property name="filename">toast-logs.log</Property>
 	</Properties>
 	<Appenders>
 		<RollingRandomAccessFile name="RollingRandomAccessFile"

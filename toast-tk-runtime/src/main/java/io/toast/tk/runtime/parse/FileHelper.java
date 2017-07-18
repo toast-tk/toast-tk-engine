@@ -99,7 +99,35 @@ public class FileHelper {
 	        catch(IOException ex) {
 	            throw new IOException("Error writing to file '" + fileName + "' cause by " + ex.getMessage());
 	        }
-	 }
+	}
+
+	public static String getLastModifiedFile(String directoryPath) {
+		File directory = new File(directoryPath);
+		File moreRecentFile = null;
+		
+		if (!directory.exists()) {
+			LOG.warn("The file/directory '" + directoryPath + "' does not exist");
+		} else if (!directory.isDirectory()) {
+			LOG.warn("The path '" + directoryPath + "' does not match to a directory");
+		} else {
+			File[] subfiles = directory.listFiles();
+			
+			if( subfiles.length > 0 ){
+				moreRecentFile = subfiles[0];
+				for (int i = 1; i < subfiles.length; i++) {
+					File subfile = subfiles[i];
+					//System.out.println(subfile.getName());
+					
+					if (subfile.lastModified() > moreRecentFile.lastModified()) 
+						moreRecentFile = subfile;
+				}
+				return directoryPath + File.separatorChar + moreRecentFile.getName();
+			}else{
+				LOG.warn("The directory '" + directoryPath + "' is empty!");
+			}
+		}
+		return "";
+	}
 	
 	static List<String> removeBom(final List<String> list) {
 		final String firstLine = list.get(0);

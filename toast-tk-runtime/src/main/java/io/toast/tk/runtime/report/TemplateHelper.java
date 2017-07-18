@@ -123,7 +123,7 @@ public class TemplateHelper {
 		if(line.getTestResult() != null) {
 			String message = line.getTestResult().getMessage();
 			message = message != null ? returnResult(message) : "";
-			return prettyXmlText(message);
+			return prettyText(message);
 		}
 		return "&nbsp;";
 	}
@@ -135,19 +135,18 @@ public class TemplateHelper {
 	public static String getExpectedResult(final TestLine line) {
 		String message = line.getExpected(); 
 		message = message != null ? returnResult(message) : "";
-		return prettyXmlText(message);
+		return prettyText(message);
 	}
 	
 	public static String getSmallStepSentence(final TestLine line) {
-		String message = substringText(getStepSentence(line), 2*Html_Length_Max);
-		return prettyXmlText(message);
+		return substringText(getStepSentence(line), 2*Html_Length_Max);
 	}
 	
 	public static String getStepSentence(final TestLine line) {
 		String contextualTestSentence = line.getTestResult() != null ? line.getTestResult().getContextualTestSentence() : null;
 		contextualTestSentence = contextualTestSentence != null ? contextualTestSentence : line.getTest();		
 		String message = returnResult(contextualTestSentence);
-		return prettyXmlText(message);
+		return prettyText(message);
 	}
 
 	public static String substringText(String text, int maxLength) {
@@ -159,16 +158,32 @@ public class TemplateHelper {
 			return text.substring(0, maxLength - 3) + "...";
 		}
 	}
-	
+
+	private static String prettyText(String str) {
+		String separator = "\\*";
+		String[] lines = str.split(separator);
+		List<String> res = new ArrayList<String>();
+		for(String line : lines) {
+			if(line.endsWith(">") && line.startsWith("<")) {
+				res.add(System.lineSeparator());
+				res.add(prettyXmlText(line));
+				res.add(System.lineSeparator());
+			} else {
+				res.add(line);
+			}
+		}
+		return String.join("*", res);
+	}
 	private static String prettyXmlText(String str) {
-		String[] lines = str.split(System.lineSeparator());
+		String separator = System.lineSeparator();
+		String[] lines = str.split(separator);
 		List<String> res = new ArrayList<String>();
 		int tabNb = 0;
 		for(String line : lines) {
 			boolean isInside = true;
 			boolean lastIsInside = true;
 			boolean asToClose = false;
-			if(line.contains("<")) {
+			if(line.contains("<") && line.contains(">")) {
 				String lineTemp = line.trim()
 						.replace("\t", "")
 						.replace("\n", "")
@@ -218,7 +233,7 @@ public class TemplateHelper {
 			}
 			
 		}
-		return String.join(System.lineSeparator(), res);
+		return String.join(separator, res);
 	}
 
 

@@ -8,6 +8,8 @@ public final class Property {
 
 	}
 	
+	public static final String TOAST_CONTACT = "contact.toast-tk@talan.com";
+	
 	public static final String DEFAULT_WEBAPP_ADDR_PORT = "http://localhost:9000";
 
 	public static final String WEBAPP_ADDR = "toast.webapp.addr";
@@ -36,7 +38,10 @@ public final class Property {
 	public static final String TOAST_RUNTIME_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME
 		+ File.separatorChar + "runtime";
 
-	public static final String TOAST_LOG_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME + File.separatorChar +"log";;
+	public static final String TOAST_TARGET_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME
+		+ File.separatorChar + "target" + File.separatorChar + "toast-test-results" + File.separatorChar;
+
+	public static final String TOAST_LOG_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME + File.separatorChar + "logs" + File.separatorChar;
 
 	public static final String TOAST_PROPERTIES_FILE = Property.TOAST_HOME_DIR + "toast.properties";
 
