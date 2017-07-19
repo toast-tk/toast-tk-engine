@@ -34,6 +34,10 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	private DefaultTestProgressReporter progressReporter;
 
 	private String apiKey;
+	
+	public TestRunner getTestRunner() {
+		return runner;
+	}
 
 	protected AbstractScenarioRunner(final Injector injector) {
 		super(injector);

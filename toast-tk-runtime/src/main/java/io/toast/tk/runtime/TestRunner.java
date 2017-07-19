@@ -14,12 +14,18 @@ import io.toast.tk.dao.domain.impl.test.block.TestBlock;
 import io.toast.tk.dao.domain.impl.test.block.line.TestLine;
 import io.toast.tk.runtime.block.FatalExcecutionError;
 import io.toast.tk.runtime.block.IBlockRunner;
+import io.toast.tk.runtime.block.TestBlockRunner;
 
-class TestRunner {
+public class TestRunner {
 
 	private static final Logger LOG = LogManager.getLogger(TestRunner.class);
 	
 	private boolean interupted = false;
+
+	private int successNumber = 0;
+	private int failureNumber = 0;
+	
+	private IBlockRunner blockRunner;
 	
 	@Inject
 	private Map<Class, IBlockRunner> blockRunnerMap;
@@ -100,13 +106,39 @@ class TestRunner {
 			if (block instanceof ITestPage) {
 				run((ITestPage) block);
 			} else {
-				final IBlockRunner blockRunner = blockRunnerMap.get(block.getClass());
+				blockRunner = blockRunnerMap.get(block.getClass());
 				if (blockRunner != null) {
 					blockRunner.run(block);
+					
+					// Used for the agent
+					if(blockRunner instanceof TestBlockRunner) {
+						successNumber += ((TestBlockRunner) blockRunner).getSuccessNumber();
+						failureNumber += ((TestBlockRunner) blockRunner).getFailureNumber();
+					}
 				}else{
 					LOG.debug("No runner found for block of type " + block.getClass().getSimpleName());
 				}
 			}
 		}
+	}
+
+	public int getSuccessNumber() {
+		int res = successNumber;
+		
+		// If a block is still running
+		if(blockRunner instanceof TestBlockRunner) {
+			res += ((TestBlockRunner) blockRunner).getSuccessNumber();
+		}
+		return res;
+	}
+
+	public int getFailureNumber() {
+		int res = failureNumber;
+		
+		// If a block is still running
+		if(blockRunner instanceof TestBlockRunner) {
+			res += ((TestBlockRunner) blockRunner).getFailureNumber();
+		}
+		return res;
 	}
 }

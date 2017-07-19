@@ -47,8 +47,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private static final Pattern REGEX_PATTERN = Pattern.compile("\\$(\\d)");
 
-	private static int successNumber = 0;
-	private static int failureNumber = 0;
+	private int successNumber = 0;
+	private int failureNumber = 0;
 
 	@Inject
 	private IActionItemRepository objectRepository;
@@ -69,14 +69,14 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		block.getBlockLines().forEach(line -> invokeTestAndAddResult(block, line));
 	}
 
-	public static void initializeNumber() {
+	public void initializeNumber() {
 		successNumber = 0;
 		failureNumber = 0;
 	}
-	public static int getSuccessNumber() {
+	public int getSuccessNumber() {
 		return successNumber;
 	}
-	public static int getFailureNumber() {
+	public int getFailureNumber() {
 		return failureNumber;
 	}
 	private void setSuccessNumber(ITestResult result) {

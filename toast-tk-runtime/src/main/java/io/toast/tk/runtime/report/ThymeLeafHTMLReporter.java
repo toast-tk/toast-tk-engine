@@ -2,7 +2,6 @@ package io.toast.tk.runtime.report;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
