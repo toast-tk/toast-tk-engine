@@ -43,6 +43,8 @@ public final class Property {
 
 	public static final String TOAST_LOG_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME + File.separatorChar + "logs" + File.separatorChar;
 
+	public static final String DOWNLOAD_DIR = System.getProperty("user.home") + File.separatorChar + "Downloads" + File.separatorChar;
+
 	public static final String TOAST_PROPERTIES_FILE = Property.TOAST_HOME_DIR + "toast.properties";
 
 	public static final String AGENT_JAR_NAME = "toast-tk-agent-standalone.jar";

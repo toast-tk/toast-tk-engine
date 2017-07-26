@@ -65,11 +65,35 @@ public class FileHelper {
 			return lines;
 		} 
         catch(IOException ex) {
-        	String exception = "Error reading file '" + fileName + "'";
+        	String exception = "Error reading file '" + fileName + "' caused by " + ex.getMessage();
         	LOG.info(exception);
             return exception;       
         }
     }
+
+	public static String getStringFromInputStream(InputStream is) {
+		BufferedReader br = null;
+		StringBuilder sb = new StringBuilder();
+		
+		String line;
+		try {
+			br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+			while ((line = br.readLine()) != null) {
+				sb.append(line).append(System.lineSeparator());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return sb.toString();
+	}
 	
 	public static void createDirectory(String arg) {
 		File theDir = new File(arg);
@@ -127,6 +151,14 @@ public class FileHelper {
 			}
 		}
 		return "";
+	}
+
+	public static void copyFile(String filePath, String repertory) throws IOException {
+		File file = new File(filePath);
+		String fileName = file.getName();
+		String fileSeparator = String.valueOf(File.separatorChar);
+		String fileOutputPath = repertory.endsWith(fileSeparator) ? repertory + fileName : repertory + fileSeparator + fileName;
+		Files.copy(file.toPath(), (new File(fileOutputPath)).toPath());
 	}
 	
 	static List<String> removeBom(final List<String> list) {

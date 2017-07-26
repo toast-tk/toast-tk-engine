@@ -1,53 +1,63 @@
 package io.toast.tk.runtime.mail;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import javax.activation.CommandMap;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.activation.MailcapCommandMap;
-import javax.mail.*;
+import javax.mail.Authenticator;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * Send email
  */
 public class MailSender {
 
-	private static final Logger LOG = LogManager.getLogger(MailSender.class);
+	//private static final Logger LOG = LogManager.getLogger(MailSender.class);
 
-	private static final String SMTP_PROPERTIES_FILE_PATH = "/smtp.properties";
+	SmtpConfigProvider config;
+	
+	private String proxyURL;
+	private String proxyPort;
 
+	public MailSender() {
+		config = new SmtpConfigProvider();
+	}
+	
+	public MailSender(String host, String port, String user, String pswd) {
+		config = new SmtpConfigProvider(host, port, user, pswd);
+	}
+	
+	public void setProxy(String proxyURL, String proxyPort) {
+		this.proxyURL = proxyURL;
+		this.proxyPort = proxyPort;
+	}
+	
 	private Session getMailSession() {
-		InputStream resourceAsStream = this.getClass().getResourceAsStream(SMTP_PROPERTIES_FILE_PATH);
-
-		final Properties properties = new Properties();
-		try (final Reader resourceFileReader = new InputStreamReader(resourceAsStream)) {
-			properties.load(resourceFileReader);
-		} catch (final IOException e) {
-			LOG.error("Could not load smtp.properties file", e);
-		}
-
+		config.setProxy(proxyURL, proxyPort);
+		Properties properties = config.get();
+        
 		if (Boolean.parseBoolean(properties.getProperty
-				("mail.smtp.auth"))) {
+				(SmtpConfigProvider.SMTP_PROPERTIES_AUTH))) {
 			return Session.getDefaultInstance(properties, new Authenticator() {
 				@Override
 				protected PasswordAuthentication getPasswordAuthentication() {
-					String user = properties.getProperty("mail.smtp.user");
-					String password = properties.getProperty("mail.smtp.password");
+					String user = properties.getProperty(SmtpConfigProvider.SMTP_PROPERTIES_USER);
+					String password = properties.getProperty(SmtpConfigProvider.SMTP_PROPERTIES_PASSWORD);
 					return new PasswordAuthentication(user, password);
 				}
 			});

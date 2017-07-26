@@ -2,9 +2,7 @@ package io.toast.tk.runtime.report;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 import org.joda.time.LocalDateTime;
@@ -123,7 +121,7 @@ public class TemplateHelper {
 		if(line.getTestResult() != null) {
 			String message = line.getTestResult().getMessage();
 			message = message != null ? returnResult(message) : "";
-			return prettyText(message);
+			return XmlPrettierHelper.getPrettyXmlText(message);
 		}
 		return "&nbsp;";
 	}
@@ -135,7 +133,7 @@ public class TemplateHelper {
 	public static String getExpectedResult(final TestLine line) {
 		String message = line.getExpected(); 
 		message = message != null ? returnResult(message) : "";
-		return prettyText(message);
+		return XmlPrettierHelper.getPrettyXmlText(message);
 	}
 	
 	public static String getSmallStepSentence(final TestLine line) {
@@ -146,7 +144,7 @@ public class TemplateHelper {
 		String contextualTestSentence = line.getTestResult() != null ? line.getTestResult().getContextualTestSentence() : null;
 		contextualTestSentence = contextualTestSentence != null ? contextualTestSentence : line.getTest();		
 		String message = returnResult(contextualTestSentence);
-		return prettyText(message);
+		return XmlPrettierHelper.getPrettySentenceText(message);
 	}
 
 	public static String substringText(String text, int maxLength) {
@@ -158,84 +156,6 @@ public class TemplateHelper {
 			return text.substring(0, maxLength - 3) + "...";
 		}
 	}
-
-	private static String prettyText(String str) {
-		String separator = "\\*";
-		String[] lines = str.split(separator);
-		List<String> res = new ArrayList<String>();
-		for(String line : lines) {
-			if(line.endsWith(">") && line.startsWith("<")) {
-				res.add(System.lineSeparator());
-				res.add(prettyXmlText(line));
-				res.add(System.lineSeparator());
-			} else {
-				res.add(line);
-			}
-		}
-		return String.join("*", res);
-	}
-	private static String prettyXmlText(String str) {
-		String separator = System.lineSeparator();
-		String[] lines = str.split(separator);
-		List<String> res = new ArrayList<String>();
-		int tabNb = 0;
-		for(String line : lines) {
-			boolean isInside = true;
-			boolean lastIsInside = true;
-			boolean asToClose = false;
-			if(line.contains("<") && line.contains(">")) {
-				String lineTemp = line.trim()
-						.replace("\t", "")
-						.replace("\n", "")
-						.replace("\r", "");
-				int index = lineTemp.indexOf("<");
-				String firstPart = lineTemp.substring(0, index).trim();
-				if(!firstPart.equals("")) {
-					res.add(firstPart);
-				}
-				
-				String secondPart = lineTemp.substring(index);
-				for(String lineSplit : secondPart.split("<|>")) {
-					String lineResult = "";
-					lineSplit = lineSplit.trim();
-					if(lineSplit.equals("")) {
-						isInside = true;
-						lastIsInside = isInside;
-						continue;
-					} else {
-						isInside = lastIsInside ? false : true;
-					}
-					if(lineSplit.startsWith("/")) {
-						tabNb += -1;
-					}
-					for(int i = 1; i <= tabNb; i++) {
-						lineResult = "\t" + lineResult;
-					}
-					if(!lineSplit.startsWith("/") & !lineSplit.endsWith("/") 
-							& !lineSplit.startsWith("?") & !lineSplit.endsWith("?")
-							& lastIsInside) {
-						tabNb += +1;
-					}
-					lineResult += lastIsInside ? "<" + lineSplit + ">" : lineSplit;
-					if(!lastIsInside || isInside || asToClose){
-						String lineResultTemp = res.get(res.size()-1) + lineResult.trim();
-						res.set(res.size()-1, lineResultTemp);
-						asToClose = asToClose ? false : true;
-					} else {
-						res.add(lineResult);
-					}
-					lastIsInside = isInside;
-				} 
-			} else {
-				if(!line.equals("")) {
-					res.add(line);
-				}
-			}
-			
-		}
-		return String.join(separator, res);
-	}
-
 
 	public static boolean hasScreenShot(final ITestResult testResult) {
 		return testResult != null && testResult.getScreenShot() != null;
