@@ -50,8 +50,10 @@ public abstract class AbstractRunner {
 			@Override
 			protected void configure() {
 				install(new EngineModule());
-				for(Module module: extraModules){
-					install(module);
+				if (extraModules != null) {
+					for (Module module : extraModules) {
+						install(module);
+					}
 				}
 				listAvailableServicesByReflection.forEach(f -> bindActionAdapter(f.clazz));
 			}
