@@ -1,35 +1,30 @@
 package io.toast.tk.runtime.dao;
 
-import java.util.List;
-
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.mongodb.MongoCredential;
-
 import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
 import io.toast.tk.dao.domain.impl.repository.ProjectImpl;
+import io.toast.tk.dao.domain.impl.repository.RepositoryImpl;
 import io.toast.tk.dao.domain.impl.team.UserImpl;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.guice.MongoModule;
 import io.toast.tk.dao.service.dao.access.plan.TestPlanDaoService;
 import io.toast.tk.dao.service.dao.access.repository.ProjectDaoService;
+import io.toast.tk.dao.service.dao.access.repository.RepositoryDaoService;
 import io.toast.tk.dao.service.dao.access.team.UserDaoService;
+
+import java.util.List;
 
 public class DAOManager {
 
-	private Injector mongoServiceInjector;
-
-	private TestPlanDaoService.Factory testPlanFactory;
-
 	private TestPlanDaoService testPlanService;
 
-	private UserDaoService.Factory userFactory;
-
 	private UserDaoService userService;
-	
-	private ProjectDaoService.Factory projectFactory;
 
 	private ProjectDaoService projectService;
+
+	private final RepositoryDaoService repositoryService;
 
 	private static DAOManager INSTANCE;
 
@@ -39,13 +34,13 @@ public class DAOManager {
 		final String mongoDb,
 		final MongoCredential credential
 	) {
-		this.mongoServiceInjector = Guice.createInjector(new MongoModule(mongoHost, mongoPort, mongoDb, credential));
-		this.testPlanFactory = mongoServiceInjector.getInstance(TestPlanDaoService.Factory.class);
+		Injector mongoServiceInjector =
+				Guice.createInjector(new MongoModule(mongoHost, mongoPort, mongoDb, credential));
+		TestPlanDaoService.Factory testPlanFactory = mongoServiceInjector.getInstance(TestPlanDaoService.Factory.class);
 		this.testPlanService = testPlanFactory.create(mongoDb);
-		this.userFactory = mongoServiceInjector.getInstance(UserDaoService.Factory.class);
-		this.userService = userFactory.create(mongoDb);
-		this.projectFactory = mongoServiceInjector.getInstance(ProjectDaoService.Factory.class);
-		this.projectService = projectFactory.create(mongoDb);
+		this.userService = mongoServiceInjector.getInstance(UserDaoService.Factory.class).create(mongoDb);
+		this.projectService = mongoServiceInjector.getInstance(ProjectDaoService.Factory.class).create(mongoDb);
+		this.repositoryService = mongoServiceInjector.getInstance(RepositoryDaoService.Factory.class).create(mongoDb);
 	}
 	
 	public static synchronized DAOManager init(
@@ -93,7 +88,11 @@ public class DAOManager {
 	public static TestPlanImpl getTestPlanTemplate(final String projectName, final String idProject) {
 		return getInstance().getTestPlanDaoService().getReferenceProjectByName(projectName, idProject);
 	}
-	
+
+	public static List<RepositoryImpl> getRepositories(final String idProject) {
+		return getInstance().repositoryService.getAllForProject(idProject);
+	}
+
 	public static void saveTestPlan(final TestPlanImpl project) throws IllegalAccessException {
 		getInstance().getTestPlanDaoService().saveNewIteration(project);
 	}

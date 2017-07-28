@@ -1,15 +1,5 @@
 package io.toast.tk.dao.service.dao.access.repository;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bson.types.ObjectId;
-
 import com.github.jmkgreen.morphia.Key;
 import com.github.jmkgreen.morphia.query.Query;
 import com.google.common.reflect.TypeToken;
@@ -22,12 +12,19 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.name.Named;
 import com.mongodb.WriteConcern;
-
 import io.toast.tk.dao.domain.impl.common.IServiceFactory;
 import io.toast.tk.dao.domain.impl.repository.RepositoryImpl;
 import io.toast.tk.dao.service.dao.common.AbstractMongoDaoService;
 import io.toast.tk.dao.service.dao.common.CommonMongoDaoService;
 import io.toast.tk.dao.service.init.DbStarter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bson.types.ObjectId;
+
+import javax.annotation.Nullable;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
 
 public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl> {
 
@@ -107,6 +104,12 @@ public class RepositoryDaoService extends AbstractMongoDaoService<RepositoryImpl
 	public Key<RepositoryImpl> save(RepositoryImpl entity, WriteConcern wc) {
 		entity.rows.stream().forEach(e -> eDaoService.save(e, wc));
 		return super.save(entity, wc);
+	}
+
+	public List<RepositoryImpl> getAllForProject(String idProject) {
+		final Query<RepositoryImpl> query = createQuery();
+		query.criteria("project._id").equal(new ObjectId(idProject));
+		return query.asList();
 	}
 	
 }
