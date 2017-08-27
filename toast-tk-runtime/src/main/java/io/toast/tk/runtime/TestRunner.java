@@ -1,6 +1,7 @@
 package io.toast.tk.runtime;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,7 @@ public class TestRunner {
 	
 	private boolean interupted = false;
 
+	private UUID lastBlockId;
 	private int successNumber = 0;
 	private int failureNumber = 0;
 	
@@ -97,6 +99,11 @@ public class TestRunner {
 	
 	public void kill() {
 		this.interupted = true;
+		if(blockRunner != null) {
+			if(blockRunner instanceof TestBlockRunner) {
+				((TestBlockRunner) blockRunner).kill();
+			}
+		}
 	}
 
 	private void runTestPageBlocks(final ITestPage testPage) {
@@ -108,6 +115,10 @@ public class TestRunner {
 			} else {
 				blockRunner = blockRunnerMap.get(block.getClass());
 				if (blockRunner != null) {
+					if(blockRunner instanceof TestBlockRunner) {
+						((TestBlockRunner) blockRunner).initializeNumber();
+					}
+					
 					blockRunner.run(block);
 					
 					// Used for the agent
@@ -127,7 +138,7 @@ public class TestRunner {
 		
 		// If a block is still running
 		if(blockRunner instanceof TestBlockRunner) {
-			res += ((TestBlockRunner) blockRunner).getSuccessNumber();
+			res = res + ((TestBlockRunner) blockRunner).getSuccessNumber();
 		}
 		return res;
 	}
@@ -137,7 +148,7 @@ public class TestRunner {
 		
 		// If a block is still running
 		if(blockRunner instanceof TestBlockRunner) {
-			res += ((TestBlockRunner) blockRunner).getFailureNumber();
+			res = res + ((TestBlockRunner) blockRunner).getFailureNumber();
 		}
 		return res;
 	}

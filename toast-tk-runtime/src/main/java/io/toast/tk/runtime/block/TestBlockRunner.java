@@ -5,6 +5,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +48,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private static final Pattern REGEX_PATTERN = Pattern.compile("\\$(\\d)");
 
+	private UUID blockID;
+	
 	private int successNumber = 0;
 	private int failureNumber = 0;
 
@@ -64,9 +67,16 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private EventBus eventBus;
 
+	private boolean interupted = false;
+
 	@Override
 	public void run(final TestBlock block) {
-		block.getBlockLines().forEach(line -> invokeTestAndAddResult(block, line));
+		blockID = UUID.randomUUID();
+		for(TestLine line : block.getBlockLines()) {
+			if(interupted) { break; }
+			
+			invokeTestAndAddResult(block, line);
+		}
 	}
 
 	public void initializeNumber() {
@@ -85,6 +95,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		} else {
 			failureNumber++;
 		}
+	}
+	
+	public UUID getBlockUuid() {
+		return blockID;
 	}
 	
 	private void invokeTestAndAddResult(
@@ -381,6 +395,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	public void setRepository(IActionItemRepository repository) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void kill() {
+		this.interupted = true;		
 	}
 }
 

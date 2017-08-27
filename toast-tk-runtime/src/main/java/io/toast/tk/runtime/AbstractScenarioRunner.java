@@ -158,7 +158,9 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	}
 
 	public void kill() {
-		this.runner.kill();
+		if(this.runner != null){
+			this.runner.kill();
+		}
 	}
 
 	@Override

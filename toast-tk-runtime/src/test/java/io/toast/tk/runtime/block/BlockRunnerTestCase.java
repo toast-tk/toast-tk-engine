@@ -71,6 +71,7 @@ public class BlockRunnerTestCase {
 		ActionCommandDescriptor method = blockRunner.findMatchingAction("Intégrer *$flux*", XmlAdapterExample.class);
 		Assert.assertNotNull(method);
 	}
+	
 
 	@Test
 	public void testReverseEngineeringMethodParamType() {

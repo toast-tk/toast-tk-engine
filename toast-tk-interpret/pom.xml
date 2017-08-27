@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>io.toast-tk</groupId>
 		<artifactId>toast-tk-engine</artifactId>
-		<version>0.1.5-PLUGINS</version>
+		<version>0.1.5.2</version>
 	</parent>
 	<artifactId>toast-tk-interpret</artifactId>
 	<name>Toast Toolkit - Interpretation module</name>

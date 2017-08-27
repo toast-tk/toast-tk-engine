@@ -31,7 +31,9 @@ public class ObjectResultHandler extends AbstractResultHandler<Object> {
 					res += entry.getKey().toString() + " = " + entry.getValue().toString() + System.lineSeparator();
 				}
 			} catch(Exception e2) {
-				res = value.toString();
+				if(value != null) {
+					res = value.toString();
+				}
 			}
 		}
 		return res;

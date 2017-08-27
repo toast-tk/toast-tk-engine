@@ -27,7 +27,7 @@ public class XmlPrettierHelper {
 				res.add(System.lineSeparator() + getPrettyXmlText(line)
 						+ System.lineSeparator());
 			} else {
-				if(!"".equals(line.trim())) {
+				if(!"".equals(line)) {
 					res.add(line);
 				}
 			}
