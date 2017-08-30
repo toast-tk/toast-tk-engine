@@ -152,6 +152,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private ITestResult doLocalActionCall(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		ITestResult result;
 		Method actionMethod = null;

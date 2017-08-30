@@ -36,16 +36,18 @@ public abstract class AbstractResultHandler<T> implements IResultHandler<T> {
 				markResultAsFailure(result);
 			}
 		}
-		else if(expectedValue != null && !expectedValue.equals("") && !value.toString().equals(expectedValue)){
+		else if(expectedValue != null && !expectedValue.equals("") && !value.toString().equals(expectedValue)
+					&& !shouldStoreResult(expected) // The comparison of stored result is not well executed
+													// If the user want to compare result, he has to use the phrase
+				){
 			markResultAsFailure(result);
 		}
 		return result;
     }
 
 	private boolean shouldStoreResult(String expected) {
-		return expected != null && 
-			isVar(expected) 
-			&& !objectRepository.getUserVariables().containsKey(expected);
+		return expected != null && isVar(expected);
+			//&& !objectRepository.getUserVariables().containsKey(expected);
 	}
 
 	private void markResultAsFailure(ITestResult result) {
