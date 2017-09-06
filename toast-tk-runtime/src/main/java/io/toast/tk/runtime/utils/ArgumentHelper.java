@@ -23,8 +23,10 @@ import io.toast.tk.runtime.constant.Property;
 public class ArgumentHelper {
 	
 	private static final List<ActionItem> ACTION_ITEMS = ActionItemDescriptionCollector.initActionItems();
-	
-	private static final Pattern ACTION_ITEM_VAR_PATTERN = Pattern.compile(Property.ACTION_ITEM_VAR_REGEX, Pattern.MULTILINE);
+
+	private static final Pattern ACTION_ITEM_VAR_PATTERN_1 = Pattern.compile(Property.ACTION_ITEM_VAR_REGEX_1, Pattern.MULTILINE);
+
+	private static final Pattern ACTION_ITEM_VAR_PATTERN_2 = Pattern.compile(Property.ACTION_ITEM_VAR_REGEX_2, Pattern.MULTILINE);
 
 	public static CommandArgumentDescriptor convertActionSentenceToRegex(final Action action) {
 		return convertActionSentenceToRegex(action.action());
@@ -140,14 +142,30 @@ public class ArgumentHelper {
 		final IActionItemRepository repoSetup,
 		String value
 	) {
-		final Matcher m = ACTION_ITEM_VAR_PATTERN.matcher(value);
+		// First we check Vars with parentesis 
+		value = handleValueWithNestedVars(repoSetup, ACTION_ITEM_VAR_PATTERN_1, value);
+		// Then without
+		return handleValueWithNestedVars(repoSetup, ACTION_ITEM_VAR_PATTERN_2, value);
+	}
+	private static String handleValueWithNestedVars(
+		final IActionItemRepository repoSetup, Pattern pattern,
+		String value
+	) {
+		final Matcher m = pattern.matcher(value);
 		int pos = 0;
 		while(m.find()) {
-			final String varName = m.group(pos + 1);
+			String varName = m.group(pos + 1);
+			if(pattern.equals(ACTION_ITEM_VAR_PATTERN_1)) {
+				varName = varName.substring(1, varName.length() - 1);
+			}
 			if(repoSetup.getUserVariables().containsKey(varName)) {
 				String varValue = repoSetup.getUserVariables().get(varName).toString();
 				if(!varName.equals(varValue)){
-					value = value.replaceFirst("\\" + varName + "\\b", varValue.replace("$", "\\$"));	
+					String valueToReplace = "\\" + varName + "\\b";
+					if(pattern.equals(ACTION_ITEM_VAR_PATTERN_1)) {
+						valueToReplace = "\\(" + valueToReplace + "\\)";
+					}
+					value = value.replaceFirst(valueToReplace, varValue.replace("$", "\\$"));	
 				}
 			}
 		}

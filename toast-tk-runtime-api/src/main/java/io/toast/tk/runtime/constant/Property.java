@@ -71,5 +71,7 @@ public final class Property {
 
 	public static final int TOAST_AGENT_PORT = 7676;
 	
-	public static final String ACTION_ITEM_VAR_REGEX = "(\\$[\\w|\\.]+)";
+	public static final String ACTION_ITEM_VAR_REGEX_1 = "(\\(\\$[\\w|\\.]+\\))";
+	
+	public static final String ACTION_ITEM_VAR_REGEX_2 = "(\\$[\\w|\\.]+)";
 }
