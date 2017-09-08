@@ -8,6 +8,8 @@ public final class Property {
 
 	}
 	
+	public static final String PATH_DELIMITER = "/";
+	
 	public static final String TOAST_CONTACT = "contact.toast-tk@talan.com";
 	
 	public static final String DEFAULT_WEBAPP_ADDR_PORT = "http://localhost:9000";

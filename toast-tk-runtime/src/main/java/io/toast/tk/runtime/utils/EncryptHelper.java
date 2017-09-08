@@ -4,6 +4,10 @@ public class EncryptHelper {
 
 	//private static final Logger LOG = LogManager.getLogger(EncryptHelper.class);
 	
+	private EncryptHelper() {
+		
+	}
+	
 	public static String encrypt(String password){
 		String crypte= "";
 		for (int i=0; i<password.length();i++)  {

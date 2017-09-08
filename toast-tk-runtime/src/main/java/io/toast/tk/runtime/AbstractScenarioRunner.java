@@ -134,7 +134,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		beginTest();
 		ITestPage result = runner.run(testPage);
 		
-		List<ITestPage> testPages = new ArrayList<ITestPage>();
+		List<ITestPage> testPages = new ArrayList<>();
 		testPages.add(testPage);
 		ResultObject res = RunUtils.getResult(testPages);
 		RunUtils.print(res.getTotalErrors(), res.getTotalSuccess(), res.getTotalTechnical(), res.getFilesWithErrorsList());

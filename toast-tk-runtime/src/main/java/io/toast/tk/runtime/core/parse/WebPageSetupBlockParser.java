@@ -42,7 +42,7 @@ public class WebPageSetupBlockParser implements IBlockParser {
             final String[] split = StringUtils.split(string, "|");
             
             try {
-                assertLineHasEnoughColumn(firstLine, split);
+                assertLineHasEnoughColumn(split);
                 webPageBlock.addLine(
                 	new WebPageConfigLine(
                 		split[0].trim(), 
@@ -74,7 +74,7 @@ public class WebPageSetupBlockParser implements IBlockParser {
         }
 	}
 
-	private static void assertLineHasEnoughColumn(String firstLine, String[] split) {
+	private static void assertLineHasEnoughColumn(String[] split) {
 		if(split.length != 5) {
 		    throw new IllegalArgumentException("Web page setup line does not have enough columns: " + "|" + String.join("|", split) + "|");
 		}

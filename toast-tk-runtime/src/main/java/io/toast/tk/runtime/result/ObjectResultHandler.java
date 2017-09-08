@@ -16,27 +16,30 @@ public class ObjectResultHandler extends AbstractResultHandler<Object> {
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    private String resultBuetifier(Object value) {
-    	String res = "";
-		
+    private String resultBuetifier(Object value) {	
 		try {
-			res = (String) ((List)value).stream()
+			return ((List)value).stream()
 					.map(Object::toString)
-					.collect(Collectors.joining(System.lineSeparator()));
+					.collect(Collectors.joining(System.lineSeparator()))
+					.toString();
 		}
 		catch(Exception e) {
 			try {
-				res = "";
+		    	StringBuilder res = new StringBuilder();
 				for(Entry entry : ((Map<?, ?>) value).entrySet()) {
-					res += entry.getKey().toString() + " = " + entry.getValue().toString() + System.lineSeparator();
+					res.append(entry.getKey().toString() + " = " 
+							+ entry.getValue().toString() 
+							+ System.lineSeparator());
 				}
+				return res.toString();
 			} catch(Exception e2) {
 				if(value != null) {
-					res = value.toString();
+					return value.toString();
+				} else {
+					return "";
 				}
 			}
 		}
-		return res;
     }
         
 	@Override

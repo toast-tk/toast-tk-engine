@@ -57,7 +57,7 @@ public class MailSender {
 				@Override
 				protected PasswordAuthentication getPasswordAuthentication() {
 					String user = properties.getProperty(SmtpConfigProvider.SMTP_PROPERTIES_USER);
-					String password = properties.getProperty(SmtpConfigProvider.SMTP_PROPERTIES_PASSWORD);
+					String password = properties.getProperty(SmtpConfigProvider.SMTP_PROPERTIES_PASSWORD_NAME);
 					return new PasswordAuthentication(user, password);
 				}
 			});

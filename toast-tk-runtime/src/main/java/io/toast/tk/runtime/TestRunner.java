@@ -1,7 +1,6 @@
 package io.toast.tk.runtime;
 
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +22,6 @@ public class TestRunner {
 	
 	private boolean interupted = false;
 
-	private UUID lastBlockId;
 	private int successNumber = 0;
 	private int failureNumber = 0;
 	
@@ -99,10 +97,8 @@ public class TestRunner {
 	
 	public void kill() {
 		this.interupted = true;
-		if(blockRunner != null) {
-			if(blockRunner instanceof TestBlockRunner) {
-				((TestBlockRunner) blockRunner).kill();
-			}
+		if(blockRunner != null && blockRunner instanceof TestBlockRunner) {
+			((TestBlockRunner) blockRunner).kill();		
 		}
 	}
 
@@ -113,23 +109,26 @@ public class TestRunner {
 			if (block instanceof ITestPage) {
 				run((ITestPage) block);
 			} else {
-				blockRunner = blockRunnerMap.get(block.getClass());
-				if (blockRunner != null) {
-					if(blockRunner instanceof TestBlockRunner) {
-						((TestBlockRunner) blockRunner).initializeNumber();
-					}
-					
-					blockRunner.run(block);
-					
-					// Used for the agent
-					if(blockRunner instanceof TestBlockRunner) {
-						successNumber += ((TestBlockRunner) blockRunner).getSuccessNumber();
-						failureNumber += ((TestBlockRunner) blockRunner).getFailureNumber();
-					}
-				}else{
-					LOG.debug("No runner found for block of type " + block.getClass().getSimpleName());
-				}
+				runBlocks(block);
 			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void runBlocks(IBlock block) {
+		blockRunner = blockRunnerMap.get(block.getClass());
+		if (blockRunner == null) {
+			LOG.debug("No runner found for block of type " + block.getClass().getSimpleName());
+		} else if(blockRunner instanceof TestBlockRunner) {
+			((TestBlockRunner) blockRunner).initializeNumber();
+			
+			blockRunner.run(block);
+			
+			// Used for the agent
+			successNumber += ((TestBlockRunner) blockRunner).getSuccessNumber();
+			failureNumber += ((TestBlockRunner) blockRunner).getFailureNumber();
+		} else {
+			blockRunner.run(block);
 		}
 	}
 

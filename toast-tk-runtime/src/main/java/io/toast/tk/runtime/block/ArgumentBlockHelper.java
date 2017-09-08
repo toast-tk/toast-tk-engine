@@ -13,6 +13,10 @@ public class ArgumentBlockHelper {
 
 	private static final Logger LOG = LogManager.getLogger(ArgumentBlockHelper.class);
 
+	private ArgumentBlockHelper() {
+		
+	}
+	
 	public static boolean isArgumentFailureMessage(Exception error, Parameter[] params, Object[] inputArgList) {
 		if(!("argument type mismatch".equals(error.getMessage())) 
 				&& !(error instanceof InvocationTargetException && error.getCause() instanceof ClassCastException)) {
@@ -78,12 +82,10 @@ public class ArgumentBlockHelper {
 	@SuppressWarnings("rawtypes")
 	private static String writeMessage(String args, Object input) {
 		String className = input.getClass().getName().trim();
-		if(input instanceof List) {
-			if(((List) input).size() != 0) {
-				String name = ((List) input).get(0).getClass().getName().trim();
-				name = getClassName(name);
-				className = "List of " + name;
-			}
+		if(input instanceof List && ((List) input).size() != 0) {
+			String name = ((List) input).get(0).getClass().getName().trim();
+			name = getClassName(name);
+			className = "List of " + name;
 		}
 		return writeMessage(args, className);
 	}
@@ -100,11 +102,10 @@ public class ArgumentBlockHelper {
 	}
 	private static String writeMessage(String args, String className) {
 		String name = "- " + getClassName(className);
-		String res = args.equals("") ? name : args + System.lineSeparator() + name;
-		return res;
+		return args.equals("") ? name : args + System.lineSeparator() + name;
 	}
 	private static String getClassName(String className) {
-		String name = className.substring(className.lastIndexOf(".") + 1).trim();
+		String name = className.substring(className.lastIndexOf('.') + 1).trim();
 		name = "HashMap".equals(name) ? "Map" : name;
 		return name;
 	}

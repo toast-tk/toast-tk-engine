@@ -136,7 +136,7 @@ public class MailReportSender implements IMailReportSender {
 		sb.append(res.getTotalSuccess()).append(" tests in success").appendNewLine();
 
 		// Failure number
-		long failureNumber = res.getTotalErrors() + res.getTotalTechnical();
+		int failureNumber = res.getTotalErrors() + res.getTotalTechnical();
 		sb.append(failureNumber).append(" tests failed").appendNewLine();
 		sb.appendNewLine();
 

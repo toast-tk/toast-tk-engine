@@ -24,7 +24,7 @@ public class SmtpConfigProvider {
 	private Properties properties;
 	
 	public static final String SMTP_PROPERTIES_FILE_NAME = "smtp.properties";
-	public static final String SMTP_PROPERTIES_FILE_STREAM_PATH = "/" + SMTP_PROPERTIES_FILE_NAME;
+	public static final String SMTP_PROPERTIES_FILE_STREAM_PATH = Property.PATH_DELIMITER + SMTP_PROPERTIES_FILE_NAME;
 	public static final String SMTP_PROPERTIES_FILE_PATH = Property.TOAST_HOME_DIR + SMTP_PROPERTIES_FILE_NAME;
 	
 	public static final String SMTP_PROPERTIES_HOST = "mail.smtp.host";
@@ -37,7 +37,7 @@ public class SmtpConfigProvider {
 
 	public static final String SMTP_PROPERTIES_USER = "mail.smtp.user";
 
-	public static final String SMTP_PROPERTIES_PASSWORD = "mail.smtp.password";
+	public static final String SMTP_PROPERTIES_PASSWORD_NAME = "mail.smtp.password";
 	
 	public SmtpConfigProvider() {
 		properties = new Properties();
@@ -72,7 +72,7 @@ public class SmtpConfigProvider {
 			}
 		}
 
-		properties.put(SMTP_PROPERTIES_PASSWORD, EncryptHelper.decrypt((String) properties.get(SMTP_PROPERTIES_PASSWORD)));
+		properties.put(SMTP_PROPERTIES_PASSWORD_NAME, EncryptHelper.decrypt((String) properties.get(SMTP_PROPERTIES_PASSWORD_NAME)));
 
 		setProperty(properties);
 	}
@@ -80,10 +80,10 @@ public class SmtpConfigProvider {
 	public void init(String host, String port, String user, String pswd) {
 		properties.setProperty(SMTP_PROPERTIES_HOST, host);
 		properties.setProperty(SMTP_PROPERTIES_PORT, port);
-		if(user != null || "".equals(user)) {
+		if(user != null && !"".equals(user)) {
 			properties.setProperty(SMTP_PROPERTIES_AUTH, "true");
 			properties.setProperty(SMTP_PROPERTIES_USER, user);
-			properties.setProperty(SMTP_PROPERTIES_PASSWORD, pswd);
+			properties.setProperty(SMTP_PROPERTIES_PASSWORD_NAME, pswd);
 		}
 
 		setProperty(properties);

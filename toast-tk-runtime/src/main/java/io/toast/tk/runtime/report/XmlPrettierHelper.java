@@ -5,6 +5,10 @@ import java.util.List;
 
 public class XmlPrettierHelper {
 
+	private XmlPrettierHelper() {
+		
+	}
+	
 	static String getPrettySentenceText(String str) {
 		if(str.contains("*")) {
 			String separator = "\\*";
@@ -20,9 +24,9 @@ public class XmlPrettierHelper {
 		}
 	}
 	static List<String> getPrettyXmlText(String[] lines) {
-		List<String> res = new ArrayList<String>();
+		List<String> res = new ArrayList<>();
 		for(String line : lines) {
-			if((line.indexOf("<") < line.indexOf(">") + 1) 
+			if((line.indexOf('<') < line.indexOf('>') + 1) 
 				&& line.contains("<") && line.contains(">") ) {
 				res.add(System.lineSeparator() + getPrettyXmlText(line)
 						+ System.lineSeparator());
@@ -36,13 +40,13 @@ public class XmlPrettierHelper {
 	}
 	static String getPrettyXmlText(String str) {
 		// IF this is not an XML
-		if(!(str.indexOf("<") < str.indexOf(">") + 1)) {
+		if(str.indexOf('<') >= str.indexOf('>') + 1) {
 			return str;
 		}
 		
 		String separator = System.lineSeparator();
 		String[] lines = str.split(separator);
-		List<String> res = new ArrayList<String>();
+		List<String> res = new ArrayList<>();
 		int tabNb = 0;
 		for(String line : lines) {
 			boolean isInside = true;
@@ -53,7 +57,7 @@ public class XmlPrettierHelper {
 						.replace("\t", "")
 						.replace("\n", "")
 						.replace("\r", "");
-				int index = lineTemp.indexOf("<");
+				int index = lineTemp.indexOf('<');
 				String firstPart = lineTemp.substring(0, index).trim();
 				if(!"".equals(firstPart.trim())) {
 					res.add(firstPart);
@@ -76,12 +80,12 @@ public class XmlPrettierHelper {
 					for(int i = 1; i <= tabNb; i++) {
 						lineResult = "\t" + lineResult;
 					}
-					if(!lineSplit.startsWith("/") & !lineSplit.endsWith("/") 
-							& !lineSplit.startsWith("?") & !lineSplit.endsWith("?")
-							& lastIsInside) {
+					if(!lineSplit.startsWith("/") && !lineSplit.endsWith("/") 
+							&& !lineSplit.startsWith("?") && !lineSplit.endsWith("?")
+							&& lastIsInside) {
 						tabNb += +1;
 					}
-					lineResult += lastIsInside ? "<" + lineSplit + ">" : lineSplit;
+					lineResult += lastIsInside ? '<' + lineSplit + '>' : lineSplit;
 					if(!lastIsInside || isInside || asToClose){
 						String lineResultTemp = res.get(res.size()-1) + lineResult.trim();
 						res.set(res.size()-1, lineResultTemp);
