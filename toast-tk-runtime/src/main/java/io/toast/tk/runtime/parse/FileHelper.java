@@ -82,13 +82,13 @@ public class FileHelper {
 				sb.append(line).append(System.lineSeparator());
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					LOG.error(e.getMessage());
 				}
 			}
 		}
@@ -99,30 +99,34 @@ public class FileHelper {
 		File theDir = new File(arg);
 
 		if (!theDir.exists()) {
-			System.out.println("creating directory: " + theDir.getName());
-	
-		    try{
-		        theDir.mkdir();
-		    } 
-		    catch(SecurityException se){
-		        throw se;
-		    }        
+			LOG.info("creating directory: " + theDir.getName());
+			
+			theDir.mkdir();    
 		    
-		    System.out.println("DIR created"); 
+		    LOG.info("DIR created"); 
 		}
 	}
 
 	public static void writeFile(String arg, String fileName) throws IOException {
-		 try {
-			 FileOutputStream fileWriter =   new FileOutputStream(fileName);
-	            BufferedWriter bufferedWriter = new BufferedWriter(
-	            		new OutputStreamWriter(fileWriter, StandardCharsets.UTF_8));
-	            bufferedWriter.write(arg);
-	            bufferedWriter.close();
-	        }
-	        catch(IOException ex) {
-	            throw new IOException("Error writing to file '" + fileName + "' cause by " + ex.getMessage());
-	        }
+		FileOutputStream fileWriter = null; 
+		BufferedWriter bufferedWriter = null;
+		try {
+			fileWriter =   new FileOutputStream(fileName);
+            bufferedWriter = new BufferedWriter(
+            		new OutputStreamWriter(fileWriter, StandardCharsets.UTF_8));
+            bufferedWriter.write(arg);
+            bufferedWriter.close();
+        }
+        catch(IOException ex) {
+            throw new IOException("Error writing to file '" + fileName + "' cause by " + ex.getMessage());
+        } finally {
+        	if(fileWriter != null) {
+            	fileWriter.close();
+        	}
+        	if(bufferedWriter != null) {
+        		bufferedWriter.close();
+        	}
+        }
 	}
 
 	public static String getLastModifiedFile(String directoryPath) {
@@ -140,7 +144,7 @@ public class FileHelper {
 				moreRecentFile = subfiles[0];
 				for (int i = 1; i < subfiles.length; i++) {
 					File subfile = subfiles[i];
-					//System.out.println(subfile.getName());
+					//LOG.info(subfile.getName());
 					
 					if (subfile.lastModified() > moreRecentFile.lastModified()) 
 						moreRecentFile = subfile;

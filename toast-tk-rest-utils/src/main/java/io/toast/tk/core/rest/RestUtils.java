@@ -268,8 +268,7 @@ public class RestUtils {
 			httpBuilder.setConnectionManager(cm);
 		} catch (KeyManagementException | NoSuchAlgorithmException
 				| KeyStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e.getMessage());
 		}
 
 		if (isProxyDefined(requestInfo)) {
@@ -320,8 +319,8 @@ public class RestUtils {
 			@SuppressWarnings("deprecation")
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
 	                builder.build(),SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-			@SuppressWarnings("unused")
-			PlainConnectionSocketFactory pcsf = new PlainConnectionSocketFactory();
+
+			new PlainConnectionSocketFactory();
 			
 			Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder
 			        .<ConnectionSocketFactory> create().register("https", sslsf)
@@ -333,10 +332,8 @@ public class RestUtils {
 	        //cm.setDefaultSocketConfig( SocketConfig.custom().setSoKeepAlive( true ).setSoReuseAddress( true ).setSoTimeout( 3000 ).build() 
 	        //cm.setValidateAfterInactivity(1); // essai pour resoudre java.net.SocketException: Software caused connection abort: recv failed
 
-	        @SuppressWarnings("unused")
-			ConnectionKeepAliveStrategy myStrategy = new ConnectionKeepAliveStrategy() {
-
-	            public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
+	        new ConnectionKeepAliveStrategy() {
+	        	public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
 	                // Honor 'keep-alive' header
 	                HeaderElementIterator it = new BasicHeaderElementIterator(
 	                        response.headerIterator(HTTP.CONN_KEEP_ALIVE));
@@ -348,13 +345,12 @@ public class RestUtils {
 	                        try {
 	                            return Long.parseLong(value) * 1000;
 	                        } catch(NumberFormatException ignore) {
+	                        	LOG.warn(ignore.getLocalizedMessage());
 	                        }
 	                    }
 	                }
-	                return 30 * 1000;
-	               
+	                return (long) 30 * 1000;
 	            }
-
 	        };
 	        return cm;
 	}

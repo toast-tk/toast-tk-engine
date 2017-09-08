@@ -47,7 +47,6 @@ public abstract class AbstractResultHandler<T> implements IResultHandler<T> {
 
 	private boolean shouldStoreResult(String expected) {
 		return expected != null && isVar(expected);
-			//&& !objectRepository.getUserVariables().containsKey(expected);
 	}
 
 	private void markResultAsFailure(ITestResult result) {

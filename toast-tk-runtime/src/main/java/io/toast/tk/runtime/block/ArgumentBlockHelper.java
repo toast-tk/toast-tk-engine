@@ -82,7 +82,7 @@ public class ArgumentBlockHelper {
 	@SuppressWarnings("rawtypes")
 	private static String writeMessage(String args, Object input) {
 		String className = input.getClass().getName().trim();
-		if(input instanceof List && ((List) input).size() != 0) {
+		if(input instanceof List && ((List) input).isEmpty()) {
 			String name = ((List) input).get(0).getClass().getName().trim();
 			name = getClassName(name);
 			className = "List of " + name;
