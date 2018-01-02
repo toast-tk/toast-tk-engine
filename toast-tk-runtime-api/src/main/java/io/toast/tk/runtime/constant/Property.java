@@ -42,6 +42,9 @@ public final class Property {
 
 	public static final String TOAST_TARGET_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME
 		+ File.separatorChar + "target" + File.separatorChar + "toast-test-results" + File.separatorChar;
+	
+	public static final String TOAST_TEMP_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME
+			+ File.separatorChar + "temp" + File.separatorChar;
 
 	public static final String TOAST_LOG_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME + File.separatorChar + "logs" + File.separatorChar;
 

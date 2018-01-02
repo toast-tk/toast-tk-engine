@@ -25,6 +25,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	private static final Logger LOG = LogManager.getLogger(AbstractScenarioRunner.class);
 
 	private boolean presetRepoFromWebApp = false;
+	private static boolean openReport = true;
 
 	private ITestPage localRepositoryTestPage;
 	private TestRunner runner;
@@ -154,7 +155,9 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		final String path = getReportsOutputPath() == null ? getReportsFolderPath(): getReportsOutputPath();
 		final String pageName = testPage.getName();
 		htmlReportGenerator.writeFile(generatePageHtml, pageName, path);
-		openReport(path, pageName);
+		if(isOpenReport()) {
+			openReport(path, pageName);
+		}
 	}
 
 	public void kill() {
@@ -166,6 +169,14 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	@Override
 	public String getReportsOutputPath(){
 		return null;
+	}
+
+	public boolean isOpenReport() {
+		return openReport;
+	}
+
+	public static void setOpenReport(boolean openreport) {
+		openReport = openreport;
 	}
 
 }

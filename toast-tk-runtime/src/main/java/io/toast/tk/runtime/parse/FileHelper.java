@@ -172,6 +172,29 @@ public class FileHelper {
 		}
 		return list;
 	}
+	
+	public static String[] findFilesURL(String directoryPath) {
+		File[] files = findFiles(directoryPath);
+		String[] res = new String[files.length];
+		int i = 0;
+		for(File file : files) {
+			res[i] = file.getAbsolutePath();
+			i++;
+		}
+		return res;
+	}
+	public static File[] findFiles(String directoryPath) {
+		File[] res = null;
+		File directory = new File(directoryPath);
+		if(!directory.exists()){
+			System.out.println("The file/directory '"+directoryPath+"' does not exist.");
+		}else if(!directory.isDirectory()){
+			System.out.println("The directory '"+directoryPath+"' is a file and not a directory!");
+		}else{
+			res = directory.listFiles();
+		}
+		return res;
+	}
 
 	public static boolean existFile(String fileName) {
 		File file = new File(fileName);
