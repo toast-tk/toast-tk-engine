@@ -130,4 +130,9 @@ public class TestPlanImpl extends BasicTaggableMongoBean implements ITestPlan {
 	public void setProject(IProject project) {
 		this.project = (ProjectImpl)project;
 	}
+
+	@Override
+	public String getIdAsString() {
+		return id == null ? null : id.toString();
+	}
 }

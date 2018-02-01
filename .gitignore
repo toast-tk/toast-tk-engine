@@ -9,6 +9,7 @@ bin/
 *.iml
 *.eml
 *.iws
+*.ipr
 
 # Mac
 .DS_Store

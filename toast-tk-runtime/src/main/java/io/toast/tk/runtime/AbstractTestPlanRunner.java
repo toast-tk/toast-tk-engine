@@ -1,23 +1,24 @@
 package io.toast.tk.runtime;
 
-import java.io.IOException;
-import java.util.Objects;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.inject.Module;
-
+import io.toast.tk.adapter.constant.AdaptersConfig;
+import io.toast.tk.adapter.constant.AdaptersConfigProvider;
 import io.toast.tk.core.rest.RestUtils;
 import io.toast.tk.dao.domain.impl.report.TestPlanImpl;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
 import io.toast.tk.dao.domain.impl.test.block.IProject;
-import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
 import io.toast.tk.runtime.dao.DAOManager;
 import io.toast.tk.runtime.parse.TestParser;
 import io.toast.tk.runtime.report.IHTMLReportGenerator;
+import io.toast.tk.runtime.report.IMailReportSender;
 import io.toast.tk.runtime.report.IProjectHtmlReportGenerator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public abstract class AbstractTestPlanRunner extends AbstractRunner {
 
@@ -26,6 +27,8 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 	private final IHTMLReportGenerator htmlReportGenerator;
 
 	private final IProjectHtmlReportGenerator projectHtmlReportGenerator;
+
+	private final IMailReportSender mailReportSender;
 
 	private String mongoDbHost;
 
@@ -37,9 +40,10 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		super();
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
+		this.mailReportSender = injector.getInstance(IMailReportSender.class);
 	}
 
-	protected AbstractTestPlanRunner(final Module extraModule, final String host, final int port, final String db) {
+	protected AbstractTestPlanRunner(final String host, final int port, final String db, final Module... extraModule) {
 		this(extraModule);
 		this.mongoDbHost = host;
 		this.mongoDbPort = port;
@@ -57,13 +61,14 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		super(extraModules);
 		this.projectHtmlReportGenerator = injector.getInstance(IProjectHtmlReportGenerator.class);
 		this.htmlReportGenerator = injector.getInstance(IHTMLReportGenerator.class);
+		this.mailReportSender = injector.getInstance(IMailReportSender.class);
 	}
 
-	public final void test(ITestPlan testplan, boolean useRemoteRepository) throws IOException {
-		execute(testplan, useRemoteRepository);
+	public final void test(ITestPlan testplan, boolean useRemoteRepository, String apiKey) throws IOException {
+		execute(testplan, useRemoteRepository, apiKey);
 	}
 
-	public final void test(final String name, final String idProject, final boolean useRemoteRepository) throws ToastRuntimeException {
+	public final void test(final String name, final String idProject, final boolean useRemoteRepository, String apiKey) throws ToastRuntimeException {
 		DAOManager.init(this.mongoDbHost, this.mongoDbPort, this.db);
 		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(name, idProject);
 		final TestPlanImpl testPlanTemplate = DAOManager.getTestPlanTemplate(name, idProject);
@@ -71,12 +76,12 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 			throw new ToastRuntimeException("No reference test plan template found for: " + name);
 		}
 		updateTestPlanFromPreviousRun((ITestPlan)testPlanTemplate, lastExecution);
-		runAndSave(testPlanTemplate, useRemoteRepository);
+		runAndSave(testPlanTemplate, useRemoteRepository, apiKey);
 	}
 
-	private void runAndSave(ITestPlan testPlan, boolean useRemoteRepository) throws ToastRuntimeException {
+	private void runAndSave(ITestPlan testPlan, boolean useRemoteRepository, String apiKey) throws ToastRuntimeException {
 		try {
-			execute(testPlan, useRemoteRepository);
+			execute(testPlan, useRemoteRepository, apiKey);
 		} catch (IOException e) {
 			LOG.error(e.getMessage(), e);
 			throw new ToastRuntimeException("Error: Saving TestPlan template failed.");
@@ -115,7 +120,7 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		}
 		final TestPlanImpl lastExecution = DAOManager.getLastTestPlanExecution(testPlan.getName(), project.getIdAsString());
 		updateTestPlanFromPreviousRun(testPlan, lastExecution);
-		runAndSave(testPlan, useRemoteRepository);
+		runAndSave(testPlan, useRemoteRepository, apiKey);
 	}
 
 	/**
@@ -151,11 +156,11 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
         }
 	}
 
-	public void execute(final ITestPlan testPlan, final boolean presetRepoFromWebApp) throws IOException {
+	public void execute(final ITestPlan testPlan, final boolean presetRepoFromWebApp, final String apiKey) throws IOException {
 		final TestRunner runner = injector.getInstance(TestRunner.class);
 		if (presetRepoFromWebApp) {
 			LOG.debug("Preset repository from webapp rest api...");
-			final String repoWiki = RestUtils.downloadRepositoryAsWiki();
+			final String repoWiki = RestUtils.downloadRepositoryAsWiki(apiKey);
 			final TestParser parser = new TestParser();
 			final ITestPage repoAsTestPageForConvenience = parser.readString(repoWiki, null);
 			runner.run(repoAsTestPageForConvenience);
@@ -176,11 +181,27 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 				}
 			}
 		}
+		if (shouldSendMail()) {
+			mailReportSender.sendMailReport(testPlan);
+		}
 		createAndOpenReport(testPlan);
 		tearDownEnvironment();
 	}
 
-	protected void createAndOpenReport(final ITestPlan testPlan) {
+	/**
+	 * Checks if report must be sent by mail. See "mail.send" in toast.properties.
+	 *
+	 * @return True if the report must be sent by mail.
+	 */
+	private boolean shouldSendMail() {
+		return getConfig().isMailSendReport();
+	}
+
+	private AdaptersConfig getConfig() {
+		return new AdaptersConfigProvider().get();
+	}
+
+	private void createAndOpenReport(final ITestPlan testPlan) {
 		final String path = getReportsFolderPath();
 		final String pageName = "testplan_report";
 
@@ -196,9 +217,4 @@ public abstract class AbstractTestPlanRunner extends AbstractRunner {
 		openReport(path, pageName);
 	}
 
-	@Override
-	public String getReportsOutputPath(){
-		return null;
 	}
-
-}

@@ -3,7 +3,7 @@
   <parent>
     <groupId>io.toast-tk</groupId>
     <artifactId>toast-tk-engine</artifactId>
-    <version>0.1.5-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>toast-tk-dao-api</artifactId>
 	<name>Toast Toolkit - DAO Module Api</name>

@@ -57,7 +57,7 @@ public class RestUtils {
 			final Object[] selectedValues) {
 		final Client httpClient = Client.create();
 		final String webappURL = getWebAppURI(webAppAddr, webAppPort);
-		final WebResource webResource = httpClient.resource(webappURL + "/saveNewInspectedPage");
+		final WebResource webResource = httpClient.resource(webappURL + "/api/saveNewInspectedPage");
 		final InspectPage requestEntity = new InspectPage(value, Arrays.asList(selectedValues));
 		final Gson gson = new Gson();
 		final ClientResponse response = webResource.type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
@@ -66,10 +66,6 @@ public class RestUtils {
 		LOG.info("Client response code: {}", statusCode);
 	}
 
-	public static String downloadRepositoryAsWiki() {
-		final String webappURL = getWebAppURI();
-		return downloadRepository(webappURL + "/loadWikifiedRepository");
-	}
 
 	public static String downloadRepository(final String uri) {
 		final Client httpClient = Client.create();
@@ -108,7 +104,7 @@ public class RestUtils {
 		try {
 			final Client httpClient = Client.create();
 			final String webappURL = getWebAppURI(webAppHost, webAppPort);
-			final WebResource webResource = httpClient.resource(webappURL + "/saveNewInspectedScenario");
+			final WebResource webResource = httpClient.resource(webappURL + "/api/saveNewInspectedScenario");
 			final Gson gson = new Gson();
 			final InspectScenario scenario = new InspectScenario(scenarioName, scenarioSteps);
 			final String json = gson.toJson(scenario);
@@ -122,10 +118,6 @@ public class RestUtils {
 			LOG.error(e.getMessage(), e);
 			return false;
 		}
-	}
-
-	public static boolean postScenario(final String scenarioName, final String scenarioSteps) {
-		return postScenario(scenarioName, scenarioSteps, "one", "two");
 	}
 
 	public static String getWebAppURI(final String host, final String port) {
@@ -148,7 +140,7 @@ public class RestUtils {
 		try {
 			final Client httpClient = Client.create();
 			final String webappURL = getWebAppURI();
-			final String response = getJsonResponseAsString(webappURL + "/loadScenariiList", httpClient);
+			final String response = getJsonResponseAsString(webappURL + "/api/loadScenariiList", httpClient);
 			final Gson g = new Gson();
 			final Type typeOfT = new TypeToken<Collection<ImportedScenario>>() {
 				/* NOOP */}.getType();
@@ -164,7 +156,7 @@ public class RestUtils {
 		try {
 			final Client httpClient = Client.create();
 			final String webappURL = getWebAppURI();
-			final String response = getJsonResponseAsString(webappURL + "/loadScenarioSteps/" + scenarioRef.getId(),
+			final String response = getJsonResponseAsString(webappURL + "/api/loadScenarioSteps/" + scenarioRef.getId(),
 					httpClient);
 			final Gson g = new Gson();
 			final ImportedScenarioDescriptor scenarioDescriptor = g.fromJson(response,
@@ -258,8 +250,7 @@ public class RestUtils {
 			CredentialsProvider credsProvider = new BasicCredentialsProvider();
 			String user = requestInfo.getProxyUser();
 			String passwd = requestInfo.getProxyPassword();
-			credsProvider.setCredentials(
-					new AuthScope(requestInfo.getProxyAddress(), requestInfo.getProxyPort()),
+			credsProvider.setCredentials(new AuthScope(requestInfo.getProxyAddress(), requestInfo.getProxyPort()),
 					new UsernamePasswordCredentials(user, passwd));
 			httpBuilder.setDefaultCredentialsProvider(credsProvider);
 		}
@@ -273,7 +264,12 @@ public class RestUtils {
 	private static boolean isProxyDefined(final HttpRequest requestInfo) {
 		return StringUtils.isNotEmpty(requestInfo.getProxyAddress());
 	}
-
+	
+	public static String downloadRepositoryAsWiki(String apiKey) {
+		final String webappURL = getWebAppURI();
+		return downloadRepository(webappURL + "/api/repository/all/" + apiKey);
+	}
+	
 	public static void unRegisterAgent(String hostName) {
 		// NO-OP
 	}
