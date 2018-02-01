@@ -14,10 +14,18 @@ import io.toast.tk.dao.domain.impl.test.block.TestBlock;
 import io.toast.tk.dao.domain.impl.test.block.line.TestLine;
 import io.toast.tk.runtime.block.FatalExcecutionError;
 import io.toast.tk.runtime.block.IBlockRunner;
+import io.toast.tk.runtime.block.TestBlockRunner;
 
-class TestRunner {
+public class TestRunner {
 
 	private static final Logger LOG = LogManager.getLogger(TestRunner.class);
+	
+	private boolean interupted = false;
+
+	private int successNumber = 0;
+	private int failureNumber = 0;
+	
+	private IBlockRunner blockRunner;
 	
 	@Inject
 	private Map<Class, IBlockRunner> blockRunnerMap;
@@ -86,19 +94,61 @@ class TestRunner {
 		testBlock.setTestFailureNumber(nbBlockFailures);
 
 	}
+	
+	public void kill() {
+		this.interupted = true;
+		if(blockRunner != null && blockRunner instanceof TestBlockRunner) {
+			((TestBlockRunner) blockRunner).kill();		
+		}
+	}
 
 	private void runTestPageBlocks(final ITestPage testPage) {
 		for (final IBlock block : testPage.getBlocks()) {
+			if(interupted) { break; }
+			
 			if (block instanceof ITestPage) {
 				run((ITestPage) block);
 			} else {
-				final IBlockRunner blockRunner = blockRunnerMap.get(block.getClass());
-				if (blockRunner != null) {
-					blockRunner.run(block);
-				}else{
-					LOG.warn("No runner found for block of type " + block.getClass().getSimpleName());
-				}
+				runBlocks(block);
 			}
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void runBlocks(IBlock block) {
+		blockRunner = blockRunnerMap.get(block.getClass());
+		if (blockRunner == null) {
+			LOG.debug("No runner found for block of type " + block.getClass().getSimpleName());
+		} else if(blockRunner instanceof TestBlockRunner) {
+			((TestBlockRunner) blockRunner).initializeNumber();
+			
+			blockRunner.run(block);
+			
+			// Used for the agent
+			successNumber += ((TestBlockRunner) blockRunner).getSuccessNumber();
+			failureNumber += ((TestBlockRunner) blockRunner).getFailureNumber();
+		} else {
+			blockRunner.run(block);
+		}
+	}
+
+	public int getSuccessNumber() {
+		int res = successNumber;
+		
+		// If a block is still running
+		if(blockRunner instanceof TestBlockRunner) {
+			res = res + ((TestBlockRunner) blockRunner).getSuccessNumber();
+		}
+		return res;
+	}
+
+	public int getFailureNumber() {
+		int res = failureNumber;
+		
+		// If a block is still running
+		if(blockRunner instanceof TestBlockRunner) {
+			res = res + ((TestBlockRunner) blockRunner).getFailureNumber();
+		}
+		return res;
 	}
 }

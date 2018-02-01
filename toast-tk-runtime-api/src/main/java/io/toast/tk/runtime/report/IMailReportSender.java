@@ -1,8 +1,11 @@
 package io.toast.tk.runtime.report;
 
-import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
+import java.util.List;
 
-@FunctionalInterface
+import io.toast.tk.dao.domain.impl.test.block.ITestPage;
+import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
+import io.toast.tk.runtime.utils.ResultObject;
+
 public interface IMailReportSender {
 
     /**
@@ -12,6 +15,8 @@ public interface IMailReportSender {
      *
      * @param testPage test page result
      */
-    void sendMailReport(final ITestPlan testPage);
+    void sendMailReport(final ITestPlan testPlan);
+    
+    void sendMailReport(final List<ITestPage> testPage, final ResultObject res);
 
 }

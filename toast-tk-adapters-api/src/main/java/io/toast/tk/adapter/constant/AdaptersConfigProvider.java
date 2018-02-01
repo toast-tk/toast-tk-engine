@@ -25,6 +25,22 @@ public class AdaptersConfigProvider implements Provider<AdaptersConfig> {
 
 	private AdaptersConfig config;
 
+	public static final String ADAPTER_WEB_DRIVER = "web.driver";
+
+	public static final String ADAPTER_WEB_DRIVER_PATH = "web.driver.path";
+
+	public static final String ADAPTER_WEB_DRIVER_SSL = "web.driver.ssl";
+
+	public static final String ADAPTER_BROWSER_PATH = "browser.path";
+
+	public static final String ADAPTER_REPORT_FOLDER_PATH = "reports.folder.path";
+
+	public static final String ADAPTER_MAIL_SEND = "mail.send";
+
+	public static final String ADAPTER_MAIL_TO = "mail.to";
+
+	public static final String ADAPTER_MAIL_FROM = "mail.from";
+
 	public AdaptersConfigProvider() {
 		initConfig();
 	}
@@ -51,18 +67,22 @@ public class AdaptersConfigProvider implements Provider<AdaptersConfig> {
 			LOG.error(e.getMessage(), e);
 		}
 		this.config = new AdaptersConfig(
-				p.getProperty("web.driver", "Chrome"),
-				p.getProperty("web.driver.path"),
-				p.getProperty("browser.path"),
-				Boolean.parseBoolean(p.getProperty("web.driver.ssl")),
-				p.getProperty("reports.folder.path"));
+				p.getProperty(ADAPTER_WEB_DRIVER, "Chrome"),
+				p.getProperty(ADAPTER_WEB_DRIVER_PATH, System.getProperty("user.home") + "/.toast/chromedriver.exe"),
+				p.getProperty(ADAPTER_BROWSER_PATH),
+				Boolean.parseBoolean(p.getProperty(ADAPTER_WEB_DRIVER_SSL)),
+				p.getProperty(ADAPTER_REPORT_FOLDER_PATH),
+				Arrays.asList(p.getProperty(ADAPTER_MAIL_TO, "test@toast-tk.io").split(";")),
+				p.getProperty(ADAPTER_MAIL_FROM, "report@toast-tk.io"),
+				Boolean.parseBoolean(p.getProperty(ADAPTER_MAIL_SEND, "false"))
+				);
 		// Mail reports configuration
-		this.config.setMailFrom(p.getProperty("mail.from"));
-		String[] mailRecipients = StringUtils.split(p.getProperty("mail.to"), ",");
+		this.config.setMailFrom(p.getProperty(ADAPTER_MAIL_SEND));
+		String[] mailRecipients = StringUtils.split(p.getProperty(ADAPTER_MAIL_TO), ",");
 		if (mailRecipients != null) {
 			this.config.setMailTo(Arrays.asList(mailRecipients));
 		}
-		this.config.setMailSendReport(Boolean.parseBoolean(p.getProperty("mail.send")));
+		this.config.setMailSendReport(Boolean.parseBoolean(p.getProperty(ADAPTER_MAIL_SEND)));
 	}
 
 	@Override

@@ -34,13 +34,19 @@ public class AdaptersConfig {
             final String webDriverPath,
             final String browserPath,
             final boolean isSSl,
-            final String reportsFolderPath
+            final String reportsFolderPath,
+            final List<String> mailTo,
+            final String mailFrom,
+            final boolean mailSendReport
     ) {
         this.webDriver = webDriver;
         this.webDriverPath = webDriverPath;
         this.browserPath = browserPath;
         this.isSSl = isSSl;
         this.reportsFolderPath = reportsFolderPath;
+        this.mailTo = mailTo;
+        this.mailFrom = mailFrom;
+        this.mailSendReport = mailSendReport;
     }
 
     public void setReportsFolderPath(String reportsFolderPath) {

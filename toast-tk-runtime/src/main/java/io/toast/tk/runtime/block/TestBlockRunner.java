@@ -5,6 +5,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +48,11 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private static final Pattern REGEX_PATTERN = Pattern.compile("\\$(\\d)");
 
+	private UUID blockID;
+	
+	private int successNumber = 0;
+	private int failureNumber = 0;
+
 	@Inject
 	private IActionItemRepository objectRepository;
 
@@ -61,11 +67,40 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 	private EventBus eventBus;
 
+	private boolean interupted = false;
+
 	@Override
 	public void run(final TestBlock block) {
-		block.getBlockLines().forEach(line -> invokeTestAndAddResult(block, line));
+		blockID = UUID.randomUUID();
+		for(TestLine line : block.getBlockLines()) {
+			if(interupted) { break; }
+			
+			invokeTestAndAddResult(block, line);
+		}
 	}
 
+	public void initializeNumber() {
+		successNumber = 0;
+		failureNumber = 0;
+	}
+	public int getSuccessNumber() {
+		return successNumber;
+	}
+	public int getFailureNumber() {
+		return failureNumber;
+	}
+	private void setSuccessNumber(ITestResult result) {
+		if(result.isSuccess()) {
+			successNumber++;
+		} else {
+			failureNumber++;
+		}
+	}
+	
+	public UUID getBlockUuid() {
+		return blockID;
+	}
+	
 	private void invokeTestAndAddResult(
 		final TestBlock block, 
 		final TestLine line
@@ -80,6 +115,8 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 			line.setExcutionTime(System.currentTimeMillis() - startTime);
 			updateFatal(result, actionCommandDescriptor);
 			line.setTestResult((TestResult) result);
+			
+			setSuccessNumber(result);
 		} catch (NoActionAdapterFound e) {
 			result = new FailureResult("No Action Adapter found !");
 		}
@@ -115,13 +152,17 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private ITestResult doLocalActionCall(final ActionAdaptaterLocator actionAdaptaterLocator) {
 		ITestResult result;
+		Method actionMethod = null;
 		try {
-			Method actionMethod = actionAdaptaterLocator.getActionCommandDescriptor().method;
+			actionMethod = actionAdaptaterLocator.getActionCommandDescriptor().method;
 			Class<?> returnType = actionMethod.getReturnType();
+			// WARNING : Can Create Memory Failure
 			Object output = actionMethod.invoke(actionAdaptaterLocator.getInstance(), 
 												buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor()));
+			
 			String expected = actionAdaptaterLocator.getTestLineDescriptor().testLine.getExpected();
 			if (ITestResult.class.isAssignableFrom(returnType)) {
 				setContextualTestSentence(actionAdaptaterLocator, (ITestResult) output);
@@ -134,7 +175,7 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 				result = handler.result(output, expected);
 			}
 		} catch (final Exception e) {
-			result = handleInvocationError(e);
+			result = handleInvocationError(e, actionMethod, actionAdaptaterLocator);
 		} catch (final AssertionError er) {
 			result = handleInvocationError(er);
 		}
@@ -151,10 +192,21 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		}
 	}
 
-	private static TestResult handleInvocationError(final Exception e) {
+	private TestResult handleInvocationError(final Exception e, 
+			final Method actionMethod, final ActionAdaptaterLocator actionAdaptaterLocator) {
 		LOG.error(e.getMessage(), e);
 		if (e instanceof ErrorResultReceivedException) {
 			return ((ErrorResultReceivedException) e).getResult();
+		} else {
+			try {
+				Parameter[] params = actionMethod.getParameters();
+				Object[] objs = buildArgumentList(actionAdaptaterLocator.getActionCommandDescriptor());
+				if(ArgumentBlockHelper.isArgumentFailureMessage(e, params, objs)) {
+					return new FailureResult(ArgumentBlockHelper.getArgumentFailureMessage(params, objs));
+				}
+			} catch (Exception e1) {
+				// Nothing to do
+			}
 		}
 		return new FailureResult(ExceptionUtils.getRootCauseMessage(e));
 	}
@@ -177,12 +229,20 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 		String outCommand = actionAdaptaterLocator.getTestLineDescriptor().getActionImpl();
 		final int groupCount = matcher.groupCount();
 		final Object[] args = new Object[groupCount];
+		final int maxSize = 10000;
 		for (int i = 0; i < groupCount; ++i) {
 			final String group = matcher.group(i + 1);
 			final Object argument = ArgumentHelper.buildActionAdapterArgument(objectRepository, group);
 			args[i] = argument;
 			if (isVariable(args, i, group)) {
-				outCommand = outCommand.replaceFirst("\\" + group + "\\b", (args[i].toString()).replace("$", "\\$"));
+				String var = (args[i].toString()).replace("$", "\\$").replace("\\", "\\\\");
+				var = var.length() > maxSize ? var.substring(0,maxSize) : var;
+				try {
+					outCommand = outCommand.replaceFirst("\\" + group + "\\b", Matcher.quoteReplacement(var));
+				}
+				catch(IllegalArgumentException e) {
+					LOG.info(e.getMessage());
+				}
 			}
 		}
 		return outCommand;
@@ -261,8 +321,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 
 		String item;
 
+		@SuppressWarnings("unused")
 		Integer start;
 
+		@SuppressWarnings("unused")
 		Integer end;
 
 		public ActionIndex(
@@ -334,6 +396,10 @@ public class TestBlockRunner implements IBlockRunner<TestBlock> {
 	public void setRepository(IActionItemRepository repository) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void kill() {
+		this.interupted = true;		
 	}
 }
 

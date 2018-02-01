@@ -9,6 +9,8 @@ import io.toast.tk.adapter.constant.AdaptersConfig;
 import io.toast.tk.adapter.constant.AdaptersConfigProvider;
 import io.toast.tk.core.guice.AbstractActionAdapterModule;
 import io.toast.tk.runtime.module.EngineModule;
+import io.toast.tk.runtime.report.IMailReportSender;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,6 +27,8 @@ public abstract class AbstractRunner {
 
 	private List<FixtureService> listAvailableServicesByReflection;
 
+	protected final IMailReportSender mailReportSender;
+	
 	protected final Injector injector;
 
 	public AbstractRunner() {
@@ -37,10 +41,12 @@ public abstract class AbstractRunner {
 				listAvailableServicesByReflection.forEach(f -> bindActionAdapter(f.clazz));
 			}
 		});
+		this.mailReportSender = injector.getInstance(IMailReportSender.class);
 	}
 
 	public AbstractRunner(final Injector injector) {
 		this.injector = injector;
+		this.mailReportSender = injector.getInstance(IMailReportSender.class);
 	}
 
 	public AbstractRunner(final Module... extraModules) {
@@ -56,6 +62,7 @@ public abstract class AbstractRunner {
 				listAvailableServicesByReflection.forEach(f -> bindActionAdapter(f.clazz));
 			}
 		});
+		this.mailReportSender = injector.getInstance(IMailReportSender.class);
 	}
 
 	public abstract void tearDownEnvironment();
@@ -105,6 +112,19 @@ public abstract class AbstractRunner {
 		return path;
 	}
 
+	/**
+	 * Checks if report must be sent by mail. See "mail.send" in toast.properties.
+	 *
+	 * @return True if the report must be sent by mail.
+	 */
+	protected boolean shouldSendMail() {
+		return getConfig().isMailSendReport();
+	}
+
+	private AdaptersConfig getConfig() {
+		return new AdaptersConfigProvider().get();
+	}
+	
 	protected static void openReport(
 			final String path,
 			final String pageName

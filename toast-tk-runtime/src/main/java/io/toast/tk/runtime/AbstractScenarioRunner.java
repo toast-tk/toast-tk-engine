@@ -11,6 +11,7 @@ import io.toast.tk.runtime.parse.FileHelper;
 import io.toast.tk.runtime.parse.TestParser;
 import io.toast.tk.runtime.report.DefaultTestProgressReporter;
 import io.toast.tk.runtime.report.IHTMLReportGenerator;
+import io.toast.tk.runtime.utils.ResultObject;
 import io.toast.tk.runtime.utils.RunUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,14 +25,20 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	private static final Logger LOG = LogManager.getLogger(AbstractScenarioRunner.class);
 
 	private boolean presetRepoFromWebApp = false;
+	private static boolean openReport = true;
 
 	private ITestPage localRepositoryTestPage;
+	private TestRunner runner;
 
 	private IHTMLReportGenerator htmlReportGenerator;
 
 	private DefaultTestProgressReporter progressReporter;
 
 	private String apiKey;
+	
+	public TestRunner getTestRunner() {
+		return runner;
+	}
 
 	protected AbstractScenarioRunner(final Injector injector) {
 		super(injector);
@@ -65,10 +72,11 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	) throws Exception {
 		final List<ITestPage> testPages = new ArrayList<>();
 		initEnvironment();
-		for (final String fileName : scenarios) {
-			LOG.info("Start main test parser: {}", fileName);
+		for (final String fullFileName : scenarios) {
+			LOG.info("Start main test parser: {}", fullFileName);
 
-			List<String> lines = FileHelper.getScript(fileName);
+			List<String> lines = FileHelper.getScript(fullFileName);
+			String fileName = fullFileName.startsWith("C:") ? fullFileName.split("\\\\")[fullFileName.split("\\\\").length - 1] : fullFileName;
 			final ITestPage result = runTestPage(new TestParser().parse(lines, fileName));
 			testPages.add(result);
 		}
@@ -76,7 +84,11 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		tearDownEnvironment();
 
 		LOG.info("{}file(s) processed", scenarios.length);
-		RunUtils.printResult(testPages);
+		ResultObject res = RunUtils.getResult(testPages);
+		RunUtils.print(res.getTotalErrors(), res.getTotalSuccess(), res.getTotalTechnical(), res.getFilesWithErrorsList());
+		if (shouldSendMail()) {
+			mailReportSender.sendMailReport(testPages, res);
+		}
 	}
 
 	public final void runRemote(String apiKey,
@@ -111,7 +123,7 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 	}
 
 	public ITestPage runTestPage(final ITestPage testPage) throws IOException {
-		final TestRunner runner = injector.getInstance(TestRunner.class);
+		runner = injector.getInstance(TestRunner.class);
 		if (this.presetRepoFromWebApp) {
 			final String repoWiki = RestUtils.downloadRepositoryAsWiki(this.apiKey);
 			final TestParser parser = new TestParser();
@@ -122,6 +134,15 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		}
 		beginTest();
 		ITestPage result = runner.run(testPage);
+		
+		List<ITestPage> testPages = new ArrayList<>();
+		testPages.add(testPage);
+		ResultObject res = RunUtils.getResult(testPages);
+		RunUtils.print(res.getTotalErrors(), res.getTotalSuccess(), res.getTotalTechnical(), res.getFilesWithErrorsList());
+		if (shouldSendMail()) {
+			mailReportSender.sendMailReport(testPages, res);
+		}
+		
 		createAndOpenReport(result);
 		endTest();
 		return result;
@@ -134,12 +155,28 @@ public abstract class AbstractScenarioRunner extends AbstractRunner {
 		final String path = getReportsOutputPath() == null ? getReportsFolderPath(): getReportsOutputPath();
 		final String pageName = testPage.getName();
 		htmlReportGenerator.writeFile(generatePageHtml, pageName, path);
-		openReport(path, pageName);
+		if(isOpenReport()) {
+			openReport(path, pageName);
+		}
+	}
+
+	public void kill() {
+		if(this.runner != null){
+			this.runner.kill();
+		}
 	}
 
 	@Override
 	public String getReportsOutputPath(){
 		return null;
+	}
+
+	public boolean isOpenReport() {
+		return openReport;
+	}
+
+	public static void setOpenReport(boolean openreport) {
+		openReport = openreport;
 	}
 
 }

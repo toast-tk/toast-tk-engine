@@ -2,9 +2,10 @@ package io.toast.tk.runtime.report;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +36,7 @@ public class ThymeLeafHTMLReporter implements IHTMLReportGenerator {
 		if (null != parent_directory){
 		    parent_directory.mkdirs();
 		}
-		try (final BufferedWriter out = new BufferedWriter(new FileWriter(fileFullPath))) {
+		try (final BufferedWriter out = new BufferedWriter(new FileWriterWithEncoding(fileFullPath, StandardCharsets.UTF_8))) {
 			out.write(report);
 		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);

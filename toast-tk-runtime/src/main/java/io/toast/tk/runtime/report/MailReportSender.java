@@ -5,88 +5,71 @@ import io.toast.tk.adapter.constant.AdaptersConfigProvider;
 import io.toast.tk.dao.domain.impl.test.block.ICampaign;
 import io.toast.tk.dao.domain.impl.test.block.ITestPage;
 import io.toast.tk.dao.domain.impl.test.block.ITestPlan;
+import io.toast.tk.runtime.mail.MailSender;
+import io.toast.tk.runtime.utils.ResultObject;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Send test reports by email
  */
 public class MailReportSender implements IMailReportSender {
-
+	
 	private static final Logger LOG = LogManager.getLogger(MailReportSender.class);
-
-	private static final String SMTP_PROPERTIES_FILE_PATH = "/smtp.properties";
-
+	
 	@Override
 	public void sendMailReport(ITestPlan testPage) {
 		AdaptersConfig config = getConfig();
 
 		for (final ICampaign campaign : testPage.getCampaigns()) {
-			send(campaign, config.getMailTo(), config.getMailFrom(), getMailSession());
+			send(campaign, config.getMailTo(), config.getMailFrom());
 		}
 	}
 
-	private Session getMailSession() {
-		InputStream resourceAsStream = this.getClass().getResourceAsStream(SMTP_PROPERTIES_FILE_PATH);
+	@Override
+	public void sendMailReport(List<ITestPage> testPage, ResultObject res) {
+		AdaptersConfig config = getConfig();
 
-		final Properties properties = new Properties();
-		try (final Reader resourceFileReader = new InputStreamReader(resourceAsStream)) {
-			properties.load(resourceFileReader);
-		} catch (final IOException e) {
-			LOG.error("Could not load smtp.properties file", e);
-		}
-
-		if (Boolean.parseBoolean(properties.getProperty
-				("mail.smtp.auth"))) {
-			return Session.getDefaultInstance(properties, new Authenticator() {
-				@Override
-				protected PasswordAuthentication getPasswordAuthentication() {
-					String user = properties.getProperty("mail.smtp.user");
-					String password = properties.getProperty("mail.smtp.password");
-					return new PasswordAuthentication(user, password);
-				}
-			});
-		} else {
-			return Session.getDefaultInstance(properties);
-		}
+		send(testPage, res, config.getMailTo(), config.getMailFrom());		
 	}
 
 	private AdaptersConfig getConfig() {
 		return new AdaptersConfigProvider().get();
 	}
 
-	private void send(ICampaign campaign, List<String> mailTo, String mailFrom, Session session) {
+	private void send(ICampaign campaign, List<String> mailTo, String mailFrom) {		
+		String body = getSubject();
+		String subject = getMailBody(campaign);
+		
+		MailSender sender = new MailSender();
 		try {
-			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(mailFrom));
-			InternetAddress address = new InternetAddress();
-			for (String recipient : mailTo) {
-				address.setAddress(recipient);
-				message.addRecipient(Message.RecipientType.TO, address);
-			}
-			message.setSubject(getSubject());
-			message.setText(getMailBody(campaign));
+			sender.send(subject, body, mailTo, mailFrom);
+		}
+		catch( Exception e) {
+			LOG.error(e.getMessage());
+		}
+	}
 
-			Transport.send(message);
-		} catch (MessagingException e) {
-			LOG.error(e.getMessage(), e);
+	private void send(List<ITestPage> testPage, ResultObject res, List<String> mailTo, String mailFrom) {		
+		String body = getSubject();
+		String subject = getMailBody(testPage, res);
+		
+		MailSender sender = new MailSender();
+		try {
+			sender.send(subject, body, mailTo, mailFrom);
+		}
+		catch( Exception e) {
+			LOG.error(e.getMessage());
 		}
 	}
 
@@ -133,6 +116,42 @@ public class MailReportSender implements IMailReportSender {
 		return sb.toString();
 	}
 
+
+	private String getMailBody(List<ITestPage> testPages, ResultObject res) {
+		StrBuilder sb = new StrBuilder();
+
+		sb.append("Test report for ").append(testPages.size()).append(" the test pages.");
+		sb.appendNewLine();
+
+		// First test start time
+		if (CollectionUtils.isNotEmpty(testPages)) {
+			long startDateMillis = testPages.get(0).getStartDateTime();
+			LocalDateTime startDateTime =
+					LocalDateTime.ofInstant(Instant.ofEpochMilli(startDateMillis), ZoneId.systemDefault());
+			sb.append("Start time: ").append(getDateAsString(startDateTime)).appendNewLine();
+		}
+		sb.appendNewLine();
+
+		// Success number
+		sb.append(res.getTotalSuccess()).append(" tests in success").appendNewLine();
+
+		// Failure number
+		int failureNumber = res.getTotalErrors() + res.getTotalTechnical();
+		sb.append(failureNumber).append(" tests failed").appendNewLine();
+		sb.appendNewLine();
+
+		if (failureNumber > 0) {
+			sb.append("Failed test cases:").appendNewLine();
+
+			for (final ITestPage testPage : testPages) {
+				if (!testPage.isSuccess()) {
+					sb.append("- ").append(testPage.getName()).appendNewLine();
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
 	private long getFailureNumber(ICampaign campaign) {
 		return campaign.getTestCases().stream().filter(t -> !t.isSuccess()).count();
 	}

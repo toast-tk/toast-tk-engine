@@ -1,10 +1,17 @@
 package io.toast.tk.runtime.parse;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,11 +37,12 @@ public class FileHelper {
 
 	public static List<String> getScript(String filename) throws IOException {
 		InputStream resourceAsStream = getInputStream(filename);
-
+		
 		if (resourceAsStream == null) {
-			throw new IOException("Could not open file " + filename);
+			String data = readFile(filename);
+			resourceAsStream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));		
 		}
-
+		
 		return getScript(resourceAsStream);
 	}
 
@@ -44,12 +52,119 @@ public class FileHelper {
 	public static InputStream getInputStream(final String filename) {
 		LOG.debug("Open input stream: " + filename);
 		String fullFileName = filename;
-		if (!filename.startsWith("\\")) {
+		if (!(filename.startsWith("\\") || filename.startsWith("C:"))) {
 			fullFileName = "/" + fullFileName;
 		}
 		return FileHelper.class.getResourceAsStream(fullFileName);
 	}
 
+	public static String readFile(String fileName) {
+		String lines = "";
+		try {
+			lines = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
+			return lines;
+		} 
+        catch(IOException ex) {
+        	String exception = "Error reading file '" + fileName + "' caused by " + ex.getMessage();
+        	LOG.info(exception);
+            return exception;       
+        }
+    }
+
+	public static String getStringFromInputStream(InputStream is) {
+		BufferedReader br = null;
+		StringBuilder sb = new StringBuilder();
+		
+		String line;
+		try {
+			br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+			while ((line = br.readLine()) != null) {
+				sb.append(line).append(System.lineSeparator());
+			}
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					LOG.error(e.getMessage());
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
+	public static void createDirectory(String arg) {
+		File theDir = new File(arg);
+
+		if (!theDir.exists()) {
+			LOG.info("creating directory: " + theDir.getName());
+			
+			theDir.mkdir();    
+		    
+		    LOG.info("DIR created"); 
+		}
+	}
+
+	public static void writeFile(String arg, String fileName) throws IOException {
+		FileOutputStream fileWriter = null; 
+		BufferedWriter bufferedWriter = null;
+		try {
+			fileWriter =   new FileOutputStream(fileName);
+            bufferedWriter = new BufferedWriter(
+            		new OutputStreamWriter(fileWriter, StandardCharsets.UTF_8));
+            bufferedWriter.write(arg);
+            bufferedWriter.close();
+        }
+        catch(IOException ex) {
+            throw new IOException("Error writing to file '" + fileName + "' cause by " + ex.getMessage());
+        } finally {
+        	if(fileWriter != null) {
+            	fileWriter.close();
+        	}
+        	if(bufferedWriter != null) {
+        		bufferedWriter.close();
+        	}
+        }
+	}
+
+	public static String getLastModifiedFile(String directoryPath) {
+		File directory = new File(directoryPath);
+		File moreRecentFile = null;
+		
+		if (!directory.exists()) {
+			LOG.warn("The file/directory '" + directoryPath + "' does not exist");
+		} else if (!directory.isDirectory()) {
+			LOG.warn("The path '" + directoryPath + "' does not match to a directory");
+		} else {
+			File[] subfiles = directory.listFiles();
+			
+			if( subfiles.length > 0 ){
+				moreRecentFile = subfiles[0];
+				for (int i = 1; i < subfiles.length; i++) {
+					File subfile = subfiles[i];
+					//LOG.info(subfile.getName());
+					
+					if (subfile.lastModified() > moreRecentFile.lastModified()) 
+						moreRecentFile = subfile;
+				}
+				return directoryPath + File.separatorChar + moreRecentFile.getName();
+			}else{
+				LOG.warn("The directory '" + directoryPath + "' is empty!");
+			}
+		}
+		return "";
+	}
+
+	public static void copyFile(String filePath, String repertory) throws IOException {
+		File file = new File(filePath);
+		String fileName = file.getName();
+		String fileSeparator = String.valueOf(File.separatorChar);
+		String fileOutputPath = repertory.endsWith(fileSeparator) ? repertory + fileName : repertory + fileSeparator + fileName;
+		Files.copy(file.toPath(), (new File(fileOutputPath)).toPath());
+	}
+	
 	static List<String> removeBom(final List<String> list) {
 		final String firstLine = list.get(0);
 		if (firstLine.startsWith("\uFEFF")) {
@@ -57,5 +172,42 @@ public class FileHelper {
 		}
 		return list;
 	}
+	
+	public static String[] findFilesURL(String directoryPath) {
+		File[] files = findFiles(directoryPath);
+		String[] res = new String[files.length];
+		int i = 0;
+		for(File file : files) {
+			res[i] = file.getAbsolutePath();
+			i++;
+		}
+		return res;
+	}
+	public static File[] findFiles(String directoryPath) {
+		File[] res = null;
+		File directory = new File(directoryPath);
+		if(!directory.exists()){
+			System.out.println("The file/directory '"+directoryPath+"' does not exist.");
+		}else if(!directory.isDirectory()){
+			System.out.println("The directory '"+directoryPath+"' is a file and not a directory!");
+		}else{
+			res = directory.listFiles();
+		}
+		return res;
+	}
 
+	public static boolean existFile(String fileName) {
+		File file = new File(fileName);
+		return file.exists();
+    }
+	
+	public static boolean isFile(String fileName) {
+		File file = new File(fileName);
+		return file.isFile();
+    }
+	
+	public static boolean isDirectory(String fileName) {
+		File file = new File(fileName);
+		return file.isDirectory();
+    }
 }

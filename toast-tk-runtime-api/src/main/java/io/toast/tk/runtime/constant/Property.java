@@ -8,6 +8,10 @@ public final class Property {
 
 	}
 	
+	public static final String PATH_DELIMITER = "/";
+	
+	public static final String TOAST_CONTACT = "contact.toast-tk@talan.com";
+	
 	public static final String DEFAULT_WEBAPP_ADDR_PORT = "http://localhost:9000";
 
 	public static final String WEBAPP_ADDR = "toast.webapp.addr";
@@ -36,7 +40,15 @@ public final class Property {
 	public static final String TOAST_RUNTIME_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME
 		+ File.separatorChar + "runtime";
 
-	public static final String TOAST_LOG_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME + File.separatorChar +"log";;
+	public static final String TOAST_TARGET_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME
+		+ File.separatorChar + "target" + File.separatorChar + "toast-test-results" + File.separatorChar;
+	
+	public static final String TOAST_TEMP_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME
+			+ File.separatorChar + "temp" + File.separatorChar;
+
+	public static final String TOAST_LOG_DIR = System.getProperty("user.home") + File.separatorChar + TOAST_HOME_DIR_NAME + File.separatorChar + "logs" + File.separatorChar;
+
+	public static final String DOWNLOAD_DIR = System.getProperty("user.home") + File.separatorChar + "Downloads" + File.separatorChar;
 
 	public static final String TOAST_PROPERTIES_FILE = Property.TOAST_HOME_DIR + "toast.properties";
 
@@ -64,5 +76,7 @@ public final class Property {
 
 	public static final int TOAST_AGENT_PORT = 7676;
 	
-	public static final String ACTION_ITEM_VAR_REGEX = "(\\$\\w+)";
+	public static final String ACTION_ITEM_VAR_REGEX_1 = "(\\(\\$[\\w|\\.]+\\))";
+	
+	public static final String ACTION_ITEM_VAR_REGEX_2 = "(\\$[\\w|\\.]+)";
 }
