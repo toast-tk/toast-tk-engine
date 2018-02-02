@@ -1,8 +1,11 @@
 package io.toast.tk.runtime.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class EncryptHelper {
 
-	//private static final Logger LOG = LogManager.getLogger(EncryptHelper.class);
+	private static final Logger LOG = LogManager.getLogger(EncryptHelper.class);
 	
 	private EncryptHelper() {
 		
