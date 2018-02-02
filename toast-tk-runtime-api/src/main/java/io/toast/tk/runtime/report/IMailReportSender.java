@@ -13,7 +13,7 @@ public interface IMailReportSender {
      * Properties are in file toast.properties. Recipients are defined in property "mail.to".
      * Multiple recipients must be separated by commas. Sender is defined by property "mail.from".
      *
-     * @param testPage test page result
+     * @param testPlan result
      */
     void sendMailReport(final ITestPlan testPlan);
     
