@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+	rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/css?family=Kaushan+Script"
+	rel="stylesheet" type="text/css" />
+<link
+	href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic"
+	rel="stylesheet" type="text/css" />
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+	integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+	crossorigin="anonymous"></link>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"
+	integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX"
+	crossorigin="anonymous"></link>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"></link>
+<style type="text/css">
+.navbar-default .navbar-brand {
+	font-family: "Kaushan Script", "Helvetica Neue", Helvetica, Arial,
+		cursive;
+	color: #fed136;
+}
+
+.testName {
+	
+}
+
+footer {
+	position: fixed;
+	background-color: #D2D2D2;
+	padding: 1em 0;
+	padding-left: 31px;
+	padding-right: 31px;
+	bottom: 0;
+	height: 25px;
+	line-height: 1px;
+	text-align: center;
+	bottom: 0;
+	right: 0;
+	width: 100%;
+}
+
+.panel-toast {
+	border-color: #B4B4B4;
+}
+
+.panel-toast>.panel-heading {
+	border-color: #B4B4B4;
+	background-color: #D2D2D2;
+}
+
+.jumbotron {
+	background-color: #D2D2D2;
+	border: #B4B4B4 solid 1px;
+	padding-top: 23px;
+	padding-bottom: 23px;
+}
+
+.title {
+	font-weight: bold;
+	padding: 20px;
+	color: white;
+}
+</style>
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+	integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+	crossorigin="anonymous"></script>
+<script type="text/javascript"
+	src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script th:inline="javascript">
+			/*<![CDATA[*/
+				 google.load("visualization", "1", {packages:["corechart"]});
+			  google.setOnLoadCallback(drawChart);
+			  function drawChart() {
+				var historyData = /*[[${@io.toast.tk.runtime.report.TemplateReportHelper@getResultTrendData(project, projectsHistory)}]]*/
+				var dataTable = [['Iteration', 'OK', 'KO', 'Not Completed', 'Not Run']];
+				dataTable.push.apply(dataTable, historyData)
+				var data = google.visualization.arrayToDataTable(dataTable);
+				var options = {
+				  title: 'Test Execution Trend'
+				};
+				var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+				chart.draw(data, options);
+			  }
+			  
+			  //performance chart
+			  google.setOnLoadCallback(drawPerfChart);
+			  function unquote(str, quoteChar) {
+			      quoteChar = quoteChar || '"';
+			      if (str[0] === quoteChar && str[str.length - 1] === quoteChar)
+			        return str.slice(1, str.length - 1);
+			      else return str;
+			    };
+			    
+			  function drawPerfChart() {
+				var historyData = /*[[${@io.toast.tk.runtime.report.TemplateReportHelper@getExecTrendData(project, projectsHistory)}]]*/
+				var dataTable = [['Iteration', 'Total Execution Time (ms)']];
+				dataTable.push.apply(dataTable, historyData)
+				var data = google.visualization.arrayToDataTable(dataTable);
+				var options = {
+				  title: 'Test Performance Trend'
+				};
+				var chart = new google.visualization.LineChart(document.getElementById('chart_perf_div'));
+				chart.draw(data, options);
+			  }
+			/*]]>*/
+		</script>
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-inverse"
+		style="border-radius: 0;">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand navbar-left" href="#"> Toast TK </a>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="title">
+					<div>Project Execution Report</div>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="jumbotron">
+			<div class="row-fluid" style="width: 100%; height: 61px;">
+				<div class="col-md-1  col-sm-2 col-xs-2">
+					<div class="fa fa-times" style="font-size: 63px; color: #d9534f;"></div>
+				</div>
+				<div class="col-md-8">
+					<div class="row-fluid">
+						<h3>
+							<span class="testName" th:text="${project.name}">Project
+								TNR</span>
+						</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="panel panel-toast"
+				th:if="${not #lists.isEmpty(projectsHistory)}">
+				<div class="panel-heading">
+					<i class="fa fa-check-square-o"></i> Execution Status
+				</div>
+				<div class="panel-body">
+					<div id="chart_div"></div>
+				</div>
+			</div>
+			<div class="panel panel-toast"
+				th:if="${not #lists.isEmpty(projectsHistory)}">
+				<div class="panel-heading">
+					<i class="fa fa-check-square-o"></i> Performance Status
+				</div>
+				<div class="panel-body">
+					<div id="chart_perf_div"></div>
+				</div>
+			</div>
+			<div class="panel panel-toast">
+				<div class="panel-heading">
+					<i class="fa fa-check-square-o"></i> Campaigns Detailed Status
+				</div>
+				<div th:each="campaign : ${project.campaigns}">
+					<div class="panel-body">
+						<div class="panel-group" id="accordion" role="tablist"
+							aria-multiselectable="true">
+							<div class="panel panel-default">
+								<div class="panel-heading" role="tab" id="headingOne">
+									<h4 class="panel-title">
+										<a role="button" data-toggle="collapse"
+											data-parent="#accordion" href="#collapseOne"
+											aria-expanded="true" aria-controls="collapseOne">
+											Campaign Name </a>
+										<div style="float: right;">
+											<span class="badge" style="background-color: #5cb85c;">
+												<span>0</span> OK
+											</span> <span class="badge" style="background-color: #d9534f;">
+												<span>0</span> KO
+											</span>
+										</div>
+									</h4>
+								</div>
+							</div>
+							<div class="panel-collapse collapse in" role="tabpanel"
+								aria-labelledby="headingOne">
+								<div class="panel-body">
+									<table class="table table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>Use Case</th>
+												<th th:if="${not #lists.isEmpty(projectsHistory)}">Prev. Status</th>
+												<th>Status</th>
+												<th th:if="${not #lists.isEmpty(projectsHistory)}">Prev. Duration (ms)</th>
+												<th>Duration (ms)</th>
+												<th>Details</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="test : ${campaign.testCases}">
+												<td th:text="${test.name}">
+													Test 1
+												</td>
+												<td class="success" th:if="${not #lists.isEmpty(projectsHistory) and test.previousIsSuccess}">
+													OK
+												</td>
+												<td class="danger" th:if="${not #lists.isEmpty(projectsHistory) and not test.previousIsSuccess}">
+													KO
+												</td>
+												<td class="success" th:if="${test.isSuccess()}">
+													OK
+												</td>
+												<td class="danger" th:if="${not test.isSuccess()}">
+													KO
+												</td>
+												<td th:if="${not #lists.isEmpty(projectsHistory)}" th:text="${test.getPreviousExecutionTime()}">
+													50
+												</td>
+												<td th:text="${test.getExecutionTime()}">
+													100
+												</td>
+												<td>
+													<a th:attr="href=${test.name + '.html'}">
+														>> link
+													</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer id="footer">
+		<small style="float: left;">Copyright 2015 - Synaptix-Labs</small> <small>Toast
+			Tk</small> <img alt="Brand"
+			src="http://toast.synaptix-labs.com/img/logos/ToastLogo.png"
+			style="width: 24px; float: right; margin-top: -13px" />
+	</footer>
+
+</body>
+</html>
